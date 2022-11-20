@@ -1,4 +1,4 @@
-import 'package:boring_form/form/theme/boring_responsive_size.dart';
+import 'package:boring_form/theme/boring_responsive_size.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'boring_field_controller.dart';
