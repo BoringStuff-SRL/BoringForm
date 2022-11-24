@@ -16,13 +16,14 @@ class BoringSection extends BoringField<Map<String, dynamic>> {
       String? title,
       this.collapsible = false,
       this.collapseOnHeaderTap,
+      super.decoration,
       required this.fields})
       : assert(BoringForm.checkJsonKey(fields),
             "Confict error: found duplicate jsonKeys in section with jsonKey '$jsonKey'"),
         assert(collapseOnHeaderTap == null ||
             collapseOnHeaderTap == false ||
             collapsible),
-        super(fieldController: fieldController, label: title) {
+        super(fieldController: fieldController) {
     addFieldsListeners();
   }
 
@@ -75,7 +76,7 @@ class BoringSection extends BoringField<Map<String, dynamic>> {
 
   @override
   Widget builder(context, controller, child) {
-    if (label != null) {
+    if (decoration?.label != null) {
       return Padding(
         padding: EdgeInsets.all(sectionPadding),
         child: BoringExpandable(
@@ -86,7 +87,7 @@ class BoringSection extends BoringField<Map<String, dynamic>> {
                 : null,
             dense: true,
             title: Text(
-              label!,
+              (decoration?.label)!,
               style: BoringFormTheme.of(context).style.sectionTitleStyle,
             ),
             trailing: collapsible

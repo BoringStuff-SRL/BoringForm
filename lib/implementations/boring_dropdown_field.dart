@@ -1,5 +1,6 @@
 import 'package:boring_form/field/boring_field.dart';
 import 'package:boring_form/field/boring_field_controller.dart';
+import 'package:boring_form/theme/boring_form_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +11,7 @@ class BoringDropDownField<T> extends BoringField<T> {
       required super.jsonKey,
       required this.items,
       required super.fieldController,
+      super.decoration,
       super.boringResponsiveSize,
       super.onChanged});
 
@@ -17,13 +19,19 @@ class BoringDropDownField<T> extends BoringField<T> {
 
   @override
   Widget builder(context, controller, child) {
-    return DropdownButtonFormField(
-      decoration: InputDecoration(errorText: controller.errorMessage),
-      onChanged: ((value) {
-        controller.value = value;
-      }),
-      value: controller.value,
-      items: items,
+    final style = BoringFormTheme.of(context).style;
+
+    return BoringField.boringFieldBuilder(
+      style,
+      decoration?.label,
+      child: DropdownButtonFormField(
+        decoration: getDecoration(context),
+        onChanged: ((value) {
+          controller.value = value;
+        }),
+        value: controller.value,
+        items: items,
+      ),
     );
   }
 

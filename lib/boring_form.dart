@@ -8,6 +8,7 @@ export 'section/boring_section_controller.dart';
 export 'theme/boring_form_style.dart';
 export 'theme/boring_form_theme.dart';
 export 'theme/boring_responsive_size.dart';
+export 'theme/boring_field_decoration.dart';
 
 export 'field/boring_field.dart';
 export 'field/boring_field_controller.dart';
