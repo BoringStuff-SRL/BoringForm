@@ -8,6 +8,12 @@ class BoringFieldController<T> extends ChangeNotifier {
   BoringFieldController({this.initialValue, this.validationFunction})
       : _value = initialValue;
 
+  BoringFieldController<T> copyWith(
+          {T? initialValue, String? Function(T? value)? validationFunction}) =>
+      BoringFieldController(
+          initialValue: initialValue ?? this.initialValue,
+          validationFunction: validationFunction ?? this.validationFunction);
+
   T? _value;
   T? initialValue;
   String? Function(T? value)? validationFunction;
