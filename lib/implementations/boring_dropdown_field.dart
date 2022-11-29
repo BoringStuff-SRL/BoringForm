@@ -1,12 +1,9 @@
 import 'package:boring_form/field/boring_field.dart';
-import 'package:boring_form/field/boring_field_controller.dart';
 import 'package:boring_form/theme/boring_form_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:provider/provider.dart';
 
 class BoringDropDownField<T> extends BoringField<T> {
-  BoringDropDownField(
+  const BoringDropDownField(
       {super.key,
       required super.jsonKey,
       required this.items,
