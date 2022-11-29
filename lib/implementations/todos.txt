@@ -1,0 +1,17 @@
+//TODO
+-----   date
+-----   datetime
+-----   time
+-----   password
+-----   simple text
+-----   decimal (price)
+-----   slider - range slider
+-----   email
+-----   dropdown
+//week picker
+//daterange (days, but also weeks)
+//dropdown [async]
+//radiobuttons
+//multichoiche [async]
+//autocomplete [async]
+//markdown
