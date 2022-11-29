@@ -28,8 +28,10 @@ abstract class BoringField<T> extends StatelessWidget {
 
   BoringFormTheme getTheme(BuildContext context) => BoringFormTheme.of(context);
 
+  BoringFormStyle getStyle(BuildContext context) => getTheme(context).style;
+
   InputDecoration getDecoration(BuildContext context) {
-    final style = getTheme(context).style;
+    final style = getStyle(context);
     return style.inputDecoration.copyWith(
         labelText: (style.labelOverField || decoration?.label == null)
             ? null
@@ -58,7 +60,7 @@ abstract class BoringField<T> extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 4, left: 4),
               child: Text(
-                label!,
+                label,
                 style: style.inputDecoration.labelStyle,
               ),
             ),
