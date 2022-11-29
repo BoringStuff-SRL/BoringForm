@@ -36,8 +36,8 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("FORMS EXAMPLE")),
-      body: FormExample(),
+      appBar: AppBar(title: const Text("FORMS EXAMPLE")),
+      body: SingleChildScrollView(child: FormExample()),
     );
   }
 }
