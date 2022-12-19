@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class BoringPickerField<T> extends BoringField<T> {
   BoringPickerField(
       {super.key,
-      required super.fieldController,
+      super.fieldController,
       super.onChanged,
       required super.jsonKey,
       required this.valueToString,

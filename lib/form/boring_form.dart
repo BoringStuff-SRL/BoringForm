@@ -15,7 +15,7 @@ class BoringForm extends BoringField<Map<String, dynamic>> {
       this.style,
       required this.fields})
       : assert(checkJsonKey(fields),
-            "Confict error: found duplicate jsonKeys in form"),
+            "Conflict error: found duplicate jsonKeys in form"),
         super(fieldController: fieldController, jsonKey: "") {
     addFieldsListeners();
   }

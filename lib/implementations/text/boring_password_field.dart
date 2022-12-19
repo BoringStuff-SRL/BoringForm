@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class BoringPasswordField extends BoringField<String> {
   BoringPasswordField(
       {super.key,
-      required super.fieldController,
+      super.fieldController,
       super.onChanged,
       required super.jsonKey,
       super.boringResponsiveSize,

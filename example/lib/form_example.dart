@@ -13,15 +13,14 @@ class FormExample extends StatelessWidget {
         BoringForm(
           style: BoringFormStyle(
               labelOverField: false,
-              inputDecoration: InputDecoration(
+              inputDecoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   disabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.zero)))),
           fieldController: c,
           fields: [
             BoringSection(
-              fieldController: BoringSectionController(),
-              title: "SEZIONE",
+              decoration: BoringFieldDecoration(label: "TITOLO"),
               collapsible: true,
               fields: [
                 BoringTextField(
@@ -44,7 +43,6 @@ class FormExample extends StatelessWidget {
                   suffixText: "WEWE",
                   counter: ((value) => Text(value ?? ""))),
               jsonKey: "text",
-              fieldController: BoringFieldController(),
             ),
             BoringDateField(
               fieldController:
@@ -58,7 +56,6 @@ class FormExample extends StatelessWidget {
             ),
             BoringSlider(
               decoration: BoringFieldDecoration(label: "SLIDER LABEL"),
-              fieldController: BoringFieldController(initialValue: 0.7),
               jsonKey: "slider",
               divisions: 9,
             ),

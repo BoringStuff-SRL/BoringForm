@@ -29,7 +29,7 @@ String dateTimeToString(DateTime? dt) =>
 class BoringDateField extends BoringPickerField<DateTime?> {
   BoringDateField(
       {super.key,
-      required super.fieldController,
+      super.fieldController,
       super.onChanged,
       required super.jsonKey,
       super.boringResponsiveSize,
@@ -47,7 +47,7 @@ class BoringDateField extends BoringPickerField<DateTime?> {
 class BoringTimeField extends BoringPickerField<TimeOfDay?> {
   BoringTimeField(
       {super.key,
-      required super.fieldController,
+      super.fieldController,
       super.onChanged,
       required super.jsonKey,
       super.boringResponsiveSize,
@@ -67,7 +67,7 @@ class BoringTimeField extends BoringPickerField<TimeOfDay?> {
 class BoringDateRangeField extends BoringPickerField<DateTimeRange?> {
   BoringDateRangeField(
       {super.key,
-      required super.fieldController,
+      super.fieldController,
       super.onChanged,
       required super.jsonKey,
       super.boringResponsiveSize,

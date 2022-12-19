@@ -7,13 +7,14 @@ import 'package:provider/provider.dart';
 import 'boring_field_controller.dart';
 
 abstract class BoringField<T> extends StatelessWidget {
-  const BoringField(
+  BoringField(
       {super.key,
-      required this.fieldController,
+      BoringFieldController<T>? fieldController,
       this.onChanged,
       this.decoration,
       this.boringResponsiveSize = const BoringResponsiveSize(),
-      required this.jsonKey});
+      required this.jsonKey})
+      : fieldController = fieldController ?? BoringFieldController<T>();
 
   final BoringFieldController<T> fieldController;
   final void Function(T?)? onChanged;

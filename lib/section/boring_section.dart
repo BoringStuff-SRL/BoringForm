@@ -10,10 +10,9 @@ import 'package:flutter/material.dart';
 class BoringSection extends BoringField<Map<String, dynamic>> {
   BoringSection(
       {super.key,
-      required this.fieldController,
+      BoringSectionController? sectionController,
       required super.jsonKey,
       super.onChanged,
-      String? title,
       this.collapsible = false,
       this.collapseOnHeaderTap,
       super.decoration,
@@ -23,12 +22,9 @@ class BoringSection extends BoringField<Map<String, dynamic>> {
         assert(collapseOnHeaderTap == null ||
             collapseOnHeaderTap == false ||
             collapsible),
-        super(fieldController: fieldController) {
+        super(fieldController: sectionController ?? BoringSectionController()) {
     addFieldsListeners();
   }
-
-  @override
-  covariant BoringSectionController fieldController;
 
   final List<BoringField> fields;
   final double fieldsPadding = 0.0;
@@ -51,7 +47,8 @@ class BoringSection extends BoringField<Map<String, dynamic>> {
 
   void addFieldsListeners() {
     for (var field in fields) {
-      fieldController.subControllers[field.jsonKey] = field.fieldController;
+      (fieldController as BoringSectionController)
+          .subControllers[field.jsonKey] = field.fieldController;
       field.fieldController.addListener(onAnyChanged);
     }
   }

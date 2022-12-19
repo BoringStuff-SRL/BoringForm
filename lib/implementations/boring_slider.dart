@@ -6,7 +6,7 @@ class BoringSlider extends BoringField<double> {
   BoringSlider(
       {super.key,
       required super.jsonKey,
-      required super.fieldController,
+      super.fieldController,
       super.decoration,
       super.boringResponsiveSize,
       this.min = 0,

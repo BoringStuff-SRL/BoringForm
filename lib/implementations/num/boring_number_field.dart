@@ -157,7 +157,7 @@ class NumberFormatter extends TextInputFormatter {
 class BoringNumberField extends BoringField<num> {
   BoringNumberField({
     super.key,
-    required super.fieldController,
+    super.fieldController,
     super.onChanged,
     required super.jsonKey,
     super.boringResponsiveSize,

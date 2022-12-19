@@ -3,11 +3,11 @@ import 'package:boring_form/theme/boring_form_theme.dart';
 import 'package:flutter/material.dart';
 
 class BoringDropDownField<T> extends BoringField<T> {
-  const BoringDropDownField(
+  BoringDropDownField(
       {super.key,
       required super.jsonKey,
       required this.items,
-      required super.fieldController,
+      super.fieldController,
       super.decoration,
       super.boringResponsiveSize,
       super.onChanged});
