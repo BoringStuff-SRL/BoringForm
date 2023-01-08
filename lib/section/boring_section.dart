@@ -16,6 +16,7 @@ class BoringSection extends BoringField<Map<String, dynamic>> {
       this.collapsible = false,
       this.collapseOnHeaderTap,
       super.decoration,
+      super.displayCondition,
       required this.fields})
       : assert(BoringForm.checkJsonKey(fields),
             "Confict error: found duplicate jsonKeys in section with jsonKey '$jsonKey'"),
