@@ -12,6 +12,7 @@ class BoringPickerField<T> extends BoringField<T> {
       required this.valueToString,
       required this.showPicker,
       super.boringResponsiveSize,
+      super.displayCondition,
       this.updateValueOnDismiss = false,
       super.decoration});
 

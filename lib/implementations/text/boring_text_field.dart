@@ -9,6 +9,7 @@ class BoringTextField extends BoringField<String> {
       super.fieldController,
       super.onChanged,
       required super.jsonKey,
+      super.displayCondition,
       super.boringResponsiveSize,
       super.decoration});
 

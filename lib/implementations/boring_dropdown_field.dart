@@ -9,6 +9,7 @@ class BoringDropDownField<T> extends BoringField<T> {
       required this.items,
       super.fieldController,
       super.decoration,
+      super.displayCondition,
       super.boringResponsiveSize,
       super.onChanged});
 

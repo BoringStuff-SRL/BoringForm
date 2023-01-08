@@ -7,6 +7,7 @@ class BoringPhoneNumberField extends BoringTextRegExpField {
       super.onChanged,
       required super.jsonKey,
       super.boringResponsiveSize,
+      super.displayCondition,
       required String invalidPhoneMessage,
       super.decoration})
       : super(

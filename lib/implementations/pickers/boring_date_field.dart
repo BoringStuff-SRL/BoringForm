@@ -34,6 +34,7 @@ class BoringDateField extends BoringPickerField<DateTime?> {
     required super.jsonKey,
     super.boringResponsiveSize,
     super.updateValueOnDismiss,
+    super.displayCondition,
     super.decoration,
     DateTime? initialDate,
     required DateTime firstlDate,
@@ -55,6 +56,7 @@ class BoringTimeField extends BoringPickerField<TimeOfDay?> {
     required super.jsonKey,
     super.boringResponsiveSize,
     super.updateValueOnDismiss,
+    super.displayCondition,
     super.decoration,
     TimeOfDay? initialTime,
   }) : super(
@@ -77,6 +79,7 @@ class BoringDateRangeField extends BoringPickerField<DateTimeRange?> {
     super.boringResponsiveSize,
     super.updateValueOnDismiss,
     super.decoration,
+    super.displayCondition,
     required DateTime lastDate,
     required DateTime firstDate,
   }) : super(

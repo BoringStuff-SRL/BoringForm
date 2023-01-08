@@ -165,6 +165,7 @@ class BoringNumberField extends BoringField<num> {
     this.decimalSeparator = ".",
     this.thousandsSeparator = ",",
     this.decimalPlaces,
+    super.displayCondition,
   });
 
   final TextEditingController textEditingController = TextEditingController();

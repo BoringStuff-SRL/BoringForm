@@ -11,6 +11,7 @@ class BoringSlider extends BoringField<double> {
       super.boringResponsiveSize,
       this.min = 0,
       this.max = 1,
+      super.displayCondition,
       this.showValueLabel = true,
       this.divisions,
       super.onChanged});
