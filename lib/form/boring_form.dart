@@ -73,7 +73,6 @@ class BoringForm extends StatelessWidget {
     addFieldsListeners();
   }
 
-  @override
   Widget builder(context, controller, child) {
     return BoringFormTheme(
       style: style ?? BoringFormStyle(),
