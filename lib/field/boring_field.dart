@@ -13,7 +13,8 @@ abstract class BoringField<T> extends StatelessWidget {
       this.onChanged,
       this.decoration,
       this.boringResponsiveSize = const BoringResponsiveSize(),
-      required this.jsonKey})
+      required this.jsonKey,
+      this.displayCondition})
       : fieldController = fieldController ?? BoringFieldController<T>();
 
   final BoringFieldController<T> fieldController;
@@ -21,6 +22,7 @@ abstract class BoringField<T> extends StatelessWidget {
   final String jsonKey;
   final BoringResponsiveSize boringResponsiveSize;
   final BoringFieldDecoration? decoration;
+  final bool Function(Map<String, dynamic> formValue)? displayCondition;
 
   void _onChangedValue() {
     onChanged?.call(fieldController.value);

@@ -1,23 +1,25 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, overridden_fields, must_be_immutable
 import 'package:boring_form/field/boring_field.dart';
+import 'package:boring_form/field/filtered_fields_provider.dart';
 import 'package:boring_form/theme/boring_form_style.dart';
 import 'package:boring_form/theme/boring_form_theme.dart';
 import 'package:flutter/material.dart';
 
 import 'package:boring_form/form/boring_form_controller.dart';
+import 'package:provider/provider.dart';
 
 class BoringForm extends BoringField<Map<String, dynamic>> {
   BoringForm(
       {super.key,
-      required this.fieldController,
+      required this.formController,
       super.onChanged,
       this.title,
       this.style,
       required this.fields})
       : assert(checkJsonKey(fields),
             "Conflict error: found duplicate jsonKeys in form"),
-        super(fieldController: fieldController, jsonKey: "") {
-    addFieldsListeners();
+        super(fieldController: formController, jsonKey: "") {
+    init();
   }
 
   static bool checkJsonKey(List<BoringField> fields) {
@@ -32,7 +34,7 @@ class BoringForm extends BoringField<Map<String, dynamic>> {
   }
 
   @override
-  covariant BoringFormController fieldController;
+  covariant BoringFormController formController;
 
   final BoringFormStyle? style;
 
@@ -40,6 +42,7 @@ class BoringForm extends BoringField<Map<String, dynamic>> {
   final double fieldsPadding = 8.0;
   final double sectionPadding = 8.0;
   final String? title;
+  final fieldsListProvider = FieldsListProvider();
 
   void updateControllerValue() {
     Map<String, dynamic> mappedValues = {};
@@ -47,18 +50,28 @@ class BoringForm extends BoringField<Map<String, dynamic>> {
       mappedValues[field.jsonKey] = field.fieldController.value;
     }
     fieldController.setValueSilently(mappedValues);
-    onChanged?.call(mappedValues);
+    fieldsListProvider.fields = filterFields();
   }
+
+  List<BoringField> filterFields() => fields
+      .where((element) =>
+          element.displayCondition?.call(formController.value ?? {}) ?? true)
+      .toList();
 
   void onAnyChanged() {
     updateControllerValue();
+    onChanged?.call(fieldController.value);
   }
 
   void addFieldsListeners() {
     for (var field in fields) {
-      fieldController.subControllers[field.jsonKey] = field.fieldController;
+      formController.subControllers[field.jsonKey] = field.fieldController;
       field.fieldController.addListener(onAnyChanged);
     }
+  }
+
+  void init() {
+    addFieldsListeners();
   }
 
   @override
@@ -73,7 +86,14 @@ class BoringForm extends BoringField<Map<String, dynamic>> {
               title!,
               style: style?.formTitleStyle,
             ),
-          ...fields,
+          ChangeNotifierProvider(
+              create: (context) => fieldsListProvider,
+              child: Consumer<FieldsListProvider>(
+                builder: (context, value, _) => Column(
+                  children: value.fields,
+                ),
+              )),
+          //...filteredFields(),
         ],
       ),
     );

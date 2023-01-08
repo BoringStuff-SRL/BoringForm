@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import "package:boring_form/boring_form.dart";
+import 'package:boring_form/utils/datetime_extnesions.dart';
 
 class FormExample extends StatelessWidget {
   FormExample({super.key});
@@ -17,9 +18,12 @@ class FormExample extends StatelessWidget {
                   border: OutlineInputBorder(),
                   disabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.zero)))),
-          fieldController: c,
+          formController: c,
           fields: [
             BoringSection(
+              displayCondition: (formValue) =>
+                  (formValue["time"] as TimeOfDay) >
+                  TimeOfDay(hour: 16, minute: 30),
               decoration: BoringFieldDecoration(label: "TITOLO"),
               collapsible: true,
               fields: [
