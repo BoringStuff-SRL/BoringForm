@@ -27,36 +27,40 @@ String dateTimeToString(DateTime? dt) =>
     dt != null ? "${dt.day}/${dt.month}/${dt.year}" : "";
 
 class BoringDateField extends BoringPickerField<DateTime?> {
-  BoringDateField(
-      {super.key,
-      super.fieldController,
-      super.onChanged,
-      required super.jsonKey,
-      super.boringResponsiveSize,
-      super.updateValueOnDismiss,
-      super.decoration})
-      : super(
+  BoringDateField({
+    super.key,
+    super.fieldController,
+    super.onChanged,
+    required super.jsonKey,
+    super.boringResponsiveSize,
+    super.updateValueOnDismiss,
+    super.decoration,
+    DateTime? initialDate,
+    required DateTime firstlDate,
+    required DateTime lastlDate,
+  }) : super(
             showPicker: (context) async => await showDatePicker(
                 context: context,
-                initialDate: DateTime.now(),
-                firstDate: DateTime(2022),
-                lastDate: DateTime(2023)),
+                initialDate: initialDate ?? DateTime.now(),
+                firstDate: firstlDate,
+                lastDate: lastlDate),
             valueToString: dateTimeToString);
 }
 
 class BoringTimeField extends BoringPickerField<TimeOfDay?> {
-  BoringTimeField(
-      {super.key,
-      super.fieldController,
-      super.onChanged,
-      required super.jsonKey,
-      super.boringResponsiveSize,
-      super.updateValueOnDismiss,
-      super.decoration})
-      : super(
+  BoringTimeField({
+    super.key,
+    super.fieldController,
+    super.onChanged,
+    required super.jsonKey,
+    super.boringResponsiveSize,
+    super.updateValueOnDismiss,
+    super.decoration,
+    TimeOfDay? initialTime,
+  }) : super(
             showPicker: (context) async => await showTimePicker(
                   context: context,
-                  initialTime: TimeOfDay.now(),
+                  initialTime: initialTime ?? TimeOfDay.now(),
                 ),
             valueToString: (value) => value == null
                 ? ""
@@ -65,19 +69,21 @@ class BoringTimeField extends BoringPickerField<TimeOfDay?> {
 
 //TODO showDateRangePicker ALSO INSIDE DIALOG (not only full screen)
 class BoringDateRangeField extends BoringPickerField<DateTimeRange?> {
-  BoringDateRangeField(
-      {super.key,
-      super.fieldController,
-      super.onChanged,
-      required super.jsonKey,
-      super.boringResponsiveSize,
-      super.updateValueOnDismiss,
-      super.decoration})
-      : super(
+  BoringDateRangeField({
+    super.key,
+    super.fieldController,
+    super.onChanged,
+    required super.jsonKey,
+    super.boringResponsiveSize,
+    super.updateValueOnDismiss,
+    super.decoration,
+    required DateTime lastDate,
+    required DateTime firstDate,
+  }) : super(
             showPicker: (context) async => await showDateRangePicker(
                   context: context,
-                  lastDate: DateTime.now(),
-                  firstDate: DateTime(2022),
+                  lastDate: lastDate,
+                  firstDate: firstDate,
                 ),
             valueToString: (value) => value == null
                 ? ""

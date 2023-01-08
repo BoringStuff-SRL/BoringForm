@@ -48,6 +48,8 @@ class FormExample extends StatelessWidget {
               fieldController:
                   BoringFieldController(initialValue: DateTime.now()),
               jsonKey: 'date',
+              firstlDate: DateTime(2022),
+              lastlDate: DateTime(2023),
             ),
             BoringTimeField(
               fieldController:
@@ -82,6 +84,8 @@ class FormExample extends StatelessWidget {
             BoringDateRangeField(
               fieldController: BoringFieldController(),
               jsonKey: "daterage",
+              lastDate: DateTime(2022),
+              firstDate: DateTime(2023),
             ),
             BoringEmailField(
               fieldController: BoringFieldController(),
