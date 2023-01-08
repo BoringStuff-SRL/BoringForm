@@ -8,17 +8,16 @@ import 'package:flutter/material.dart';
 import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:provider/provider.dart';
 
-class BoringForm extends BoringField<Map<String, dynamic>> {
+class BoringForm extends StatelessWidget {
   BoringForm(
       {super.key,
       required this.formController,
-      super.onChanged,
+      this.onChanged,
       this.title,
       this.style,
       required this.fields})
       : assert(checkJsonKey(fields),
-            "Conflict error: found duplicate jsonKeys in form"),
-        super(fieldController: formController, jsonKey: "") {
+            "Conflict error: found duplicate jsonKeys in form") {
     init();
   }
 
@@ -33,11 +32,9 @@ class BoringForm extends BoringField<Map<String, dynamic>> {
     return true;
   }
 
-  @override
-  covariant BoringFormController formController;
-
+  final void Function(Map<String, dynamic>?)? onChanged;
+  final BoringFormController formController;
   final BoringFormStyle? style;
-
   final List<BoringField> fields;
   final double fieldsPadding = 8.0;
   final double sectionPadding = 8.0;
@@ -49,18 +46,20 @@ class BoringForm extends BoringField<Map<String, dynamic>> {
     for (var field in fields) {
       mappedValues[field.jsonKey] = field.fieldController.value;
     }
-    fieldController.setValueSilently(mappedValues);
-    fieldsListProvider.fields = filterFields();
+    formController.setValueSilently(mappedValues);
+    fieldsListProvider.fields = filterFields(fields, formController.value);
   }
 
-  List<BoringField> filterFields() => fields
-      .where((element) =>
-          element.displayCondition?.call(formController.value ?? {}) ?? true)
-      .toList();
+  static List<BoringField> filterFields(
+          List<BoringField> fields, Map<String, dynamic>? checkValue) =>
+      fields
+          .where((element) =>
+              element.displayCondition?.call(checkValue ?? {}) ?? true)
+          .toList();
 
   void onAnyChanged() {
     updateControllerValue();
-    onChanged?.call(fieldController.value);
+    onChanged?.call(formController.value);
   }
 
   void addFieldsListeners() {
@@ -99,7 +98,23 @@ class BoringForm extends BoringField<Map<String, dynamic>> {
     );
   }
 
+  void _onChangedValue() {
+    onChanged?.call(formController.value);
+    onValueChanged(formController.value);
+  }
+
   @override
+  Widget build(BuildContext context) {
+    formController.addListener(_onChangedValue);
+    onValueChanged(formController.value);
+
+    return ChangeNotifierProvider(
+        create: (context) => formController,
+        child: Consumer<BoringFormController>(
+          builder: builder,
+        ));
+  }
+
   void onValueChanged(Map<String, dynamic>? newValue) {
     for (var field in fields) {
       field.fieldController.value =
