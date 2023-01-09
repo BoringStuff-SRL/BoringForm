@@ -1,11 +1,15 @@
 // ignore_for_file: overridden_fields
 
+import 'package:boring_form/field/filtered_fields_provider.dart';
 import 'package:boring_form/form/boring_form.dart';
 import 'package:boring_form/field/boring_field.dart';
+import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_form/section/boring_section_controller.dart';
 import 'package:boring_form/theme/boring_form_theme.dart';
 import 'package:boring_form/utils/expansion_card.dart';
+import 'package:boring_form/utils/value_holder.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class BoringSection extends BoringField<Map<String, dynamic>> {
   BoringSection(
@@ -24,7 +28,7 @@ class BoringSection extends BoringField<Map<String, dynamic>> {
             collapseOnHeaderTap == false ||
             collapsible),
         super(fieldController: sectionController ?? BoringSectionController()) {
-    addFieldsListeners();
+    init();
   }
 
   final List<BoringField> fields;
@@ -32,48 +36,81 @@ class BoringSection extends BoringField<Map<String, dynamic>> {
   final double sectionPadding = 0;
   final bool collapsible;
   final bool? collapseOnHeaderTap;
+  final fieldsListProvider = FieldsListProvider();
+  final contextHolder = ValueHolder<BuildContext>();
 
-  void updateControllerValue() {
-    Map<String, dynamic> mappedValues = {};
-    for (var field in fields) {
-      mappedValues[field.jsonKey] = field.fieldController.value;
+  // void updateControllerValue() {
+  //   Map<String, dynamic> mappedValues = {};
+  //   for (var field in fields) {
+  //     mappedValues[field.jsonKey] = field.fieldController.value;
+  //   }
+  //   fieldController.setValueSilently(mappedValues);
+  // }
+
+  void _onAnyChanged() {
+    //updateControllerValue();
+    _updateFilteredFieldsList();
+    onChanged?.call(fieldController.value);
+    //fieldController.notifyListeners();
+  }
+
+  void _updateFilteredFieldsList() {
+    if (contextHolder.value != null) {
+      BoringFormController formController = Provider.of<BoringFormController>(
+          contextHolder.value!,
+          listen: false);
+      fieldsListProvider.notifyIfDifferentFields(
+          fields, formController.value ?? {});
     }
-    fieldController.setValueSilently(mappedValues);
-    onChanged?.call(mappedValues);
   }
 
-  void onAnyChanged() {
-    updateControllerValue();
+  void _formChanged() {
+    _updateFilteredFieldsList();
   }
 
-  void addFieldsListeners() {
+  void _addFieldsListenersAndSyncControllers() {
     for (var field in fields) {
+      //so fieldController.value get all values from fields controllers
       (fieldController as BoringSectionController)
           .subControllers[field.jsonKey] = field.fieldController;
-      field.fieldController.addListener(onAnyChanged);
+
+      //so any change in any fields triggers the onAnyChanges
+      field.fieldController.addListener(_onAnyChanged);
     }
+  }
+
+  void init() {
+    _addFieldsListenersAndSyncControllers();
   }
 
   Widget _sectionContent() => LayoutBuilder(
-        builder: (context, constraints) => Wrap(
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: List.generate(fields.length, (index) {
-            return FractionallySizedBox(
-              widthFactor: fields[index]
-                      .boringResponsiveSize
-                      .breakpointValue(constraints.maxWidth) /
-                  12,
-              child: Padding(
-                padding: EdgeInsets.all(fieldsPadding),
-                child: fields[index],
-              ),
-            );
-          }),
-        ),
+        builder: (context, constraints) => ChangeNotifierProvider(
+            create: (context) => fieldsListProvider,
+            child: Consumer<FieldsListProvider>(
+                builder: (context, value, _) => Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: List.generate(fields.length, (index) {
+                        return Offstage(
+                          offstage:
+                              !fieldsListProvider.isFieldOnStage(fields[index]),
+                          child: FractionallySizedBox(
+                            widthFactor: fields[index]
+                                    .boringResponsiveSize
+                                    .breakpointValue(constraints.maxWidth) /
+                                12,
+                            child: Padding(
+                              padding: EdgeInsets.all(fieldsPadding),
+                              child: fields[index],
+                            ),
+                          ),
+                        );
+                      }),
+                    ))),
       );
 
   @override
   Widget builder(context, controller, child) {
+    _setFormContext(context);
     if (decoration?.label != null) {
       return Padding(
         padding: EdgeInsets.all(sectionPadding),
@@ -101,6 +138,17 @@ class BoringSection extends BoringField<Map<String, dynamic>> {
       );
     }
     return _sectionContent();
+  }
+
+  //Updates the context on every build
+  //to retrieve the form controller
+  void _setFormContext(BuildContext context) {
+    BoringFormController formController =
+        Provider.of<BoringFormController>(context);
+    formController.removeListener(_formChanged);
+    formController.addListener(_formChanged);
+
+    contextHolder.value = context;
   }
 
   @override

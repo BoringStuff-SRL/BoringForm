@@ -3,15 +3,19 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class FieldsListProvider extends ChangeNotifier {
-  List<BoringField> _fields = [];
+  final Map<String, bool> _fieldsOffStage = {};
+  bool isFieldOnStage(BoringField field) =>
+      !(_fieldsOffStage[field.jsonKey] ?? false);
 
-  List<BoringField> get fields => _fields;
-
-  set fields(List<BoringField> fields) {
-    Set<String> oldKeys = _fields.map((e) => e.jsonKey).toSet();
-    Set<String> newKeys = fields.map((e) => e.jsonKey).toSet();
-    if (!setEquals(oldKeys, newKeys)) {
-      _fields = fields;
+  void notifyIfDifferentFields(
+      List<BoringField> fields, Map<String, dynamic> map) {
+    bool diff = false;
+    for (var field in fields) {
+      bool onStage = field.displayCondition?.call(map) ?? true;
+      diff = diff || isFieldOnStage(field) != onStage;
+      _fieldsOffStage[field.jsonKey] = !onStage;
+    }
+    if (diff) {
       notifyListeners();
     }
   }

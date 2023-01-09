@@ -21,13 +21,14 @@ class FormExample extends StatelessWidget {
           formController: c,
           fields: [
             BoringSection(
-              displayCondition: (formValue) =>
-                  (formValue["time"] as TimeOfDay) >
-                  TimeOfDay(hour: 16, minute: 30),
+              // displayCondition: (formValue) =>
+              //     (formValue["slider"] ?? 0 as double) > 0.2,
               decoration: BoringFieldDecoration(label: "TITOLO"),
               collapsible: true,
               fields: [
                 BoringTextField(
+                  displayCondition: (formValue) =>
+                      (formValue["slider"] as double) < 0.2,
                   decoration: BoringFieldDecoration(label: "Ciao"),
                   jsonKey: "text",
                   fieldController: BoringFieldController(

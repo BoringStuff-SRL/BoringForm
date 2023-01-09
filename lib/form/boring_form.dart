@@ -41,36 +41,43 @@ class BoringForm extends StatelessWidget {
   final String? title;
   final fieldsListProvider = FieldsListProvider();
 
-  void updateControllerValue() {
-    Map<String, dynamic> mappedValues = {};
-    for (var field in fields) {
-      mappedValues[field.jsonKey] = field.fieldController.value;
-    }
-    formController.setValueSilently(mappedValues);
-    fieldsListProvider.fields = filterFields(fields, formController.value);
+  void _updateFilteredFieldsList() {
+    fieldsListProvider.notifyIfDifferentFields(
+        fields, formController.value ?? {});
   }
 
-  static List<BoringField> filterFields(
-          List<BoringField> fields, Map<String, dynamic>? checkValue) =>
-      fields
-          .where((element) =>
-              element.displayCondition?.call(checkValue ?? {}) ?? true)
-          .toList();
-
-  void onAnyChanged() {
-    updateControllerValue();
+  void _onAnyChanged() {
+    print("SOMETHING CHANGED");
+    //updateControllerValue();
+    _updateFilteredFieldsList();
     onChanged?.call(formController.value);
+    formController.notifyListeners();
   }
 
-  void addFieldsListeners() {
+  void _addFieldsListenersAndSyncControllers() {
     for (var field in fields) {
+      //so formController.value get all values from fields controllers
       formController.subControllers[field.jsonKey] = field.fieldController;
-      field.fieldController.addListener(onAnyChanged);
+
+      //so any change in any fields triggers the onAnyChanges
+      field.fieldController.addListener(_onAnyChanged);
     }
   }
+
+  //TODO syncs all fields values with the one in the newValue
+  //use this method to set a value Globally for the form
+  // void _syncFieldsValue(Map<String, dynamic>? newValue) {
+  //   for (var field in fields) {
+  //     field.fieldController.value =
+  //         (newValue != null && newValue.containsKey(field.jsonKey))
+  //             ? newValue[field.jsonKey]
+  //             : null;
+  //   }
+  // }
 
   void init() {
-    addFieldsListeners();
+    _addFieldsListenersAndSyncControllers();
+    _updateFilteredFieldsList();
   }
 
   Widget builder(context, controller, child) {
@@ -88,7 +95,12 @@ class BoringForm extends StatelessWidget {
               create: (context) => fieldsListProvider,
               child: Consumer<FieldsListProvider>(
                 builder: (context, value, _) => Column(
-                  children: value.fields,
+                  children: fields
+                      .map((field) => Offstage(
+                            child: field,
+                            offstage: !value.isFieldOnStage(field),
+                          ))
+                      .toList(),
                 ),
               )),
           //...filteredFields(),
@@ -97,29 +109,12 @@ class BoringForm extends StatelessWidget {
     );
   }
 
-  void _onChangedValue() {
-    onChanged?.call(formController.value);
-    onValueChanged(formController.value);
-  }
-
   @override
   Widget build(BuildContext context) {
-    formController.addListener(_onChangedValue);
-    onValueChanged(formController.value);
-
     return ChangeNotifierProvider(
         create: (context) => formController,
         child: Consumer<BoringFormController>(
           builder: builder,
         ));
-  }
-
-  void onValueChanged(Map<String, dynamic>? newValue) {
-    for (var field in fields) {
-      field.fieldController.value =
-          (newValue != null && newValue.containsKey(field.jsonKey))
-              ? newValue[field.jsonKey]
-              : null;
-    }
   }
 }
