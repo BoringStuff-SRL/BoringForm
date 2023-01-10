@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, overridden_fields, must_be_immutable
 import 'package:boring_form/field/boring_field.dart';
+import 'package:boring_form/field/field_change_notification.dart';
 import 'package:boring_form/field/filtered_fields_provider.dart';
 import 'package:boring_form/theme/boring_form_style.dart';
 import 'package:boring_form/theme/boring_form_theme.dart';
@@ -47,20 +48,15 @@ class BoringForm extends StatelessWidget {
   }
 
   void _onAnyChanged() {
-    print("SOMETHING CHANGED");
-    //updateControllerValue();
     _updateFilteredFieldsList();
     onChanged?.call(formController.value);
-    formController.notifyListeners();
+    formController.sendNotification();
   }
 
-  void _addFieldsListenersAndSyncControllers() {
+  void _addFieldsSubcontrollers() {
     for (var field in fields) {
       //so formController.value get all values from fields controllers
       formController.subControllers[field.jsonKey] = field.fieldController;
-
-      //so any change in any fields triggers the onAnyChanges
-      field.fieldController.addListener(_onAnyChanged);
     }
   }
 
@@ -76,7 +72,7 @@ class BoringForm extends StatelessWidget {
   // }
 
   void init() {
-    _addFieldsListenersAndSyncControllers();
+    _addFieldsSubcontrollers();
     _updateFilteredFieldsList();
   }
 
@@ -91,18 +87,26 @@ class BoringForm extends StatelessWidget {
               title!,
               style: style?.formTitleStyle,
             ),
-          ChangeNotifierProvider(
-              create: (context) => fieldsListProvider,
-              child: Consumer<FieldsListProvider>(
-                builder: (context, value, _) => Column(
-                  children: fields
-                      .map((field) => Offstage(
-                            child: field,
-                            offstage: !value.isFieldOnStage(field),
-                          ))
-                      .toList(),
-                ),
-              )),
+          NotificationListener<FieldChangeNotification>(
+            onNotification: (notification) {
+              _onAnyChanged();
+              return true;
+            },
+            child: ChangeNotifierProvider(
+                create: (context) => fieldsListProvider,
+                child: Consumer<FieldsListProvider>(
+                  builder: (context, value, _) {
+                    return Column(
+                      children: fields
+                          .map((field) => Offstage(
+                                offstage: !value.isFieldOnStage(field),
+                                child: field,
+                              ))
+                          .toList(),
+                    );
+                  },
+                )),
+          ),
           //...filteredFields(),
         ],
       ),

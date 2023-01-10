@@ -1,5 +1,6 @@
 // ignore_for_file: overridden_fields
 
+import 'package:boring_form/field/field_change_notification.dart';
 import 'package:boring_form/field/filtered_fields_provider.dart';
 import 'package:boring_form/form/boring_form.dart';
 import 'package:boring_form/field/boring_field.dart';
@@ -37,21 +38,10 @@ class BoringSection extends BoringField<Map<String, dynamic>> {
   final bool collapsible;
   final bool? collapseOnHeaderTap;
   final fieldsListProvider = FieldsListProvider();
-  final contextHolder = ValueHolder<BuildContext>();
-
-  // void updateControllerValue() {
-  //   Map<String, dynamic> mappedValues = {};
-  //   for (var field in fields) {
-  //     mappedValues[field.jsonKey] = field.fieldController.value;
-  //   }
-  //   fieldController.setValueSilently(mappedValues);
-  // }
 
   void _onAnyChanged() {
-    //updateControllerValue();
     _updateFilteredFieldsList();
     onChanged?.call(fieldController.value);
-    //fieldController.notifyListeners();
   }
 
   void _updateFilteredFieldsList() {
@@ -68,44 +58,48 @@ class BoringSection extends BoringField<Map<String, dynamic>> {
     _updateFilteredFieldsList();
   }
 
-  void _addFieldsListenersAndSyncControllers() {
+  void _addFieldsSubcontrollers() {
     for (var field in fields) {
       //so fieldController.value get all values from fields controllers
       (fieldController as BoringSectionController)
           .subControllers[field.jsonKey] = field.fieldController;
-
-      //so any change in any fields triggers the onAnyChanges
-      field.fieldController.addListener(_onAnyChanged);
     }
   }
 
   void init() {
-    _addFieldsListenersAndSyncControllers();
+    _addFieldsSubcontrollers();
   }
 
   Widget _sectionContent() => LayoutBuilder(
-        builder: (context, constraints) => ChangeNotifierProvider(
-            create: (context) => fieldsListProvider,
-            child: Consumer<FieldsListProvider>(
-                builder: (context, value, _) => Wrap(
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: List.generate(fields.length, (index) {
-                        return Offstage(
-                          offstage:
-                              !fieldsListProvider.isFieldOnStage(fields[index]),
-                          child: FractionallySizedBox(
-                            widthFactor: fields[index]
-                                    .boringResponsiveSize
-                                    .breakpointValue(constraints.maxWidth) /
-                                12,
-                            child: Padding(
-                              padding: EdgeInsets.all(fieldsPadding),
-                              child: fields[index],
+        builder: (context, constraints) =>
+            NotificationListener<FieldChangeNotification>(
+          onNotification: (notification) {
+            _onAnyChanged();
+            return false;
+          },
+          child: ChangeNotifierProvider(
+              create: (context) => fieldsListProvider,
+              child: Consumer<FieldsListProvider>(
+                  builder: (context, value, _) => Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: List.generate(fields.length, (index) {
+                          return Offstage(
+                            offstage: !fieldsListProvider
+                                .isFieldOnStage(fields[index]),
+                            child: FractionallySizedBox(
+                              widthFactor: fields[index]
+                                      .boringResponsiveSize
+                                      .breakpointValue(constraints.maxWidth) /
+                                  12,
+                              child: Padding(
+                                padding: EdgeInsets.all(fieldsPadding),
+                                child: fields[index],
+                              ),
                             ),
-                          ),
-                        );
-                      }),
-                    ))),
+                          );
+                        }),
+                      ))),
+        ),
       );
 
   @override

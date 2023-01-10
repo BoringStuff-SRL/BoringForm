@@ -1,7 +1,9 @@
 import 'package:boring_form/boring_form.dart';
+import 'package:boring_form/field/field_change_notification.dart';
 import 'package:boring_form/theme/boring_field_decoration.dart';
 import 'package:boring_form/theme/boring_form_theme.dart';
 import 'package:boring_form/theme/boring_responsive_size.dart';
+import 'package:boring_form/utils/value_holder.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'boring_field_controller.dart';
@@ -23,10 +25,13 @@ abstract class BoringField<T> extends StatelessWidget {
   final BoringResponsiveSize boringResponsiveSize;
   final BoringFieldDecoration? decoration;
   final bool Function(Map<String, dynamic> formValue)? displayCondition;
-
+  final contextHolder = ValueHolder<BuildContext>();
   void _onChangedValue() {
     onChanged?.call(fieldController.value);
     onValueChanged(fieldController.value);
+    if (contextHolder.value != null) {
+      FieldChangeNotification().dispatch(contextHolder.value);
+    }
   }
 
   BoringFormTheme getTheme(BuildContext context) => BoringFormTheme.of(context);
@@ -83,9 +88,10 @@ abstract class BoringField<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //TODO can this be done in the constructor?
     fieldController.addListener(_onChangedValue);
-    onValueChanged(fieldController.value);
-
+    //onValueChanged(fieldController.value);
+    contextHolder.value = context;
     return ChangeNotifierProvider(
         create: (context) => fieldController,
         child: Consumer<BoringFieldController<T>>(

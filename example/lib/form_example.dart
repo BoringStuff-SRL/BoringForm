@@ -12,6 +12,7 @@ class FormExample extends StatelessWidget {
     return Column(
       children: [
         BoringForm(
+          onChanged: (p0) => print("->FORM CHANGED: $p0"),
           style: BoringFormStyle(
               labelOverField: false,
               inputDecoration: const InputDecoration(
@@ -21,11 +22,27 @@ class FormExample extends StatelessWidget {
           formController: c,
           fields: [
             BoringSection(
+              onChanged: (p0) => print("->SECTION CHANGED: $p0"),
               // displayCondition: (formValue) =>
               //     (formValue["slider"] ?? 0 as double) > 0.2,
               decoration: BoringFieldDecoration(label: "TITOLO"),
               collapsible: true,
               fields: [
+                BoringSlider(
+                  decoration: BoringFieldDecoration(label: "SLIDER LABEL"),
+                  jsonKey: "slider",
+                  divisions: 9,
+                ),
+                BoringTextField(
+                  displayCondition: (formValue) =>
+                      (formValue["slider"] ?? 0 as double) < 0.2,
+                  decoration: BoringFieldDecoration(label: "Ciao"),
+                  jsonKey: "text1",
+                  fieldController: BoringFieldController(
+                    validationFunction: (value) =>
+                        (value == null || value.isEmpty) ? "ERROR" : null,
+                  ),
+                ),
                 BoringTextField(
                   displayCondition: (formValue) =>
                       (formValue["slider"] ?? 0 as double) < 0.2,

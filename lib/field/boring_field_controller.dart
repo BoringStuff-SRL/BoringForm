@@ -30,6 +30,8 @@ class BoringFieldController<T> extends ChangeNotifier {
     _value = newValue;
   }
 
+  void sendNotification() => notifyListeners();
+
   bool get isValid => errorMessage == null;
 
   void reset() {
