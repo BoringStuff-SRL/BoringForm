@@ -28,7 +28,7 @@ class FormExample extends StatelessWidget {
               fields: [
                 BoringTextField(
                   displayCondition: (formValue) =>
-                      (formValue["slider"] as double) < 0.2,
+                      (formValue["slider"] ?? 0 as double) < 0.2,
                   decoration: BoringFieldDecoration(label: "Ciao"),
                   jsonKey: "text",
                   fieldController: BoringFieldController(
@@ -52,8 +52,12 @@ class FormExample extends StatelessWidget {
             BoringDateField(
               fieldController: BoringFieldController(),
               jsonKey: 'date',
-              firstlDate: DateTime(2000),
-              lastlDate: DateTime(2030),
+              firstlDate: DateTime(1940),
+              lastlDate: DateTime(2011),
+            ),
+            BoringPhoneNumberField(
+              invalidPhoneMessage: 'Phone not valid',
+              jsonKey: "emailf",
             ),
             BoringTimeField(
               fieldController:

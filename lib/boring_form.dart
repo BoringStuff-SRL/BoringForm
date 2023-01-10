@@ -19,6 +19,7 @@ export 'implementations/text/boring_text_regex.dart';
 export 'implementations/text/boring_password_field.dart';
 export 'implementations/num/boring_number_field.dart';
 export 'implementations/text/boring_email_field.dart';
+export 'implementations/text/boring_phone_number_field.dart';
 
 export 'implementations/pickers/boring_date_field.dart';
 export 'implementations/boring_slider.dart';
