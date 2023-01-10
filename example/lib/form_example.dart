@@ -50,11 +50,10 @@ class FormExample extends StatelessWidget {
               jsonKey: "text",
             ),
             BoringDateField(
-              fieldController:
-                  BoringFieldController(initialValue: DateTime.now()),
+              fieldController: BoringFieldController(),
               jsonKey: 'date',
-              firstlDate: DateTime(2022),
-              lastlDate: DateTime(2023),
+              firstlDate: DateTime(2000),
+              lastlDate: DateTime(2030),
             ),
             BoringTimeField(
               fieldController:
@@ -99,7 +98,7 @@ class FormExample extends StatelessWidget {
             )
           ],
         ),
-        ElevatedButton(onPressed: () => print(c.value), child: Text("VALUE"))
+        ElevatedButton(onPressed: () => print(c.value), child: Text("VALUE")),
       ],
     );
   }
