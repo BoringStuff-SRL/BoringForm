@@ -28,9 +28,10 @@ abstract class BoringField<T> extends StatelessWidget {
   final BoringFieldDecoration? decoration;
   final bool Function(Map<String, dynamic> formValue)? displayCondition;
   final contextHolder = ValueHolder<BuildContext>();
+
   void _onChangedValue() {
-    onChanged?.call(fieldController.value);
     onValueChanged(fieldController.value);
+    onChanged?.call(fieldController.value);
     if (contextHolder.value != null) {
       FieldChangeNotification().dispatch(contextHolder.value);
     }

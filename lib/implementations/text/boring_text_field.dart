@@ -13,19 +13,25 @@ class BoringTextField extends BoringField<String> {
       super.boringResponsiveSize,
       super.decoration});
 
-  final TextEditingController textEditingController = TextEditingController();
+  late final textEditingController = TextEditingController();
+
+  @override
+  void setInitalValue(String? val) {
+    super.setInitalValue(val);
+    textEditingController.text = val ?? "";
+  }
 
   @override
   Widget builder(context, controller, child) {
     final style = BoringFormTheme.of(context).style;
-    textEditingController.text = fieldController.value ?? '';
+    //textEditingController.text = fieldController.value ?? '';
+    print("HERE REB");
     return BoringField.boringFieldBuilder(
       style,
       decoration?.label,
       child: TextField(
         controller: textEditingController,
-        decoration: getDecoration(context), // InputDecoration(
-        // ),
+        decoration: getDecoration(context),
         onChanged: ((value) {
           controller.value = value;
         }),
@@ -34,9 +40,5 @@ class BoringTextField extends BoringField<String> {
   }
 
   @override
-  void onValueChanged(String? newValue) {
-    if (newValue != textEditingController.text) {
-      textEditingController.text = newValue ?? '';
-    }
-  }
+  void onValueChanged(String? newValue) {}
 }
