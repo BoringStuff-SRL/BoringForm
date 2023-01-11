@@ -58,6 +58,18 @@ class BoringSection extends BoringField<Map<String, dynamic>> {
     _updateFilteredFieldsList();
   }
 
+  void addInitialValueToSubFields() {}
+
+  @override
+  void setInitalValue(Map<String, dynamic>? val) {
+    super.setInitalValue(val);
+    for (var field in fields) {
+      if (fieldController.initialValue?[field.jsonKey] != null) {
+        field.setInitalValue(fieldController.initialValue?[field.jsonKey]);
+      }
+    }
+  }
+
   void _addFieldsSubcontrollers() {
     for (var field in fields) {
       //so fieldController.value get all values from fields controllers

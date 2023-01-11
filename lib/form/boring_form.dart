@@ -57,6 +57,9 @@ class BoringForm extends StatelessWidget {
     for (var field in fields) {
       //so formController.value get all values from fields controllers
       formController.subControllers[field.jsonKey] = field.fieldController;
+      if (formController.initialValue?[field.jsonKey] != null) {
+        field.setInitalValue(formController.initialValue?[field.jsonKey]);
+      }
     }
   }
 

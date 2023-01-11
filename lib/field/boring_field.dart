@@ -17,7 +17,9 @@ abstract class BoringField<T> extends StatelessWidget {
       this.boringResponsiveSize = const BoringResponsiveSize(),
       required this.jsonKey,
       this.displayCondition})
-      : fieldController = fieldController ?? BoringFieldController<T>();
+      : fieldController = (fieldController ?? BoringFieldController<T>()) {
+    fieldController?.addListener(_onChangedValue);
+  }
 
   final BoringFieldController<T> fieldController;
   final void Function(T?)? onChanged;
@@ -86,11 +88,16 @@ abstract class BoringField<T> extends StatelessWidget {
     Widget? child,
   );
 
+  void setInitalValue(T? val) {
+    if (fieldController.initialValue == null) {
+      fieldController.initialValue = val;
+      fieldController.value = val;
+      //onValueChanged(newValue);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    //TODO can this be done in the constructor?
-    fieldController.addListener(_onChangedValue);
-    //onValueChanged(fieldController.value);
     contextHolder.value = context;
     return ChangeNotifierProvider(
         create: (context) => fieldController,

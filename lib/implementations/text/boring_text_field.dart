@@ -18,7 +18,7 @@ class BoringTextField extends BoringField<String> {
   @override
   Widget builder(context, controller, child) {
     final style = BoringFormTheme.of(context).style;
-
+    textEditingController.text = fieldController.value ?? '';
     return BoringField.boringFieldBuilder(
       style,
       decoration?.label,
