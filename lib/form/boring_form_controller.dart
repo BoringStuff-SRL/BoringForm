@@ -14,10 +14,12 @@ class BoringFormController extends BoringFieldController<Map<String, dynamic>> {
 
   Map<String, BoringFieldController> subControllers = {};
 
+  Set<String> ignoreFields = {};
+
   @override
-  Map<String, dynamic>? get value => subControllers.map(
-        (key, value) => MapEntry(key, value.value),
-      );
+  Map<String, dynamic>? get value =>
+      subControllers.map((key, value) => MapEntry(key, value.value))
+        ..removeWhere((key, value) => ignoreFields.contains(key));
 
   @override
   set value(Map<String, dynamic>? newValue) {
@@ -31,8 +33,10 @@ class BoringFormController extends BoringFieldController<Map<String, dynamic>> {
     }
   }
 
-  bool _allSubControllersValid() =>
-      !(subControllers.values.any((element) => !element.isValid));
+  bool _allSubControllersValid() => !((Map.from(subControllers)
+        ..removeWhere((key, value) => ignoreFields.contains(key)))
+      .values
+      .any((element) => !element.isValid));
 
   @override
   bool get isValid => errorMessage == null && _allSubControllersValid();

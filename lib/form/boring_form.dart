@@ -16,6 +16,7 @@ class BoringForm extends StatelessWidget {
       this.onChanged,
       this.title,
       this.style,
+      this.includeNotDisplayedInValidation = false,
       required this.fields})
       : assert(checkJsonKey(fields),
             "Conflict error: found duplicate jsonKeys in form") {
@@ -41,10 +42,14 @@ class BoringForm extends StatelessWidget {
   final double sectionPadding = 8.0;
   final String? title;
   final fieldsListProvider = FieldsListProvider();
+  final bool includeNotDisplayedInValidation;
 
   void _updateFilteredFieldsList() {
-    fieldsListProvider.notifyIfDifferentFields(
+    final ignoreFields = fieldsListProvider.notifyIfDifferentFields(
         fields, formController.value ?? {});
+    if (!includeNotDisplayedInValidation) {
+      formController.ignoreFields = ignoreFields;
+    }
   }
 
   void _onAnyChanged() {
