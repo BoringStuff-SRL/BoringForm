@@ -58,21 +58,36 @@ class BoringDateField extends BoringPickerField<DateTime?> {
     super.displayCondition,
     super.decoration,
     DateTime? initialDate,
-    required DateTime firstlDate,
-    required DateTime lastlDate,
-  })  : assert(firstlDate < lastlDate, "firstDate must be less than lastDate"),
+    required this.firstlDate,
+    required this.lastDate,
+  })  : assert(firstlDate < lastDate, "firstDate must be less than lastDate"),
         assert(
             initialDate == null ||
-                (initialDate < lastlDate && initialDate > firstlDate),
+                (initialDate < lastDate && initialDate > firstlDate),
             "initial date must be between firstDate and lastDate"),
         super(
             showPicker: (context) async => await showDatePicker(
                 context: context,
-                initialDate: initialDate ??
-                    middle(firstlDate, DateTime.now(), lastlDate),
+                initialDate: fieldController?.value ??
+                    initialDate ??
+                    middle(firstlDate, DateTime.now(), lastDate),
                 firstDate: firstlDate,
-                lastDate: lastlDate),
+                lastDate: lastDate),
             valueToString: dateTimeToString);
+  DateTime firstlDate, lastDate;
+
+  void initialDateAssertion(DateTime? initialDate) {
+    assert(
+        initialDate == null ||
+            (initialDate < lastDate && initialDate > firstlDate),
+        "initial date must be between firstDate and lastDate");
+  }
+
+  @override
+  void setInitalValue(DateTime? val) {
+    initialDateAssertion(val);
+    super.setInitalValue(val);
+  }
 }
 
 class BoringTimeField extends BoringPickerField<TimeOfDay?> {
