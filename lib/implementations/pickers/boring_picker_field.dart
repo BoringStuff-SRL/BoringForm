@@ -16,8 +16,7 @@ class BoringPickerField<T> extends BoringField<T> {
       this.updateValueOnDismiss = false,
       super.decoration});
 
-  late final TextEditingController textEditingController =
-      TextEditingController(text: valueToString(fieldController.initialValue));
+  late final textEditingController = TextEditingController();
 
   final bool updateValueOnDismiss;
 
@@ -25,18 +24,24 @@ class BoringPickerField<T> extends BoringField<T> {
 
   final Future<T?> Function(BuildContext context) showPicker;
 
+  @override
+  void setInitalValue(val) {
+    super.setInitalValue(val);
+    textEditingController.text = valueToString(val);
+  }
+
   Future _selectValue(BuildContext context) async {
     T? v = await showPicker(context);
-    fieldController.value = v;
     if (v != null || updateValueOnDismiss) {
+      fieldController.value = v;
       textEditingController.text = valueToString(v);
     }
   }
 
   @override
   Widget builder(context, controller, child) {
+    print("BUILD VAL: ${controller.value}");
     final style = BoringFormTheme.of(context).style;
-
     return BoringField.boringFieldBuilder(
       style,
       decoration?.label,
