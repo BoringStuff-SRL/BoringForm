@@ -6,12 +6,14 @@ class BoringFormStyle {
   final TextStyle sectionTitleStyle;
   final EdgeInsetsGeometry fieldsPadding;
   final TextStyle formTitleStyle;
+  final bool readOnly;
   BoringFormStyle({
     this.fieldsPadding = const EdgeInsets.all(8),
     this.sectionTitleStyle = const TextStyle(),
     this.formTitleStyle = const TextStyle(),
     this.inputDecoration = const InputDecoration(),
     this.labelOverField = false,
+    this.readOnly = false,
   })  : assert(inputDecoration.label == null, _getFieldAssertionError("label")),
         assert(inputDecoration.icon == null, _getFieldAssertionError("icon")),
         assert(inputDecoration.helperText == null,

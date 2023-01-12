@@ -28,6 +28,7 @@ abstract class BoringField<T> extends StatelessWidget {
   final BoringFieldDecoration? decoration;
   final bool Function(Map<String, dynamic> formValue)? displayCondition;
   final contextHolder = ValueHolder<BuildContext>();
+  final bool? _readOnly = null;
 
   void _onChangedValue() {
     onValueChanged(fieldController.value);
@@ -59,6 +60,9 @@ abstract class BoringField<T> extends StatelessWidget {
         suffixText: decoration?.suffixText,
         counter: decoration?.counter?.call(fieldController.value));
   }
+
+  bool isReadOnly(BuildContext context) =>
+      (_readOnly != null) ? _readOnly! : getStyle(context).readOnly;
 
   static boringFieldBuilder(BoringFormStyle style, String? label,
       {required Widget child}) {

@@ -41,15 +41,17 @@ class BoringPickerField<T> extends BoringField<T> {
   @override
   Widget builder(context, controller, child) {
     print("BUILD VAL: ${controller.value}");
-    final style = BoringFormTheme.of(context).style;
+    final style = getStyle(context);
+    final readOnly = isReadOnly(context);
     return BoringField.boringFieldBuilder(
       style,
       decoration?.label,
       child: InkWell(
         child: TextField(
+          enabled: !readOnly,
           controller: textEditingController,
           readOnly: true,
-          onTap: () => _selectValue(context),
+          onTap: () => readOnly ? null : _selectValue(context),
           decoration: getDecoration(context),
         ),
       ),

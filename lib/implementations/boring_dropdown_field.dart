@@ -22,11 +22,13 @@ class BoringDropDownField<T> extends BoringField<T> {
     return BoringField.boringFieldBuilder(
       style,
       decoration?.label,
-      child: DropdownButtonFormField(
+      child: DropdownButtonFormField<T?>(
         decoration: getDecoration(context),
-        onChanged: ((value) {
-          controller.value = value;
-        }),
+        onChanged: isReadOnly(context)
+            ? null
+            : ((value) {
+                controller.value = value;
+              }),
         value: controller.value,
         items: items,
       ),
