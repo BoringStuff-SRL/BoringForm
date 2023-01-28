@@ -13,13 +13,14 @@ export 'theme/boring_field_decoration.dart';
 export 'field/boring_field.dart';
 export 'field/boring_field_controller.dart';
 
-export 'implementations/boring_dropdown_field.dart';
+export 'implementations/choice/boring_dropdown_field.dart';
 export 'implementations/text/boring_text_field.dart';
 export 'implementations/text/boring_text_regex.dart';
 export 'implementations/text/boring_password_field.dart';
 export 'implementations/num/boring_number_field.dart';
 export 'implementations/text/boring_email_field.dart';
 export 'implementations/text/boring_phone_number_field.dart';
+export 'implementations/choice/boring_radiogroup_field.dart';
 
 export 'implementations/pickers/boring_date_field.dart';
 export 'implementations/boring_slider.dart';

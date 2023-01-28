@@ -1,0 +1,57 @@
+import 'package:boring_form/field/boring_field.dart';
+import 'package:boring_form/theme/boring_form_theme.dart';
+import 'package:flutter/material.dart';
+
+class BoringChoiceItem<T> {
+  const BoringChoiceItem({required this.display, required this.value});
+  final String display;
+  final T? value;
+}
+
+class BoringRadioGroupField<T> extends BoringField<T> {
+  BoringRadioGroupField(
+      {super.key,
+      required super.jsonKey,
+      required this.items,
+      super.fieldController,
+      super.decoration,
+      super.displayCondition,
+      super.boringResponsiveSize,
+      super.onChanged});
+
+  final List<BoringChoiceItem<T>> items;
+
+  @override
+  Widget builder(context, controller, child) {
+    final style = BoringFormTheme.of(context).style;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: Text(decoration?.label ?? ""),
+          ),
+          Wrap(
+            children: items
+                .map((item) => FractionallySizedBox(
+                      widthFactor: 1 / 3,
+                      child: RadioListTile(
+                          activeColor: style.inputDecoration.focusColor,
+                          contentPadding: style.inputDecoration.contentPadding,
+                          value: item.value,
+                          title: Text(item.display),
+                          groupValue: fieldController.value,
+                          onChanged: (value) => fieldController.value = value),
+                    ))
+                .toList(),
+          )
+        ],
+      ),
+    );
+  }
+
+  @override
+  void onValueChanged(T? newValue) {}
+}
