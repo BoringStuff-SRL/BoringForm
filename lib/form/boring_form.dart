@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, overridden_fields, must_be_immutable
+import 'package:boring_form/fields_group.dart/boring_fields_group.dart';
 import 'package:boring_form/field/boring_field.dart';
 import 'package:boring_form/field/field_change_notification.dart';
 import 'package:boring_form/field/filtered_fields_provider.dart';
@@ -9,82 +10,35 @@ import 'package:flutter/material.dart';
 import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:provider/provider.dart';
 
-class BoringForm extends StatelessWidget {
+class BoringForm extends BoringFieldsGroup<BoringFormController> {
   BoringForm(
       {super.key,
-      required this.formController,
-      this.onChanged,
+      required BoringFormController formController,
+      super.onChanged,
       this.title,
       this.style,
       this.includeNotDisplayedInValidation = false,
-      required this.fields})
-      : assert(checkJsonKey(fields),
-            "Conflict error: found duplicate jsonKeys in form") {
-    init();
-  }
+      required super.fields})
+      : assert(BoringFieldsGroup.checkJsonKey(fields),
+            "Conflict error: found duplicate jsonKeys in form"),
+        super(controller: formController, jsonKey: "");
 
-  static bool checkJsonKey(List<BoringField> fields) {
-    List<String> keys = [];
-    for (var field in fields) {
-      if (keys.contains(field.jsonKey)) {
-        return false;
-      }
-      keys.add(field.jsonKey);
-    }
-    return true;
-  }
-
-  final void Function(Map<String, dynamic>?)? onChanged;
-  final BoringFormController formController;
   final BoringFormStyle? style;
-  final List<BoringField> fields;
   final double fieldsPadding = 8.0;
   final double sectionPadding = 8.0;
   final String? title;
-  final fieldsListProvider = FieldsListProvider();
   final bool includeNotDisplayedInValidation;
 
-  void _updateFilteredFieldsList() {
-    final ignoreFields = fieldsListProvider.notifyIfDifferentFields(
-        fields, formController.value ?? {});
-    if (!includeNotDisplayedInValidation) {
-      formController.ignoreFields = ignoreFields;
-    }
-  }
-
-  void _onAnyChanged() {
-    _updateFilteredFieldsList();
-    onChanged?.call(formController.value);
-    formController.sendNotification();
-  }
-
-  void _addFieldsSubcontrollers() {
-    for (var field in fields) {
-      //so formController.value get all values from fields controllers
-      formController.subControllers[field.jsonKey] = field.fieldController;
-      if (formController.initialValue?[field.jsonKey] != null) {
-        field.setInitalValue(formController.initialValue?[field.jsonKey]);
-      }
-    }
-  }
-
-  //TODO syncs all fields values with the one in the newValue
-  //use this method to set a value Globally for the form
-  // void _syncFieldsValue(Map<String, dynamic>? newValue) {
-  //   for (var field in fields) {
-  //     field.fieldController.value =
-  //         (newValue != null && newValue.containsKey(field.jsonKey))
-  //             ? newValue[field.jsonKey]
-  //             : null;
-  //   }
-  // }
-
   void init() {
-    _addFieldsSubcontrollers();
-    _updateFilteredFieldsList();
+    updateFilteredFieldsList();
   }
 
-  Widget builder(context, controller, child) {
+  @override
+  bool get blockNotificationPropagation => true;
+
+  @override
+  Widget buildWidget(BuildContext context,
+      BoringFieldsGroupController controller, Widget content) {
     return BoringFormTheme(
       style: style ?? BoringFormStyle(),
       child: Column(
@@ -97,7 +51,7 @@ class BoringForm extends StatelessWidget {
             ),
           NotificationListener<FieldChangeNotification>(
             onNotification: (notification) {
-              _onAnyChanged();
+              onAnyChanged();
               return true;
             },
             child: ChangeNotifierProvider(
@@ -124,7 +78,7 @@ class BoringForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => formController,
+        create: (context) => controller,
         child: Consumer<BoringFormController>(
           builder: builder,
         ));
