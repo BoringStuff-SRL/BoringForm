@@ -15,11 +15,13 @@ class BoringRadioGroupField<T> extends BoringField<T> {
       required this.items,
       super.fieldController,
       super.decoration,
+      this.itemsPerRow = 1,
       super.displayCondition,
       super.boringResponsiveSize,
       super.onChanged});
 
   final List<BoringChoiceItem<T>> items;
+  final int itemsPerRow;
 
   @override
   Widget builder(context, controller, child) {
@@ -36,7 +38,7 @@ class BoringRadioGroupField<T> extends BoringField<T> {
           Wrap(
             children: items
                 .map((item) => FractionallySizedBox(
-                      widthFactor: 1 / 3,
+                      widthFactor: 1 / itemsPerRow,
                       child: RadioListTile(
                           activeColor: style.inputDecoration.focusColor,
                           contentPadding: style.inputDecoration.contentPadding,
