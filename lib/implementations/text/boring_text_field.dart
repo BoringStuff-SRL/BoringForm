@@ -16,9 +16,12 @@ class BoringTextField extends BoringField<String> {
   late final textEditingController = TextEditingController();
 
   @override
-  void setInitalValue(String? val) {
-    super.setInitalValue(val);
-    textEditingController.text = val ?? "";
+  bool setInitialValue(String? val) {
+    final v = super.setInitialValue(val);
+    if (v) {
+      textEditingController.text = val ?? "";
+    }
+    return v;
   }
 
   @override

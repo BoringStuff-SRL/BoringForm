@@ -25,9 +25,10 @@ class BoringPickerField<T> extends BoringField<T> {
   final Future<T?> Function(BuildContext context) showPicker;
 
   @override
-  void setInitalValue(val) {
-    super.setInitalValue(val);
+  bool setInitialValue(val) {
+    super.setInitialValue(val);
     textEditingController.text = valueToString(val);
+    return true;
   }
 
   Future _selectValue(BuildContext context) async {
@@ -40,7 +41,6 @@ class BoringPickerField<T> extends BoringField<T> {
 
   @override
   Widget builder(context, controller, child) {
-    print("BUILD VAL: ${controller.value}");
     final style = getStyle(context);
     final readOnly = isReadOnly(context);
     return BoringField.boringFieldBuilder(

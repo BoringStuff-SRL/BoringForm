@@ -19,7 +19,10 @@ abstract class BoringField<T> extends StatelessWidget {
       this.displayCondition})
       : fieldController = (fieldController ?? BoringFieldController<T>()) {
     fieldController?.addListener(_onChangedValue);
+    setInitialValue(this.fieldController.initialValue);
   }
+
+  bool ignoreInitialValue(T? value) => value != null;
 
   final BoringFieldController<T> fieldController;
   final void Function(T?)? onChanged;
@@ -93,12 +96,12 @@ abstract class BoringField<T> extends StatelessWidget {
     Widget? child,
   );
 
-  void setInitalValue(T? val) {
-    if (fieldController.initialValue == null) {
-      fieldController.initialValue = val;
-      fieldController.value = val;
-      //onValueChanged(newValue);
+  bool setInitialValue(T? val) {
+    if (!ignoreInitialValue(val) && fieldController.initialValue != null) {
+      return false;
     }
+    fieldController.initialValue = val;
+    return true;
   }
 
   @override

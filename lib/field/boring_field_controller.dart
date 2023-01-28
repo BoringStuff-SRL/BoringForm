@@ -5,8 +5,9 @@ enum ChangedEvent { valueChanged, sumbittedForValidation }
 enum ValidationType { always, onSubmit }
 
 class BoringFieldController<T> extends ChangeNotifier {
-  BoringFieldController({this.initialValue, this.validationFunction})
-      : _value = initialValue;
+  BoringFieldController({T? initialValue, this.validationFunction})
+      : _initialValue = initialValue,
+        _value = initialValue;
 
   BoringFieldController<T> copyWith(
           {T? initialValue, String? Function(T? value)? validationFunction}) =>
@@ -15,13 +16,18 @@ class BoringFieldController<T> extends ChangeNotifier {
           validationFunction: validationFunction ?? this.validationFunction);
 
   T? _value;
-  T? initialValue;
+  T? _initialValue;
   String? Function(T? value)? validationFunction;
 
   T? get value => _value;
   set value(T? newValue) {
     setValueSilently(newValue);
     notifyListeners();
+  }
+
+  T? get initialValue => _initialValue;
+  set initialValue(T? val) {
+    _initialValue = val;
   }
 
   String? get errorMessage => validationFunction?.call(_value);

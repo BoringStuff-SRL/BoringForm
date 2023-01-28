@@ -74,7 +74,7 @@ class BoringDateField extends BoringPickerField<DateTime?> {
                 firstDate: firstlDate,
                 lastDate: lastDate),
             valueToString: dateTimeToString);
-  DateTime firstlDate, lastDate;
+  final DateTime firstlDate, lastDate;
 
   void initialDateAssertion(DateTime? initialDate) {
     assert(
@@ -84,9 +84,9 @@ class BoringDateField extends BoringPickerField<DateTime?> {
   }
 
   @override
-  void setInitalValue(DateTime? val) {
+  bool setInitialValue(DateTime? val, [bool forceSet = false]) {
     initialDateAssertion(val);
-    super.setInitalValue(val);
+    return super.setInitialValue(val);
   }
 }
 
