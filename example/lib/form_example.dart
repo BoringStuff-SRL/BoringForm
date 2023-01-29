@@ -131,7 +131,7 @@ class FormExample extends StatelessWidget {
 
 class FormExample2 extends StatelessWidget {
   final formController = BoringFormController(initialValue: {
-    "anagraph": {"name": "EWE", "birthdate": DateTime(2005, 01, 02)}
+    "anagraph": {"name": "EWE", "birthdate": DateTime(2005, 01, 02), "CIAO": 1}
   });
   final textFieldController = BoringFieldController<String>(
     validationFunction: (value) =>
@@ -160,7 +160,7 @@ class FormExample2 extends StatelessWidget {
                   fields: [
                     BoringRadioGroupField(
                       jsonKey: "CIAO",
-                      fieldController: BoringFieldController(initialValue: 2),
+                      // BoringFieldController(initialValue: 2),
                       decoration: BoringFieldDecoration(label: "RADIO"),
                       items: const [
                         BoringChoiceItem(display: "!", value: 1),

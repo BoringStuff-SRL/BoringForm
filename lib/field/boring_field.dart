@@ -101,6 +101,7 @@ abstract class BoringField<T> extends StatelessWidget {
       return false;
     }
     fieldController.initialValue = val;
+    fieldController.value = val;
     return true;
   }
 
