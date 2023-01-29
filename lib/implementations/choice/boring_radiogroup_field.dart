@@ -48,7 +48,11 @@ class BoringRadioGroupField<T> extends BoringField<T> {
                           onChanged: (value) => fieldController.value = value),
                     ))
                 .toList(),
-          )
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: Text(decoration?.helperText ?? ""),
+          ),
         ],
       ),
     );

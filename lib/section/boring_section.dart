@@ -30,7 +30,6 @@ class BoringSection extends BoringFieldsGroup {
             collapsible),
         super(controller: sectionController ?? BoringSectionController());
 
-  final double fieldsPadding = 0.0;
   final double sectionPadding = 0;
   final bool collapsible;
   final bool? collapseOnHeaderTap;
