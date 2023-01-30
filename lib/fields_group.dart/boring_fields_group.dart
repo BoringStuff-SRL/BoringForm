@@ -111,8 +111,12 @@ abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
     } else {
       return;
     }
-    fieldsListProvider.notifyIfDifferentFields(
+    final excluded = fieldsListProvider.notifyIfDifferentFields(
         fields, formController.value ?? {});
+
+    if (true /*TODO add [exludeInvalidFields = true] attribute (ex: maybe you want to include invalid fields and so this condition should be false)*/) {
+      formController.ignoreFields = excluded;
+    }
   }
 
   void _setSubFieldsInitialValues() {
