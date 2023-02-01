@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:boring_form/boring_form.dart';
 import 'package:boring_form/field/field_change_notification.dart';
 import 'package:boring_form/field/filtered_fields_provider.dart';
@@ -92,12 +94,13 @@ abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
   final blockNotificationPropagation = false;
   final fieldsListProvider = FieldsListProvider();
 
+  void formChanged() {
+    updateFilteredFieldsList();
+  }
+
   @protected
   void onAnyChanged() {
-    print("ANY CHANGED");
-    updateFilteredFieldsList();
     onChanged?.call(controller.value);
-    //TODO (was in FORM) formController.sendNotification();
   }
 
   @protected
@@ -111,6 +114,9 @@ abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
     } else {
       return;
     }
+    log("UPDADING FIELDS", name: jsonKey);
+    //log("FIELDS: $fields", name: jsonKey);
+    //log("VALUE: ${formController.value ?? {}}", name: jsonKey);
     final excluded = fieldsListProvider.notifyIfDifferentFields(
         fields, formController.value ?? {});
 
@@ -132,15 +138,16 @@ abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
     //_setSubFieldsInitialValues();
   }
 
-  @override
-  void onValueChanged(Map<String, dynamic>? newValue) {
-    for (var field in fields) {
-      field.fieldController.value =
-          (newValue != null && newValue.containsKey(field.jsonKey))
-              ? newValue[field.jsonKey]
-              : null;
-    }
-  }
+  //TODO check this
+  // @override
+  // void onValueChanged(Map<String, dynamic>? newValue) {
+  //   for (var field in fields) {
+  //     field.fieldController.value =
+  //         (newValue != null && newValue.containsKey(field.jsonKey))
+  //             ? newValue[field.jsonKey]
+  //             : null;
+  //   }
+  // }
 
   Widget _content() => LayoutBuilder(
         builder: (context, constraints) =>

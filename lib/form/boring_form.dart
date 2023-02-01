@@ -34,6 +34,14 @@ class BoringForm extends BoringFieldsGroup<BoringFormController> {
   }
 
   @override
+  void onAnyChanged() {
+    // TODO: implement onAnyChanged
+    super.onAnyChanged();
+    controller.sendNotification();
+    formChanged();
+  }
+
+  @override
   bool get blockNotificationPropagation => true;
 
   @override

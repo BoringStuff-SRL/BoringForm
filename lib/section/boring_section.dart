@@ -1,5 +1,7 @@
 // ignore_for_file: overridden_fields
 
+import 'dart:developer';
+
 import 'package:boring_form/fields_group.dart/boring_fields_group.dart';
 import 'package:boring_form/field/field_change_notification.dart';
 import 'package:boring_form/field/filtered_fields_provider.dart';
@@ -33,10 +35,6 @@ class BoringSection extends BoringFieldsGroup {
   final double sectionPadding = 0;
   final bool collapsible;
   final bool? collapseOnHeaderTap;
-
-  void _formChanged() {
-    updateFilteredFieldsList();
-  }
 
   // Widget _sectionContent() => LayoutBuilder(
   //       builder: (context, constraints) =>
@@ -75,9 +73,8 @@ class BoringSection extends BoringFieldsGroup {
   void _setFormContext(BuildContext context) {
     BoringFormController formController =
         Provider.of<BoringFormController>(context);
-    formController.removeListener(_formChanged);
-    formController.addListener(_formChanged);
-
+    formController.removeListener(formChanged);
+    formController.addListener(formChanged);
     contextHolder.value = context;
   }
 
