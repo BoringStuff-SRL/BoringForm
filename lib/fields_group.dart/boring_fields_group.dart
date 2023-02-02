@@ -160,7 +160,7 @@ abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
               create: (context) => fieldsListProvider,
               child: Consumer<FieldsListProvider>(
                   builder: (context, value, _) => Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
+                        crossAxisAlignment: WrapCrossAlignment.start,
                         children: List.generate(fields.length, (index) {
                           return Offstage(
                             offstage: !fieldsListProvider
