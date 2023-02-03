@@ -14,6 +14,7 @@ export 'field/boring_field.dart';
 export 'field/boring_field_controller.dart';
 
 export 'implementations/choice/boring_dropdown_field.dart';
+export 'implementations/choice/boring_search_dropdown_field.dart';
 export 'implementations/text/boring_text_field.dart';
 export 'implementations/text/boring_text_regex.dart';
 export 'implementations/text/boring_password_field.dart';
