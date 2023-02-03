@@ -14,8 +14,6 @@ abstract class BoringField<T> extends StatelessWidget {
       BoringFieldController<T>? fieldController,
       this.onChanged,
       this.decoration,
-        this.minLines = 1,
-        this.maxLines = 1,
       this.boringResponsiveSize = const BoringResponsiveSize(),
       required this.jsonKey,
       this.displayCondition})
@@ -34,8 +32,6 @@ abstract class BoringField<T> extends StatelessWidget {
   final bool Function(Map<String, dynamic> formValue)? displayCondition;
   final contextHolder = ValueHolder<BuildContext>();
   final bool? _readOnly = null;
-  final int minLines;
-  final int maxLines;
 
   void _onChangedValue() {
     //onValueChanged(fieldController.value);
