@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:collection/collection.dart';
 
 enum ChangedEvent { valueChanged, sumbittedForValidation }
 
@@ -20,12 +21,17 @@ class BoringFieldController<T> extends ChangeNotifier {
   String? Function(T? value)? validationFunction;
 
   T? get value => _value;
+
+  bool get changed =>
+      !const DeepCollectionEquality().equals(value, _initialValue);
+
   set value(T? newValue) {
     setValueSilently(newValue);
     notifyListeners();
   }
 
   T? get initialValue => _initialValue;
+
   set initialValue(T? val) {
     _initialValue = val;
   }
