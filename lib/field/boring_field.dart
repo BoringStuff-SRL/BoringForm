@@ -76,7 +76,7 @@ abstract class BoringField<T> extends StatelessWidget {
         children: [
           if (style.labelOverField && label != null)
             Padding(
-              padding: const EdgeInsets.only(bottom: 4, left: 4),
+              padding: const EdgeInsets.only(bottom: 8, left: 4),
               child: Text(
                 label,
                 style: style.inputDecoration.labelStyle,
