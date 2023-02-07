@@ -64,11 +64,13 @@ class NumberFormatter extends TextInputFormatter {
   final String? decimalSeparator;
   final String thousandsSeparator;
   final int? decimalPlaces;
+
   NumberFormatter({
     this.thousandsSeparator = ",",
     this.decimalPlaces,
     this.decimalSeparator = ".",
   });
+
   NumberFormatter.integer({
     this.thousandsSeparator = "",
   })  : decimalPlaces = 0,
@@ -170,13 +172,22 @@ class BoringNumberField extends BoringField<num> {
 
   final TextEditingController textEditingController = TextEditingController();
 
+  final String? decimalSeparator;
+  final String thousandsSeparator;
+  final int? decimalPlaces;
+
   InputDecoration getEnhancedDecoration(BuildContext context) {
     return getDecoration(context).copyWith();
   }
 
-  final String? decimalSeparator;
-  final String thousandsSeparator;
-  final int? decimalPlaces;
+  @override
+  bool setInitialValue(num? val) {
+    final v = super.setInitialValue(val);
+    if (v) {
+      textEditingController.text = val != null ? "$val" : "";
+    }
+    return v;
+  }
 
   @override
   Widget builder(context, controller, child) {
