@@ -2,15 +2,10 @@ import 'package:boring_form/field/boring_field.dart';
 import 'package:boring_form/theme/boring_form_theme.dart';
 import 'package:flutter/material.dart';
 
-class BoringChoiceItem<T> {
-  const BoringChoiceItem({required this.display, required this.value});
+import 'boring_radiogroup_field.dart';
 
-  final String display;
-  final T? value;
-}
-
-class BoringRadioGroupField<T> extends BoringField<T> {
-  BoringRadioGroupField(
+class BoringCheckBoxGroupField<T> extends BoringField<T> {
+  BoringCheckBoxGroupField(
       {super.key,
       required super.jsonKey,
       required this.items,
@@ -41,15 +36,15 @@ class BoringRadioGroupField<T> extends BoringField<T> {
             children: items
                 .map((item) => FractionallySizedBox(
                       widthFactor: 1 / itemsPerRow,
-                      child: RadioListTile<T?>(
+                      child: CheckboxListTile(
                           activeColor: style.inputDecoration.focusColor,
                           contentPadding: style.inputDecoration.contentPadding,
-                          value: item.value,
+                          value: (fieldController.value as bool?) ?? false,
                           title: Text(item.display),
-                          groupValue: fieldController.value,
+                         tristate: true,
                           onChanged: style.readOnly
                               ? null
-                              : (value) => fieldController.value = value),
+                              : (value) => fieldController.value = value as T?),
                     ))
                 .toList(),
           ),
