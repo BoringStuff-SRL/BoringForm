@@ -25,8 +25,8 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
   Widget builder(context, controller, child) {
     final style = BoringFormTheme.of(context).style;
 
-    final newStyle =
-        style.inputDecoration.copyWith(contentPadding: const EdgeInsets.all(0));
+    final newStyle = getDecoration(context)
+        .copyWith(contentPadding: const EdgeInsets.all(0));
 
     return BoringField.boringFieldBuilder(
       style,
