@@ -29,15 +29,12 @@ class BoringCheckBoxGroupField<T> extends BoringField<T> {
     final style = BoringFormTheme.of(context).style;
 
     final initValue = (fieldController.value as bool?) ?? false;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+    return BoringField.boringFieldBuilder(
+      style,
+      decoration?.label ?? '',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: Text(decoration?.label ?? ""),
-          ),
           Wrap(
             children: items
                 .map((item) => FractionallySizedBox(
