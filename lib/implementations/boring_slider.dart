@@ -1,5 +1,8 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:boring_form/field/boring_field.dart';
-import 'package:boring_form/theme/boring_form_theme.dart';
+import 'package:boring_form/field/boring_field_controller.dart';
+import 'package:boring_form/theme/boring_field_decoration.dart';
+import 'package:boring_form/theme/boring_responsive_size.dart';
 import 'package:flutter/material.dart';
 
 class BoringSlider extends BoringField<double> {
@@ -37,12 +40,14 @@ class BoringSlider extends BoringField<double> {
               ),
             ),
           Slider(
-            min: min, max: max,
+            min: min,
+            max: max,
             divisions: divisions,
             value: fieldController.value ?? 0,
             label: showValueLabel
                 ? fieldController.value?.toStringAsFixed(2)
-                : null, // InputDecoration(
+                : null,
+            // InputDecoration(
             // ),
             onChanged: (value) => fieldController.value = value,
           ),
@@ -53,6 +58,33 @@ class BoringSlider extends BoringField<double> {
 
   @override
   void onValueChanged(double? newValue) {}
+
+  @override
+  BoringField copyWith({
+    BoringFieldController<double>? fieldController,
+    void Function(double? p1)? onChanged,
+    BoringFieldDecoration? decoration,
+    BoringResponsiveSize? boringResponsiveSize,
+    String? jsonKey,
+    bool Function(Map<String, dynamic> p1)? displayCondition,
+    double? min,
+    double? max,
+    bool? showValueLabel,
+    int? divisions,
+  }) {
+    return BoringSlider(
+      boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
+      jsonKey: jsonKey ?? this.jsonKey,
+      decoration: decoration ?? this.decoration,
+      onChanged: onChanged ?? this.onChanged,
+      displayCondition: displayCondition ?? this.displayCondition,
+      fieldController: fieldController ?? this.fieldController,
+      max: max ?? this.min,
+      min: min ?? this.min,
+      showValueLabel: showValueLabel ?? this.showValueLabel,
+      divisions: divisions ?? this.divisions,
+    );
+  }
 }
 
 class BoringRangeSlider extends BoringField<RangeValues> {
@@ -72,6 +104,7 @@ class BoringRangeSlider extends BoringField<RangeValues> {
   final bool showValueLabel;
   late final initialValue = fieldController.initialValue ?? 0;
   final int? divisions;
+
   @override
   Widget builder(context, controller, child) {
     return Padding(
@@ -88,10 +121,11 @@ class BoringRangeSlider extends BoringField<RangeValues> {
               ),
             ),
           RangeSlider(
-            min: min, max: max,
+            min: min,
+            max: max,
             divisions: divisions,
-            values: fieldController.value ??
-                RangeValues(min, max), // InputDecoration(
+            values: fieldController.value ?? RangeValues(min, max),
+            // InputDecoration(
             // ),
             labels: showValueLabel
                 ? RangeLabels(
@@ -107,4 +141,30 @@ class BoringRangeSlider extends BoringField<RangeValues> {
 
   @override
   void onValueChanged(RangeValues? newValue) {}
+
+  @override
+  BoringField copyWith({
+    BoringFieldController<RangeValues>? fieldController,
+    void Function(RangeValues? p1)? onChanged,
+    BoringFieldDecoration? decoration,
+    BoringResponsiveSize? boringResponsiveSize,
+    String? jsonKey,
+    bool Function(Map<String, dynamic> p1)? displayCondition,
+    double? min,
+    double? max,
+    bool? showValueLabel,
+    int? divisions,
+  }) {
+    return BoringRangeSlider(
+      boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
+      jsonKey: jsonKey ?? this.jsonKey,
+      decoration: decoration ?? this.decoration,
+      onChanged: onChanged ?? this.onChanged,
+      fieldController: fieldController ?? this.fieldController,
+      max: max ?? this.min,
+      min: min ?? this.min,
+      showValueLabel: showValueLabel ?? this.showValueLabel,
+      divisions: divisions ?? this.divisions,
+    );
+  }
 }

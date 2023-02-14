@@ -1,12 +1,8 @@
 import 'package:boring_form/boring_form.dart';
 import 'package:boring_form/field/field_change_notification.dart';
-import 'package:boring_form/theme/boring_field_decoration.dart';
-import 'package:boring_form/theme/boring_form_theme.dart';
-import 'package:boring_form/theme/boring_responsive_size.dart';
 import 'package:boring_form/utils/value_holder.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'boring_field_controller.dart';
 
 abstract class BoringField<T> extends StatelessWidget {
   BoringField(
@@ -21,6 +17,14 @@ abstract class BoringField<T> extends StatelessWidget {
     fieldController?.addListener(_onChangedValue);
     setInitialValue(this.fieldController.initialValue);
   }
+
+  BoringField copyWith(
+      {BoringFieldController<T>? fieldController,
+      void Function(T?)? onChanged,
+      BoringFieldDecoration? decoration,
+      BoringResponsiveSize? boringResponsiveSize,
+      String? jsonKey,
+      bool Function(Map<String, dynamic>)? displayCondition});
 
   bool _ignoreInitialValue(T? value) => value != null;
 

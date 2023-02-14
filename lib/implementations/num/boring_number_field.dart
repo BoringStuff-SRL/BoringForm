@@ -1,12 +1,14 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:math';
 
+import 'package:boring_form/field/boring_field.dart';
+import 'package:boring_form/field/boring_field_controller.dart';
+import 'package:boring_form/theme/boring_field_decoration.dart';
+import 'package:boring_form/theme/boring_form_theme.dart';
+import 'package:boring_form/theme/boring_responsive_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-
-import 'package:boring_form/field/boring_field.dart';
-import 'package:boring_form/theme/boring_form_theme.dart';
 
 TextEditingValue formatFunction(
     TextEditingValue oldValue,
@@ -213,5 +215,26 @@ class BoringNumberField extends BoringField<num> {
   @override
   void onValueChanged(num? newValue) {
     // aaadfg45544455
+  }
+
+  @override
+  BoringField copyWith(
+      {BoringFieldController<num>? fieldController,
+      void Function(num? p1)? onChanged,
+      BoringFieldDecoration? decoration,
+      BoringResponsiveSize? boringResponsiveSize,
+      String? jsonKey,
+      bool Function(Map<String, dynamic> p1)? displayCondition,
+      String? decimalSeparator,
+      String? thousandsSeparator,
+      int? decimalPlaces}) {
+    return BoringNumberField(
+      boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
+      jsonKey: jsonKey ?? this.jsonKey,
+      decoration: decoration ?? this.decoration,
+      onChanged: onChanged ?? this.onChanged,
+      displayCondition: displayCondition ?? this.displayCondition,
+      fieldController: fieldController ?? this.fieldController,
+    );
   }
 }

@@ -1,17 +1,14 @@
 // ignore_for_file: overridden_fields
 
-import 'dart:developer';
-
-import 'package:boring_form/fields_group.dart/boring_fields_group.dart';
-import 'package:boring_form/field/field_change_notification.dart';
-import 'package:boring_form/field/filtered_fields_provider.dart';
-import 'package:boring_form/form/boring_form.dart';
 import 'package:boring_form/field/boring_field.dart';
+import 'package:boring_form/field/boring_field_controller.dart';
+import 'package:boring_form/fields_group.dart/boring_fields_group.dart';
 import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_form/section/boring_section_controller.dart';
+import 'package:boring_form/theme/boring_field_decoration.dart';
 import 'package:boring_form/theme/boring_form_theme.dart';
+import 'package:boring_form/theme/boring_responsive_size.dart';
 import 'package:boring_form/utils/expansion_card.dart';
-import 'package:boring_form/utils/value_holder.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -109,5 +106,28 @@ class BoringSection extends BoringFieldsGroup {
       );
     }
     return content;
+  }
+
+  @override
+  BoringField copyWith(
+      {BoringFieldController<Map<String, dynamic>>? fieldController,
+      void Function(Map<String, dynamic>? p1)? onChanged,
+      BoringFieldDecoration? decoration,
+      BoringResponsiveSize? boringResponsiveSize,
+      String? jsonKey,
+      bool Function(Map<String, dynamic> p1)? displayCondition,
+      BoringSectionController? sectionController,
+      bool? collapsible,
+      bool? collapseOnHeaderTap,
+      List<BoringField<dynamic>>? fields}) {
+    return BoringSection(
+      jsonKey: jsonKey ?? this.jsonKey,
+      decoration: decoration ?? this.decoration,
+      onChanged: onChanged ?? this.onChanged,
+      displayCondition: displayCondition ?? this.displayCondition,
+      collapseOnHeaderTap: collapseOnHeaderTap ?? this.collapseOnHeaderTap,
+      collapsible: collapsible ?? this.collapsible,
+      fields: fields ?? this.fields,
+    );
   }
 }
