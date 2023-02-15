@@ -1,6 +1,8 @@
-import 'package:boring_form/field/boring_field_controller.dart';
-import 'package:boring_form/theme/boring_form_theme.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:boring_form/field/boring_field.dart';
+import 'package:boring_form/field/boring_field_controller.dart';
+import 'package:boring_form/theme/boring_field_decoration.dart';
+import 'package:boring_form/theme/boring_responsive_size.dart';
 import 'package:flutter/material.dart';
 
 class BoringPickerField<T> extends BoringField<T> {
@@ -60,4 +62,30 @@ class BoringPickerField<T> extends BoringField<T> {
 
   @override
   void onValueChanged(T? newValue) {}
+
+  @override
+  BoringPickerField copyWith(
+      {BoringFieldController<T>? fieldController,
+      void Function(T? p1)? onChanged,
+      BoringFieldDecoration? decoration,
+      BoringResponsiveSize? boringResponsiveSize,
+      String? jsonKey,
+      bool Function(Map<String, dynamic> p1)? displayCondition,
+      String Function(dynamic)? valueToString,
+      Future<dynamic> Function(BuildContext)? showPicker,
+      bool? updateValueOnDismiss}) {
+    return BoringPickerField(
+      fieldController: fieldController ?? this.fieldController,
+      onChanged: (onChanged as void Function(dynamic)?) ??
+          (this.onChanged as void Function(dynamic)),
+      decoration: decoration ?? this.decoration,
+      boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
+      jsonKey: jsonKey ?? this.jsonKey,
+      displayCondition: displayCondition ?? this.displayCondition,
+      valueToString:
+          valueToString ?? (this.valueToString as String Function(dynamic)),
+      showPicker: showPicker ?? this.showPicker,
+      updateValueOnDismiss: updateValueOnDismiss ?? this.updateValueOnDismiss,
+    );
+  }
 }

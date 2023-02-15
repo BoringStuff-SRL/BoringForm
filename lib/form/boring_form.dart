@@ -1,13 +1,15 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, overridden_fields, must_be_immutable
-import 'package:boring_form/fields_group.dart/boring_fields_group.dart';
 import 'package:boring_form/field/boring_field.dart';
+import 'package:boring_form/field/boring_field_controller.dart';
 import 'package:boring_form/field/field_change_notification.dart';
 import 'package:boring_form/field/filtered_fields_provider.dart';
+import 'package:boring_form/fields_group.dart/boring_fields_group.dart';
+import 'package:boring_form/form/boring_form_controller.dart';
+import 'package:boring_form/theme/boring_field_decoration.dart';
 import 'package:boring_form/theme/boring_form_style.dart';
 import 'package:boring_form/theme/boring_form_theme.dart';
+import 'package:boring_form/theme/boring_responsive_size.dart';
 import 'package:flutter/material.dart';
-
-import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:provider/provider.dart';
 
 class BoringForm extends BoringFieldsGroup<BoringFormController> {
@@ -90,5 +92,25 @@ class BoringForm extends BoringFieldsGroup<BoringFormController> {
         child: Consumer<BoringFormController>(
           builder: builder,
         ));
+  }
+
+  @override
+  BoringForm copyWith(
+      {BoringFieldController<Map<String, dynamic>>? fieldController,
+      void Function(Map<String, dynamic>? p1)? onChanged,
+      BoringFieldDecoration? decoration,
+      BoringResponsiveSize? boringResponsiveSize,
+      String? jsonKey,
+      bool Function(Map<String, dynamic> p1)? displayCondition,
+      bool? includeNotDisplayedInValidation,
+      List<BoringField<dynamic>>? fields,
+      BoringFormController? controller}) {
+    return BoringForm(
+      onChanged: onChanged ?? this.onChanged,
+      fields: fields ?? this.fields,
+      includeNotDisplayedInValidation: includeNotDisplayedInValidation ??
+          this.includeNotDisplayedInValidation,
+      formController: controller ?? this.controller,
+    );
   }
 }

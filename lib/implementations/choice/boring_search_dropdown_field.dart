@@ -7,11 +7,12 @@ import 'package:boring_form/theme/boring_responsive_size.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 
-class BoringDropDownField<T> extends BoringField<T> {
-  BoringDropDownField(
+class BoringSearchDropDownField<T> extends BoringField<T> {
+  BoringSearchDropDownField(
       {super.key,
       required super.jsonKey,
       required this.items,
+      this.searchInputDecoration,
       this.radius = 0,
       super.fieldController,
       super.decoration,
@@ -19,8 +20,10 @@ class BoringDropDownField<T> extends BoringField<T> {
       super.boringResponsiveSize,
       super.onChanged});
 
+  final InputDecoration? searchInputDecoration;
   final List<DropdownMenuItem<T?>> items;
   final double radius;
+  final searchEditController = TextEditingController();
 
   @override
   Widget builder(context, controller, child) {
@@ -38,7 +41,14 @@ class BoringDropDownField<T> extends BoringField<T> {
         decoration: newStyle,
         buttonHeight: 50,
         itemHeight: 50,
+        focusColor: Colors.transparent,
+        buttonSplashColor: Colors.transparent,
+        buttonHighlightColor: Colors.transparent,
+        buttonOverlayColor: MaterialStateProperty.resolveWith((states) {
+          return Colors.transparent;
+        }),
         dropdownMaxHeight: 250,
+        searchController: searchEditController,
         items: items,
         value: controller.value,
         hint: Text(decoration?.hintText ?? ''),
@@ -48,9 +58,25 @@ class BoringDropDownField<T> extends BoringField<T> {
             : ((value) {
                 controller.value = value;
               }),
+        searchInnerWidget: Padding(
+          padding: const EdgeInsets.all(10),
+          child: TextFormField(
+            controller: searchEditController,
+            decoration: searchInputDecoration,
+          ),
+        ),
+        searchMatchFn: (item, searchValue) => _searchMatchFn(item, searchValue),
+        onMenuStateChange: (isOpen) =>
+            _onMenuStateChange(isOpen, searchEditController),
       ),
     );
   }
+
+  _searchMatchFn(item, searchValue) =>
+      item.value.toString().toLowerCase().contains(searchValue.toLowerCase());
+
+  _onMenuStateChange(isOpen, searchEditController) =>
+      !isOpen ? searchEditController.clear() : null;
 
   _boxDecoration(newStyle) => BoxDecoration(
       borderRadius: BorderRadius.circular(radius),
@@ -63,18 +89,17 @@ class BoringDropDownField<T> extends BoringField<T> {
   void onValueChanged(T? newValue) {}
 
   @override
-  BoringDropDownField copyWith({
-    BoringFieldController<T>? fieldController,
-    void Function(T? p1)? onChanged,
-    BoringFieldDecoration? decoration,
-    BoringResponsiveSize? boringResponsiveSize,
-    String? jsonKey,
-    bool Function(Map<String, dynamic> p1)? displayCondition,
-    List<DropdownMenuItem<dynamic>>? items,
-    InputDecoration? searchInputDecoration,
-    double? radius,
-  }) {
-    return BoringDropDownField(
+  BoringSearchDropDownField copyWith(
+      {BoringFieldController<T>? fieldController,
+      void Function(T? p1)? onChanged,
+      BoringFieldDecoration? decoration,
+      BoringResponsiveSize? boringResponsiveSize,
+      String? jsonKey,
+      bool Function(Map<String, dynamic> p1)? displayCondition,
+      List<DropdownMenuItem<dynamic>>? items,
+      InputDecoration? searchInputDecoration,
+      double? radius}) {
+    return BoringSearchDropDownField(
       boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
       jsonKey: jsonKey ?? this.jsonKey,
       decoration: decoration ?? this.decoration,
@@ -83,6 +108,8 @@ class BoringDropDownField<T> extends BoringField<T> {
       displayCondition: displayCondition ?? this.displayCondition,
       fieldController: fieldController ?? this.fieldController,
       items: items ?? this.items,
+      searchInputDecoration:
+          searchInputDecoration ?? this.searchInputDecoration,
     );
   }
 }

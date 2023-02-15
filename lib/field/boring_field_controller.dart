@@ -1,5 +1,5 @@
-import 'package:flutter/widgets.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/widgets.dart';
 
 enum ChangedEvent { valueChanged, sumbittedForValidation }
 
@@ -29,6 +29,7 @@ class BoringFieldController<T> extends ChangeNotifier {
     setValueSilently(newValue);
     notifyListeners();
   }
+
 
   T? get initialValue => _initialValue;
 

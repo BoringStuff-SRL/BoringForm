@@ -1,6 +1,5 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:boring_form/boring_form.dart';
-import 'package:boring_form/theme/boring_form_theme.dart';
-import 'package:boring_form/field/boring_field.dart';
 import 'package:flutter/material.dart';
 
 class BoringTextField extends BoringField<String> {
@@ -51,4 +50,26 @@ class BoringTextField extends BoringField<String> {
 
   @override
   void onValueChanged(String? newValue) {}
+
+  @override
+  BoringTextField copyWith(
+      {BoringFieldController<String>? fieldController,
+      void Function(String? p1)? onChanged,
+      BoringFieldDecoration? decoration,
+      BoringResponsiveSize? boringResponsiveSize,
+      String? jsonKey,
+      bool Function(Map<String, dynamic> p1)? displayCondition,
+      int? minLines,
+      int? maxLines}) {
+    return BoringTextField(
+      minLines: minLines ?? this.minLines,
+      maxLines: maxLines ?? this.maxLines,
+      boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
+      jsonKey: jsonKey ?? this.jsonKey,
+      decoration: decoration ?? this.decoration,
+      onChanged: onChanged ?? this.onChanged,
+      displayCondition: displayCondition ?? this.displayCondition,
+      fieldController: fieldController ?? this.fieldController,
+    );
+  }
 }

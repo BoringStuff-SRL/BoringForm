@@ -1,0 +1,152 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:boring_form/field/boring_field.dart';
+import 'package:boring_form/field/boring_field_controller.dart';
+import 'package:boring_form/theme/boring_field_decoration.dart';
+import 'package:boring_form/theme/boring_form_theme.dart';
+import 'package:boring_form/theme/boring_responsive_size.dart';
+import 'package:flutter/material.dart';
+
+import 'boring_radiogroup_field.dart';
+
+class BoringCheckBoxGroupField<T> extends BoringField<T> {
+  BoringCheckBoxGroupField(
+      {super.key,
+      required super.jsonKey,
+      required this.items,
+      super.fieldController,
+      super.decoration,
+      this.itemsPerRow = 1,
+      this.checkColor,
+      this.unCheckColor,
+      super.displayCondition,
+      super.boringResponsiveSize,
+      super.onChanged});
+
+  final List<BoringChoiceItem<T>> items;
+  final int itemsPerRow;
+  final Color? unCheckColor;
+  final Color? checkColor;
+
+  @override
+  Widget builder(context, controller, child) {
+    final style = BoringFormTheme.of(context).style;
+
+    final initValue = (fieldController.value as bool?) ?? false;
+    return BoringField.boringFieldBuilder(
+      style,
+      decoration?.label ?? '',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Wrap(
+            children: items
+                .map((item) => FractionallySizedBox(
+                    widthFactor: 1 / itemsPerRow,
+                    child: GestureDetector(
+                      onTap: style.readOnly
+                          ? null
+                          : () => fieldController.value =
+                              (!(fieldController.value as bool)) as T?,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            child: initValue
+                                ? Icon(Icons.check_box_rounded,
+                                    color: checkColor ??
+                                        style.inputDecoration.iconColor)
+                                : Icon(Icons.check_box_outline_blank_rounded,
+                                    color: unCheckColor ??
+                                        style.inputDecoration.prefixIconColor),
+                          ),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          Expanded(
+                            child: Text(
+                              item.display,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: initValue
+                                      ? checkColor ??
+                                          style.inputDecoration.iconColor
+                                      : unCheckColor ??
+                                          style
+                                              .inputDecoration.prefixIconColor),
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+/*
+                    CheckboxListTile(
+                          activeColor: style.inputDecoration.focusColor,
+                          contentPadding: EdgeInsets.zero,
+                          value: (fieldController.value as bool?) ?? false,
+                          title: Text(item.display),
+                          tristate: true,
+                          onChanged: style.readOnly
+                              ? null
+                              : (checked) {
+                                  /*
+                                  if (checked == null) {
+                                    return;
+                                  }
+                                  if (checked) {
+                                    fieldController.value =
+                                        fieldController.value == null
+                                            ? [item.value as T]
+                                            : fieldController.value!
+                                          ..add(item.value as T);
+                                  } else {
+                                    fieldController.value =
+                                        fieldController.value == null
+                                            ? []
+                                            : fieldController.value!
+                                          ..remove(item.value as T);
+                                  }
+                               */
+                                }),*/
+                    ))
+                .toList(),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: Text(decoration?.helperText ?? ""),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void onValueChanged(T? newValue) {}
+
+  @override
+  BoringCheckBoxGroupField copyWith(
+      {BoringFieldController<T>? fieldController,
+      void Function(T? p1)? onChanged,
+      BoringFieldDecoration? decoration,
+      BoringResponsiveSize? boringResponsiveSize,
+      String? jsonKey,
+      bool Function(Map<String, dynamic> p1)? displayCondition,
+      List<BoringChoiceItem<dynamic>>? items,
+      int? itemsPerRow,
+      Color? checkColor,
+      Color? unCheckColor}) {
+    return BoringCheckBoxGroupField(
+      boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
+      jsonKey: jsonKey ?? this.jsonKey,
+      decoration: decoration ?? this.decoration,
+      onChanged: (onChanged as void Function(dynamic)?) ??
+          (this.onChanged as void Function(dynamic)),
+      displayCondition: displayCondition ?? this.displayCondition,
+      fieldController: fieldController ?? this.fieldController,
+      items: items ?? this.items,
+      itemsPerRow: itemsPerRow ?? this.itemsPerRow,
+      checkColor: checkColor ?? this.checkColor,
+      unCheckColor: unCheckColor ?? this.unCheckColor,
+    );
+  }
+}
