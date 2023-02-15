@@ -20,10 +20,10 @@ class BoringTextField extends BoringField<String> {
   final int maxLines;
 
   @override
-  bool setInitialValue(String? val) {
-    final v = super.setInitialValue(val);
+  bool setInitialValue(String? initialValue) {
+    final v = super.setInitialValue(initialValue);
     if (v) {
-      textEditingController.text = val ?? "";
+      textEditingController.text = fieldController.value ?? "";
     }
     return v;
   }
