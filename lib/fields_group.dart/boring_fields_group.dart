@@ -10,6 +10,7 @@ abstract class BoringFieldsGroupController
 
   Map<String, BoringFieldController> subControllers = {};
   Set<String> ignoreFields = {};
+
   @override
   Map<String, dynamic>? get value =>
       subControllers.map((key, value) => MapEntry(key, value.value))
@@ -49,6 +50,7 @@ abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
     extends BoringField<Map<String, dynamic>> {
   final List<BoringField> fields;
   final T controller;
+
   BoringFieldsGroup(
       {super.key,
       required this.controller,
@@ -65,13 +67,12 @@ abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
     _addFieldsSubcontrollers();
   }
 
-  @override
   bool ignoreInitialValue(Map<String, dynamic>? value) =>
       value != null && value.isNotEmpty;
 
   @override
-  bool setInitialValue(Map<String, dynamic>? val) {
-    final v = super.setInitialValue(val);
+  bool setInitialValue(Map<String, dynamic>? initialValue) {
+    final v = super.setInitialValue(initialValue);
     if (v) {
       _setSubFieldsInitialValues();
     }
@@ -125,7 +126,9 @@ abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
 
   void _setSubFieldsInitialValues() {
     for (var field in fields) {
-      field.setInitialValue(controller.initialValue?[field.jsonKey]);
+      if (controller.value![field.jsonKey] != null) {
+        field.setInitialValue(controller.value?[field.jsonKey]);
+      }
     }
   }
 

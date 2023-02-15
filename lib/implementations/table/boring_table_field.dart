@@ -3,55 +3,51 @@ import 'package:boring_form/implementations/table/boring_table_field_row.dart';
 import 'package:boring_table/boring_table.dart';
 import 'package:flutter/material.dart';
 
-typedef Bre = BoringTableFieldRow;
+import 'boring_table_field_controller.dart';
 
-class BoringTableFieldController
-    extends BoringFieldController<List<Map<String, dynamic>>> {
-  List<Map<String, BoringFieldController>> controllers = [];
-  void addControllers(List<BoringField> fields);
-  void removeControllers(int index);
 
-  @override
-  // TODO: implement value
-  List<Map<String, dynamic>>? get value => super.value;
-
-  @override
-  void setValueSilently(List<Map<String, dynamic>>? newValue) {
-    // TODO: implement setValueSilently
-    super.setValueSilently(newValue);
-  }
-}
-
-class RowsListener extends ValueNotifier<List<Bre>> {
-  RowsListener(super.value);
-
-  void addValue(BoringTableFieldRow newRow) {
-    value.add(newRow);
-    notifyListeners();
-  }
-
-  void deleteValue(int index) {
-    value.removeAt(index);
-    notifyListeners();
-  }
-}
 
 class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
   BoringTableField(
       {super.key,
-      super.fieldController,
+      BoringTableFieldController? tableFieldController,
       super.onChanged,
       required super.jsonKey,
-      required List<BoringField> items,
+      required this.items,
       super.boringResponsiveSize,
       super.displayCondition,
-      super.decoration}) {
-    this.items = items;
-  }
+      super.decoration})
+      : super(
+            fieldController:
+                tableFieldController ?? BoringTableFieldController());
 
   final _tableRows = RowsListener([]);
 
-  late final List<BoringField> items;
+  final List<BoringField> items;
+
+  @override
+  bool setInitialValue(List<Map<String, dynamic>>? initialValue) {
+    final v = super.setInitialValue(initialValue);
+
+    if (v) {
+      if (fieldController.initialValue != null) {
+        _setRowFieldsInitialValues();
+      }
+    }
+    return false;
+  }
+
+  void _setRowFieldsInitialValues() {
+    for (int i = 0; i < (fieldController.initialValue?.toList())!.length; i++) {
+      List<BoringField> tempList = [];
+      for (var item in items) {
+        tempList.add(item.copyWith(
+            fieldController: item.fieldController.copyWith(
+                initialValue: fieldController.initialValue![i][item.jsonKey])));
+      }
+      _onAddAction(initItems: tempList);
+    }
+  }
 
   @override
   Widget builder(context, controller, child) {
@@ -62,8 +58,8 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
           height: 600,
           child: ValueListenableBuilder(
             valueListenable: _tableRows,
-            builder:
-                (BuildContext context, List<Bre> tableRows, Widget? child) {
+            builder: (BuildContext context, List<BoringTableFieldRow> tableRows,
+                Widget? child) {
               return BoringTable.fromList(
                 title: BoringTableTitle(
                   title: "TEST",
@@ -90,19 +86,24 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
         ));
   }
 
-  void _onAddAction() {
-    final newRow = BoringTableFieldRow.fromItems(items: items);
+  void _onAddAction({List<BoringField>? initItems}) {
+    final newRow = BoringTableFieldRow.fromItems(items: initItems ?? items);
     _tableRows.addValue(newRow);
+    (fieldController as BoringTableFieldController)
+        .addControllers(newRow.items);
   }
 
   _onDeleteAction(int index) {
     _tableRows.deleteValue(index);
+    (fieldController as BoringTableFieldController).removeController(index);
   }
 
   _onCopyAction(int index) {
     final toCopy = _tableRows.value.elementAt(index);
     final newRow = BoringTableFieldRow.fromItems(items: toCopy.items);
     _tableRows.addValue(newRow);
+    (fieldController as BoringTableFieldController)
+        .addControllers(newRow.items);
   }
 
   @override
@@ -113,7 +114,8 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
       BoringResponsiveSize? boringResponsiveSize,
       String? jsonKey,
       bool Function(Map<String, dynamic> p1)? displayCondition,
-      List<BoringField>? items}) {
+      List<BoringField>? items,
+      BoringTableFieldController? tableFieldController}) {
     return BoringTableField(
       boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
       jsonKey: jsonKey ?? this.jsonKey,
@@ -121,8 +123,21 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
       onChanged: (onChanged as void Function(dynamic)?) ??
           (this.onChanged as void Function(dynamic)),
       displayCondition: displayCondition ?? this.displayCondition,
-      fieldController: fieldController ?? this.fieldController,
       items: items ?? this.items,
     );
+  }
+}
+
+class RowsListener extends ValueNotifier<List<BoringTableFieldRow>> {
+  RowsListener(super.value);
+
+  void addValue(BoringTableFieldRow newRow) {
+    value.add(newRow);
+    notifyListeners();
+  }
+
+  void deleteValue(int index) {
+    value.removeAt(index);
+    notifyListeners();
   }
 }

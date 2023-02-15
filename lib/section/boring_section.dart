@@ -128,6 +128,7 @@ class BoringSection extends BoringFieldsGroup {
       collapseOnHeaderTap: collapseOnHeaderTap ?? this.collapseOnHeaderTap,
       collapsible: collapsible ?? this.collapsible,
       fields: fields ?? this.fields,
+
     );
   }
 }
