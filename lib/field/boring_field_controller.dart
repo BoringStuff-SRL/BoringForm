@@ -10,11 +10,22 @@ class BoringFieldController<T> extends ChangeNotifier {
       : _initialValue = initialValue,
         _value = initialValue;
 
+  BoringFieldController.withValue(
+      {T? initialValue, this.validationFunction, required T? value})
+      : _initialValue = initialValue,
+        _value = value;
+
   BoringFieldController<T> copyWith(
-          {T? initialValue, String? Function(T? value)? validationFunction}) =>
-      BoringFieldController(
-          initialValue: initialValue ?? this.initialValue,
-          validationFunction: validationFunction ?? this.validationFunction);
+      {T? initialValue,
+      String? Function(T? value)? validationFunction,
+      T? value}) {
+    print("COPY FIELD CONTROLLER");
+    print("CURRENT: $_value - PARAM; $value - NEW: ${value ?? _value}");
+    return BoringFieldController.withValue(
+        value: value ?? _value,
+        initialValue: initialValue ?? this.initialValue,
+        validationFunction: validationFunction ?? this.validationFunction);
+  }
 
   T? _value;
   T? _initialValue;
@@ -29,7 +40,6 @@ class BoringFieldController<T> extends ChangeNotifier {
     setValueSilently(newValue);
     notifyListeners();
   }
-
 
   T? get initialValue => _initialValue;
 

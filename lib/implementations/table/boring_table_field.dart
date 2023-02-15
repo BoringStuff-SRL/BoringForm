@@ -1,9 +1,40 @@
 import 'package:boring_form/boring_form.dart';
-import 'package:boring_form/implementations/table/boring_row.dart';
+import 'package:boring_form/implementations/table/boring_table_field_row.dart';
 import 'package:boring_table/boring_table.dart';
 import 'package:flutter/material.dart';
 
-typedef Bre = BoringTableRowElement;
+typedef Bre = BoringTableFieldRow;
+
+class BoringTableFieldController
+    extends BoringFieldController<List<Map<String, dynamic>>> {
+  List<Map<String, BoringFieldController>> controllers = [];
+  void addControllers(List<BoringField> fields);
+  void removeControllers(int index);
+
+  @override
+  // TODO: implement value
+  List<Map<String, dynamic>>? get value => super.value;
+
+  @override
+  void setValueSilently(List<Map<String, dynamic>>? newValue) {
+    // TODO: implement setValueSilently
+    super.setValueSilently(newValue);
+  }
+}
+
+class RowsListener extends ValueNotifier<List<Bre>> {
+  RowsListener(super.value);
+
+  void addValue(BoringTableFieldRow newRow) {
+    value.add(newRow);
+    notifyListeners();
+  }
+
+  void deleteValue(int index) {
+    value.removeAt(index);
+    notifyListeners();
+  }
+}
 
 class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
   BoringTableField(
@@ -15,60 +46,39 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
       super.boringResponsiveSize,
       super.displayCondition,
       super.decoration}) {
-    this.items = items
-        .map((e) => e.copyWith(
-            jsonKey: e.jsonKey, onChanged: (value) => anyFieldChange()))
-        .toList();
+    this.items = items;
   }
 
-  final ValueNotifier<List<Bre>> _tableRows = ValueNotifier([]);
-
-  final List<List<BoringField>> _cacheRowItem = [];
+  final _tableRows = RowsListener([]);
 
   late final List<BoringField> items;
-
-  void anyFieldChange() {
-    var json = _cacheRowItem
-        .map((row) => {
-              for (var field in row)
-                (field).jsonKey: (field).fieldController.value
-            })
-        .toList();
-
-    fieldController.setValueSilently(json);
-  }
-
-  @override
-  bool setInitialValue(val) {
-    super.setInitialValue(val);
-    return true;
-  }
 
   @override
   Widget builder(context, controller, child) {
     final style = getStyle(context);
-
-    _cacheRowItem.add(BoringRow.cache(items: items).getItems()!);
-    _tableRows.value.add(BoringRow(items: _cacheRowItem.first));
-
-    anyFieldChange();
 
     return BoringField.boringFieldBuilder(style, decoration?.label,
         child: SizedBox(
           height: 600,
           child: ValueListenableBuilder(
             valueListenable: _tableRows,
-            builder: (BuildContext context, List<Bre> value, Widget? child) {
+            builder:
+                (BuildContext context, List<Bre> tableRows, Widget? child) {
               return BoringTable.fromList(
-                headerRow: BoringRow.tableHeader,
-                items: value,
+                title: BoringTableTitle(
+                  title: "TEST",
+                  actions: [
+                    ElevatedButton.icon(
+                        onPressed: _onAddAction,
+                        icon: const Icon(Icons.add),
+                        label: const Text("AGGIUNGI"))
+                  ],
+                ),
+                headerRow: BoringTableFieldRow.tableHeader,
+                items: tableRows,
                 rowActions: [
                   BoringRowAction(
-                      onTap: (val) => _onAddAction(val),
-                      icon: const Icon(Icons.add)),
-
-                  BoringRowAction(
-                      onTap: (val) => val == 0 ? null : _onDeleteAction(val),
+                      onTap: (val) => _onDeleteAction(val),
                       icon: const Icon(Icons.delete)),
                   BoringRowAction(
                       onTap: (val) => _onCopyAction(val),
@@ -80,43 +90,19 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
         ));
   }
 
-  _onAddAction(int value) {
-    var tempList = List.generate(_tableRows.value.length,
-        (index) => BoringRow(items: _cacheRowItem.elementAt(index)));
-
-    _cacheRowItem.add(BoringRow.cache(items: items).getItems()!);
-
-    tempList.add(BoringRow(items: _cacheRowItem.last));
-
-    _tableRows.value = tempList;
-    anyFieldChange();
+  void _onAddAction() {
+    final newRow = BoringTableFieldRow.fromItems(items: items);
+    _tableRows.addValue(newRow);
   }
 
-  _onDeleteAction(int value) {
-
-    var tempList = List.generate(_tableRows.value.length,
-        (index) => BoringRow(items: _cacheRowItem.elementAt(index)));
-
-    _cacheRowItem.removeAt(value);
-
-    tempList.removeAt(value);
-
-    _tableRows.value = tempList;
-    anyFieldChange();
+  _onDeleteAction(int index) {
+    _tableRows.deleteValue(index);
   }
 
-  _onCopyAction(int value) {
-    var tempList = List.generate(_tableRows.value.length,
-        (index) => BoringRow(items: _cacheRowItem.elementAt(index)));
-
-    _cacheRowItem.add(
-        BoringRow.cache(items: _cacheRowItem.elementAt(value), isCopy: true)
-            .getItems()!);
-
-    tempList.add(BoringRow(items: _cacheRowItem.last));
-
-    _tableRows.value = tempList;
-    anyFieldChange();
+  _onCopyAction(int index) {
+    final toCopy = _tableRows.value.elementAt(index);
+    final newRow = BoringTableFieldRow.fromItems(items: toCopy.items);
+    _tableRows.addValue(newRow);
   }
 
   @override

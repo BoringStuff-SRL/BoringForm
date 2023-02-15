@@ -100,12 +100,14 @@ abstract class BoringField<T> extends StatelessWidget {
     Widget? child,
   );
 
-  bool setInitialValue(T? val) {
-    if (!_ignoreInitialValue(val) && fieldController.initialValue != null) {
+  bool setInitialValue(T? initialValue) {
+    if (!_ignoreInitialValue(initialValue) &&
+        fieldController.initialValue != null) {
       return false;
     }
-    fieldController.initialValue = val;
-    fieldController.value = val;
+    fieldController.initialValue = initialValue;
+    fieldController.value ??= initialValue;
+
     return true;
   }
 
