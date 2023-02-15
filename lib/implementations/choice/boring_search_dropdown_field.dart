@@ -89,7 +89,7 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
   void onValueChanged(T? newValue) {}
 
   @override
-  BoringField copyWith(
+  BoringSearchDropDownField copyWith(
       {BoringFieldController<T>? fieldController,
       void Function(T? p1)? onChanged,
       BoringFieldDecoration? decoration,

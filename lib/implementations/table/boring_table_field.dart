@@ -51,6 +51,8 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
     _cacheRowItem.add(BoringRow.cache(items: items).getItems()!);
     _tableRows.value.add(BoringRow(items: _cacheRowItem.first));
 
+    anyFieldChange();
+
     return BoringField.boringFieldBuilder(style, decoration?.label,
         child: SizedBox(
           height: 600,
@@ -64,8 +66,9 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
                   BoringRowAction(
                       onTap: (val) => _onAddAction(val),
                       icon: const Icon(Icons.add)),
+
                   BoringRowAction(
-                      onTap: (val) => _onDeleteAction(val),
+                      onTap: (val) => val == 0 ? null : _onDeleteAction(val),
                       icon: const Icon(Icons.delete)),
                   BoringRowAction(
                       onTap: (val) => _onCopyAction(val),
@@ -86,9 +89,11 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
     tempList.add(BoringRow(items: _cacheRowItem.last));
 
     _tableRows.value = tempList;
+    anyFieldChange();
   }
 
   _onDeleteAction(int value) {
+
     var tempList = List.generate(_tableRows.value.length,
         (index) => BoringRow(items: _cacheRowItem.elementAt(index)));
 
@@ -97,6 +102,7 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
     tempList.removeAt(value);
 
     _tableRows.value = tempList;
+    anyFieldChange();
   }
 
   _onCopyAction(int value) {
@@ -110,10 +116,11 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
     tempList.add(BoringRow(items: _cacheRowItem.last));
 
     _tableRows.value = tempList;
+    anyFieldChange();
   }
 
   @override
-  BoringField copyWith(
+  BoringTableField copyWith(
       {BoringFieldController<List<Map<String, dynamic>>>? fieldController,
       void Function(List<Map<String, dynamic>>? p1)? onChanged,
       BoringFieldDecoration? decoration,

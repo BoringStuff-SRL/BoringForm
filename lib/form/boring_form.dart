@@ -95,7 +95,7 @@ class BoringForm extends BoringFieldsGroup<BoringFormController> {
   }
 
   @override
-  BoringField copyWith(
+  BoringForm copyWith(
       {BoringFieldController<Map<String, dynamic>>? fieldController,
       void Function(Map<String, dynamic>? p1)? onChanged,
       BoringFieldDecoration? decoration,

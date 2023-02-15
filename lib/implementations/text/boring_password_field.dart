@@ -47,7 +47,7 @@ class BoringPasswordField extends BoringField<String> {
   }
 
   @override
-  BoringField copyWith(
+  BoringPasswordField copyWith(
       {BoringFieldController<String>? fieldController,
       void Function(String? p1)? onChanged,
       BoringFieldDecoration? decoration,

@@ -109,7 +109,7 @@ class BoringSection extends BoringFieldsGroup {
   }
 
   @override
-  BoringField copyWith(
+  BoringSection copyWith(
       {BoringFieldController<Map<String, dynamic>>? fieldController,
       void Function(Map<String, dynamic>? p1)? onChanged,
       BoringFieldDecoration? decoration,

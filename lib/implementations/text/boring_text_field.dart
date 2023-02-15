@@ -52,7 +52,7 @@ class BoringTextField extends BoringField<String> {
   void onValueChanged(String? newValue) {}
 
   @override
-  BoringField copyWith(
+  BoringTextField copyWith(
       {BoringFieldController<String>? fieldController,
       void Function(String? p1)? onChanged,
       BoringFieldDecoration? decoration,

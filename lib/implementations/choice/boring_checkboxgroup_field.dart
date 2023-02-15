@@ -124,7 +124,7 @@ class BoringCheckBoxGroupField<T> extends BoringField<T> {
   void onValueChanged(T? newValue) {}
 
   @override
-  BoringField copyWith(
+  BoringCheckBoxGroupField copyWith(
       {BoringFieldController<T>? fieldController,
       void Function(T? p1)? onChanged,
       BoringFieldDecoration? decoration,

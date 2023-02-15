@@ -143,7 +143,7 @@ class BoringRangeSlider extends BoringField<RangeValues> {
   void onValueChanged(RangeValues? newValue) {}
 
   @override
-  BoringField copyWith({
+  BoringRangeSlider copyWith({
     BoringFieldController<RangeValues>? fieldController,
     void Function(RangeValues? p1)? onChanged,
     BoringFieldDecoration? decoration,

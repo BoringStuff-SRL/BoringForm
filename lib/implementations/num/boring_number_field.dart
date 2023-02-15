@@ -218,7 +218,7 @@ class BoringNumberField extends BoringField<num> {
   }
 
   @override
-  BoringField copyWith(
+  BoringNumberField copyWith(
       {BoringFieldController<num>? fieldController,
       void Function(num? p1)? onChanged,
       BoringFieldDecoration? decoration,
