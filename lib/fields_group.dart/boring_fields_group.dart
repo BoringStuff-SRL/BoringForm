@@ -126,8 +126,9 @@ abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
 
   void _setSubFieldsInitialValues() {
     for (var field in fields) {
-      if (controller.value![field.jsonKey] != null) {
-        field.setInitialValue(controller.value?[field.jsonKey]);
+      if (controller.initialValue != null &&
+          controller.initialValue![field.jsonKey] != null) {
+        field.setInitialValue(controller.initialValue?[field.jsonKey]);
       }
     }
   }
