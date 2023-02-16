@@ -27,9 +27,9 @@ class BoringPickerField<T> extends BoringField<T> {
   final Future<T?> Function(BuildContext context) showPicker;
 
   @override
-  bool setInitialValue(val) {
-    super.setInitialValue(val);
-    textEditingController.text = valueToString(val);
+  bool setInitialValue(initialValue) {
+    super.setInitialValue(initialValue);
+    textEditingController.text = valueToString(fieldController.value);
     return true;
   }
 

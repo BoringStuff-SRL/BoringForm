@@ -183,10 +183,11 @@ class BoringNumberField extends BoringField<num> {
   }
 
   @override
-  bool setInitialValue(num? val) {
-    final v = super.setInitialValue(val);
+  bool setInitialValue(num? initialValue) {
+    final v = super.setInitialValue(initialValue);
     if (v) {
-      textEditingController.text = val != null ? "$val" : "";
+      textEditingController.text =
+          fieldController.value != null ? "${fieldController.value}" : "";
     }
     return v;
   }
