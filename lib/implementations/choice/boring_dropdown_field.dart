@@ -26,7 +26,7 @@ class BoringDropDownField<T> extends BoringField<T> {
   Widget builder(context, controller, child) {
     final style = BoringFormTheme.of(context).style;
 
-    final newStyle = getDecoration(context)
+    final InputDecoration newStyle = getDecoration(context)
         .copyWith(contentPadding: const EdgeInsets.all(0));
 
     return BoringField.boringFieldBuilder(
@@ -52,12 +52,12 @@ class BoringDropDownField<T> extends BoringField<T> {
     );
   }
 
-  _boxDecoration(newStyle) => BoxDecoration(
+  _boxDecoration(InputDecoration newStyle) => BoxDecoration(
       borderRadius: BorderRadius.circular(radius),
-      color: newStyle.fillColor,
+      color: newStyle.fillColor ?? Colors.white,
       border: Border.all(
-          color: newStyle.border?.borderSide.color,
-          width: newStyle.border?.borderSide.width));
+          color: newStyle.border?.borderSide.color ?? Colors.grey,
+          width: newStyle.border?.borderSide.width ?? 1));
 
   @override
   void onValueChanged(T? newValue) {}
