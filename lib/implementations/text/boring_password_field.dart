@@ -116,7 +116,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
               ? IconButton(
                   icon: Icon(
                     hidden ? Icons.visibility_off : Icons.visibility,
-                    color: Theme.of(context).primaryColorDark,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                   onPressed: toggleVisibility)
               : GestureDetector(
