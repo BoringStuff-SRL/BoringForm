@@ -5,7 +5,7 @@ export 'field/boring_field_controller.dart';
 export 'form/boring_form.dart';
 export 'form/boring_form_controller.dart';
 export 'implementations/boring_slider.dart';
-export 'implementations/choice/boring_checkboxgroup_field.dart';
+export 'implementations/choice/boring_checkbox_field.dart';
 export 'implementations/choice/boring_dropdown_field.dart';
 export 'implementations/choice/boring_radiogroup_field.dart';
 export 'implementations/choice/boring_search_dropdown_field.dart';

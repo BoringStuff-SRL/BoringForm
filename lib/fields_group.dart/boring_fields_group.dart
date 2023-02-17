@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:boring_form/boring_form.dart';
 import 'package:boring_form/field/field_change_notification.dart';
 import 'package:boring_form/field/filtered_fields_provider.dart';
@@ -66,7 +68,7 @@ abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
         super(fieldController: controller) {
     _addFieldsSubcontrollers();
   }
-
+@override
   bool ignoreInitialValue(Map<String, dynamic>? value) =>
       value != null && value.isNotEmpty;
 
@@ -113,9 +115,7 @@ abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
     } else {
       return;
     }
-    //log("UPDADING FIELDS", name: jsonKey);
-    //log("FIELDS: $fields", name: jsonKey);
-    //log("VALUE: ${formController.value ?? {}}", name: jsonKey);
+
     final excluded = fieldsListProvider.notifyIfDifferentFields(
         fields, formController.value ?? {});
 
@@ -126,8 +126,7 @@ abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
 
   void _setSubFieldsInitialValues() {
     for (var field in fields) {
-      if (controller.initialValue != null &&
-          controller.initialValue![field.jsonKey] != null) {
+      if (controller.initialValue?[field.jsonKey] != null) {
         field.setInitialValue(controller.initialValue?[field.jsonKey]);
       }
     }
