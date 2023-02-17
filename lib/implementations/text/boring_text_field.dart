@@ -62,14 +62,14 @@ class BoringTextField extends BoringField<String> {
       int? minLines,
       int? maxLines}) {
     return BoringTextField(
-      minLines: minLines ?? this.minLines,
-      maxLines: maxLines ?? this.maxLines,
+      fieldController: fieldController ?? this.fieldController,
+      onChanged: onChanged ?? this.onChanged,
+      decoration: decoration ?? this.decoration,
       boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
       jsonKey: jsonKey ?? this.jsonKey,
-      decoration: decoration ?? this.decoration,
-      onChanged: onChanged ?? this.onChanged,
       displayCondition: displayCondition ?? this.displayCondition,
-      fieldController: fieldController ?? this.fieldController,
+      minLines: minLines ?? this.minLines,
+      maxLines: maxLines ?? this.maxLines,
     );
   }
 }
