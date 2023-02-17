@@ -35,9 +35,6 @@ class TableFormExample extends StatelessWidget {
             ).copyWith(),
             BoringTableField(
                 jsonKey: 'sections',
-                fieldController: BoringFieldController(initialValue: [
-                  {"nome": "enzo", "cognome": "de simone"}
-                ]),
                 decoration: BoringFieldDecoration(
                   label: "Sections",
                 ),
