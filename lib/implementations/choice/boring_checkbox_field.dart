@@ -19,11 +19,6 @@ class BoringCheckBoxField extends BoringField<bool> {
   final Color? checkColor;
 
   @override
-  bool setInitialValue(bool? initialValue) {
-    return super.setInitialValue(initialValue ?? false);
-  }
-
-  @override
   Widget builder(context, controller, child) {
     final BoringFormStyle style = BoringFormTheme.of(context).style;
 
