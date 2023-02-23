@@ -12,7 +12,7 @@ class BoringMultiChoiceDropDownField<T> extends BoringField<List<T>> {
       {super.key,
       required super.jsonKey,
       required this.items,
-      required this.showingValues,
+      required this.convertItemToString,
       this.radius = 0,
       super.fieldController,
       super.decoration,
@@ -22,7 +22,7 @@ class BoringMultiChoiceDropDownField<T> extends BoringField<List<T>> {
 
   //final List<DropdownMenuItem<T?>> items;
   final List<T> items;
-  final List<String> showingValues;
+  final String Function(T item) convertItemToString;
   final double radius;
 
   @override
@@ -58,7 +58,10 @@ class BoringMultiChoiceDropDownField<T> extends BoringField<List<T>> {
                 alignment: AlignmentDirectional.center,
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
-                  controller.value?.join(', ') ?? '',
+                  controller.value
+                          ?.map((e) => convertItemToString(e))
+                          .join(', ') ??
+                      '',
                   style: const TextStyle(
                     fontSize: 14,
                     overflow: TextOverflow.ellipsis,
@@ -107,7 +110,7 @@ class BoringMultiChoiceDropDownField<T> extends BoringField<List<T>> {
                             : const Icon(Icons.check_box_outline_blank),
                         const SizedBox(width: 16),
                         Text(
-                          showingValues[items.indexOf(e)],
+                          convertItemToString(e),
                           style: const TextStyle(
                             fontSize: 14,
                           ),
@@ -139,7 +142,7 @@ class BoringMultiChoiceDropDownField<T> extends BoringField<List<T>> {
     String? jsonKey,
     bool Function(Map<String, dynamic> p1)? displayCondition,
     List<T>? items,
-    List<String>? showingValues,
+    String Function(T item)? convertItemToString,
     InputDecoration? searchInputDecoration,
     double? radius,
   }) {
@@ -152,7 +155,7 @@ class BoringMultiChoiceDropDownField<T> extends BoringField<List<T>> {
       displayCondition: displayCondition ?? this.displayCondition,
       fieldController: fieldController ?? this.fieldController,
       items: items ?? this.items,
-      showingValues: showingValues ?? this.showingValues,
+      convertItemToString: convertItemToString ?? this.convertItemToString,
     );
   }
 }
