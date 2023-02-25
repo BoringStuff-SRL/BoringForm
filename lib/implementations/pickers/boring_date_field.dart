@@ -60,7 +60,7 @@ class BoringDateField extends BoringPickerField<DateTime?> {
   })  : assert(firstlDate < lastDate, "firstDate must be less than lastDate"),
         assert(
             initialDate == null ||
-                (initialDate < lastDate && initialDate > firstlDate),
+                (initialDate <= lastDate && initialDate >= firstlDate),
             "initial date must be between firstDate and lastDate"),
         super(
             showPicker: (context) async => await showDatePicker(

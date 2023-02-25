@@ -1,11 +1,27 @@
+import 'package:boring_form/implementations/choice/boring_multichoice_dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import "package:boring_form/boring_form.dart";
 
+class User {
+  final String username;
+
+  User(this.username);
+
+  @override
+  operator ==(Object other) => (other as User).username == username;
+
+  @override
+  int get hashCode => super.hashCode;
+}
+
 class TableFormExample extends StatelessWidget {
   TableFormExample({super.key});
-  final fc = BoringFormController();
+
+  final fc = BoringFormController(initialValue: {
+    'multi': [User('pippo')]
+  });
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -13,6 +29,13 @@ class TableFormExample extends StatelessWidget {
         BoringForm(
           formController: fc,
           fields: [
+            BoringMultiChoiceDropDownField<User>(
+              jsonKey: 'multi',
+              items: [User('pippo'), User('pluto')],
+              convertItemToString: (item) {
+                return item.username;
+              },
+            ),
             BoringTextField(
               //onChanged: (val) => print(val),
               fieldController: BoringFieldController(
