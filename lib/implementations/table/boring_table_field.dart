@@ -1,11 +1,10 @@
 import 'package:boring_form/boring_form.dart';
 import 'package:boring_form/implementations/table/boring_table_field_row.dart';
+import 'package:boring_form/implementations/table/boring_table_form_decoration.dart';
 import 'package:boring_table/boring_table.dart';
 import 'package:flutter/material.dart';
 
 import 'boring_table_field_controller.dart';
-
-
 
 class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
   BoringTableField(
@@ -14,6 +13,8 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
       super.onChanged,
       required super.jsonKey,
       required this.items,
+      required this.tableHeader,
+      this.tableFormDecoration,
       super.boringResponsiveSize,
       super.displayCondition,
       super.decoration})
@@ -22,7 +23,8 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
                 tableFieldController ?? BoringTableFieldController());
 
   final _tableRows = RowsListener([]);
-
+  final BoringTableFormDecoration? tableFormDecoration;
+  final List<TableHeaderElement> tableHeader;
   final List<BoringField> items;
 
   @override
@@ -62,15 +64,24 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
                 Widget? child) {
               return BoringTable.fromList(
                 title: BoringTableTitle(
-                  title: "TEST",
+                  title: tableFormDecoration?.tableTitle ?? const Text('Title'),
                   actions: [
-                    ElevatedButton.icon(
+                    if (tableFormDecoration?.showAddButton ?? false)
+                      ElevatedButton(
                         onPressed: _onAddAction,
-                        icon: const Icon(Icons.add),
-                        label: const Text("AGGIUNGI"))
+                        style: tableFormDecoration?.addButtonActionStyle,
+                        child: tableFormDecoration?.addButtonActionChild ??
+                            const Text('add'),
+                      )
                   ],
                 ),
-                headerRow: BoringTableFieldRow.tableHeader,
+                cardElevation: tableFormDecoration?.cardElevation,
+                rowActionsColumnLabel:
+                    tableFormDecoration?.rowActionsColumnLabel,
+                decoration: tableFormDecoration?.decoration,
+                shape: tableFormDecoration?.shape,
+                widgetWhenEmpty: tableFormDecoration?.widgetWhenEmpty,
+                headerRow: tableHeader,
                 items: tableRows,
                 rowActions: [
                   BoringRowAction(
@@ -115,6 +126,8 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
       String? jsonKey,
       bool Function(Map<String, dynamic> p1)? displayCondition,
       List<BoringField>? items,
+      BoringTableFormDecoration? tableFormDecoration,
+      List<TableHeaderElement>? tableHeader,
       BoringTableFieldController? tableFieldController}) {
     return BoringTableField(
       boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
@@ -124,6 +137,8 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
           (this.onChanged as void Function(dynamic)),
       displayCondition: displayCondition ?? this.displayCondition,
       items: items ?? this.items,
+      tableHeader: tableHeader ?? this.tableHeader,
+      tableFormDecoration: tableFormDecoration ?? this.tableFormDecoration,
     );
   }
 }
