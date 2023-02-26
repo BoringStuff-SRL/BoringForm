@@ -21,6 +21,7 @@ class BoringSection extends BoringFieldsGroup {
       super.onChanged,
       this.collapsible = false,
       this.collapseOnHeaderTap,
+      this.startExpanded = true,
       super.decoration,
       super.displayCondition,
       required super.fields})
@@ -32,6 +33,7 @@ class BoringSection extends BoringFieldsGroup {
   final double sectionPadding = 0;
   final bool collapsible;
   final bool? collapseOnHeaderTap;
+  final bool startExpanded;
 
   // Widget _sectionContent() => LayoutBuilder(
   //       builder: (context, constraints) =>
@@ -83,6 +85,7 @@ class BoringSection extends BoringFieldsGroup {
       return Padding(
         padding: EdgeInsets.all(sectionPadding),
         child: BoringExpandable(
+          startExpanded: startExpanded,
           header: (toggleExpansion, animation) => ListTile(
             onTap: (collapseOnHeaderTap == true ||
                     (collapsible && collapseOnHeaderTap == null))
@@ -128,7 +131,6 @@ class BoringSection extends BoringFieldsGroup {
       collapseOnHeaderTap: collapseOnHeaderTap ?? this.collapseOnHeaderTap,
       collapsible: collapsible ?? this.collapsible,
       fields: fields ?? this.fields,
-
     );
   }
 }
