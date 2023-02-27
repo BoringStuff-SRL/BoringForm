@@ -14,6 +14,13 @@ class BoringMultiChoiceDropDownField<T> extends BoringField<List<T>> {
       required this.items,
       required this.convertItemToString,
       this.radius = 0,
+      this.checkedIcon,
+      this.dropdownItemsSpaceBetweenIcon,
+      this.uncheckedIcon,
+      this.itemsPadding,
+      this.resultTextPadding,
+      this.itemsTextStyle,
+      this.resultTextStyle,
       super.fieldController,
       super.decoration,
       super.displayCondition,
@@ -24,6 +31,13 @@ class BoringMultiChoiceDropDownField<T> extends BoringField<List<T>> {
   final List<T> items;
   final String Function(T item) convertItemToString;
   final double radius;
+  final Widget? checkedIcon;
+  final Widget? uncheckedIcon;
+  final TextStyle? resultTextStyle;
+  final TextStyle? itemsTextStyle;
+  final EdgeInsets? itemsPadding;
+  final EdgeInsets? resultTextPadding;
+  final double? dropdownItemsSpaceBetweenIcon;
 
   @override
   Widget builder(context, controller, child) {
@@ -48,24 +62,29 @@ class BoringMultiChoiceDropDownField<T> extends BoringField<List<T>> {
             : null,
         hint: Text(decoration?.hintText ?? ''),
         dropdownDecoration: _boxDecoration(newStyle),
-        onChanged: (value) {
-          print('on changed');
-        },
+        onChanged: isReadOnly(context) ? null : (value) {},
+        isExpanded: true,
+        itemPadding:
+            itemsPadding ?? const EdgeInsets.symmetric(horizontal: 15.0),
         selectedItemBuilder: (context) {
           return items.map(
             (item) {
               return Container(
-                alignment: AlignmentDirectional.center,
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                alignment: AlignmentDirectional.centerStart,
+                padding: resultTextPadding ??
+                    const EdgeInsets.symmetric(horizontal: 0.0),
                 child: Text(
                   controller.value
                           ?.map((e) => convertItemToString(e))
                           .join(', ') ??
                       '',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                  style: resultTextStyle?.copyWith(
+                        overflow: TextOverflow.ellipsis,
+                      ) ??
+                      const TextStyle(
+                        fontSize: 14,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                   maxLines: 1,
                 ),
               );
@@ -100,19 +119,24 @@ class BoringMultiChoiceDropDownField<T> extends BoringField<List<T>> {
 
                     menuState(() {});
                   },
-                  child: Container(
+                  child: SizedBox(
                     height: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Row(
                       children: [
                         _isSelected
-                            ? const Icon(Icons.check_box_outlined)
-                            : const Icon(Icons.check_box_outline_blank),
-                        const SizedBox(width: 16),
-                        Text(
-                          convertItemToString(e),
-                          style: const TextStyle(
-                            fontSize: 14,
+                            ? checkedIcon ??
+                                const Icon(Icons.check_box_outlined)
+                            : uncheckedIcon ??
+                                const Icon(Icons.check_box_outline_blank),
+                        SizedBox(width: dropdownItemsSpaceBetweenIcon ?? 16),
+                        Flexible(
+                          child: Text(
+                            convertItemToString(e),
+                            overflow: TextOverflow.ellipsis,
+                            style: itemsTextStyle ??
+                                const TextStyle(
+                                  fontSize: 14,
+                                ),
                           ),
                         ),
                       ],
