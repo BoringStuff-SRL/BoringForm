@@ -6,6 +6,7 @@ class BoringTextRegExpField extends BoringTextField {
       BoringFieldController<String>? fieldController,
       super.onChanged,
       required super.jsonKey,
+      this.canEmpty = false,
       super.boringResponsiveSize,
       required String regExpError,
       super.displayCondition,
@@ -15,10 +16,21 @@ class BoringTextRegExpField extends BoringTextField {
             fieldController:
                 (fieldController ?? BoringFieldController<String>()).copyWith(
           validationFunction: (value) {
-            if (value == null || value.isEmpty || !regExp.hasMatch(value)) {
-              return regExpError;
+            if (!canEmpty) {
+              if (value == null || value.isEmpty || !regExp.hasMatch(value)) {
+                return regExpError;
+              }
+            } else {
+              if (value != null && value.isNotEmpty) {
+                if (!regExp.hasMatch(value)) {
+                  return regExpError;
+                }
+              }
             }
+
             return fieldController?.validationFunction?.call(value);
           },
         ));
+
+  final bool canEmpty;
 }

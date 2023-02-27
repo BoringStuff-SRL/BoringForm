@@ -5,7 +5,7 @@ class BoringExpandable extends StatefulWidget {
       {super.key,
       required this.child,
       required this.header,
-      this.startExpanded = true});
+      this.startExpanded = false});
 
   final bool startExpanded;
 

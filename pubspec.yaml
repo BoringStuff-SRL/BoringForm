@@ -13,7 +13,7 @@ dependencies:
 
   intl: ^0.17.0
   provider: ^6.0.5
-  dropdown_button2: ^1.9.2
+  dropdown_button2: ^1.9.3
   boring_table:
     git:
       url: https://github.com/fradesa/FlutterBoringTable.git
