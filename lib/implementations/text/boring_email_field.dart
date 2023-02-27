@@ -8,6 +8,7 @@ class BoringEmailField extends BoringTextRegExpField {
       required super.jsonKey,
       super.boringResponsiveSize,
       super.displayCondition,
+      super.canEmpty,
       required String invalidEmailMessage,
       super.decoration})
       : super(
