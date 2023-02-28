@@ -10,6 +10,7 @@ class BoringCheckBoxField extends BoringField<bool> {
       super.fieldController,
       super.decoration,
       this.checkColor,
+      this.mainAxisAlignment,
       this.unCheckColor,
       super.displayCondition,
       super.boringResponsiveSize,
@@ -17,6 +18,7 @@ class BoringCheckBoxField extends BoringField<bool> {
 
   final Color? unCheckColor;
   final Color? checkColor;
+  final MainAxisAlignment? mainAxisAlignment;
 
   @override
   Widget builder(context, controller, child) {
@@ -25,49 +27,55 @@ class BoringCheckBoxField extends BoringField<bool> {
     return BoringField.boringFieldBuilder(
       BoringFormStyle(),
       decoration?.label ?? '',
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          GestureDetector(
-            onTap: style.readOnly
-                ? null
-                : () {
-                    controller.value = !(controller.value ?? false);
-                  },
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  child: controller.value ?? false
-                      ? Icon(Icons.check_box_rounded,
-                          color: checkColor ?? style.inputDecoration.iconColor)
-                      : Icon(Icons.check_box_outline_blank_rounded,
-                          color: unCheckColor ??
-                              style.inputDecoration.prefixIconColor),
-                ),
-                const SizedBox(
-                  width: 8,
-                ),
-                Expanded(
-                  child: Text(
-                    decoration?.label! ?? '',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: controller.value ?? false
-                            ? checkColor ?? style.inputDecoration.iconColor
-                            : unCheckColor ??
+      child: Align(
+        alignment: Alignment.center,
+        heightFactor: 2,
+        child: Column(
+          children: [
+            GestureDetector(
+              onTap: style.readOnly
+                  ? null
+                  : () {
+                      controller.value = !(controller.value ?? false);
+                    },
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.start,
+                children: [
+                  Container(
+                    child: controller.value ?? false
+                        ? Icon(Icons.check_box_rounded,
+                            color:
+                                checkColor ?? style.inputDecoration.iconColor)
+                        : Icon(Icons.check_box_outline_blank_rounded,
+                            color: unCheckColor ??
                                 style.inputDecoration.prefixIconColor),
                   ),
-                )
-              ],
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  Flexible(
+                    child: Text(
+                      decoration?.label! ?? '',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: controller.value ?? false
+                              ? checkColor ?? style.inputDecoration.iconColor
+                              : unCheckColor ??
+                                  style.inputDecoration.prefixIconColor),
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: Text(decoration?.helperText ?? ""),
-          ),
-        ],
+            decoration?.helperText != null
+                ? Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Text(decoration!.helperText!),
+                  )
+                : Container(),
+          ],
+        ),
       ),
     );
   }
@@ -83,10 +91,12 @@ class BoringCheckBoxField extends BoringField<bool> {
       String? jsonKey,
       bool Function(Map<String, dynamic> p1)? displayCondition,
       List<BoringChoiceItem<dynamic>>? items,
+      MainAxisAlignment? mainAxisAlignment,
       int? itemsPerRow,
       Color? checkColor,
       Color? unCheckColor}) {
     return BoringCheckBoxField(
+      mainAxisAlignment: mainAxisAlignment ?? this.mainAxisAlignment,
       boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
       jsonKey: jsonKey ?? this.jsonKey,
       decoration: decoration ?? this.decoration,
