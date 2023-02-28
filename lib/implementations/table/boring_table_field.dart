@@ -15,8 +15,16 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
       required this.items,
       required this.tableHeader,
       this.tableFormDecoration,
+      this.groupActions = false,
+      this.groupActionsMenuShape,
+      this.actionGroupTextStyle,
+      this.groupActionsWidget = const Icon(Icons.more_vert),
       super.boringResponsiveSize,
+      this.copyIconWidget,
+      this.deleteIconWidget,
       super.displayCondition,
+      this.copyActionText,
+      this.deleteActionText,
       super.decoration})
       : super(
             fieldController:
@@ -26,6 +34,14 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
   final BoringTableFormDecoration? tableFormDecoration;
   final List<TableHeaderElement> tableHeader;
   final List<BoringField> items;
+  final bool groupActions;
+  final TextStyle? actionGroupTextStyle;
+  final ShapeBorder? groupActionsMenuShape;
+  final Widget groupActionsWidget;
+  final Widget? deleteIconWidget;
+  final Widget? copyIconWidget;
+  final String? deleteActionText;
+  final String? copyActionText;
 
   @override
   bool setInitialValue(List<Map<String, dynamic>>? initialValue) {
@@ -63,6 +79,10 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
             builder: (BuildContext context, List<BoringTableFieldRow> tableRows,
                 Widget? child) {
               return BoringTable.fromList(
+                groupActions: groupActions,
+                actionGroupTextStyle: actionGroupTextStyle,
+                groupActionsMenuShape: groupActionsMenuShape,
+                groupActionsWidget: groupActionsWidget,
                 title: BoringTableTitle(
                   title: tableFormDecoration?.tableTitle ?? const Text('Title'),
                   actions: [
@@ -85,11 +105,13 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
                 items: tableRows,
                 rowActions: [
                   BoringRowAction(
+                      buttonText: groupActions ? deleteActionText : null,
                       onTap: (val) => _onDeleteAction(val),
-                      icon: const Icon(Icons.delete)),
+                      icon: deleteIconWidget ?? const Icon(Icons.delete)),
                   BoringRowAction(
+                      buttonText: groupActions ? copyActionText : null,
                       onTap: (val) => _onCopyAction(val),
-                      icon: const Icon(Icons.copy))
+                      icon: copyIconWidget ?? const Icon(Icons.copy))
                 ],
               );
             },
@@ -128,8 +150,25 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
       List<BoringField>? items,
       BoringTableFormDecoration? tableFormDecoration,
       List<TableHeaderElement>? tableHeader,
-      BoringTableFieldController? tableFieldController}) {
+      BoringTableFieldController? tableFieldController,
+      bool? groupActions,
+      TextStyle? actionGroupTextStyle,
+      ShapeBorder? groupActionsMenuShape,
+      Widget? groupActionsWidget,
+      Widget? deleteIconWidget,
+      Widget? copyIconWidget,
+      String? deleteActionText,
+      String? copyActionText}) {
     return BoringTableField(
+      groupActions: groupActions ?? this.groupActions,
+      actionGroupTextStyle: actionGroupTextStyle ?? this.actionGroupTextStyle,
+      copyActionText: copyActionText ?? this.copyActionText,
+      copyIconWidget: copyIconWidget ?? this.copyIconWidget,
+      deleteActionText: deleteActionText ?? this.deleteActionText,
+      deleteIconWidget: deleteIconWidget ?? this.deleteIconWidget,
+      groupActionsMenuShape:
+          groupActionsMenuShape ?? this.groupActionsMenuShape,
+      groupActionsWidget: groupActionsWidget ?? this.groupActionsWidget,
       boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
       jsonKey: jsonKey ?? this.jsonKey,
       decoration: decoration ?? this.decoration,
