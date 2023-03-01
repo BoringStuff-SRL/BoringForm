@@ -71,6 +71,8 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
   Widget builder(context, controller, child) {
     final style = getStyle(context);
 
+
+
     return BoringField.boringFieldBuilder(style, decoration?.label,
         child: SizedBox(
           height: 600,
