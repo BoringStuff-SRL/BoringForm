@@ -164,8 +164,7 @@ abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
                   builder: (context, value, _) => Wrap(
                         crossAxisAlignment: WrapCrossAlignment.start,
                         children: List.generate(fields.length, (index) {
-                          fieldsListProvider.notifyIfDifferentFields(
-                              fields,{}, doNotNotify: true);
+
 
 
                           return Offstage(
@@ -186,8 +185,9 @@ abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
       );
 
   @override
-  Widget builder(context, controller, child) =>
-      buildWidget(context, this.controller, _content());
+  Widget builder(context, controller, child) {
+    formChanged();
+      return buildWidget(context, this.controller, _content()); }
 
   Widget buildWidget(BuildContext context,
       BoringFieldsGroupController controller, Widget content);
