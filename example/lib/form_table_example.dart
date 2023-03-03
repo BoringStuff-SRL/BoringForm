@@ -30,30 +30,11 @@ class TableFormExample extends StatelessWidget {
           formController: fc,
           style: BoringFormStyle(
               readOnly: false,
+              labelOverField: false,
               inputDecoration:
                   const InputDecoration(border: OutlineInputBorder())),
           fields: [
             BoringSection(jsonKey: 'test', fields: [
-              BoringTextField(
-                //onChanged: (val) => print(val),
-                fieldController: BoringFieldController(
-                    initialValue: "Fra",
-                    validationFunction: (value) {
-                      if (value == null) {
-                        return "Campo richiesto";
-                      } else if (value.length < 2 || value.length > 24) {
-                        return "Nome non valido";
-                      }
-                      return null;
-                    }),
-                boringResponsiveSize: BoringResponsiveSize(md: 6, sm: 6),
-                jsonKey: "name",
-                decoration: BoringFieldDecoration(
-                    label: "Nome",
-                    hintText: "Inserisci il nome",
-                    prefixIcon:
-                        Icon(Icons.text_fields_outlined, color: Colors.grey)),
-              ).copyWith(),
               BoringTextField(
                 //onChanged: (val) => print(val),
                 fieldController: BoringFieldController(
@@ -76,6 +57,33 @@ class TableFormExample extends StatelessWidget {
               ).copyWith(),
               BoringCheckBoxField(
                 jsonKey: 'check',
+                mainAxisAlignment: MainAxisAlignment.center,
+                boringResponsiveSize: BoringResponsiveSize(md: 6, sm: 6),
+              ),
+              BoringTextField(
+                //onChanged: (val) => print(val),
+                minLines: 5,
+                maxLines: 6,
+                fieldController: BoringFieldController(
+                    initialValue: "Fra",
+                    validationFunction: (value) {
+                      if (value == null) {
+                        return "Campo richiesto";
+                      } else if (value.length < 2 || value.length > 24) {
+                        return "Nome non valido";
+                      }
+                      return null;
+                    }),
+                boringResponsiveSize: BoringResponsiveSize(md: 6, sm: 6),
+                jsonKey: "surname2",
+                decoration: BoringFieldDecoration(
+                    label: "Nome",
+                    hintText: "Inserisci il nome",
+                    prefixIcon:
+                        Icon(Icons.text_fields_outlined, color: Colors.grey)),
+              ).copyWith(),
+              BoringCheckBoxField(
+                jsonKey: 'check2',
                 mainAxisAlignment: MainAxisAlignment.center,
                 boringResponsiveSize: BoringResponsiveSize(md: 6, sm: 6),
               ),

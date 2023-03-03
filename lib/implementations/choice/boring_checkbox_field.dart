@@ -12,6 +12,7 @@ class BoringCheckBoxField extends BoringField<bool> {
       this.checkColor,
       this.mainAxisAlignment,
       this.unCheckColor,
+      this.verticalPositioning = 1,
       super.displayCondition,
       super.boringResponsiveSize,
       super.onChanged});
@@ -19,6 +20,7 @@ class BoringCheckBoxField extends BoringField<bool> {
   final Color? unCheckColor;
   final Color? checkColor;
   final MainAxisAlignment? mainAxisAlignment;
+  final double verticalPositioning;
 
   @override
   Widget builder(context, controller, child) {
@@ -29,7 +31,7 @@ class BoringCheckBoxField extends BoringField<bool> {
       decoration?.label ?? '',
       child: Align(
         alignment: Alignment.center,
-        heightFactor: 2,
+        heightFactor: verticalPositioning,
         child: Column(
           children: [
             GestureDetector(
