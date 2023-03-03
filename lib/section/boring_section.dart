@@ -35,6 +35,10 @@ class BoringSection extends BoringFieldsGroup {
   final bool? collapseOnHeaderTap;
   final bool startExpanded;
 
+  void _formChanged() {
+    updateFilteredFieldsList();
+  }
+
   // Widget _sectionContent() => LayoutBuilder(
   //       builder: (context, constraints) =>
   //           NotificationListener<FieldChangeNotification>(
@@ -72,8 +76,8 @@ class BoringSection extends BoringFieldsGroup {
   void _setFormContext(BuildContext context) {
     BoringFormController formController =
         Provider.of<BoringFormController>(context);
-    formController.removeListener(formChanged);
-    formController.addListener(formChanged);
+    formController.removeListener(_formChanged);
+    formController.addListener(_formChanged);
     contextHolder.value = context;
   }
 

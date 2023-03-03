@@ -8,7 +8,7 @@ class FieldsListProvider extends ChangeNotifier {
       !(_fieldsOffStage[field.jsonKey] ?? false);
 
   Set<String> notifyIfDifferentFields(
-      List<BoringField> fields, Map<String, dynamic> map) {
+      List<BoringField> fields, Map<String, dynamic> map, {bool doNotNotify = false}) {
     bool diff = false;
     Set<String> hiddenFieldsKeys = {};
     for (var field in fields) {
@@ -19,7 +19,7 @@ class FieldsListProvider extends ChangeNotifier {
       diff = diff || isFieldOnStage(field) != onStage;
       _fieldsOffStage[field.jsonKey] = !onStage;
     }
-    if (diff) {
+    if (diff && !doNotNotify) {
       notifyListeners();
     }
     return hiddenFieldsKeys;

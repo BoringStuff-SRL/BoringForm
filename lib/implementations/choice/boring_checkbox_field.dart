@@ -80,6 +80,7 @@ class BoringCheckBoxField extends BoringField<bool> {
     );
   }
 
+  @override
   void onValueChanged(bool? newValue) {}
 
   @override

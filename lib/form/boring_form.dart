@@ -39,8 +39,8 @@ class BoringForm extends BoringFieldsGroup<BoringFormController> {
   void onAnyChanged() {
     // TODO: implement onAnyChanged
     super.onAnyChanged();
-    controller.sendNotification();
     formChanged();
+    controller.sendNotification();
   }
 
   @override
@@ -49,6 +49,7 @@ class BoringForm extends BoringFieldsGroup<BoringFormController> {
   @override
   Widget buildWidget(BuildContext context,
       BoringFieldsGroupController controller, Widget content) {
+
     return BoringFormTheme(
       style: style ?? BoringFormStyle(),
       child: Column(
