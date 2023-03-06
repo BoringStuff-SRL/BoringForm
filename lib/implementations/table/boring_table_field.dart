@@ -71,8 +71,6 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
   Widget builder(context, controller, child) {
     final style = getStyle(context);
 
-
-
     return BoringField.boringFieldBuilder(style, decoration?.label,
         child: SizedBox(
           height: 600,
@@ -129,8 +127,9 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
   }
 
   _onDeleteAction(int index) {
-    _tableRows.deleteValue(index);
     (fieldController as BoringTableFieldController).removeController(index);
+    _tableRows.deleteValue(index);
+
   }
 
   _onCopyAction(int index) {
