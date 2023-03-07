@@ -127,8 +127,9 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
   }
 
   _onDeleteAction(int index) {
-    _tableRows.deleteValue(index);
     (fieldController as BoringTableFieldController).removeController(index);
+    _tableRows.deleteValue(index);
+
   }
 
   _onCopyAction(int index) {

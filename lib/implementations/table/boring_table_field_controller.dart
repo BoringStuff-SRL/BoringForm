@@ -29,7 +29,7 @@ class BoringTableFieldController
 
   void addControllers(List<BoringField> fields) {
     controllers.add(
-        {for (var field in fields) (field).jsonKey: (field).fieldController});
+        {for (var field in fields) (field).jsonKey: (field).fieldController.copyWith()});
   }
 
   void removeController(int index) {

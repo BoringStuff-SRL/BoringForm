@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 class FieldsListProvider extends ChangeNotifier {
   final Map<String, bool> _fieldsOffStage = {};
+
   bool isFieldOnStage(BoringField field) =>
       !(_fieldsOffStage[field.jsonKey] ?? false);
 

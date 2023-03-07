@@ -36,7 +36,7 @@ class BoringDropDownField<T> extends BoringField<T> {
         dropdownOverButton: false,
         dropdownElevation: 0,
         decoration: newStyle,
-        buttonHeight: 50,
+        buttonHeight: 51,
         itemHeight: 50,
         dropdownMaxHeight: 250,
         items: items,

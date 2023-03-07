@@ -14,9 +14,10 @@ abstract class BoringFieldsGroupController
   Set<String> ignoreFields = {};
 
   @override
-  Map<String, dynamic>? get value =>
-      subControllers.map((key, value) => MapEntry(key, value.value))
-        ..removeWhere((key, value) => ignoreFields.contains(key));
+  Map<String, dynamic>? get value {
+    return subControllers.map((key, value) => MapEntry(key, value.value))
+      ..removeWhere((key, value) => ignoreFields.contains(key));
+  }
 
   @override
   set value(Map<String, dynamic>? newValue) {
@@ -68,7 +69,8 @@ abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
         super(fieldController: controller) {
     _addFieldsSubcontrollers();
   }
-@override
+
+  @override
   bool ignoreInitialValue(Map<String, dynamic>? value) =>
       value != null && value.isNotEmpty;
 
@@ -118,7 +120,6 @@ abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
 
     final excluded = fieldsListProvider.notifyIfDifferentFields(
         fields, formController.value ?? {});
-
     if (true /*TODO add [exludeInvalidFields = true] attribute (ex: maybe you want to include invalid fields and so this condition should be false)*/) {
       formController.ignoreFields = excluded;
     }
@@ -163,6 +164,9 @@ abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
                   builder: (context, value, _) => Wrap(
                         crossAxisAlignment: WrapCrossAlignment.start,
                         children: List.generate(fields.length, (index) {
+
+
+
                           return Offstage(
                             offstage: !fieldsListProvider
                                 .isFieldOnStage(fields[index]),
@@ -181,8 +185,9 @@ abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
       );
 
   @override
-  Widget builder(context, controller, child) =>
-      buildWidget(context, this.controller, _content());
+  Widget builder(context, controller, child) {
+    formChanged();
+      return buildWidget(context, this.controller, _content()); }
 
   Widget buildWidget(BuildContext context,
       BoringFieldsGroupController controller, Widget content);
