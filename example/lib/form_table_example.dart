@@ -107,15 +107,12 @@ class TableFormExample extends StatelessWidget {
               tableFormDecoration: BoringTableFormDecoration(
                   tableTitle: Text('PROVA'), showAddButton: true),
               items: [
-                BoringDropDownField(
-                    jsonKey: 'drop',
-                    onChanged: (p0) {},
-                    items: [
-                      DropdownMenuItem(
-                        child: Text('PIPPPO'),
-                        value: 'PIPPO',
-                      ),
-                    ]),
+                BoringDropDownField(jsonKey: 'drop', items: [
+                  DropdownMenuItem(
+                    child: Text('PIPPPO'),
+                    value: 'PIPPO',
+                  ),
+                ]),
                 BoringTextField(
                   fieldController: BoringFieldController(
                       initialValue: "Fra",
@@ -135,10 +132,11 @@ class TableFormExample extends StatelessWidget {
                       prefixIcon:
                           Icon(Icons.text_fields_outlined, color: Colors.grey)),
                 ),
-                BoringCheckBoxField(
-                  jsonKey: 'asd',
-                  mainAxisAlignment: MainAxisAlignment.center,
-                ),
+                BoringDateField(
+                    jsonKey: "DATE",
+                    firstlDate:
+                        DateTime.now().subtract(const Duration(days: 12)),
+                    lastDate: DateTime.now().add(const Duration(days: 12))),
               ],
               tableFieldController: BoringTableFieldController(initialValue: [
                 {'asd': true, 'drop': 'PIPPO'}

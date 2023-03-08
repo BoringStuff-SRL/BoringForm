@@ -63,15 +63,15 @@ class BoringPickerField<T> extends BoringField<T> {
   void onValueChanged(T? newValue) {}
 
   @override
-  BoringPickerField copyWith(
+  BoringPickerField<T> copyWith(
       {BoringFieldController<T>? fieldController,
       void Function(T? value)? onChanged,
       BoringFieldDecoration? decoration,
       BoringResponsiveSize? boringResponsiveSize,
       String? jsonKey,
       bool Function(Map<String, dynamic> p1)? displayCondition,
-      String Function(dynamic)? valueToString,
-      Future<dynamic> Function(BuildContext)? showPicker,
+      String Function(T?)? valueToString,
+      Future<T> Function(BuildContext)? showPicker,
       bool? updateValueOnDismiss}) {
     return BoringPickerField(
       fieldController: fieldController ?? this.fieldController,
@@ -81,8 +81,7 @@ class BoringPickerField<T> extends BoringField<T> {
       boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
       jsonKey: jsonKey ?? this.jsonKey,
       displayCondition: displayCondition ?? this.displayCondition,
-      valueToString: valueToString ??
-          (this.valueToString as String Function(dynamic)),
+      valueToString: valueToString ?? this.valueToString,
       showPicker: showPicker ?? this.showPicker,
       updateValueOnDismiss: updateValueOnDismiss ?? this.updateValueOnDismiss,
     );
