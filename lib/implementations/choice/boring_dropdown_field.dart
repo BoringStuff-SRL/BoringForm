@@ -13,6 +13,7 @@ class BoringDropDownField<T> extends BoringField<T> {
       required super.jsonKey,
       required this.items,
       this.radius = 0,
+      this.isExpanded = false,
       super.fieldController,
       super.decoration,
       super.displayCondition,
@@ -21,6 +22,7 @@ class BoringDropDownField<T> extends BoringField<T> {
 
   final List<DropdownMenuItem<T?>> items;
   final double radius;
+  final bool isExpanded;
 
   @override
   Widget builder(context, controller, child) {
@@ -34,6 +36,7 @@ class BoringDropDownField<T> extends BoringField<T> {
       decoration?.label,
       child: DropdownButtonFormField2<T?>(
         dropdownOverButton: false,
+        isExpanded: isExpanded,
         dropdownElevation: 0,
         decoration: newStyle,
         buttonHeight: 51,
@@ -79,7 +82,7 @@ class BoringDropDownField<T> extends BoringField<T> {
       jsonKey: jsonKey ?? this.jsonKey,
       decoration: decoration ?? this.decoration,
       onChanged: (onChanged as void Function(dynamic)?) ??
-          (this.onChanged as void Function(dynamic)),
+          (this.onChanged as void Function(dynamic)?),
       displayCondition: displayCondition ?? this.displayCondition,
       fieldController: fieldController ?? this.fieldController,
       items: items ?? this.items,
