@@ -202,6 +202,8 @@ class BoringNumberField extends BoringField<num> {
       style,
       decoration?.label,
       child: TextField(
+        readOnly: isReadOnly(context),
+        enabled: !isReadOnly(context),
         controller: textEditingController,
         keyboardType: TextInputType.number,
         inputFormatters: [formatter],
