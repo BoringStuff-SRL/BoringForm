@@ -53,7 +53,7 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
       if (fieldController.initialValue != null) {
         _setRowFieldsInitialValues();
       } else {
-        if (atLeastOneItem!) {
+        if (atLeastOneItem) {
           _onAddAction();
         }
       }
