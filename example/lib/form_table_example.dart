@@ -28,6 +28,7 @@ class TableFormExample extends StatelessWidget {
       children: [
         BoringForm(
           formController: fc,
+          includeNotDisplayedInValidation: false,
           style: BoringFormStyle(
               readOnly: false,
               labelOverField: false,
@@ -107,12 +108,15 @@ class TableFormExample extends StatelessWidget {
               tableFormDecoration: BoringTableFormDecoration(
                   tableTitle: Text('PROVA'), showAddButton: true),
               items: [
-                BoringDropDownField(jsonKey: 'drop', items: [
-                  DropdownMenuItem(
-                    child: Text('PIPPPO'),
-                    value: 'PIPPO',
-                  ),
-                ]),
+                BoringDropDownField(
+                  jsonKey: 'drop',
+                  items: [
+                    DropdownMenuItem(
+                      child: Text('PIPPPOASDASDASDASDASD'),
+                      value: 'PIPPO',
+                    ),
+                  ],
+                ),
                 BoringTextField(
                   fieldController: BoringFieldController(
                       initialValue: "Fra",
