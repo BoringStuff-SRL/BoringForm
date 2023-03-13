@@ -45,7 +45,9 @@ class BoringFieldController<T> extends ChangeNotifier {
     _initialValue = val;
   }
 
-  String? get errorMessage => validationFunction?.call(_value);
+  String? get errorMessage {
+    return validationFunction?.call(_value);
+  }
 
   void setValueSilently(T? newValue) {
     _value = newValue;

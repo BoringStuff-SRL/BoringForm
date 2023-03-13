@@ -14,6 +14,7 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
       required this.items,
       this.searchInputDecoration,
       this.radius = 0,
+      this.isExpanded = false,
       super.fieldController,
       super.decoration,
       super.displayCondition,
@@ -24,6 +25,7 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
   final List<DropdownMenuItem<T?>> items;
   final double radius;
   final searchEditController = TextEditingController();
+  final bool isExpanded;
 
   @override
   Widget builder(context, controller, child) {
@@ -37,6 +39,7 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
       decoration?.label,
       child: DropdownButtonFormField2<T?>(
         dropdownOverButton: false,
+        isExpanded: isExpanded,
         dropdownElevation: 0,
         decoration: newStyle,
         buttonHeight: 50,

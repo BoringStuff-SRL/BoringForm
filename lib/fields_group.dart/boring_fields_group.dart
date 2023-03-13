@@ -120,8 +120,9 @@ abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
 
     final excluded = fieldsListProvider.notifyIfDifferentFields(
         fields, formController.value ?? {});
+    //print('$jsonKey: $excluded');
     if (true /*TODO add [exludeInvalidFields = true] attribute (ex: maybe you want to include invalid fields and so this condition should be false)*/) {
-      formController.ignoreFields = excluded;
+      controller.ignoreFields = excluded;
     }
   }
 
@@ -164,9 +165,6 @@ abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
                   builder: (context, value, _) => Wrap(
                         crossAxisAlignment: WrapCrossAlignment.start,
                         children: List.generate(fields.length, (index) {
-
-
-
                           return Offstage(
                             offstage: !fieldsListProvider
                                 .isFieldOnStage(fields[index]),
@@ -187,7 +185,8 @@ abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
   @override
   Widget builder(context, controller, child) {
     formChanged();
-      return buildWidget(context, this.controller, _content()); }
+    return buildWidget(context, this.controller, _content());
+  }
 
   Widget buildWidget(BuildContext context,
       BoringFieldsGroupController controller, Widget content);

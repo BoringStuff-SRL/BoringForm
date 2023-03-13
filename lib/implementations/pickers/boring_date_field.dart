@@ -1,6 +1,12 @@
+import 'dart:convert';
+
 import 'package:boring_form/implementations/pickers/boring_picker_field.dart';
 import 'package:boring_form/utils/datetime_extnesions.dart';
 import 'package:flutter/material.dart';
+
+import '../../field/boring_field_controller.dart';
+import '../../theme/boring_field_decoration.dart';
+import '../../theme/boring_responsive_size.dart';
 
 //TODO BoringDateTimeField
 // class BoringDateTimeField extends BoringPickerField<TimeOfDay?> {
@@ -81,9 +87,9 @@ class BoringDateField extends BoringPickerField<DateTime?> {
   }
 
   @override
-  bool setInitialValue(DateTime? val, [bool forceSet = false]) {
-    initialDateAssertion(val);
-    return super.setInitialValue(val);
+  bool setInitialValue(DateTime? initialValue, [bool forceSet = false]) {
+    initialDateAssertion(initialValue);
+    return super.setInitialValue(initialValue);
   }
 }
 
