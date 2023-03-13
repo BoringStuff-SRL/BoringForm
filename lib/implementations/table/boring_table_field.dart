@@ -23,6 +23,7 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
       this.copyIconWidget,
       this.deleteIconWidget,
       super.displayCondition,
+      this.atLeastOneItem = false,
       this.copyActionText,
       this.deleteActionText,
       super.decoration})
@@ -42,6 +43,7 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
   final Widget? copyIconWidget;
   final String? deleteActionText;
   final String? copyActionText;
+  final bool atLeastOneItem;
 
   @override
   bool setInitialValue(List<Map<String, dynamic>>? initialValue) {
@@ -50,6 +52,10 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
     if (v) {
       if (fieldController.initialValue != null) {
         _setRowFieldsInitialValues();
+      } else {
+        if (atLeastOneItem) {
+          _onAddAction();
+        }
       }
     }
     return false;
@@ -129,8 +135,15 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
   }
 
   _onDeleteAction(int index) {
-    (fieldController as BoringTableFieldController).removeController(index);
-    _tableRows.deleteValue(index);
+    if (atLeastOneItem) {
+      if (_tableRows.value.length > 1) {
+        (fieldController as BoringTableFieldController).removeController(index);
+        _tableRows.deleteValue(index);
+      }
+    } else {
+      (fieldController as BoringTableFieldController).removeController(index);
+      _tableRows.deleteValue(index);
+    }
   }
 
   _onCopyAction(int index) {

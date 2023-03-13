@@ -86,6 +86,7 @@ class TableFormExample extends StatelessWidget {
             ),
             BoringTableField(
               groupActions: true,
+              atLeastOneItem: true,
               actionGroupTextStyle: TextStyle(color: Colors.amber),
               groupActionsMenuShape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10)),
