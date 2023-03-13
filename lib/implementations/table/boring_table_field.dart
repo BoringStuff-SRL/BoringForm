@@ -103,16 +103,18 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
                 widgetWhenEmpty: tableFormDecoration?.widgetWhenEmpty,
                 headerRow: tableHeader,
                 items: tableRows,
-                rowActions: [
-                  BoringRowAction(
-                      buttonText: groupActions ? deleteActionText : null,
-                      onTap: (val) => _onDeleteAction(val),
-                      icon: deleteIconWidget ?? const Icon(Icons.delete)),
-                  BoringRowAction(
-                      buttonText: groupActions ? copyActionText : null,
-                      onTap: (val) => _onCopyAction(val),
-                      icon: copyIconWidget ?? const Icon(Icons.copy))
-                ],
+                rowActions: (tableFormDecoration?.showAddButton ?? false)
+                    ? [
+                        BoringRowAction(
+                            buttonText: groupActions ? deleteActionText : null,
+                            onTap: (val) => _onDeleteAction(val),
+                            icon: deleteIconWidget ?? const Icon(Icons.delete)),
+                        BoringRowAction(
+                            buttonText: groupActions ? copyActionText : null,
+                            onTap: (val) => _onCopyAction(val),
+                            icon: copyIconWidget ?? const Icon(Icons.copy))
+                      ]
+                    : [],
               );
             },
           ),
@@ -129,7 +131,6 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
   _onDeleteAction(int index) {
     (fieldController as BoringTableFieldController).removeController(index);
     _tableRows.deleteValue(index);
-
   }
 
   _onCopyAction(int index) {
