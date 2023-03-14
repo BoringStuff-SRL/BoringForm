@@ -40,6 +40,7 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
       child: DropdownButtonFormField2<T?>(
         dropdownOverButton: false,
         isExpanded: isExpanded,
+        searchInnerWidgetHeight: 20,
         dropdownElevation: 0,
         decoration: newStyle,
         buttonHeight: 50,
