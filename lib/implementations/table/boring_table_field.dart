@@ -52,10 +52,8 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
     if (v) {
       if (fieldController.initialValue != null) {
         _setRowFieldsInitialValues();
-      } else {
-        if (atLeastOneItem) {
-          _onAddAction();
-        }
+      } else if (atLeastOneItem && fieldController.initialValue == null) {
+        _onAddAction();
       }
     }
     return false;
@@ -70,6 +68,9 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
                 initialValue: fieldController.initialValue![i][item.jsonKey])));
       }
       _onAddAction(initItems: tempList);
+    }
+    if (atLeastOneItem) {
+      _onDeleteAction(0);
     }
   }
 
