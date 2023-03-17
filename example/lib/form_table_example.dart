@@ -22,14 +22,14 @@ class User {
 class TableFormExample extends StatelessWidget {
   TableFormExample({super.key});
 
-  final fc = BoringFormController(
-    initialValue: {
-      'sections': [
-        {'drop': "PIPPO"},
-        {'drop': "PIPPO"}
-      ]
+  final fc = BoringFormController(initialValue: {
+    'test': {
+      'surname': 'ASd',
     },
-  );
+    "table": [
+      {'drop': "PIPPO", "name": 'SIUUU'}
+    ]
+  });
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -46,29 +46,28 @@ class TableFormExample extends StatelessWidget {
             BoringSection(
               jsonKey: 'test',
               fields: [
-                BoringSwitchField(
-                  jsonKey: 'switch',
-                  boringResponsiveSize: BoringResponsiveSize(sm: 6, md: 6),
-                  switchDecoration: BoringSwitchDecoration(
-                      textWhenActive: Text('ATTIVO'),
-                      textWhenNotActive: Text('NON ATTIVO'),
-                      widthWhenActive: 110,
-                      borderRadius: BorderRadius.circular(6),
-                      widthWhenNotActive: 135),
-                  decoration: BoringFieldDecoration(label: 'This is my label'),
+
+                BoringDropDownField(
+                  jsonKey: 'dropdown',
+                  items: [
+                    DropdownMenuItem(
+                      value: 'asd',
+                      child: Text('asd'),
+                    )
+                  ],
+
                 ),
                 BoringTextField(
                   //onChanged: (val) => print(val),
-                  fieldController: BoringFieldController(
-                      initialValue: "Fra",
-                      validationFunction: (value) {
-                        if (value == null) {
-                          return "Campo richiesto";
-                        } else if (value.length < 2 || value.length > 24) {
-                          return "Nome non valido";
-                        }
-                        return null;
-                      }),
+                  fieldController:
+                      BoringFieldController(validationFunction: (value) {
+                    if (value == null) {
+                      return "Campo richiesto";
+                    } else if (value.length < 2 || value.length > 24) {
+                      return "Nome non valido";
+                    }
+                    return null;
+                  }),
                   boringResponsiveSize: BoringResponsiveSize(md: 6, sm: 6),
                   jsonKey: "surname",
                   decoration: BoringFieldDecoration(
@@ -88,7 +87,8 @@ class TableFormExample extends StatelessWidget {
                     }
                     return null;
                   }),
-                  displayCondition: (formValue) => formValue['test']['check'],
+                  displayCondition: (formValue) =>
+                      formValue['test']['check'] ?? true,
                   boringResponsiveSize: BoringResponsiveSize(md: 6, sm: 6),
                   jsonKey: "surname2",
                   decoration: BoringFieldDecoration(
@@ -97,15 +97,11 @@ class TableFormExample extends StatelessWidget {
                       prefixIcon:
                           Icon(Icons.text_fields_outlined, color: Colors.grey)),
                 ),
-                BoringCheckBoxField(
-                    jsonKey: 'check',
-                    fieldController:
-                        BoringFieldController(initialValue: false)),
               ],
             ),
             BoringTableField(
               groupActions: true,
-              atLeastOneItem: true,
+              atLeastOneItem: false,
               actionGroupTextStyle: TextStyle(color: Colors.amber),
               groupActionsMenuShape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10)),
@@ -119,7 +115,7 @@ class TableFormExample extends StatelessWidget {
               ),
               copyActionText: "COPIAAA",
               deleteActionText: "ELIMINAA",
-              jsonKey: 'sections',
+              jsonKey: 'table',
               tableFormDecoration: BoringTableFormDecoration(
                   tableTitle: Text('PROVA'), showAddButton: true),
               items: [
@@ -150,26 +146,20 @@ class TableFormExample extends StatelessWidget {
                       prefixIcon:
                           Icon(Icons.text_fields_outlined, color: Colors.grey)),
                 ),
-                BoringDateField(
-                    jsonKey: "DATE",
-                    firstlDate:
-                        DateTime.now().subtract(const Duration(days: 12)),
-                    lastDate: DateTime.now().add(const Duration(days: 12))),
               ],
               tableHeader: [
                 TableHeaderElement(
                     label: 'Colonna 0', alignment: TextAlign.center),
                 TableHeaderElement(
                     label: 'Colonna 1', alignment: TextAlign.center),
-                TableHeaderElement(
-                    label: 'Colonna 2', alignment: TextAlign.center),
               ],
             ),
           ],
         ),
         ElevatedButton(
             onPressed: () {
-              print(fc.value);
+              print(fc.changed);
+
             },
             child: Text("GET"))
       ],
