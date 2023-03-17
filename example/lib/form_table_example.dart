@@ -24,7 +24,10 @@ class TableFormExample extends StatelessWidget {
 
   final fc = BoringFormController(
     initialValue: {
-      "test": {"switch": false}
+      'sections': [
+        {'drop': "PIPPO"},
+        {'drop': "PIPPO"}
+      ]
     },
   );
   @override
@@ -130,16 +133,15 @@ class TableFormExample extends StatelessWidget {
                   ],
                 ),
                 BoringTextField(
-                  fieldController: BoringFieldController(
-                      initialValue: "Fra",
-                      validationFunction: (value) {
-                        if (value == null) {
-                          return "Campo richiesto";
-                        } else if (value.length < 2 || value.length > 24) {
-                          return "Nome non valido";
-                        }
-                        return null;
-                      }),
+                  fieldController:
+                      BoringFieldController(validationFunction: (value) {
+                    if (value == null) {
+                      return "Campo richiesto";
+                    } else if (value.length < 2 || value.length > 24) {
+                      return "Nome non valido";
+                    }
+                    return null;
+                  }),
                   boringResponsiveSize: BoringResponsiveSize(md: 6, sm: 6),
                   jsonKey: "name",
                   decoration: BoringFieldDecoration(
