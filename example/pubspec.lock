@@ -29,7 +29,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: b27c3c0cf4c9ba16ed56b34418ee2855a736b339
+      resolved-ref: "768404cbed7f8960d9eaa91d97fcb4c3d194a8f7"
       url: "https://github.com/fradesa/FlutterBoringTable.git"
     source: git
     version: "0.0.1"
@@ -68,10 +68,11 @@ packages:
   dropdown_button2:
     dependency: transitive
     description:
-      name: dropdown_button2
-      sha256: "604b87283e251e0e4a0cb1d0fdfa91fd527702b06e80999c4054cecc603e10e7"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: c9928d026c625443c0899dde721e64dfdc8315ab
+      url: "https://github.com/enzo-desimone/drop_down.git"
+    source: git
     version: "1.9.4"
   fake_async:
     dependency: transitive

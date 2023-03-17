@@ -1,4 +1,5 @@
 import 'package:boring_form/implementations/choice/boring_multichoice_dropdown_field.dart';
+import 'package:boring_form/implementations/choice/boring_switch_field.dart';
 import 'package:boring_form/implementations/table/boring_table_form_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -45,6 +46,17 @@ class TableFormExample extends StatelessWidget {
             BoringSection(
               jsonKey: 'test',
               fields: [
+                BoringSwitchField(
+                  jsonKey: 'switch',
+                  boringResponsiveSize: BoringResponsiveSize(sm: 6, md: 6),
+                  switchDecoration: BoringSwitchDecoration(
+                      textWhenActive: Text('ATTIVO'),
+                      textWhenNotActive: Text('NON ATTIVO'),
+                      widthWhenActive: 110,
+                      borderRadius: BorderRadius.circular(6),
+                      widthWhenNotActive: 135),
+                  decoration: BoringFieldDecoration(label: 'This is my label'),
+                ),
                 BoringTextField(
                   //onChanged: (val) => print(val),
                   fieldController: BoringFieldController(
@@ -157,8 +169,7 @@ class TableFormExample extends StatelessWidget {
         ),
         ElevatedButton(
             onPressed: () {
-              print(fc.isValid);
-              print(fc.ignoreFields);
+              print(fc.value);
             },
             child: Text("GET"))
       ],
