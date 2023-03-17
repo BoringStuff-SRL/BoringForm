@@ -21,7 +21,14 @@ class User {
 class TableFormExample extends StatelessWidget {
   TableFormExample({super.key});
 
-  final fc = BoringFormController(initialValue: {});
+  final fc = BoringFormController(
+    initialValue: {
+      'sections': [
+        {'drop': "PIPPO"},
+        {'drop': "PIPPO"}
+      ]
+    },
+  );
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -114,16 +121,15 @@ class TableFormExample extends StatelessWidget {
                   ],
                 ),
                 BoringTextField(
-                  fieldController: BoringFieldController(
-                      initialValue: "Fra",
-                      validationFunction: (value) {
-                        if (value == null) {
-                          return "Campo richiesto";
-                        } else if (value.length < 2 || value.length > 24) {
-                          return "Nome non valido";
-                        }
-                        return null;
-                      }),
+                  fieldController:
+                      BoringFieldController(validationFunction: (value) {
+                    if (value == null) {
+                      return "Campo richiesto";
+                    } else if (value.length < 2 || value.length > 24) {
+                      return "Nome non valido";
+                    }
+                    return null;
+                  }),
                   boringResponsiveSize: BoringResponsiveSize(md: 6, sm: 6),
                   jsonKey: "name",
                   decoration: BoringFieldDecoration(
