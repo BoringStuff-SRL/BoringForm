@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
@@ -27,12 +29,80 @@ class BoringFieldController<T> extends ChangeNotifier {
 
   T? _value;
   T? _initialValue;
+
   String? Function(T? value)? validationFunction;
 
   T? get value => _value;
 
-  bool get changed =>
-      !const DeepCollectionEquality().equals(value, _initialValue);
+  bool get changed => !const DeepCollectionEquality().equals(
+        _fromEmptyStringToNull(value as Map),
+        _merge(
+          _initialValue as Map,
+          _removeValue(value as Map),
+        ),
+      );
+
+  // Prende from e lo merge-a dentro into, mantenendo sempre la stessa struttura
+  Map _merge(Map from, Map into) {
+    Map result = {};
+    into.forEach((key, value) {
+      if (from.containsKey(key)) {
+        if (value is Map) {
+          result.addEntries({key: _merge(from[key], into[key])}.entries);
+        } else {
+          result.addEntries({key: from[key]}.entries);
+        }
+      } else {
+        result.addEntries({key: value}.entries);
+      }
+    });
+    return result;
+  }
+
+  // Se esiste una chiave qualsiasi all'interno della mappa con valore ''
+  // allora quel valore diventera' null
+  Map _fromEmptyStringToNull(Map data) {
+    Map result = {};
+    data.forEach((key, value) {
+      if (value is String && value == '') {
+        result.addEntries({key: null}.entries);
+      } else if (value is Map) {
+        result.addEntries({key: _fromEmptyStringToNull(data[key])}.entries);
+      } else if (value is List) {
+        List<Map> maps = [];
+        for (var element in value) {
+          if (element is Map) {
+            maps.add(_fromEmptyStringToNull(element));
+          }
+        }
+        result.addEntries({key: maps}.entries);
+      } else {
+        result.addEntries({key: value}.entries);
+      }
+    });
+    return result;
+  }
+
+  // Data una mappa, imposta tutti i valori degli elementi a null
+  Map _removeValue(Map data) {
+    Map result = {};
+    data.forEach((key, value) {
+      if (value is Map) {
+        result.addEntries({key: _removeValue(value)}.entries);
+      } else if (value is List) {
+        List<Map> maps = [];
+        for (var element in value) {
+          if (element is Map) {
+            maps.add(_removeValue(element));
+          }
+        }
+        result.addEntries({key: maps}.entries);
+      } else {
+        result.addEntries({key: null}.entries);
+      }
+    });
+    return result;
+  }
 
   set value(T? newValue) {
     setValueSilently(newValue);
