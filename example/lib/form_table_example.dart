@@ -22,14 +22,7 @@ class User {
 class TableFormExample extends StatelessWidget {
   TableFormExample({super.key});
 
-  final fc = BoringFormController(initialValue: {
-    'test': {
-      'surname': 'ASd',
-    },
-    "table": [
-      {'drop': "PIPPO", "name": 'SIUUU'}
-    ]
-  });
+  final fc = BoringFormController();
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -46,7 +39,6 @@ class TableFormExample extends StatelessWidget {
             BoringSection(
               jsonKey: 'test',
               fields: [
-
                 BoringDropDownField(
                   jsonKey: 'dropdown',
                   items: [
@@ -55,7 +47,6 @@ class TableFormExample extends StatelessWidget {
                       child: Text('asd'),
                     )
                   ],
-
                 ),
                 BoringTextField(
                   //onChanged: (val) => print(val),
@@ -159,7 +150,6 @@ class TableFormExample extends StatelessWidget {
         ElevatedButton(
             onPressed: () {
               print(fc.changed);
-
             },
             child: Text("GET"))
       ],
