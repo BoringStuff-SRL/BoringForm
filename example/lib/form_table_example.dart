@@ -25,14 +25,7 @@ class User {
 class TableFormExample extends StatelessWidget {
   TableFormExample({super.key});
 
-  final fc = BoringFormController(initialValue: {
-    'test': {
-      'surname': 'ASd',
-    },
-    "table": [
-      {'drop': "PIPPO", "name": 'SIUUU'}
-    ]
-  });
+  final fc = BoringFormController();
   @override
   Widget build(BuildContext context) {
     return Column(

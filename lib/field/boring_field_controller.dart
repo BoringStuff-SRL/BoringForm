@@ -37,7 +37,7 @@ class BoringFieldController<T> extends ChangeNotifier {
   bool get changed => !const DeepCollectionEquality().equals(
         _fromEmptyStringToNull(value as Map),
         _merge(
-          _initialValue as Map,
+          _initialValue == null ? {} : _initialValue as Map,
           _removeValue(value as Map),
         ),
       );
