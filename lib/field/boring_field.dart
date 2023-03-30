@@ -72,13 +72,13 @@ abstract class BoringField<T> extends StatelessWidget {
       (_readOnly != null) ? _readOnly! : getStyle(context).readOnly;
 
   static boringFieldBuilder(BoringFormStyle style, String? label,
-      {required Widget child}) {
+      {required Widget child, bool? excludeLabel}) {
     return Padding(
       padding: style.fieldsPadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (style.labelOverField && label != null)
+          if (!(excludeLabel ?? false) && style.labelOverField && label != null)
             Padding(
               padding: const EdgeInsets.only(bottom: 8, left: 4),
               child: Text(

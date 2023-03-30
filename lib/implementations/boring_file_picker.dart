@@ -25,9 +25,11 @@ class BoringFilePicker extends BoringField<List<PlatformFile>> {
       this.labelStyle,
       this.allowedExtensions,
       this.allowMultiple,
+      this.verticalAlignment,
       this.noFilesSelectedText,
       this.feedbackPosition = FeedbackPosition.right,
       this.feedbackTextBuilder,
+      this.mainAxisAlignment = MainAxisAlignment.start,
       super.fieldController,
       super.decoration,
       super.displayCondition,
@@ -36,6 +38,7 @@ class BoringFilePicker extends BoringField<List<PlatformFile>> {
 
   final double? textSpacingFromIcon;
   final double? buttonWidth;
+  final double? verticalAlignment;
   final TextStyle? labelStyle;
   final BorderRadius? borderRadius;
   final EdgeInsets? padding;
@@ -45,6 +48,7 @@ class BoringFilePicker extends BoringField<List<PlatformFile>> {
   final Text Function(int filesSelected)? feedbackTextBuilder;
   final List<String>? allowedExtensions;
   final FeedbackPosition feedbackPosition;
+  final MainAxisAlignment mainAxisAlignment;
 
   Text _feedback(BoringFieldController<List<PlatformFile>> controller) =>
       controller.value == null
@@ -59,84 +63,91 @@ class BoringFilePicker extends BoringField<List<PlatformFile>> {
     return BoringField.boringFieldBuilder(
       style,
       "",
-      child: Row(
-        children: [
-          if (feedbackPosition == FeedbackPosition.left)
-            Row(
-              children: [
-                _feedback(controller),
-                const SizedBox(
-                  width: 5,
-                ),
-              ],
-            ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (feedbackPosition == FeedbackPosition.top)
-                Column(
-                  children: [
-                    _feedback(controller),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                  ],
-                ),
-              GestureDetector(
-                onTap: () async {
-                  FilePickerResult? result =
-                      await FilePicker.platform.pickFiles(
-                    type: allowedExtensions == null
-                        ? FileType.any
-                        : FileType.custom,
-                    allowMultiple: allowMultiple ?? true,
-                    allowedExtensions: allowedExtensions,
-                  );
-
-                  if (result != null) {
-                    controller.value = result.files;
-                  } else {
-                    // User canceled the picker
-                  }
-                },
-                child: Container(
-                  padding: padding ?? const EdgeInsets.symmetric(vertical: 7),
-                  width: buttonWidth ?? 100,
-                  decoration: BoxDecoration(
-                    color: backgroundColor ?? Colors.green,
-                    borderRadius: borderRadius ?? BorderRadius.circular(10),
+      excludeLabel: true,
+      child: Align(
+        heightFactor: verticalAlignment ?? 1,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: mainAxisAlignment,
+          children: [
+            if (feedbackPosition == FeedbackPosition.left)
+              Row(
+                children: [
+                  _feedback(controller),
+                  const SizedBox(
+                    width: 5,
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                ],
+              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (feedbackPosition == FeedbackPosition.top)
+                  Column(
                     children: [
-                      decoration?.prefixIcon ?? const Icon(Icons.file_open),
-                      SizedBox(
-                        width: textSpacingFromIcon ?? 5,
-                      ),
-                      Text(
-                        decoration?.label ?? "Pick file",
-                        style: labelStyle,
+                      _feedback(controller),
+                      const SizedBox(
+                        height: 5,
                       ),
                     ],
                   ),
-                ),
-              ),
-              if (feedbackPosition == FeedbackPosition.bottom)
-                Column(
-                  children: [
-                    const SizedBox(
-                      height: 5,
+                GestureDetector(
+                  onTap: () async {
+                    FilePickerResult? result =
+                        await FilePicker.platform.pickFiles(
+                      type: allowedExtensions == null
+                          ? FileType.any
+                          : FileType.custom,
+                      allowMultiple: allowMultiple ?? true,
+                      allowedExtensions: allowedExtensions,
+                    );
+
+                    if (result != null) {
+                      controller.value = result.files;
+                    } else {
+                      // User canceled the picker
+                    }
+                  },
+                  child: Container(
+                    padding: padding ?? const EdgeInsets.symmetric(vertical: 7),
+                    width: buttonWidth ?? 100,
+                    decoration: BoxDecoration(
+                      color: backgroundColor ?? Colors.green,
+                      borderRadius: borderRadius ?? BorderRadius.circular(10),
                     ),
-                    _feedback(controller),
-                  ],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        decoration?.prefixIcon ?? const Icon(Icons.file_open),
+                        SizedBox(
+                          width: textSpacingFromIcon ?? 5,
+                        ),
+                        Text(
+                          decoration?.label ?? "Pick file",
+                          style: labelStyle,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-            ],
-          ),
-          const SizedBox(
-            width: 5,
-          ),
-          if (feedbackPosition == FeedbackPosition.right) _feedback(controller),
-        ],
+                if (feedbackPosition == FeedbackPosition.bottom)
+                  Column(
+                    children: [
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      _feedback(controller),
+                    ],
+                  ),
+              ],
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+            if (feedbackPosition == FeedbackPosition.right)
+              _feedback(controller),
+          ],
+        ),
       ),
     );
   }

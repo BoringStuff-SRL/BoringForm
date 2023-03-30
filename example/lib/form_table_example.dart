@@ -35,7 +35,7 @@ class TableFormExample extends StatelessWidget {
           includeNotDisplayedInValidation: false,
           style: BoringFormStyle(
               readOnly: false,
-              labelOverField: false,
+              labelOverField: true,
               inputDecoration:
                   const InputDecoration(border: OutlineInputBorder())),
           fields: [
@@ -43,8 +43,9 @@ class TableFormExample extends StatelessWidget {
               jsonKey: 'test',
               fields: [
                 BoringFilePicker(
+                  verticalAlignment: 1.3,
+                  boringResponsiveSize: BoringResponsiveSize(md: 6, sm: 6),
                   feedbackPosition: FeedbackPosition.top,
-                  buttonWidth: 300,
                   noFilesSelectedText: Text("NESSUN FILE SELEZIONATO"),
                   feedbackTextBuilder: (filesSelected) {
                     if (filesSelected == 1) {
@@ -60,6 +61,7 @@ class TableFormExample extends StatelessWidget {
                   allowMultiple: true,
                 ),
                 BoringDropDownField(
+                  boringResponsiveSize: BoringResponsiveSize(md: 6, sm: 6),
                   jsonKey: 'dropdown',
                   items: [
                     DropdownMenuItem(
@@ -67,6 +69,7 @@ class TableFormExample extends StatelessWidget {
                       child: Text('asd'),
                     )
                   ],
+                  decoration: BoringFieldDecoration(label: "this is a label"),
                 ),
                 BoringTextField(
                   //onChanged: (val) => print(val),
@@ -169,10 +172,7 @@ class TableFormExample extends StatelessWidget {
         ),
         ElevatedButton(
             onPressed: () {
-              print((fc.value!["test"]["filePicker"] as List<PlatformFile>)
-                  .first
-                  .name);
-              print(fc.changed);
+              print((fc.value!["test"]["filePicker"]));
             },
             child: Text("GET"))
       ],
