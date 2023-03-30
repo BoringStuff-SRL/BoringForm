@@ -12,6 +12,8 @@ import 'package:boring_form/theme/boring_field_decoration.dart';
 import 'package:boring_form/field/boring_field_controller.dart';
 import 'package:flutter/widgets.dart';
 
+enum FeedbackPosition { top, left, right, bottom }
+
 class BoringFilePicker extends BoringField<List<PlatformFile>> {
   BoringFilePicker(
       {required super.jsonKey,
@@ -23,6 +25,9 @@ class BoringFilePicker extends BoringField<List<PlatformFile>> {
       this.labelStyle,
       this.allowedExtensions,
       this.allowMultiple,
+      this.noFilesSelectedText,
+      this.feedbackPosition = FeedbackPosition.right,
+      this.feedbackTextBuilder,
       super.fieldController,
       super.decoration,
       super.displayCondition,
@@ -36,11 +41,19 @@ class BoringFilePicker extends BoringField<List<PlatformFile>> {
   final EdgeInsets? padding;
   final Color? backgroundColor;
   final bool? allowMultiple;
+  final Text? noFilesSelectedText;
+  final Text Function(int filesSelected)? feedbackTextBuilder;
   final List<String>? allowedExtensions;
+  final FeedbackPosition feedbackPosition;
+
+  Text _feedback(BoringFieldController<List<PlatformFile>> controller) =>
+      controller.value == null
+          ? noFilesSelectedText ?? const Text("No files selected")
+          : feedbackTextBuilder?.call(controller.value!.length) ??
+              Text("${controller.value!.length} files selected");
 
   @override
-  Widget builder(BuildContext context,
-      BoringFieldController<List<PlatformFile>> controller, Widget? child) {
+  Widget builder(BuildContext context, controller, Widget? child) {
     final style = getStyle(context);
 
     return BoringField.boringFieldBuilder(
@@ -48,49 +61,81 @@ class BoringFilePicker extends BoringField<List<PlatformFile>> {
       "",
       child: Row(
         children: [
-          GestureDetector(
-            onTap: () async {
-              FilePickerResult? result = await FilePicker.platform.pickFiles(
-                type:
-                    allowedExtensions == null ? FileType.any : FileType.custom,
-                allowMultiple: allowMultiple ?? true,
-                allowedExtensions: allowedExtensions,
-              );
-
-              if (result != null) {
-                controller.value = result.files;
-              } else {
-                // User canceled the picker
-              }
-            },
-            child: Container(
-              padding: padding ?? const EdgeInsets.symmetric(vertical: 7),
-              width: buttonWidth ?? 100,
-              decoration: BoxDecoration(
-                color: backgroundColor ?? Colors.green,
-                borderRadius: borderRadius ?? BorderRadius.circular(10),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  decoration?.prefixIcon ?? const Icon(Icons.file_open),
-                  SizedBox(
-                    width: textSpacingFromIcon ?? 5,
-                  ),
-                  Text(
-                    decoration?.label ?? "Pick file",
-                    style: labelStyle,
-                  ),
-                ],
-              ),
+          if (feedbackPosition == FeedbackPosition.left)
+            Row(
+              children: [
+                _feedback(controller),
+                const SizedBox(
+                  width: 5,
+                ),
+              ],
             ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (feedbackPosition == FeedbackPosition.top)
+                Column(
+                  children: [
+                    _feedback(controller),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                  ],
+                ),
+              GestureDetector(
+                onTap: () async {
+                  FilePickerResult? result =
+                      await FilePicker.platform.pickFiles(
+                    type: allowedExtensions == null
+                        ? FileType.any
+                        : FileType.custom,
+                    allowMultiple: allowMultiple ?? true,
+                    allowedExtensions: allowedExtensions,
+                  );
+
+                  if (result != null) {
+                    controller.value = result.files;
+                  } else {
+                    // User canceled the picker
+                  }
+                },
+                child: Container(
+                  padding: padding ?? const EdgeInsets.symmetric(vertical: 7),
+                  width: buttonWidth ?? 100,
+                  decoration: BoxDecoration(
+                    color: backgroundColor ?? Colors.green,
+                    borderRadius: borderRadius ?? BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      decoration?.prefixIcon ?? const Icon(Icons.file_open),
+                      SizedBox(
+                        width: textSpacingFromIcon ?? 5,
+                      ),
+                      Text(
+                        decoration?.label ?? "Pick file",
+                        style: labelStyle,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              if (feedbackPosition == FeedbackPosition.bottom)
+                Column(
+                  children: [
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    _feedback(controller),
+                  ],
+                ),
+            ],
           ),
           const SizedBox(
             width: 5,
           ),
-          controller.value == null
-              ? Text("No files selected")
-              : Text("${controller.value!.length} files selected")
+          if (feedbackPosition == FeedbackPosition.right) _feedback(controller),
         ],
       ),
     );

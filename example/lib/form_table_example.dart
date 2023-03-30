@@ -43,6 +43,18 @@ class TableFormExample extends StatelessWidget {
               jsonKey: 'test',
               fields: [
                 BoringFilePicker(
+                  feedbackPosition: FeedbackPosition.top,
+                  buttonWidth: 300,
+                  noFilesSelectedText: Text("NESSUN FILE SELEZIONATO"),
+                  feedbackTextBuilder: (filesSelected) {
+                    if (filesSelected == 1) {
+                      return Text("SOLO 1 FILE SELEZIONATO");
+                    }
+                    return Text("PIU FILE SELEZIONATI");
+                  },
+                  decoration: BoringFieldDecoration(
+                    label: "asdas",
+                  ),
                   jsonKey: "filePicker",
                   backgroundColor: Colors.red,
                   allowMultiple: true,
