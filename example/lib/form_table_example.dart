@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
+import 'package:boring_form/implementations/boring_file_picker.dart';
 import 'package:boring_form/implementations/choice/boring_multichoice_dropdown_field.dart';
 import 'package:boring_form/implementations/choice/boring_switch_field.dart';
 import 'package:boring_form/implementations/table/boring_table_form_decoration.dart';
@@ -46,7 +49,11 @@ class TableFormExample extends StatelessWidget {
             BoringSection(
               jsonKey: 'test',
               fields: [
-
+                BoringFilePicker(
+                  jsonKey: "filePicker",
+                  backgroundColor: Colors.red,
+                  allowMultiple: true,
+                ),
                 BoringDropDownField(
                   jsonKey: 'dropdown',
                   items: [
@@ -55,7 +62,6 @@ class TableFormExample extends StatelessWidget {
                       child: Text('asd'),
                     )
                   ],
-
                 ),
                 BoringTextField(
                   //onChanged: (val) => print(val),
@@ -158,8 +164,10 @@ class TableFormExample extends StatelessWidget {
         ),
         ElevatedButton(
             onPressed: () {
+              print((fc.value!["test"]["filePicker"] as List<PlatformFile>)
+                  .first
+                  .name);
               print(fc.changed);
-
             },
             child: Text("GET"))
       ],
