@@ -60,6 +60,8 @@ class BoringFilePicker extends BoringField<List<PlatformFile>> {
   Widget builder(BuildContext context, controller, Widget? child) {
     final style = getStyle(context);
 
+    bool readOnly = style.readOnly;
+
     return BoringField.boringFieldBuilder(
       style,
       "",
@@ -91,42 +93,49 @@ class BoringFilePicker extends BoringField<List<PlatformFile>> {
                       ),
                     ],
                   ),
-                GestureDetector(
-                  onTap: () async {
-                    FilePickerResult? result =
-                        await FilePicker.platform.pickFiles(
-                      type: allowedExtensions == null
-                          ? FileType.any
-                          : FileType.custom,
-                      allowMultiple: allowMultiple ?? true,
-                      allowedExtensions: allowedExtensions,
-                    );
+                MouseRegion(
+                  cursor:
+                      !readOnly ? SystemMouseCursors.click : MouseCursor.defer,
+                  child: GestureDetector(
+                    onTap: !readOnly
+                        ? () async {
+                            FilePickerResult? result =
+                                await FilePicker.platform.pickFiles(
+                              type: allowedExtensions == null
+                                  ? FileType.any
+                                  : FileType.custom,
+                              allowMultiple: allowMultiple ?? true,
+                              allowedExtensions: allowedExtensions,
+                            );
 
-                    if (result != null) {
-                      controller.value = result.files;
-                    } else {
-                      // User canceled the picker
-                    }
-                  },
-                  child: Container(
-                    padding: padding ?? const EdgeInsets.symmetric(vertical: 7),
-                    width: buttonWidth ?? 100,
-                    decoration: BoxDecoration(
-                      color: backgroundColor ?? Colors.green,
-                      borderRadius: borderRadius ?? BorderRadius.circular(10),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        decoration?.prefixIcon ?? const Icon(Icons.file_open),
-                        SizedBox(
-                          width: textSpacingFromIcon ?? 5,
-                        ),
-                        Text(
-                          decoration?.label ?? "Pick file",
-                          style: labelStyle,
-                        ),
-                      ],
+                            if (result != null) {
+                              controller.value = result.files;
+                            } else {
+                              // User canceled the picker
+                            }
+                          }
+                        : () {},
+                    child: Container(
+                      padding:
+                          padding ?? const EdgeInsets.symmetric(vertical: 7),
+                      width: buttonWidth ?? 100,
+                      decoration: BoxDecoration(
+                        color: backgroundColor ?? Colors.green,
+                        borderRadius: borderRadius ?? BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          decoration?.prefixIcon ?? const Icon(Icons.file_open),
+                          SizedBox(
+                            width: textSpacingFromIcon ?? 5,
+                          ),
+                          Text(
+                            decoration?.label ?? "Pick file",
+                            style: labelStyle,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

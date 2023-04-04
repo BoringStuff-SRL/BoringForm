@@ -34,7 +34,7 @@ class TableFormExample extends StatelessWidget {
           formController: fc,
           includeNotDisplayedInValidation: false,
           style: BoringFormStyle(
-              readOnly: false,
+              readOnly: true,
               labelOverField: true,
               inputDecoration:
                   const InputDecoration(border: OutlineInputBorder())),
@@ -42,6 +42,7 @@ class TableFormExample extends StatelessWidget {
             BoringSection(
               jsonKey: 'test',
               fields: [
+                BoringSwitchField(jsonKey: 'asd'),
                 BoringFilePicker(
                   verticalAlignment: 1.3,
                   boringResponsiveSize: BoringResponsiveSize(md: 6, sm: 6),

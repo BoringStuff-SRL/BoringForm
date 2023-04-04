@@ -74,6 +74,7 @@ class BoringSwitchField extends BoringField<bool> {
   Widget builder(BuildContext context, BoringFieldController<bool> controller,
       Widget? child) {
     final BoringFormStyle style = BoringFormTheme.of(context).style;
+    bool readOnly = style.readOnly;
     bool hasLabel = decoration?.label != null ||
         (switchDecoration?.textWhenActive == null &&
             switchDecoration?.textWhenNotActive == null);
@@ -91,11 +92,14 @@ class BoringSwitchField extends BoringField<bool> {
                   ? TextDirection.ltr
                   : TextDirection.rtl,
           children: [
-            _AnimatedCustomSwitch(
-              controller: controller,
-              switchDecoration: switchDecoration ?? BoringSwitchDecoration(),
-              fieldDecoration: decoration,
-              hasLabel: hasLabel,
+            MouseRegion(
+              cursor: readOnly ? MouseCursor.defer : SystemMouseCursors.click,
+              child: _AnimatedCustomSwitch(
+                controller: controller,
+                switchDecoration: switchDecoration ?? BoringSwitchDecoration(),
+                fieldDecoration: decoration,
+                hasLabel: hasLabel,
+              ),
             ),
             if (hasLabel)
               Padding(
