@@ -115,11 +115,11 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
                         BoringRowAction(
                             buttonText: groupActions ? deleteActionText : null,
                             onTap: (val) => _onDeleteAction(val),
-                            icon: Icons.delete),
+                            icon: deleteIconWidget ?? const Icon(Icons.delete)),
                         BoringRowAction(
                             buttonText: groupActions ? copyActionText : null,
                             onTap: (val) => _onCopyAction(val),
-                            icon: Icons.copy)
+                            icon: copyIconWidget ?? const Icon(Icons.copy))
                       ]
                     : [],
               );
