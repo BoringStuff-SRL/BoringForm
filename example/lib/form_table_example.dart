@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:boring_form/implementations/dialog/boring_stepper.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:boring_form/implementations/boring_file_picker.dart';
 import 'package:boring_form/implementations/choice/boring_multichoice_dropdown_field.dart';
@@ -26,10 +27,54 @@ class TableFormExample extends StatelessWidget {
   TableFormExample({super.key});
 
   final fc = BoringFormController();
+  final stepperController = BoringFormController();
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
+        ElevatedButton(
+          onPressed: () {
+            BoringStepper.showStepperDialog(
+              context,
+              formController: stepperController,
+              jsonKey: 'stepper',
+              decoration: BoringStepperDecoration(
+                  dialogShapeBorder: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  onContinueButton: (details) => ElevatedButton(
+                      onPressed: () {
+                        details.onStepContinue!.call();
+                      },
+                      child: Text("PIPPOOO"))),
+              formStyle: BoringFormStyle(
+                  readOnly: false,
+                  labelOverField: true,
+                  inputDecoration:
+                      const InputDecoration(border: OutlineInputBorder())),
+              onConfirmButtonPress: (context) {
+                print(stepperController.value);
+              },
+              sections: [
+                BoringSection(
+                  jsonKey: 's1',
+                  decoration: BoringFieldDecoration(label: 'Primo step'),
+                  fields: [
+                    BoringTextField(jsonKey: 'text'),
+                  ],
+                ),
+                BoringSection(
+                  jsonKey: 's2',
+                  decoration: BoringFieldDecoration(label: 'Secondo step'),
+                  fields: [
+                    BoringTextField(jsonKey: 'text'),
+                  ],
+                ),
+              ],
+            );
+          },
+          child: Text("open stepper"),
+        ),
         BoringForm(
           formController: fc,
           includeNotDisplayedInValidation: false,
