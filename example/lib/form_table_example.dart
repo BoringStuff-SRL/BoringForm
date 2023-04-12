@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:boring_form/implementations/choice/boring_multichoice_search_dropdown_field.dart';
 import 'package:boring_form/implementations/dialog/boring_stepper.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:boring_form/implementations/boring_file_picker.dart';
@@ -79,7 +80,7 @@ class TableFormExample extends StatelessWidget {
           formController: fc,
           includeNotDisplayedInValidation: false,
           style: BoringFormStyle(
-              readOnly: true,
+              readOnly: false,
               labelOverField: true,
               inputDecoration:
                   const InputDecoration(border: OutlineInputBorder())),
@@ -87,6 +88,11 @@ class TableFormExample extends StatelessWidget {
             BoringSection(
               jsonKey: 'test',
               fields: [
+                BoringSearchMultiChoiceDropDownField<String>(
+                  jsonKey: 'multichoicesearch',
+                  items: ["asd", 'qwe', 'wqe'],
+                  convertItemToString: (item) => item,
+                ),
                 BoringSwitchField(jsonKey: 'asd'),
                 BoringFilePicker(
                   verticalAlignment: 1.3,
