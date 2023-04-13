@@ -17,7 +17,9 @@ class BoringDropDownField<T> extends BoringField<T> {
       super.decoration,
       super.displayCondition,
       super.boringResponsiveSize,
-      super.onChanged});
+      bool? readOnly,
+      super.onChanged})
+      : super(readOnly: readOnly);
 
   final List<DropdownMenuItem<T?>> items;
   final double radius;

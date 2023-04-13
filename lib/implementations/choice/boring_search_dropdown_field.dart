@@ -15,6 +15,7 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
       required super.jsonKey,
       required this.items,
       this.onAdd,
+      bool? readOnly,
       this.onItemAlreadyExisting,
       this.onAddIcon = const Icon(Icons.add),
       this.searchInputDecoration,
@@ -26,7 +27,8 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
       super.displayCondition,
       super.boringResponsiveSize,
       super.onChanged})
-      : _itemsNotifier = ValueNotifier(items);
+      : _itemsNotifier = ValueNotifier(items),
+        super(readOnly: readOnly);
 
   final InputDecoration? searchInputDecoration;
   final List<DropdownMenuItem<T?>> items;
