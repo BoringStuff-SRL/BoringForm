@@ -110,7 +110,7 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
                 ),
               ),
               searchMatchFn: (item, searchValue) =>
-                  searchMatchFunction ??
+                  searchMatchFunction?.call(item, searchValue) ??
                   _searchDefaultMatchFn(item, searchValue),
               onMenuStateChange: (isOpen) =>
                   _onMenuStateChange(isOpen, searchEditController),

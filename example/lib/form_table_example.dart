@@ -91,6 +91,8 @@ class TableFormExample extends StatelessWidget {
                 BoringSearchDropDownField<String>(
                   jsonKey: 'multichoicesearch',
                   onAddIcon: Icon(Icons.add_a_photo),
+                  searchMatchFunction: (p0, p1) =>
+                      (p0.value as String).contains(p1),
                   onAdd: (value) async {
                     return Future.delayed(
                       const Duration(seconds: 1),
