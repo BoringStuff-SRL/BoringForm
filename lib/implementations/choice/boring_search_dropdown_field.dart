@@ -123,7 +123,7 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
       BuildContext dialogContext, BoringFieldController<T> controller) async {
     if (searchEditController.text.isNotEmpty) {
       final newList = _itemsNotifier.value;
-      final item = await onAdd!(searchEditController.text);
+      final item = await onAdd!.call(searchEditController.text);
       if (item != null) {
         for (DropdownMenuItem element in newList) {
           if (element.value == item.value) {
@@ -136,8 +136,6 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
 
         controller.value = item.value;
         Navigator.pop(_dropdownKey.currentContext!);
-      } else {
-        onItemAlreadyExisting?.call(_dropdownKey.currentContext!);
       }
     }
   }
