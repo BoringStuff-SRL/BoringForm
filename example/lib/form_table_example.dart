@@ -88,10 +88,30 @@ class TableFormExample extends StatelessWidget {
             BoringSection(
               jsonKey: 'test',
               fields: [
-                BoringSearchMultiChoiceDropDownField<String>(
+                BoringSearchDropDownField<String>(
                   jsonKey: 'multichoicesearch',
-                  items: ["asd", 'qwe', 'wqe'],
-                  convertItemToString: (item) => item,
+                  onAddIcon: Icon(Icons.add_a_photo),
+                  onAdd: (value) async {
+                    return Future.delayed(
+                      const Duration(seconds: 1),
+                      () {
+                        return DropdownMenuItem(
+                          value: value,
+                          child: Text(value),
+                        );
+                      },
+                    );
+                  },
+                  onItemAlreadyExisting: (dropdownContext) {
+                    Navigator.pop(dropdownContext);
+                    SnackBar s =
+                        SnackBar(content: Text("l'item è già stato inserito"));
+                    ScaffoldMessenger.of(context).showSnackBar(s);
+                  },
+                  items: [
+                    for (String item in ["asd", 'qwe', 'wqe'])
+                      DropdownMenuItem(value: item, child: const Text("asd"))
+                  ],
                 ),
                 BoringSwitchField(jsonKey: 'asd'),
                 BoringFilePicker(
