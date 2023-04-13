@@ -33,7 +33,7 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
   final double radius;
   final searchEditController = TextEditingController();
   final bool isExpanded;
-  final FutureOr<DropdownMenuItem<T>> Function(String searchTextFieldValue)?
+  final FutureOr<DropdownMenuItem<T>?> Function(String searchTextFieldValue)?
       onAdd;
   final FutureOr<void> Function(BuildContext dropdownContext)?
       onItemAlreadyExisting;
@@ -122,17 +122,21 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
     if (searchEditController.text.isNotEmpty) {
       final newList = _itemsNotifier.value;
       final item = await onAdd!(searchEditController.text);
-      for (DropdownMenuItem element in newList) {
-        if (element.value == item.value) {
-          onItemAlreadyExisting?.call(_dropdownKey.currentContext!);
-          return;
+      if (item != null) {
+        for (DropdownMenuItem element in newList) {
+          if (element.value == item.value) {
+            onItemAlreadyExisting?.call(_dropdownKey.currentContext!);
+            return;
+          }
         }
-      }
-      newList.add(item);
-      _itemsNotifier.value = newList;
+        newList.add(item);
+        _itemsNotifier.value = newList;
 
-      controller.value = item.value;
-      Navigator.pop(_dropdownKey.currentContext!);
+        controller.value = item.value;
+        Navigator.pop(_dropdownKey.currentContext!);
+      } else {
+        onItemAlreadyExisting?.call(_dropdownKey.currentContext!);
+      }
     }
   }
 
