@@ -20,6 +20,7 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
       this.searchInputDecoration,
       this.radius = 0,
       this.isExpanded = false,
+      this.searchMatchFunction,
       super.fieldController,
       super.decoration,
       super.displayCondition,
@@ -38,7 +39,7 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
   final FutureOr<void> Function(BuildContext dropdownContext)?
       onItemAlreadyExisting;
   final Widget onAddIcon;
-
+  final bool Function(DropdownMenuItem<dynamic>, String)? searchMatchFunction;
   final GlobalKey _dropdownKey = GlobalKey();
 
   @override
@@ -109,7 +110,8 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
                 ),
               ),
               searchMatchFn: (item, searchValue) =>
-                  _searchMatchFn(item, searchValue),
+                  searchMatchFunction ??
+                  _searchDefaultMatchFn(item, searchValue),
               onMenuStateChange: (isOpen) =>
                   _onMenuStateChange(isOpen, searchEditController),
             );
@@ -140,7 +142,7 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
     }
   }
 
-  _searchMatchFn(item, searchValue) =>
+  _searchDefaultMatchFn(item, searchValue) =>
       item.value.toString().toLowerCase().contains(searchValue.toLowerCase());
 
   _onMenuStateChange(isOpen, searchEditController) =>
