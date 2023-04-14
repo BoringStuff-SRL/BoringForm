@@ -42,7 +42,9 @@ class BoringStepper extends StatelessWidget {
   final BoringFormController formController;
   final List<BoringSection> sections;
   final BoringStepperDecoration decoration;
-  final FutureOr<void> Function(BuildContext context) onConfirmButtonPress;
+  // Consider using isStepperValid instead of formController.isValid
+  final FutureOr<void> Function(BuildContext context, bool isStepperValid)
+      onConfirmButtonPress;
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +70,8 @@ class BoringStepper extends StatelessWidget {
     BoringStepperDecoration decoration = const BoringStepperDecoration(),
     required BoringFormController formController,
     required List<BoringSection> sections,
-    required FutureOr<void> Function(BuildContext context) onConfirmButtonPress,
+    required FutureOr<void> Function(BuildContext context, bool isStepperValid)
+        onConfirmButtonPress,
   }) {
     showDialog(
       context: context,
@@ -112,7 +115,8 @@ class _BoringFormStepperWidget extends BoringField {
   final List<BoringSection> sections;
   final BoringStepperDecoration dialogDecoration;
   final BoringFormController formController;
-  final FutureOr<void> Function(BuildContext context) onConfirmButtonPress;
+  final FutureOr<void> Function(BuildContext context, bool isStepperValid)
+      onConfirmButtonPress;
 
   List<Step> get _steps => sections
       .map(
@@ -127,7 +131,9 @@ class _BoringFormStepperWidget extends BoringField {
 
   void _onStepContinue(int currentIndex, BoringFieldController controller) {
     if (currentIndex < sections.length - 1) {
-      _currentIndex.value++;
+      if (sections[currentIndex].controller.isValid) {
+        _currentIndex.value++;
+      }
     }
   }
 
@@ -188,13 +194,18 @@ class _BoringFormStepperWidget extends BoringField {
               style: dialogDecoration.buttonStyle,
               onPressed: () {
                 controller.value = {};
+                bool isStepperValid = true;
                 for (BoringSection section in sections) {
+                  if (!section.controller.isValid) {
+                    isStepperValid = false;
+                  }
                   (controller.value as Map).addEntries(
                       {section.jsonKey: section.controller.value!}.entries);
                 }
+
                 controller.sendNotification();
 
-                onConfirmButtonPress.call(context);
+                onConfirmButtonPress.call(context, isStepperValid);
               },
               child: dialogDecoration.actionButtonText ?? const Text('Close'),
             ),

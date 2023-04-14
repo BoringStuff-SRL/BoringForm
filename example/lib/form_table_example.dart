@@ -40,35 +40,57 @@ class TableFormExample extends StatelessWidget {
               formController: stepperController,
               jsonKey: 'stepper',
               decoration: BoringStepperDecoration(
-                  dialogShapeBorder: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  onContinueButton: (details) => ElevatedButton(
-                      onPressed: () {
-                        details.onStepContinue!.call();
-                      },
-                      child: Text("PIPPOOO"))),
+                dialogShapeBorder: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                onContinueButton: (details) => ElevatedButton(
+                  onPressed: () {
+                    details.onStepContinue!.call();
+                  },
+                  child: Text("PIPPOOO"),
+                ),
+              ),
               formStyle: BoringFormStyle(
-                  readOnly: false,
-                  labelOverField: true,
-                  inputDecoration:
-                      const InputDecoration(border: OutlineInputBorder())),
-              onConfirmButtonPress: (context) {
-                print(stepperController.value);
+                readOnly: false,
+                labelOverField: true,
+                inputDecoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              onConfirmButtonPress: (context, isStepperValid) {
+                print(isStepperValid);
               },
               sections: [
                 BoringSection(
                   jsonKey: 's1',
                   decoration: BoringFieldDecoration(label: 'Primo step'),
                   fields: [
-                    BoringTextField(jsonKey: 'text'),
+                    BoringTextField(
+                      jsonKey: 'text',
+                      fieldController: BoringFieldController(
+                        validationFunction: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "required";
+                          }
+                        },
+                      ),
+                    ),
                   ],
                 ),
                 BoringSection(
                   jsonKey: 's2',
                   decoration: BoringFieldDecoration(label: 'Secondo step'),
                   fields: [
-                    BoringTextField(jsonKey: 'text'),
+                    BoringTextField(
+                      jsonKey: 'text',
+                      fieldController: BoringFieldController(
+                        validationFunction: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "required";
+                          }
+                        },
+                      ),
+                    ),
                   ],
                 ),
               ],
