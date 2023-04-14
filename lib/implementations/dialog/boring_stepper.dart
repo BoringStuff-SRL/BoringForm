@@ -144,7 +144,9 @@ class _BoringFormStepperWidget extends BoringField {
   }
 
   void _onStepTapped(int index) {
-    _currentIndex.value = index;
+    if (sections[index].controller.isValid) {
+      _currentIndex.value = index;
+    }
   }
 
   @override
