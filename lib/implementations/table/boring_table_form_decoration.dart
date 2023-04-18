@@ -7,7 +7,7 @@ class BoringTableFormDecoration {
   final double? cardElevation;
   final Widget? widgetWhenEmpty;
   final String? rowActionsColumnLabel;
-  final ShapeBorder? shape;
+  final double? borderRadius;
   final BoringTableDecoration? decoration;
   final Widget? footer;
   final bool showAddButton;
@@ -19,7 +19,7 @@ class BoringTableFormDecoration {
       this.cardElevation,
       this.widgetWhenEmpty,
       this.rowActionsColumnLabel,
-      this.shape,
+      this.borderRadius,
       this.decoration,
       this.footer,
       this.showAddButton = false,

@@ -39,8 +39,8 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
   final TextStyle? actionGroupTextStyle;
   final ShapeBorder? groupActionsMenuShape;
   final Widget groupActionsWidget;
-  final Widget? deleteIconWidget;
-  final Widget? copyIconWidget;
+  final Icon? deleteIconWidget;
+  final Icon? copyIconWidget;
   final String? deleteActionText;
   final String? copyActionText;
   final bool atLeastOneItem;
@@ -106,20 +106,23 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
                 rowActionsColumnLabel:
                     tableFormDecoration?.rowActionsColumnLabel,
                 decoration: tableFormDecoration?.decoration,
-                shape: tableFormDecoration?.shape,
+                borderRadius: tableFormDecoration?.borderRadius,
                 widgetWhenEmpty: tableFormDecoration?.widgetWhenEmpty,
                 headerRow: tableHeader,
                 items: tableRows,
                 rowActions: (tableFormDecoration?.showAddButton ?? false)
                     ? [
-                        BoringRowAction(
-                            buttonText: groupActions ? deleteActionText : null,
-                            onTap: (val) => _onDeleteAction(val),
-                            icon: deleteIconWidget ?? const Icon(Icons.delete)),
-                        BoringRowAction(
-                            buttonText: groupActions ? copyActionText : null,
-                            onTap: (val) => _onCopyAction(val),
-                            icon: copyIconWidget ?? const Icon(Icons.copy))
+                        if (deleteIconWidget != null)
+                          BoringRowAction(
+                              buttonText:
+                                  groupActions ? deleteActionText : null,
+                              onTap: (val) => _onDeleteAction(val),
+                              icon: deleteIconWidget),
+                        if (copyIconWidget != null)
+                          BoringRowAction(
+                              buttonText: groupActions ? copyActionText : null,
+                              onTap: (val) => _onCopyAction(val),
+                              icon: copyIconWidget)
                       ]
                     : [],
               );
@@ -171,8 +174,8 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
       TextStyle? actionGroupTextStyle,
       ShapeBorder? groupActionsMenuShape,
       Widget? groupActionsWidget,
-      Widget? deleteIconWidget,
-      Widget? copyIconWidget,
+      Icon? deleteIconWidget,
+      Icon? copyIconWidget,
       String? deleteActionText,
       String? copyActionText}) {
     return BoringTableField(
