@@ -237,6 +237,11 @@ class TableFormExample extends StatelessWidget {
                       value: 'PIPPO',
                     ),
                   ],
+                  decoration: BoringFieldDecoration(
+                      label: "Nome",
+                      hintText: "Inserisci il nome",
+                      prefixIcon:
+                      Icon(Icons.text_fields_outlined, color: Colors.grey)),
                 ),
                 BoringTextField(
                   fieldController:
