@@ -94,7 +94,8 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
                 title: BoringTableTitle(
                   title: tableFormDecoration?.tableTitle ?? const Text('Title'),
                   actions: [
-                    if (tableFormDecoration?.showAddButton ?? false || !readOnly)
+                    if (tableFormDecoration?.showAddButton ??
+                        false || !readOnly)
                       ElevatedButton(
                         onPressed: _onAddAction,
                         style: tableFormDecoration?.addButtonActionStyle,

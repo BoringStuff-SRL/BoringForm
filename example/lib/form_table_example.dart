@@ -137,7 +137,14 @@ class TableFormExample extends StatelessWidget {
                       DropdownMenuItem(value: item, child: const Text("asd"))
                   ],
                 ),
-                BoringSwitchField(jsonKey: 'asd'),
+                BoringSwitchField(
+                  jsonKey: 'asd',
+                  switchDecoration: BoringSwitchDecoration(
+                      textWhenActive: Text("yes"),
+                      textWhenNotActive: Text("yes"),
+                      labelPosition: BoringSwitchLabelPosition.left),
+                  decoration: BoringFieldDecoration(label: "asdasd"),
+                ),
                 BoringFilePicker(
                   verticalAlignment: 1.3,
                   boringResponsiveSize: BoringResponsiveSize(md: 6, sm: 6),
@@ -241,7 +248,7 @@ class TableFormExample extends StatelessWidget {
                       label: "Nome",
                       hintText: "Inserisci il nome",
                       prefixIcon:
-                      Icon(Icons.text_fields_outlined, color: Colors.grey)),
+                          Icon(Icons.text_fields_outlined, color: Colors.grey)),
                 ),
                 BoringTextField(
                   fieldController:
