@@ -9,6 +9,7 @@ import 'package:boring_form/theme/boring_responsive_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:pattern_formatter/numeric_formatter.dart';
 
 TextEditingValue formatFunction(
     TextEditingValue oldValue,
@@ -169,6 +170,7 @@ class BoringNumberField extends BoringField<num> {
     this.decimalSeparator = ".",
     this.thousandsSeparator = ",",
     this.decimalPlaces,
+    this.fieldFormatter,
     super.displayCondition,
   });
 
@@ -177,6 +179,7 @@ class BoringNumberField extends BoringField<num> {
   final String? decimalSeparator;
   final String thousandsSeparator;
   final int? decimalPlaces;
+  final NumberFormat? fieldFormatter;
 
   InputDecoration getEnhancedDecoration(BuildContext context) {
     return getDecoration(context).copyWith();
@@ -196,7 +199,8 @@ class BoringNumberField extends BoringField<num> {
   Widget builder(context, controller, child) {
     final style = BoringFormTheme.of(context).style;
 
-    final formatter = NumberFormatter(thousandsSeparator: thousandsSeparator);
+    final formatter =
+        ThousandsFormatter(allowFraction: true, formatter: fieldFormatter);
 
     return BoringField.boringFieldBuilder(
       style,
@@ -209,7 +213,12 @@ class BoringNumberField extends BoringField<num> {
         inputFormatters: [formatter],
         decoration: getEnhancedDecoration(context),
         onChanged: ((value) {
-          controller.value = formatter.parseString(value);
+          try {
+            value = value.replaceAll(",", "");
+            controller.value = double.parse(value);
+          } catch (e) {
+            controller.value = null;
+          }
         }),
       ),
     );

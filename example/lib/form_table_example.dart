@@ -145,6 +145,10 @@ class TableFormExample extends StatelessWidget {
                       labelPosition: BoringSwitchLabelPosition.left),
                   decoration: BoringFieldDecoration(label: "asdasd"),
                 ),
+                BoringNumberField(
+                  jsonKey: "number",
+                  thousandsSeparator: ".",
+                ),
                 BoringFilePicker(
                   verticalAlignment: 1.3,
                   boringResponsiveSize: BoringResponsiveSize(md: 6, sm: 6),

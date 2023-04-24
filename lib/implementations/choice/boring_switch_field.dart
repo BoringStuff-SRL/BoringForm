@@ -76,7 +76,7 @@ class BoringSwitchField extends BoringField<bool> {
     final BoringFormStyle style = BoringFormTheme.of(context).style;
     bool readOnly = style.readOnly;
     bool hasLabel = decoration?.label != null;
-    print(switchDecoration?.labelPosition);
+
     return BoringField.boringFieldBuilder(
       style,
       switchDecoration?.labelPosition == BoringSwitchLabelPosition.top
