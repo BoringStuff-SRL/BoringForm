@@ -171,8 +171,9 @@ class BoringNumberField extends BoringField<num> {
     this.thousandsSeparator = ",",
     this.decimalPlaces,
     this.fieldFormatter,
+    bool? readOnly,
     super.displayCondition,
-  });
+  }) : super(readOnly: readOnly);
 
   final TextEditingController textEditingController = TextEditingController();
 
