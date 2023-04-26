@@ -199,7 +199,7 @@ class _BoringFormStepperWidget extends BoringField {
                   if (!section.controller.isValid) {
                     isStepperValid = false;
                   }
-                  (controller.value as Map).addEntries(
+                  (controller.value as Map<String, dynamic>).addEntries(
                       {section.jsonKey: section.controller.value!}.entries);
                 }
 
