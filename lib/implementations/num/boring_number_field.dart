@@ -63,18 +63,18 @@ TextEditingValue formatFunction(
 }
 
 //https://github.com/hnvn/flutter_pattern_formatter
-class NumberFormatter extends TextInputFormatter {
+class NumberFormatter2 extends TextInputFormatter {
   final String? decimalSeparator;
   final String thousandsSeparator;
   final int? decimalPlaces;
 
-  NumberFormatter({
+  NumberFormatter2({
     this.thousandsSeparator = ",",
     this.decimalPlaces,
     this.decimalSeparator = ".",
   });
 
-  NumberFormatter.integer({
+  NumberFormatter2.integer({
     this.thousandsSeparator = "",
   })  : decimalPlaces = 0,
         decimalSeparator = null;
@@ -200,8 +200,11 @@ class BoringNumberField extends BoringField<num> {
   Widget builder(context, controller, child) {
     final style = BoringFormTheme.of(context).style;
 
-    final formatter =
-        ThousandsFormatter(allowFraction: true, formatter: fieldFormatter);
+    final formatter = NumberFormatter2(
+        decimalPlaces: decimalPlaces,
+        decimalSeparator: decimalSeparator,
+        thousandsSeparator: thousandsSeparator);
+    //ThousandsFormatter(allowFraction: true, formatter: fieldFormatter);
 
     return BoringField.boringFieldBuilder(
       style,

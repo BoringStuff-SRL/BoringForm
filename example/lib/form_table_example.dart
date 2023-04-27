@@ -146,8 +146,17 @@ class TableFormExample extends StatelessWidget {
                   decoration: BoringFieldDecoration(label: "asdasd"),
                 ),
                 BoringNumberField(
-                  jsonKey: "number",
-                  thousandsSeparator: ".",
+                  jsonKey: 'kmSingolaTratta',
+                  fieldController: BoringFieldController(),
+                  onChanged: (p0) {
+                    print("asdasd");
+                    print(p0);
+                  },
+                  decoration: BoringFieldDecoration(
+                    label: '_kmSingolaTratta',
+                    hintText: "_kilometersHint",
+                    icon: Icon(Icons.ads_click, color: Colors.amber),
+                  ),
                 ),
                 BoringFilePicker(
                   verticalAlignment: 1.3,
