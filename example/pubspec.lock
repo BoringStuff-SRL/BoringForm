@@ -318,6 +318,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.4.16"
+  textfield_pattern_formatter:
+    dependency: transitive
+    description:
+      name: textfield_pattern_formatter
+      sha256: fb3d6cba46a4f2de9a7c4e0be610bfa92ff9b5f5f730d6ca74ba5ab7958ec47a
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   vector_graphics:
     dependency: transitive
     description:

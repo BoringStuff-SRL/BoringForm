@@ -9,7 +9,7 @@ import 'package:boring_form/theme/boring_responsive_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:pattern_formatter/numeric_formatter.dart';
+import 'package:textfield_pattern_formatter/formatters/thousand_separator_decimal_formatter.dart';
 
 TextEditingValue formatFunction(
     TextEditingValue oldValue,
@@ -214,7 +214,7 @@ class BoringNumberField extends BoringField<num> {
         enabled: !isReadOnly(context),
         controller: textEditingController,
         keyboardType: TextInputType.number,
-        inputFormatters: [formatter],
+        inputFormatters: [ThousandSeparatorDecimalFormatter()],
         decoration: getEnhancedDecoration(context),
         onChanged: ((value) {
           try {
