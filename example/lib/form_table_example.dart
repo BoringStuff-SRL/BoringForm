@@ -110,6 +110,9 @@ class TableFormExample extends StatelessWidget {
             BoringSection(
               jsonKey: 'test',
               fields: [
+
+                BoringNumberField(jsonKey: 'asdas'),
+
                 BoringSearchDropDownField<String>(
                   jsonKey: 'multichoicesearch',
                   onAddIcon: Icon(Icons.add_a_photo),
