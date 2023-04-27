@@ -1,15 +1,16 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:universal_io/io.dart';
 import 'dart:math';
-
 import 'package:boring_form/field/boring_field.dart';
 import 'package:boring_form/field/boring_field_controller.dart';
 import 'package:boring_form/theme/boring_field_decoration.dart';
 import 'package:boring_form/theme/boring_form_theme.dart';
 import 'package:boring_form/theme/boring_responsive_size.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:textfield_pattern_formatter/formatters/thousand_separator_decimal_formatter.dart';
+import 'package:intl/number_symbols_data.dart' show numberFormatSymbols;
 
 TextEditingValue formatFunction(
     TextEditingValue oldValue,
@@ -199,12 +200,14 @@ class BoringNumberField extends BoringField<num> {
   @override
   Widget builder(context, controller, child) {
     final style = BoringFormTheme.of(context).style;
-
+    final dSeparator =
+        numberFormatSymbols[Platform.localeName.split('_').first]?.DECIMAL_SEP;
+    final tSeparator =
+        numberFormatSymbols[Platform.localeName.split('_').first]?.GROUP_SEP;
     final formatter = NumberFormatter2(
         decimalPlaces: decimalPlaces,
-        decimalSeparator: decimalSeparator,
-        thousandsSeparator: thousandsSeparator);
-    //ThousandsFormatter(allowFraction: true, formatter: fieldFormatter);
+        decimalSeparator: dSeparator ?? decimalSeparator,
+        thousandsSeparator: tSeparator ?? thousandsSeparator);
 
     return BoringField.boringFieldBuilder(
       style,
@@ -214,11 +217,17 @@ class BoringNumberField extends BoringField<num> {
         enabled: !isReadOnly(context),
         controller: textEditingController,
         keyboardType: TextInputType.number,
-        inputFormatters: [ThousandSeparatorDecimalFormatter()],
+        inputFormatters: [formatter],
         decoration: getEnhancedDecoration(context),
         onChanged: ((value) {
           try {
-            value = value.replaceAll(",", "");
+            if (tSeparator == ',') {
+              value = value.replaceAll(",", "");
+            } else if (tSeparator == '.') {
+              value = value.replaceAll(".", "");
+              value = value.replaceAll(",", ".");
+            }
+
             controller.value = double.parse(value);
           } catch (e) {
             controller.value = null;

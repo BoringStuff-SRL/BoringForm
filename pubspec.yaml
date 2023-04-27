@@ -13,8 +13,8 @@ dependencies:
 
   intl: ^0.17.0
   provider: ^6.0.5
-  file_picker: ^5.2.7
-  textfield_pattern_formatter: ^0.0.2
+  file_picker: ^5.2.11
+  universal_io: ^2.2.0
 
   dropdown_button2:
     git:

@@ -37,7 +37,7 @@ packages:
     description:
       path: "."
       ref: slidable
-      resolved-ref: "9d3e38625bfea3c7afafacd8b875cc43c048ef68"
+      resolved-ref: b325ba49df57b5f9d33de51a84548d099639962e
       url: "https://github.com/fradesa/FlutterBoringTable.git"
     source: git
     version: "0.0.1"
@@ -65,14 +65,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.17.0"
-  cupertino_icons:
-    dependency: "direct main"
-    description:
-      name: cupertino_icons
-      sha256: e35129dc44c9118cee2a5603506d823bab99c68393879edb440e0090d07586be
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.5"
   dropdown_button2:
     dependency: transitive
     description:
@@ -102,10 +94,10 @@ packages:
     dependency: transitive
     description:
       name: file_picker
-      sha256: dcde5ad1a0cebcf3715ea3f24d0db1888bf77027a26c77d7779e8ef63b8ade62
+      sha256: e6c7ad8e572379df86ea64ef0a5395889fba3954411d47ca021b888d79f8e798
       url: "https://pub.dev"
     source: hosted
-    version: "5.2.9"
+    version: "5.2.11"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -123,10 +115,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_plugin_android_lifecycle
-      sha256: c224ac897bed083dabf11f238dd11a239809b446740be0c2044608c50029ffdf
+      sha256: "2818f5233cf8fa5fc51f6d78ce0028feb4e7c18d0b6d40b57b91f366eea7e656"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.9"
+    version: "2.0.12"
   flutter_slidable:
     dependency: transitive
     description:
@@ -310,14 +302,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.4.16"
-  textfield_pattern_formatter:
+  typed_data:
     dependency: transitive
     description:
-      name: textfield_pattern_formatter
-      sha256: fb3d6cba46a4f2de9a7c4e0be610bfa92ff9b5f5f730d6ca74ba5ab7958ec47a
+      name: typed_data
+      sha256: "26f87ade979c47a150c9eaab93ccd2bebe70a27dc0b4b29517f2904f04eb11a5"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.2"
+    version: "1.3.1"
+  universal_io:
+    dependency: transitive
+    description:
+      name: universal_io
+      sha256: "06866290206d196064fd61df4c7aea1ffe9a4e7c4ccaa8fcded42dd41948005d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   vector_graphics:
     dependency: transitive
     description:
@@ -354,10 +354,10 @@ packages:
     dependency: transitive
     description:
       name: win32
-      sha256: a6f0236dbda0f63aa9a25ad1ff9a9d8a4eaaa5012da0dc59d21afdb1dc361ca4
+      sha256: dd8f9344bc305ae2923e3d11a2a911d9a4e2c7dd6fe0ed10626d63211a69676e
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.4"
+    version: "4.1.3"
   xml:
     dependency: transitive
     description:
