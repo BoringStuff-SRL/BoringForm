@@ -22,6 +22,7 @@ class BoringSearchMultiChoiceDropDownField<T> extends BoringField<List<T>> {
       this.resultTextPadding,
       this.itemsTextStyle,
       this.resultTextStyle,
+      this.searchMatchFunction,
       super.fieldController,
       super.decoration,
       super.displayCondition,
@@ -40,9 +41,11 @@ class BoringSearchMultiChoiceDropDownField<T> extends BoringField<List<T>> {
   final EdgeInsets? itemsPadding;
   final EdgeInsets? resultTextPadding;
   final double? dropdownItemsSpaceBetweenIcon;
+  final bool Function(DropdownMenuItem<dynamic>, String)? searchMatchFunction;
   final searchEditController = TextEditingController();
 
   _searchMatchFn(item, searchValue) =>
+      searchMatchFunction?.call(item, searchValue) ??
       item.value.toString().toLowerCase().contains(searchValue.toLowerCase());
 
   _onMenuStateChange(isOpen, searchEditController) =>
