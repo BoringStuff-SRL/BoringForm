@@ -26,7 +26,7 @@ export 'theme/boring_form_theme.dart';
 export 'theme/boring_responsive_size.dart';
 export 'package:provider/provider.dart';
 export 'package:universal_io/io.dart';
-
+export 'package:file_picker/file_picker.dart';
 
 
 

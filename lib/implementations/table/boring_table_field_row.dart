@@ -16,8 +16,14 @@ class BoringTableFieldRow extends BoringTableRowElement {
   List<BoringField> get items => _items;
 
   static final tableHeader = [
-    TableHeaderElement(label: "Colonna 1", flex: 1),
-    TableHeaderElement(label: "Colonna 2", flex: 1),
+    TableHeaderElement(
+        label: "Colonna 1",
+        flex: 1,
+        tableHeaderDecoration: TableHeaderDecoration()),
+    TableHeaderElement(
+        label: "Colonna 2",
+        flex: 1,
+        tableHeaderDecoration: TableHeaderDecoration()),
   ];
 
   @override
