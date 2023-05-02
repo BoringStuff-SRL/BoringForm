@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+
 import 'dart:math';
 
 import 'package:boring_form/field/boring_field.dart';
@@ -9,6 +10,8 @@ import 'package:boring_form/theme/boring_responsive_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:intl/number_symbols_data.dart' show numberFormatSymbols;
+import 'package:universal_io/io.dart';
 
 TextEditingValue formatFunction(
     TextEditingValue oldValue,
@@ -62,18 +65,18 @@ TextEditingValue formatFunction(
 }
 
 //https://github.com/hnvn/flutter_pattern_formatter
-class NumberFormatter extends TextInputFormatter {
+class NumberFormatter2 extends TextInputFormatter {
   final String? decimalSeparator;
   final String thousandsSeparator;
   final int? decimalPlaces;
 
-  NumberFormatter({
+  NumberFormatter2({
     this.thousandsSeparator = ",",
     this.decimalPlaces,
     this.decimalSeparator = ".",
   });
 
-  NumberFormatter.integer({
+  NumberFormatter2.integer({
     this.thousandsSeparator = "",
   })  : decimalPlaces = 0,
         decimalSeparator = null;
@@ -169,14 +172,17 @@ class BoringNumberField extends BoringField<num> {
     this.decimalSeparator = ".",
     this.thousandsSeparator = ",",
     this.decimalPlaces,
+    this.fieldFormatter,
+    bool? readOnly,
     super.displayCondition,
-  });
+  }) : super(readOnly: readOnly);
 
   final TextEditingController textEditingController = TextEditingController();
 
   final String? decimalSeparator;
   final String thousandsSeparator;
   final int? decimalPlaces;
+  final NumberFormat? fieldFormatter;
 
   InputDecoration getEnhancedDecoration(BuildContext context) {
     return getDecoration(context).copyWith();
@@ -195,8 +201,14 @@ class BoringNumberField extends BoringField<num> {
   @override
   Widget builder(context, controller, child) {
     final style = BoringFormTheme.of(context).style;
-
-    final formatter = NumberFormatter(thousandsSeparator: thousandsSeparator);
+    final dSeparator =
+        numberFormatSymbols[Platform.localeName.split('_').first]?.DECIMAL_SEP;
+    final tSeparator =
+        numberFormatSymbols[Platform.localeName.split('_').first]?.GROUP_SEP;
+    final formatter = NumberFormatter2(
+        decimalPlaces: decimalPlaces,
+        decimalSeparator: dSeparator ?? decimalSeparator,
+        thousandsSeparator: tSeparator ?? thousandsSeparator);
 
     return BoringField.boringFieldBuilder(
       style,
@@ -209,7 +221,18 @@ class BoringNumberField extends BoringField<num> {
         inputFormatters: [formatter],
         decoration: getEnhancedDecoration(context),
         onChanged: ((value) {
-          controller.value = formatter.parseString(value);
+          try {
+            if (tSeparator == ',') {
+              value = value.replaceAll(",", "");
+            } else if (tSeparator == '.') {
+              value = value.replaceAll(".", "");
+              value = value.replaceAll(",", ".");
+            }
+
+            controller.value = double.parse(value);
+          } catch (e) {
+            controller.value = null;
+          }
         }),
       ),
     );

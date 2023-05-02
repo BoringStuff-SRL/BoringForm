@@ -11,6 +11,7 @@ abstract class BoringField<T> extends StatelessWidget {
       this.onChanged,
       this.decoration,
       this.boringResponsiveSize = const BoringResponsiveSize(),
+      this.readOnly,
       required this.jsonKey,
       this.displayCondition})
       : fieldController = (fieldController ?? BoringFieldController<T>()) {
@@ -35,7 +36,7 @@ abstract class BoringField<T> extends StatelessWidget {
   final BoringFieldDecoration? decoration;
   final bool Function(Map<String, dynamic> formValue)? displayCondition;
   final contextHolder = ValueHolder<BuildContext>();
-  final bool? _readOnly = null;
+  bool? readOnly;
 
   void _onChangedValue() {
     //onValueChanged(fieldController.value);
@@ -69,16 +70,16 @@ abstract class BoringField<T> extends StatelessWidget {
   }
 
   bool isReadOnly(BuildContext context) =>
-      (_readOnly != null) ? _readOnly! : getStyle(context).readOnly;
+      (readOnly != null) ? readOnly! : getStyle(context).readOnly;
 
   static boringFieldBuilder(BoringFormStyle style, String? label,
-      {required Widget child}) {
+      {required Widget child, bool? excludeLabel}) {
     return Padding(
       padding: style.fieldsPadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (style.labelOverField && label != null)
+          if (!(excludeLabel ?? false) && style.labelOverField && label != null)
             Padding(
               padding: const EdgeInsets.only(bottom: 8, left: 4),
               child: Text(

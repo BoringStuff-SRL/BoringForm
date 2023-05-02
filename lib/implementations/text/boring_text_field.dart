@@ -12,7 +12,9 @@ class BoringTextField extends BoringField<String> {
       required super.jsonKey,
       super.displayCondition,
       super.boringResponsiveSize,
-      super.decoration});
+      bool? readOnly,
+      super.decoration})
+      : super(readOnly: readOnly);
 
   late final textEditingController = TextEditingController();
 

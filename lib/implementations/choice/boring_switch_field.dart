@@ -10,7 +10,7 @@ import '../../field/boring_field.dart';
 import '../../theme/boring_form_style.dart';
 import '../../theme/boring_form_theme.dart';
 
-enum BoringSwitchLabelPosition { left, right }
+enum BoringSwitchLabelPosition { left, right, top }
 
 class BoringSwitchDecoration {
   final BorderRadius borderRadius;
@@ -44,7 +44,7 @@ class BoringSwitchDecoration {
     this.heightFactor = 1.7,
     this.alignment = Alignment.centerLeft,
     this.labelAndSwitchSpacing = 7,
-    this.labelPosition = BoringSwitchLabelPosition.right,
+    this.labelPosition = BoringSwitchLabelPosition.top,
   }) {
     if (textWhenActive != null) {
       assert(textWhenNotActive != null,
@@ -74,13 +74,14 @@ class BoringSwitchField extends BoringField<bool> {
   Widget builder(BuildContext context, BoringFieldController<bool> controller,
       Widget? child) {
     final BoringFormStyle style = BoringFormTheme.of(context).style;
-    bool hasLabel = decoration?.label != null ||
-        (switchDecoration?.textWhenActive == null &&
-            switchDecoration?.textWhenNotActive == null);
+    bool readOnly = style.readOnly;
+    bool hasLabel = decoration?.label != null;
 
     return BoringField.boringFieldBuilder(
       style,
-      decoration?.label ?? '',
+      switchDecoration?.labelPosition == BoringSwitchLabelPosition.top
+          ? decoration?.label ?? ''
+          : "",
       child: Align(
         alignment: switchDecoration?.alignment ?? Alignment.centerLeft,
         heightFactor: switchDecoration?.heightFactor ?? 1.7,
@@ -91,21 +92,26 @@ class BoringSwitchField extends BoringField<bool> {
                   ? TextDirection.ltr
                   : TextDirection.rtl,
           children: [
-            _AnimatedCustomSwitch(
-              controller: controller,
-              switchDecoration: switchDecoration ?? BoringSwitchDecoration(),
-              fieldDecoration: decoration,
-              hasLabel: hasLabel,
+            MouseRegion(
+              cursor: readOnly ? MouseCursor.defer : SystemMouseCursors.click,
+              child: _AnimatedCustomSwitch(
+                controller: controller,
+                switchDecoration: switchDecoration ?? BoringSwitchDecoration(),
+                fieldDecoration: decoration,
+                hasLabel: hasLabel,
+              ),
             ),
-            if (hasLabel)
+            if (hasLabel &&
+                switchDecoration?.labelPosition !=
+                    BoringSwitchLabelPosition.top)
               Padding(
                 padding: EdgeInsets.only(
                   left: switchDecoration?.labelPosition ==
                           BoringSwitchLabelPosition.right
                       ? switchDecoration?.labelAndSwitchSpacing ?? 0
                       : 0,
-                  right: switchDecoration?.labelPosition !=
-                          BoringSwitchLabelPosition.right
+                  right: switchDecoration?.labelPosition ==
+                          BoringSwitchLabelPosition.left
                       ? switchDecoration?.labelAndSwitchSpacing ?? 0
                       : 0,
                 ),
@@ -200,28 +206,27 @@ class _AnimatedCustomSwitchState extends State<_AnimatedCustomSwitch> {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                if (!widget.hasLabel)
-                  AnimatedCrossFade(
-                      firstCurve: Curves.ease,
-                      secondCurve: Curves.ease,
-                      sizeCurve: Curves.ease,
-                      firstChild: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 3),
-                          child: widget.switchDecoration.textWhenActive,
-                        ),
+                AnimatedCrossFade(
+                    firstCurve: Curves.ease,
+                    secondCurve: Curves.ease,
+                    sizeCurve: Curves.ease,
+                    firstChild: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 3),
+                        child: widget.switchDecoration.textWhenActive,
                       ),
-                      secondChild: Padding(
-                        padding: const EdgeInsets.only(right: 3),
-                        child: Align(
-                            alignment: Alignment.centerRight,
-                            child: widget.switchDecoration.textWhenNotActive),
-                      ),
-                      crossFadeState: active
-                          ? CrossFadeState.showFirst
-                          : CrossFadeState.showSecond,
-                      duration: widget.switchDecoration.animationDuration),
+                    ),
+                    secondChild: Padding(
+                      padding: const EdgeInsets.only(right: 3),
+                      child: Align(
+                          alignment: Alignment.centerRight,
+                          child: widget.switchDecoration.textWhenNotActive),
+                    ),
+                    crossFadeState: active
+                        ? CrossFadeState.showFirst
+                        : CrossFadeState.showSecond,
+                    duration: widget.switchDecoration.animationDuration),
                 AnimatedAlign(
                   alignment:
                       active ? Alignment.centerRight : Alignment.centerLeft,

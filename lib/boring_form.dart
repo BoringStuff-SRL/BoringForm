@@ -1,5 +1,8 @@
 library boring_form;
 
+export 'package:file_picker/file_picker.dart';
+export 'package:provider/provider.dart';
+
 export 'field/boring_field.dart';
 export 'field/boring_field_controller.dart';
 export 'form/boring_form.dart';

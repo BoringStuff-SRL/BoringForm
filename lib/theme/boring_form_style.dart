@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 
 class BoringFormStyle {
@@ -37,4 +38,22 @@ class BoringFormStyle {
 
   static String _getFieldAssertionError(String field) =>
       "InputDecoration '$field' property not allowed inside BoringFormStyle: the '$field' property will be inherited from each field!";
+
+  BoringFormStyle copyWith({
+    InputDecoration? inputDecoration,
+    bool? labelOverField,
+    TextStyle? sectionTitleStyle,
+    EdgeInsetsGeometry? fieldsPadding,
+    TextStyle? formTitleStyle,
+    bool? readOnly,
+  }) {
+    return BoringFormStyle(
+      inputDecoration: inputDecoration ?? this.inputDecoration,
+      labelOverField: labelOverField ?? this.labelOverField,
+      sectionTitleStyle: sectionTitleStyle ?? this.sectionTitleStyle,
+      fieldsPadding: fieldsPadding ?? this.fieldsPadding,
+      formTitleStyle: formTitleStyle ?? this.formTitleStyle,
+      readOnly: readOnly ?? this.readOnly,
+    );
+  }
 }

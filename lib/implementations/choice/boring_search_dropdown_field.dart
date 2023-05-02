@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:async';
+
 import 'package:boring_form/field/boring_field.dart';
 import 'package:boring_form/field/boring_field_controller.dart';
 import 'package:boring_form/theme/boring_field_decoration.dart';
@@ -12,20 +14,35 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
       {super.key,
       required super.jsonKey,
       required this.items,
+      this.onAdd,
+      bool? readOnly,
+      this.onItemAlreadyExisting,
+      this.onAddIcon = const Icon(Icons.add),
       this.searchInputDecoration,
       this.radius = 0,
       this.isExpanded = false,
+      this.searchMatchFunction,
       super.fieldController,
       super.decoration,
       super.displayCondition,
       super.boringResponsiveSize,
-      super.onChanged});
+      super.onChanged})
+      : _itemsNotifier = ValueNotifier(items),
+        super(readOnly: readOnly);
 
   final InputDecoration? searchInputDecoration;
   final List<DropdownMenuItem<T?>> items;
+  final ValueNotifier<List<DropdownMenuItem<T?>>> _itemsNotifier;
   final double radius;
   final searchEditController = TextEditingController();
   final bool isExpanded;
+  final FutureOr<DropdownMenuItem<T>?> Function(String searchTextFieldValue)?
+      onAdd;
+  final FutureOr<void> Function(BuildContext dropdownContext)?
+      onItemAlreadyExisting;
+  final Widget onAddIcon;
+  final bool Function(DropdownMenuItem<dynamic>, String)? searchMatchFunction;
+  final GlobalKey _dropdownKey = GlobalKey();
 
   @override
   Widget builder(context, controller, child) {
@@ -37,46 +54,95 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
     return BoringField.boringFieldBuilder(
       style,
       decoration?.label,
-      child: DropdownButtonFormField2<T?>(
-        dropdownOverButton: false,
-        isExpanded: isExpanded,
-        searchInnerWidgetHeight: 20,
-        dropdownElevation: 0,
-        decoration: newStyle,
-        buttonHeight: 50,
-        itemHeight: 50,
-        focusColor: Colors.transparent,
-        buttonSplashColor: Colors.transparent,
-        buttonHighlightColor: Colors.transparent,
-        buttonOverlayColor: MaterialStateProperty.resolveWith((states) {
-          return Colors.transparent;
-        }),
-        dropdownMaxHeight: 250,
-        searchController: searchEditController,
-        items: items,
-        value: controller.value,
-        hint: Text(decoration?.hintText ?? ''),
-        dropdownDecoration: _boxDecoration(newStyle),
-        onChanged: isReadOnly(context)
-            ? null
-            : ((value) {
-                controller.value = value;
+      child: ValueListenableBuilder(
+          valueListenable: _itemsNotifier,
+          builder: (context, items, child) {
+            return DropdownButtonFormField2<T?>(
+              dropdownOverButton: false,
+              key: _dropdownKey,
+              isExpanded: isExpanded,
+              searchInnerWidgetHeight: 20,
+              dropdownElevation: 0,
+              decoration: newStyle,
+              buttonHeight: 50,
+              itemHeight: 50,
+              focusColor: Colors.transparent,
+              buttonSplashColor: Colors.transparent,
+              buttonHighlightColor: Colors.transparent,
+              buttonOverlayColor: MaterialStateProperty.resolveWith((states) {
+                return Colors.transparent;
               }),
-        searchInnerWidget: Padding(
-          padding: const EdgeInsets.all(10),
-          child: TextFormField(
-            controller: searchEditController,
-            decoration: searchInputDecoration,
-          ),
-        ),
-        searchMatchFn: (item, searchValue) => _searchMatchFn(item, searchValue),
-        onMenuStateChange: (isOpen) =>
-            _onMenuStateChange(isOpen, searchEditController),
-      ),
+              dropdownMaxHeight: 250,
+              searchController: searchEditController,
+              items: items,
+              value: controller.value,
+              hint: Text(decoration?.hintText ?? ''),
+              dropdownDecoration: _boxDecoration(newStyle),
+              onChanged: isReadOnly(context)
+                  ? null
+                  : ((value) {
+                      controller.value = value;
+                    }),
+              searchInnerWidget: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Row(
+                  children: [
+                    if (onAdd != null) ...[
+                      MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: GestureDetector(
+                          onTap: () async {
+                            await _onAdd(
+                                _dropdownKey.currentContext!, controller);
+                          },
+                          child: onAddIcon,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                    ],
+                    Expanded(
+                      child: TextFormField(
+                        controller: searchEditController,
+                        decoration: searchInputDecoration,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              searchMatchFn: (item, searchValue) =>
+                  searchMatchFunction?.call(item, searchValue) ??
+                  _searchDefaultMatchFn(item, searchValue),
+              onMenuStateChange: (isOpen) =>
+                  _onMenuStateChange(isOpen, searchEditController),
+            );
+          }),
     );
   }
 
-  _searchMatchFn(item, searchValue) =>
+  _onAdd(
+      BuildContext dialogContext, BoringFieldController<T> controller) async {
+    if (searchEditController.text.isNotEmpty) {
+      final newList = _itemsNotifier.value;
+      final item = await onAdd!.call(searchEditController.text);
+      if (item != null) {
+        for (DropdownMenuItem element in newList) {
+          if (element.value == item.value) {
+            onItemAlreadyExisting?.call(_dropdownKey.currentContext!);
+            return;
+          }
+        }
+        newList.add(item);
+        _itemsNotifier.value = newList;
+
+        controller.value = item.value;
+        Navigator.pop(_dropdownKey.currentContext!);
+      }
+    }
+  }
+
+  _searchDefaultMatchFn(item, searchValue) =>
       item.value.toString().toLowerCase().contains(searchValue.toLowerCase());
 
   _onMenuStateChange(isOpen, searchEditController) =>
