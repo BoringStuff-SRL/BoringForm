@@ -1,5 +1,9 @@
 library boring_form;
 
+export 'package:file_picker/file_picker.dart';
+export 'package:provider/provider.dart';
+export 'package:universal_html/html.dart';
+
 export 'field/boring_field.dart';
 export 'field/boring_field_controller.dart';
 export 'form/boring_form.dart';
@@ -24,9 +28,3 @@ export 'theme/boring_field_decoration.dart';
 export 'theme/boring_form_style.dart';
 export 'theme/boring_form_theme.dart';
 export 'theme/boring_responsive_size.dart';
-export 'package:provider/provider.dart';
-export 'package:universal_io/io.dart';
-export 'package:file_picker/file_picker.dart';
-
-
-

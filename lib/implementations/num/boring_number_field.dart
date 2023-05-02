@@ -1,16 +1,17 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:universal_io/io.dart';
+
 import 'dart:math';
+
 import 'package:boring_form/field/boring_field.dart';
 import 'package:boring_form/field/boring_field_controller.dart';
 import 'package:boring_form/theme/boring_field_decoration.dart';
 import 'package:boring_form/theme/boring_form_theme.dart';
 import 'package:boring_form/theme/boring_responsive_size.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/number_symbols_data.dart' show numberFormatSymbols;
+import 'package:universal_io/io.dart';
 
 TextEditingValue formatFunction(
     TextEditingValue oldValue,
