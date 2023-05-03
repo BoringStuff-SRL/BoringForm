@@ -67,11 +67,14 @@ class BoringSideField<T> extends BoringField<T> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             if (field.decoration != null && field.decoration!.label != null)
-              Text(field.decoration!.label!),
+              Expanded(
+                child: Text(field.decoration!.label!),
+              ),
             SizedBox(
               width: widgetDecoration?.spacing ?? 100,
             ),
             Expanded(
+              flex: 2,
               child: field.copyWith(
                 onChanged: (p0) {
                   controller.setValueSilently(p0);
