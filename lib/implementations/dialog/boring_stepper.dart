@@ -42,7 +42,8 @@ class BoringStepper extends StatelessWidget {
   final BoringFormController formController;
   final List<BoringSection> sections;
   final BoringStepperDecoration decoration;
-  // Consider using isStepperValid instead of formController.isValid
+
+  /// Consider using isStepperValid instead of formController.isValid
   final FutureOr<void> Function(BuildContext context, bool isStepperValid)
       onConfirmButtonPress;
 
@@ -118,16 +119,24 @@ class _BoringFormStepperWidget extends BoringField {
   final FutureOr<void> Function(BuildContext context, bool isStepperValid)
       onConfirmButtonPress;
 
-  List<Step> get _steps => sections
-      .map(
-        (e) => Step(
-          title: Text(e.decoration?.label ?? ''),
-          content: e.copyWith(
-            decoration: BoringFieldDecoration(),
-          ),
+  late List<Step> _steps = sections.map(
+    (e) {
+      Map<String, dynamic>? initialValue = formController
+          .initialValue?[formController.value?.keys.first][e.jsonKey];
+      e.controller.setValueSilently(initialValue);
+      print(formController.initialValue?[formController.value?.keys.first]
+          [e.jsonKey]);
+      return Step(
+        title: Text(e.decoration?.label ?? ''),
+        content: e.copyWith(
+          decoration: BoringFieldDecoration(),
+
+          //sectionController:
+          //  BoringSectionController(initialValue: initialValue),
         ),
-      )
-      .toList();
+      );
+    },
+  ).toList();
 
   void _onStepContinue(int currentIndex, BoringFieldController controller) {
     if (currentIndex < sections.length - 1) {

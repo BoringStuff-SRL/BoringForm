@@ -126,6 +126,7 @@ class BoringSection extends BoringFieldsGroup {
       BoringSectionController? sectionController,
       bool? collapsible,
       bool? collapseOnHeaderTap,
+
       List<BoringField<dynamic>>? fields}) {
     return BoringSection(
       jsonKey: jsonKey ?? this.jsonKey,
@@ -135,6 +136,7 @@ class BoringSection extends BoringFieldsGroup {
       collapseOnHeaderTap: collapseOnHeaderTap ?? this.collapseOnHeaderTap,
       collapsible: collapsible ?? this.collapsible,
       fields: fields ?? this.fields,
+      sectionController: sectionController,
     );
   }
 }
