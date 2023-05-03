@@ -1,16 +1,17 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-
-import 'package:path/path.dart' as p;
 import 'dart:io';
 
-import 'package:boring_form/field/boring_field.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:boring_form/theme/boring_responsive_size.dart';
-import 'package:boring_form/theme/boring_field_decoration.dart';
-import 'package:boring_form/field/boring_field_controller.dart';
 import 'package:flutter/widgets.dart';
+import 'package:path/path.dart' as p;
+
+import 'package:boring_form/field/boring_field.dart';
+import 'package:boring_form/field/boring_field_controller.dart';
+import 'package:boring_form/theme/boring_field_decoration.dart';
+import 'package:boring_form/theme/boring_responsive_size.dart';
 
 enum FeedbackPosition { top, left, right, bottom }
 
@@ -162,14 +163,47 @@ class BoringFilePicker extends BoringField<List<PlatformFile>> {
   }
 
   @override
-  BoringField copyWith(
-      {BoringFieldController<List<PlatformFile>>? fieldController,
-      void Function(List<PlatformFile>? p1)? onChanged,
-      BoringFieldDecoration? decoration,
-      BoringResponsiveSize? boringResponsiveSize,
-      String? jsonKey,
-      bool Function(Map<String, dynamic> p1)? displayCondition}) {
-    // TODO: implement copyWith
-    throw UnimplementedError();
+  BoringField copyWith({
+    BoringFieldController<List<PlatformFile>>? fieldController,
+    void Function(List<PlatformFile>? p1)? onChanged,
+    BoringFieldDecoration? decoration,
+    BoringResponsiveSize? boringResponsiveSize,
+    String? jsonKey,
+    bool Function(Map<String, dynamic> p1)? displayCondition,
+    double? textSpacingFromIcon,
+    double? buttonWidth,
+    double? verticalAlignment,
+    TextStyle? labelStyle,
+    BorderRadius? borderRadius,
+    EdgeInsets? padding,
+    Color? backgroundColor,
+    bool? allowMultiple,
+    Text? noFilesSelectedText,
+    Text Function(int filesSelected)? feedbackTextBuilder,
+    List<String>? allowedExtensions,
+    FeedbackPosition? feedbackPosition,
+    MainAxisAlignment? mainAxisAlignment,
+  }) {
+    return BoringFilePicker(
+      jsonKey: jsonKey ?? this.jsonKey,
+      fieldController: fieldController ?? this.fieldController,
+      onChanged: onChanged ?? this.onChanged,
+      boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
+      decoration: decoration ?? this.decoration,
+      displayCondition: displayCondition ?? this.displayCondition,
+      textSpacingFromIcon: textSpacingFromIcon ?? this.textSpacingFromIcon,
+      buttonWidth: buttonWidth ?? this.buttonWidth,
+      verticalAlignment: verticalAlignment ?? this.verticalAlignment,
+      labelStyle: labelStyle ?? this.labelStyle,
+      borderRadius: borderRadius ?? this.borderRadius,
+      padding: padding ?? this.padding,
+      backgroundColor: backgroundColor ?? this.backgroundColor,
+      allowMultiple: allowMultiple ?? this.allowMultiple,
+      noFilesSelectedText: noFilesSelectedText ?? this.noFilesSelectedText,
+      feedbackTextBuilder: feedbackTextBuilder ?? this.feedbackTextBuilder,
+      allowedExtensions: allowedExtensions ?? this.allowedExtensions,
+      feedbackPosition: feedbackPosition ?? this.feedbackPosition,
+      mainAxisAlignment: mainAxisAlignment ?? this.mainAxisAlignment,
+    );
   }
 }
