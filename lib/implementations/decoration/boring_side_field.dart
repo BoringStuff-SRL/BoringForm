@@ -45,6 +45,8 @@ class BoringSideField<T> extends BoringField<T> {
           jsonKey: field.jsonKey,
         );
 
+  late Type t;
+
   @override
   Widget builder(
     BuildContext context,
@@ -79,6 +81,8 @@ class BoringSideField<T> extends BoringField<T> {
                 onChanged: (p0) {
                   controller.setValueSilently(p0);
                 },
+                fieldController: BoringFieldController<T>(
+                    initialValue: controller.initialValue),
                 decoration: BoringFieldDecoration(
                   counter: field.decoration?.counter,
                   helperText: field.decoration?.helperText,
