@@ -28,9 +28,12 @@ class BoringFilePicker extends BoringField<List<PlatformFile>> {
       this.allowMultiple,
       this.verticalAlignment,
       this.noFilesSelectedText,
+      this.textDirection,
       this.feedbackPosition = FeedbackPosition.right,
       this.feedbackTextBuilder,
       this.mainAxisAlignment = MainAxisAlignment.start,
+      this.border,
+      this.label,
       super.fieldController,
       super.decoration,
       super.displayCondition,
@@ -50,6 +53,9 @@ class BoringFilePicker extends BoringField<List<PlatformFile>> {
   final List<String>? allowedExtensions;
   final FeedbackPosition feedbackPosition;
   final MainAxisAlignment mainAxisAlignment;
+  final TextDirection? textDirection;
+  final Border? border;
+  final String? label;
 
   Text _feedback(BoringFieldController<List<PlatformFile>> controller) =>
       controller.value == null
@@ -122,17 +128,19 @@ class BoringFilePicker extends BoringField<List<PlatformFile>> {
                       width: buttonWidth ?? 100,
                       decoration: BoxDecoration(
                         color: backgroundColor ?? Colors.green,
+                        border: border,
                         borderRadius: borderRadius ?? BorderRadius.circular(10),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
+                        textDirection: textDirection,
                         children: [
                           decoration?.prefixIcon ?? const Icon(Icons.file_open),
                           SizedBox(
                             width: textSpacingFromIcon ?? 5,
                           ),
                           Text(
-                            decoration?.label ?? "Pick file",
+                            label ?? decoration?.label ?? "Pick file",
                             style: labelStyle,
                           ),
                         ],
@@ -183,6 +191,9 @@ class BoringFilePicker extends BoringField<List<PlatformFile>> {
     List<String>? allowedExtensions,
     FeedbackPosition? feedbackPosition,
     MainAxisAlignment? mainAxisAlignment,
+    TextDirection? textDirection,
+    Border? border,
+    String? label,
   }) {
     return BoringFilePicker(
       jsonKey: jsonKey ?? this.jsonKey,
@@ -204,6 +215,9 @@ class BoringFilePicker extends BoringField<List<PlatformFile>> {
       allowedExtensions: allowedExtensions ?? this.allowedExtensions,
       feedbackPosition: feedbackPosition ?? this.feedbackPosition,
       mainAxisAlignment: mainAxisAlignment ?? this.mainAxisAlignment,
+      textDirection: textDirection ?? this.textDirection,
+      border: border ?? this.border,
+      label: label ?? this.label,
     );
   }
 }

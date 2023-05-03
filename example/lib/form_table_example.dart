@@ -166,8 +166,11 @@ class TableFormExample extends StatelessWidget {
                 BoringFilePicker(
                   verticalAlignment: 1.3,
                   boringResponsiveSize: BoringResponsiveSize(md: 6, sm: 6),
+                  border: Border.all(color: Colors.green),
                   feedbackPosition: FeedbackPosition.top,
                   noFilesSelectedText: Text("NESSUN FILE SELEZIONATO"),
+                  textDirection: TextDirection.rtl,
+                  label: '!@#',
                   feedbackTextBuilder: (filesSelected) {
                     if (filesSelected == 1) {
                       return Text("SOLO 1 FILE SELEZIONATO");
@@ -176,6 +179,7 @@ class TableFormExample extends StatelessWidget {
                   },
                   decoration: BoringFieldDecoration(
                     label: "asdas",
+                    hintText: "TEXT",
                   ),
                   jsonKey: "filePicker",
                   backgroundColor: Colors.red,
