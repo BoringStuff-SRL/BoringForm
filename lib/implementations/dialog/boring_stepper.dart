@@ -74,6 +74,8 @@ class BoringStepper extends StatelessWidget {
     required FutureOr<void> Function(BuildContext context, bool isStepperValid)
         onConfirmButtonPress,
   }) {
+    formController =
+        BoringFormController(initialValue: formController.initialValue);
     showDialog(
       context: context,
       builder: (context) {
@@ -119,20 +121,17 @@ class _BoringFormStepperWidget extends BoringField {
   final FutureOr<void> Function(BuildContext context, bool isStepperValid)
       onConfirmButtonPress;
 
-  late List<Step> _steps = sections.map(
+  late final List<Step> _steps = sections.map(
     (e) {
       Map<String, dynamic>? initialValue = formController
           .initialValue?[formController.value?.keys.first][e.jsonKey];
-      e.controller.setValueSilently(initialValue);
-      print(formController.initialValue?[formController.value?.keys.first]
-          [e.jsonKey]);
+
       return Step(
         title: Text(e.decoration?.label ?? ''),
         content: e.copyWith(
           decoration: BoringFieldDecoration(),
-
-          //sectionController:
-          //  BoringSectionController(initialValue: initialValue),
+          sectionController:
+              BoringSectionController(initialValue: initialValue),
         ),
       );
     },
