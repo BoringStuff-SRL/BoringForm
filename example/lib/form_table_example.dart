@@ -28,7 +28,13 @@ class TableFormExample extends StatelessWidget {
   TableFormExample({super.key});
 
   final fc = BoringFormController();
-  final stepperController = BoringFormController();
+  final stepperController = BoringFormController(initialValue: {
+    "stepper": {
+      "s1": {"text": "pippo"},
+      "s2": {"text": "pluto"}
+    }
+  });
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -58,6 +64,8 @@ class TableFormExample extends StatelessWidget {
                 ),
               ),
               onConfirmButtonPress: (context, isStepperValid) {
+                print(stepperController.value);
+                print(stepperController.initialValue);
                 print(isStepperValid);
               },
               sections: [
@@ -110,9 +118,7 @@ class TableFormExample extends StatelessWidget {
             BoringSection(
               jsonKey: 'test',
               fields: [
-
                 BoringNumberField(jsonKey: 'asdas'),
-
                 BoringSearchDropDownField<String>(
                   jsonKey: 'multichoicesearch',
                   onAddIcon: Icon(Icons.add_a_photo),
@@ -151,10 +157,6 @@ class TableFormExample extends StatelessWidget {
                 BoringNumberField(
                   jsonKey: 'kmSingolaTratta',
                   fieldController: BoringFieldController(),
-                  onChanged: (p0) {
-                    print("asdasd");
-                    print(p0);
-                  },
                   decoration: BoringFieldDecoration(
                     label: '_kmSingolaTratta',
                     hintText: "_kilometersHint",
@@ -287,9 +289,13 @@ class TableFormExample extends StatelessWidget {
               ],
               tableHeader: [
                 TableHeaderElement(
-                    label: 'Colonna 0', alignment: TextAlign.center),
+                    label: 'Colonna 0',
+                    alignment: TextAlign.center,
+                    tableHeaderDecoration: TableHeaderDecoration()),
                 TableHeaderElement(
-                    label: 'Colonna 1', alignment: TextAlign.center),
+                    label: 'Colonna 1',
+                    alignment: TextAlign.center,
+                    tableHeaderDecoration: TableHeaderDecoration()),
               ],
             ),
           ],

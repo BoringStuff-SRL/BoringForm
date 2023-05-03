@@ -37,7 +37,7 @@ packages:
     description:
       path: "."
       ref: slidable
-      resolved-ref: b325ba49df57b5f9d33de51a84548d099639962e
+      resolved-ref: "0e4e3588b19ff9e6243f683e4b2aa515f8f9f569"
       url: "https://github.com/fradesa/FlutterBoringTable.git"
     source: git
     version: "0.0.1"
@@ -131,10 +131,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_plugin_android_lifecycle
-      sha256: "2818f5233cf8fa5fc51f6d78ce0028feb4e7c18d0b6d40b57b91f366eea7e656"
+      sha256: "8ffe990dac54a4a5492747added38571a5ab474c8e5d196809ea08849c69b1bb"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.12"
+    version: "2.0.13"
   flutter_slidable:
     dependency: transitive
     description:
