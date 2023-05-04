@@ -8,14 +8,17 @@ class BoringFormStyle {
   final EdgeInsetsGeometry fieldsPadding;
   final TextStyle formTitleStyle;
   final bool readOnly;
-  BoringFormStyle({
-    this.fieldsPadding = const EdgeInsets.all(8),
-    this.sectionTitleStyle = const TextStyle(),
-    this.formTitleStyle = const TextStyle(),
-    this.inputDecoration = const InputDecoration(),
-    this.labelOverField = false,
-    this.readOnly = false,
-  })  : assert(inputDecoration.label == null, _getFieldAssertionError("label")),
+  final TextAlign textAlign;
+
+  BoringFormStyle(
+      {this.fieldsPadding = const EdgeInsets.all(8),
+      this.sectionTitleStyle = const TextStyle(),
+      this.formTitleStyle = const TextStyle(),
+      this.inputDecoration = const InputDecoration(),
+      this.labelOverField = false,
+      this.readOnly = false,
+      this.textAlign = TextAlign.start})
+      : assert(inputDecoration.label == null, _getFieldAssertionError("label")),
         assert(inputDecoration.icon == null, _getFieldAssertionError("icon")),
         assert(inputDecoration.helperText == null,
             _getFieldAssertionError("helperText")),
@@ -46,6 +49,7 @@ class BoringFormStyle {
     EdgeInsetsGeometry? fieldsPadding,
     TextStyle? formTitleStyle,
     bool? readOnly,
+    TextAlign? textAlign,
   }) {
     return BoringFormStyle(
       inputDecoration: inputDecoration ?? this.inputDecoration,
@@ -54,6 +58,7 @@ class BoringFormStyle {
       fieldsPadding: fieldsPadding ?? this.fieldsPadding,
       formTitleStyle: formTitleStyle ?? this.formTitleStyle,
       readOnly: readOnly ?? this.readOnly,
+      textAlign: textAlign ?? this.textAlign,
     );
   }
 }
