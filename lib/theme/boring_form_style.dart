@@ -9,6 +9,7 @@ class BoringFormStyle {
   final TextStyle formTitleStyle;
   final bool readOnly;
   final TextAlign textAlign;
+  final TextStyle? textStyle;
 
   BoringFormStyle(
       {this.fieldsPadding = const EdgeInsets.all(8),
@@ -17,6 +18,7 @@ class BoringFormStyle {
       this.inputDecoration = const InputDecoration(),
       this.labelOverField = false,
       this.readOnly = false,
+      this.textStyle,
       this.textAlign = TextAlign.start})
       : assert(inputDecoration.label == null, _getFieldAssertionError("label")),
         assert(inputDecoration.icon == null, _getFieldAssertionError("icon")),
@@ -50,6 +52,7 @@ class BoringFormStyle {
     TextStyle? formTitleStyle,
     bool? readOnly,
     TextAlign? textAlign,
+    TextStyle? textStyle,
   }) {
     return BoringFormStyle(
       inputDecoration: inputDecoration ?? this.inputDecoration,
@@ -59,6 +62,7 @@ class BoringFormStyle {
       formTitleStyle: formTitleStyle ?? this.formTitleStyle,
       readOnly: readOnly ?? this.readOnly,
       textAlign: textAlign ?? this.textAlign,
+      textStyle: textStyle ?? this.textStyle,
     );
   }
 }

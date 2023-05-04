@@ -54,6 +54,7 @@ class BoringPickerField<T> extends BoringField<T> {
           controller: textEditingController,
           readOnly: true,
           textAlign: style.textAlign,
+          style: style.textStyle,
           onTap: () => readOnly ? null : _selectValue(context),
           decoration: getDecoration(context),
         ),
