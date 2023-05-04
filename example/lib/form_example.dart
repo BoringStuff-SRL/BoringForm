@@ -165,10 +165,19 @@ class FormExample2 extends StatelessWidget {
                   fields: [
                     BoringNumberField(jsonKey: 'ciaociao'),
                     BoringSideField<String>(
+                      widgetDecoration: BoringSideFieldDecoration(
+                          backgroundColor: Colors.green),
                       field: BoringTextField(
                         boringResponsiveSize:
                             BoringResponsiveSize(md: 6, xl: 3),
                         jsonKey: "name",
+                        fieldController: BoringFieldController(
+                          validationFunction: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "vuoto";
+                            }
+                          },
+                        ),
                         decoration: BoringFieldDecoration(label: "Nome"),
                       ),
                     ),

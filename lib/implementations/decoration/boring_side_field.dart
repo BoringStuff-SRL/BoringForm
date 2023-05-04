@@ -63,6 +63,7 @@ class BoringSideField<T> extends BoringField<T> {
   ) {
     final style = getStyle(context);
 
+    controller.validationFunction = field.fieldController.validationFunction;
     return BoringField.boringFieldBuilder(
       style,
       '',
