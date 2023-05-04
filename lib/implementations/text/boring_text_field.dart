@@ -9,6 +9,7 @@ class BoringTextField extends BoringField<String> {
       super.onChanged,
       this.minLines = 1,
       this.maxLines = 1,
+      this.textDirection = TextDirection.ltr,
       required super.jsonKey,
       super.displayCondition,
       super.boringResponsiveSize,
@@ -20,6 +21,7 @@ class BoringTextField extends BoringField<String> {
 
   final int minLines;
   final int maxLines;
+  final TextDirection textDirection;
 
   @override
   bool setInitialValue(String? initialValue) {
@@ -42,6 +44,7 @@ class BoringTextField extends BoringField<String> {
         controller: textEditingController,
         minLines: minLines,
         maxLines: maxLines,
+        textDirection: textDirection,
         decoration: getDecoration(context),
         onChanged: ((value) {
           controller.value = value;
