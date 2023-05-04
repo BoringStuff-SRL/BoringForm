@@ -79,7 +79,10 @@ class BoringSideField<T> extends BoringField<T> {
             if (field.decoration != null && field.decoration!.label != null)
               Expanded(
                 flex: widgetDecoration?.labelFlex ?? 1,
-                child: Text(field.decoration!.label!),
+                child: Text(
+                  field.decoration!.label!,
+                  style: widgetDecoration?.labelTextStyle,
+                ),
               ),
             SizedBox(
               width: widgetDecoration?.spacing ?? 100,
