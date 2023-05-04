@@ -94,6 +94,8 @@ class BoringSideField<T> extends BoringField<T> {
                   controller.setValueSilently(p0);
                 },
                 fieldController: BoringFieldController<T>(
+                    validationFunction:
+                        field.fieldController.validationFunction,
                     initialValue: controller.initialValue),
                 decoration: BoringFieldDecoration(
                   counter: field.decoration?.counter,
