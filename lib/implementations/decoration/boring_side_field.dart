@@ -7,27 +7,35 @@ class BoringSideFieldDecoration {
   EdgeInsets? padding;
   double? spacing;
   TextStyle? labelTextStyle;
+  int labelFlex;
+  int fieldFlex;
+
   BoringSideFieldDecoration({
     this.backgroundColor,
     this.radius,
     this.padding,
     this.labelTextStyle,
     this.spacing,
+    this.labelFlex = 1,
+    this.fieldFlex = 2,
   });
 
-  BoringSideFieldDecoration copyWith({
-    Color? backgroundColor,
-    double? radius,
-    EdgeInsets? padding,
-    TextStyle? labelTextStyle,
-    double? spacing,
-  }) {
+  BoringSideFieldDecoration copyWith(
+      {Color? backgroundColor,
+      double? radius,
+      EdgeInsets? padding,
+      TextStyle? labelTextStyle,
+      double? spacing,
+      int? labelFlex,
+      int? fieldFlex}) {
     return BoringSideFieldDecoration(
       backgroundColor: backgroundColor ?? this.backgroundColor,
       radius: radius ?? this.radius,
       padding: padding ?? this.padding,
       labelTextStyle: labelTextStyle ?? this.labelTextStyle,
       spacing: spacing ?? this.spacing,
+      labelFlex: labelFlex ?? this.labelFlex,
+      fieldFlex: fieldFlex ?? this.fieldFlex,
     );
   }
 }
@@ -70,13 +78,14 @@ class BoringSideField<T> extends BoringField<T> {
           children: [
             if (field.decoration != null && field.decoration!.label != null)
               Expanded(
+                flex: widgetDecoration?.labelFlex ?? 1,
                 child: Text(field.decoration!.label!),
               ),
             SizedBox(
               width: widgetDecoration?.spacing ?? 100,
             ),
             Expanded(
-              flex: 2,
+              flex: widgetDecoration?.fieldFlex ?? 2,
               child: field.copyWith(
                 onChanged: (p0) {
                   controller.setValueSilently(p0);
