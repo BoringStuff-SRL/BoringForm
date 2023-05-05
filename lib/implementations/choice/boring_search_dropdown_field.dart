@@ -76,7 +76,10 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
               searchController: searchEditController,
               items: items,
               value: controller.value,
-              hint: Text(decoration?.hintText ?? ''),
+              hint: Text(
+                decoration?.hintText ?? '',
+                style: style.inputDecoration.hintStyle,
+              ),
               dropdownDecoration: _boxDecoration(newStyle),
               onChanged: isReadOnly(context)
                   ? null
