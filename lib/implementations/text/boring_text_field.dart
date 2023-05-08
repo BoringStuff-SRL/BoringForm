@@ -42,6 +42,8 @@ class BoringTextField extends BoringField<String> {
         controller: textEditingController,
         minLines: minLines,
         maxLines: maxLines,
+        textAlign: style.textAlign,
+        style: style.textStyle,
         decoration: getDecoration(context),
         onChanged: ((value) {
           controller.value = value;

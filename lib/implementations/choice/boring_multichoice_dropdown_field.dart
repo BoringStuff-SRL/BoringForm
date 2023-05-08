@@ -60,7 +60,7 @@ class BoringMultiChoiceDropDownField<T> extends BoringField<List<T>> {
         value: controller.value != null && controller.value!.isNotEmpty
             ? controller.value?.first
             : null,
-        hint: Text(decoration?.hintText ?? ''),
+        hint: Text(decoration?.hintText ?? '', style: style.inputDecoration.hintStyle,),
         dropdownDecoration: _boxDecoration(newStyle),
         onChanged: isReadOnly(context) ? null : (value) {},
         isExpanded: true,

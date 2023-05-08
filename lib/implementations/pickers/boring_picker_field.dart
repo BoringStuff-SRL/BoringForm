@@ -53,6 +53,8 @@ class BoringPickerField<T> extends BoringField<T> {
           enabled: !readOnly,
           controller: textEditingController,
           readOnly: true,
+          textAlign: style.textAlign,
+          style: style.textStyle,
           onTap: () => readOnly ? null : _selectValue(context),
           decoration: getDecoration(context),
         ),
@@ -75,8 +77,8 @@ class BoringPickerField<T> extends BoringField<T> {
       bool? updateValueOnDismiss}) {
     return BoringPickerField(
       fieldController: fieldController ?? this.fieldController,
-      onChanged: (onChanged as void Function(dynamic)?) ??
-          (this.onChanged as void Function(dynamic)?),
+      onChanged: (onChanged as void Function(T?)?) ??
+          (this.onChanged as void Function(T?)?),
       decoration: decoration ?? this.decoration,
       boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
       jsonKey: jsonKey ?? this.jsonKey,

@@ -29,4 +29,32 @@ class BoringFieldDecoration {
     this.suffixIcon,
     this.suffixText,
   });
+
+  BoringFieldDecoration copyWith({
+    String? label,
+    Widget? icon,
+    String? helperText,
+    String? hintText,
+    Widget? Function(dynamic value)? counter,
+    Widget? prefix,
+    Widget? prefixIcon,
+    String? prefixText,
+    Widget? suffix,
+    Widget? suffixIcon,
+    String? suffixText,
+  }) {
+    return BoringFieldDecoration(
+      label: label ?? this.label,
+      icon: icon ?? this.icon,
+      helperText: helperText ?? this.helperText,
+      hintText: hintText ?? this.hintText,
+      counter: counter ?? this.counter,
+      prefix: prefix ?? this.prefix,
+      prefixIcon: prefixIcon ?? this.prefixIcon,
+      prefixText: prefixText ?? this.prefixText,
+      suffix: suffix ?? this.suffix,
+      suffixIcon: suffixIcon ?? this.suffixIcon,
+      suffixText: suffixText ?? this.suffixText,
+    );
+  }
 }

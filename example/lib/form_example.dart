@@ -146,10 +146,22 @@ class FormExample2 extends StatelessWidget {
                   jsonKey: "anagraph",
                   fields: [
                     BoringNumberField(jsonKey: 'ciaociao'),
-                    BoringTextField(
-                      boringResponsiveSize: BoringResponsiveSize(md: 6, xl: 3),
-                      jsonKey: "name",
-                      decoration: BoringFieldDecoration(label: "Nome"),
+                    BoringSideField<String>(
+                      widgetDecoration: BoringSideFieldDecoration(
+                          backgroundColor: Colors.green),
+                      field: BoringTextField(
+                        boringResponsiveSize:
+                            BoringResponsiveSize(md: 6, xl: 3),
+                        jsonKey: "name",
+                        fieldController: BoringFieldController(
+                          validationFunction: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "vuoto";
+                            }
+                          },
+                        ),
+                        decoration: BoringFieldDecoration(label: "Nome"),
+                      ),
                     ),
                     BoringTextField(
                       boringResponsiveSize: BoringResponsiveSize(md: 6, xl: 3),
