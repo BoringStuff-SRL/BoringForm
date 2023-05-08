@@ -1,145 +1,113 @@
-import 'dart:async';
-
 import 'package:boring_form/boring_form.dart';
+import 'package:boring_form/implementations/dialog/boring_stepper_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
-class BoringStepperDecoration {
-  final double dialogWidth;
-  final ShapeBorder? dialogShapeBorder;
-  final EdgeInsets contentPadding;
-  final Alignment buttonAlignment;
-  final ButtonStyle? buttonStyle;
-  final Text? actionButtonText;
-  final Widget Function(ControlsDetails details)? onContinueButton;
-  final Widget Function(ControlsDetails details)? onCancelButton;
-
-  const BoringStepperDecoration({
-    this.dialogWidth = 700,
-    this.dialogShapeBorder,
-    this.contentPadding = const EdgeInsets.all(10),
-    this.buttonAlignment = Alignment.centerRight,
-    this.buttonStyle,
-    this.actionButtonText,
-    this.onCancelButton,
-    this.onContinueButton,
-  });
-}
-
-class BoringStepper extends StatelessWidget {
-  const BoringStepper({
+class BoringFormStepperWidget extends BoringField {
+  BoringFormStepperWidget({
+    BoringStepperController? boringStepperController,
     super.key,
-    required this.jsonKey,
-    this.formStyle,
-    this.decoration = const BoringStepperDecoration(),
-    required this.onConfirmButtonPress,
-    required this.formController,
+    required super.jsonKey,
     required this.sections,
-  });
+    this.stepperDecoration,
+    this.validStepAfterContinue = false,
+  }) : super(
+            fieldController:
+                boringStepperController ?? BoringStepperController());
 
-  final String jsonKey;
-  final BoringFormStyle? formStyle;
-  final BoringFormController formController;
+  final ValueNotifier<int> _currentIndex = ValueNotifier<int>(0);
   final List<BoringSection> sections;
-  final BoringStepperDecoration decoration;
-
-  /// Consider using isStepperValid instead of formController.isValid
-  final FutureOr<void> Function(BuildContext context, bool isStepperValid)
-      onConfirmButtonPress;
+  final BoringStepperDecoration? stepperDecoration;
+  final List<BoringSection> _finalSections = [];
+  final bool validStepAfterContinue;
 
   @override
-  Widget build(BuildContext context) {
-    return BoringForm(
-      formController: formController,
-      style: formStyle,
-      fields: [
-        _BoringFormStepperWidget(
-          jsonKey: jsonKey,
-          sections: sections,
-          formController: formController,
-          onConfirmButtonPress: onConfirmButtonPress,
-          dialogDecoration: decoration,
-        )
+  bool setInitialValue(initialValue) {
+    final v = super.setInitialValue(initialValue);
+
+    if (v) {
+      if (sections.length != _finalSections.length) {
+        for (var e in sections) {
+          _finalSections.add(e.copyWith(
+              sectionController: BoringSectionController(
+                  initialValue:
+                      (initialValue as Map<String, dynamic>?)?[e.jsonKey])));
+        }
+      } else {
+        for (int i = 0; i < _finalSections.length; i++) {
+          _finalSections[i] = _finalSections[i].copyWith(
+              sectionController: BoringSectionController(
+                  initialValue: (initialValue
+                      as Map<String, dynamic>?)?[_finalSections[i].jsonKey]));
+        }
+      }
+    }
+
+    (fieldController as BoringStepperController).addControllers(_finalSections);
+    return false;
+  }
+
+  @override
+  Widget builder(context, controller, child) {
+    final style = getStyle(context);
+
+    return BoringField.boringFieldBuilder(
+      style,
+      decoration?.label,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ValueListenableBuilder(
+            valueListenable: _currentIndex,
+            builder: (context, value, child) {
+              return Stepper(
+                currentStep: value,
+                type: StepperType.vertical,
+                onStepTapped: (index) => _onStepTapped(index, controller),
+                onStepCancel: _onStepCancel,
+                onStepContinue: () => _onStepContinue(value, controller),
+                controlsBuilder: (context, details) =>
+                    _stepperButtonControl(details),
+                steps: List.generate(
+                    _finalSections.length,
+                    (i) => Step(
+                      state: StepState.error,
+                        title: Text(_finalSections[i].decoration?.label ?? ''),
+                        subtitle: _finalSections[i].decoration?.helperText !=
+                                null
+                            ? Text(_finalSections[i].decoration!.helperText!)
+                            : null,
+                        content: _finalSections[i])),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _stepperButtonControl(ControlsDetails details) {
+    return Row(
+      children: <Widget>[
+        stepperDecoration?.onCancelButton?.call(details) ??
+            TextButton(
+              onPressed: details.onStepCancel,
+              child: const Text('CANCEL'),
+            ),
+        const SizedBox(width: 10),
+        stepperDecoration?.onContinueButton?.call(details) ??
+            TextButton(
+              onPressed: details.onStepContinue,
+              child: const Text('CONTINUE'),
+            ),
       ],
     );
   }
 
-  static void showStepperDialog(
-    BuildContext context, {
-    required String jsonKey,
-    BoringFormStyle? formStyle,
-    BoringStepperDecoration decoration = const BoringStepperDecoration(),
-    required BoringFormController formController,
-    required List<BoringSection> sections,
-    required FutureOr<void> Function(BuildContext context, bool isStepperValid)
-        onConfirmButtonPress,
-  }) {
-    formController =
-        BoringFormController(initialValue: formController.initialValue);
-    showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog(
-          shape: decoration.dialogShapeBorder,
-          child: SingleChildScrollView(
-            child: Container(
-              width: decoration.dialogWidth,
-              padding: decoration.contentPadding,
-              child: BoringStepper(
-                formController: formController,
-                jsonKey: jsonKey,
-                sections: sections,
-                formStyle: formStyle,
-                onConfirmButtonPress: onConfirmButtonPress,
-                decoration: decoration,
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _BoringFormStepperWidget extends BoringField {
-  _BoringFormStepperWidget(
-      {required super.jsonKey,
-      required this.sections,
-      required this.formController,
-      required this.onConfirmButtonPress,
-      required this.dialogDecoration,
-      super.fieldController,
-      this.style}) {
-    style ??= BoringFormStyle();
-  }
-
-  BoringFormStyle? style;
-  ValueNotifier<int> _currentIndex = ValueNotifier<int>(0);
-  final List<BoringSection> sections;
-  final BoringStepperDecoration dialogDecoration;
-  final BoringFormController formController;
-  final FutureOr<void> Function(BuildContext context, bool isStepperValid)
-      onConfirmButtonPress;
-
-  late final List<Step> _steps = sections.map(
-    (e) {
-      Map<String, dynamic>? initialValue = formController
-          .initialValue?[formController.value?.keys.first][e.jsonKey];
-
-      return Step(
-        title: Text(e.decoration?.label ?? ''),
-        content: e.copyWith(
-          decoration: BoringFieldDecoration(),
-          sectionController:
-              BoringSectionController(initialValue: initialValue),
-        ),
-      );
-    },
-  ).toList();
-
   void _onStepContinue(int currentIndex, BoringFieldController controller) {
     if (currentIndex < sections.length - 1) {
-      if (sections[currentIndex].controller.isValid) {
+      if (!validStepAfterContinue) {
+        _currentIndex.value++;
+      } else if (sections[currentIndex].controller.isValid) {
         _currentIndex.value++;
       }
     }
@@ -151,76 +119,14 @@ class _BoringFormStepperWidget extends BoringField {
     }
   }
 
-  void _onStepTapped(int index) {
-    _currentIndex.value = index;
-  }
-
-  @override
-  Widget builder(
-      BuildContext context, BoringFieldController controller, Widget? child) {
-    return BoringField.boringFieldBuilder(
-      style!,
-      '',
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ValueListenableBuilder(
-            valueListenable: _currentIndex,
-            builder: (context, currentIndex, child) {
-              return Stepper(
-                controlsBuilder:
-                    (BuildContext context, ControlsDetails details) {
-                  return Row(
-                    children: <Widget>[
-                      dialogDecoration.onContinueButton?.call(details) ??
-                          TextButton(
-                            onPressed: details.onStepContinue,
-                            child: const Text('CONTINUE'),
-                          ),
-                      dialogDecoration.onCancelButton?.call(details) ??
-                          TextButton(
-                            onPressed: details.onStepCancel,
-                            child: const Text('CANCEL'),
-                          ),
-                    ],
-                  );
-                },
-                currentStep: currentIndex,
-                type: StepperType.vertical,
-                onStepContinue: () {
-                  _onStepContinue(currentIndex, controller);
-                },
-                onStepTapped: _onStepTapped,
-                onStepCancel: _onStepCancel,
-                steps: _steps,
-              );
-            },
-          ),
-          Align(
-            alignment: dialogDecoration.buttonAlignment,
-            child: ElevatedButton(
-              style: dialogDecoration.buttonStyle,
-              onPressed: () {
-                controller.value = {};
-                bool isStepperValid = true;
-                for (BoringSection section in sections) {
-                  if (!section.controller.isValid) {
-                    isStepperValid = false;
-                  }
-                  (controller.value as Map).addEntries(
-                      {section.jsonKey: section.controller.value!}.entries);
-                }
-
-                controller.sendNotification();
-
-                onConfirmButtonPress.call(context, isStepperValid);
-              },
-              child: dialogDecoration.actionButtonText ?? const Text('Close'),
-            ),
-          ),
-        ],
-      ),
-    );
+  void _onStepTapped(int index, BoringFieldController controller) {
+    if (!validStepAfterContinue) {
+      _currentIndex.value = index;
+    } else if (index < _currentIndex.value) {
+      _currentIndex.value = index;
+    } else if (sections[_currentIndex.value].controller.isValid) {
+      _currentIndex.value = index;
+    }
   }
 
   @override

@@ -1,6 +1,7 @@
-import 'dart:io';
+/*import 'dart:io';
 import 'package:boring_form/implementations/choice/boring_multichoice_search_dropdown_field.dart';
 import 'package:boring_form/implementations/dialog/boring_stepper.dart';
+import 'package:boring_form/implementations/dialog/boring_stepper_controller.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:boring_form/implementations/boring_file_picker.dart';
 import 'package:boring_form/implementations/choice/boring_multichoice_dropdown_field.dart';
@@ -28,7 +29,7 @@ class TableFormExample extends StatelessWidget {
   TableFormExample({super.key});
 
   final fc = BoringFormController();
-  final stepperController = BoringFormController(initialValue: {
+  final stepperController = BoringStepperController(initialValue: {
     "stepper": {
       "s1": {"text": "pippo"},
       "s2": {"text": "pluto"}
@@ -308,4 +309,4 @@ class TableFormExample extends StatelessWidget {
       ],
     );
   }
-}
+}*/

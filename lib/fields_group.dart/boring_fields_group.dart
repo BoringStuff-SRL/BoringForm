@@ -1,10 +1,7 @@
-import 'dart:developer';
-
 import 'package:boring_form/boring_form.dart';
 import 'package:boring_form/field/field_change_notification.dart';
 import 'package:boring_form/field/filtered_fields_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 abstract class BoringFieldsGroupController
     extends BoringFieldController<Map<String, dynamic>> {
