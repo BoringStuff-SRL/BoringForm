@@ -30,7 +30,7 @@ class BoringForm extends BoringFieldsGroup<BoringFormController> {
   final double sectionPadding = 8.0;
   final String? title;
   final bool includeNotDisplayedInValidation;
-  final haveStepper;
+  final bool haveStepper;
 
   void init() {
     updateFilteredFieldsList();

@@ -69,7 +69,6 @@ class BoringFormStepper extends BoringField {
                 steps: List.generate(
                     _finalSections.length,
                     (i) => Step(
-                      state: StepState.error,
                         title: Text(_finalSections[i].decoration?.label ?? ''),
                         subtitle: _finalSections[i].decoration?.helperText !=
                                 null
