@@ -19,7 +19,7 @@ class BoringForm extends BoringFieldsGroup<BoringFormController> {
             "Conflict error: found duplicate jsonKeys in form"),
         assert(fields.length == 1,
             "Boring Form with stepper can have only 1 item"),
-        assert(fields.first.runtimeType == BoringFormStepperWidget),
+        assert(fields.first.runtimeType == BoringFormStepper),
         super(controller: formController, jsonKey: "");
 
   final BoringFormStyle? style;

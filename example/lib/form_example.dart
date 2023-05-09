@@ -26,7 +26,7 @@ class FormExample extends StatelessWidget {
                       borderRadius: BorderRadius.all(Radius.zero)))),
           formController: c,
           fields: [
-            BoringFormStepperWidget(
+            BoringFormStepper(
               validStepAfterContinue: true,
               jsonKey: 'asd',
               stepperDecoration: BoringStepperDecoration(),

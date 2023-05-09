@@ -1,9 +1,8 @@
 import 'package:boring_form/boring_form.dart';
-import 'package:boring_form/implementations/dialog/boring_stepper_controller.dart';
 import 'package:flutter/material.dart';
 
-class BoringFormStepperWidget extends BoringField {
-  BoringFormStepperWidget({
+class BoringFormStepper extends BoringField {
+  BoringFormStepper({
     BoringStepperController? boringStepperController,
     super.key,
     required super.jsonKey,
