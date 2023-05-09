@@ -15,12 +15,15 @@ class BoringForm extends BoringFieldsGroup<BoringFormController> {
       this.haveStepper = false,
       this.includeNotDisplayedInValidation = false,
       required super.fields})
-      : assert(BoringFieldsGroup.checkJsonKey(fields),
-            "Conflict error: found duplicate jsonKeys in form"),
-        assert(fields.length == 1,
-            "Boring Form with stepper can have only 1 item"),
-        assert(fields.first.runtimeType == BoringFormStepper),
-        super(controller: formController, jsonKey: "");
+      : super(controller: formController, jsonKey: "") {
+    assert(BoringFieldsGroup.checkJsonKey(fields),
+        "Conflict error: found duplicate jsonKeys in form");
+    if (haveStepper) {
+      assert(
+          fields.length == 1, "Boring Form with stepper can have only 1 item");
+      assert(fields.first.runtimeType == BoringFormStepper);
+    }
+  }
 
   final BoringFormStyle? style;
   final double fieldsPadding = 8.0;
