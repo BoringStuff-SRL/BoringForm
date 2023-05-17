@@ -13,7 +13,7 @@ class BoringPhoneNumberField extends BoringTextRegExpField {
       super.decoration})
       : super(
           regExp: RegExp(
-              r'^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$'),
+              r'^(\+\d{1,3}\s?)?1?\-?\.?\s?\(?\d{2,4}\)?[\s.-]?\d{2,4}[\s.-]?\d{2,4}$'),
           regExpError: invalidPhoneMessage,
         );
 }
