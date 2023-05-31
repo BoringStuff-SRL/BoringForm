@@ -40,7 +40,8 @@ class FormExample extends StatelessWidget {
                     return a;
                   },
                   sectionController: BoringSectionController(),
-                  decoration: BoringFieldDecoration(label: "TITOLO", helperText: 'sadsadsadsa'),
+                  decoration: BoringFieldDecoration(
+                      label: "TITOLO", helperText: 'sadsadsadsa'),
                   collapsible: true,
                   fields: [
                     BoringSlider(
@@ -165,7 +166,14 @@ class FormExample2 extends StatelessWidget {
                     ),
                     BoringTextField(
                       boringResponsiveSize: BoringResponsiveSize(md: 6, xl: 3),
-                      jsonKey: "surname",
+                      jsonKey: "surnames",
+                      fieldController: BoringFieldController(
+                        validationFunction: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "vuoto";
+                          }
+                        },
+                      ),
                       decoration: BoringFieldDecoration(label: "Cognome"),
                     ),
                     BoringTextField(
