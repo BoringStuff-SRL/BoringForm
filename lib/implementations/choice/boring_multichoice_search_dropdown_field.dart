@@ -61,60 +61,70 @@ class BoringSearchMultiChoiceDropDownField<T> extends BoringField<List<T>> {
     return BoringField.boringFieldBuilder(
       style,
       decoration?.label,
-      child: DropdownButtonFormField2<T?>(
-        dropdownOverButton: false,
-        dropdownElevation: 0,
-        decoration: newStyle,
-        buttonHeight: 50,
-        itemHeight: 50,
-        searchInnerWidgetHeight: 20,
-        searchController: searchEditController,
-        dropdownMaxHeight: 250,
-        items: _buildItems(controller, context, isReadOnly),
-        searchInnerWidget: Padding(
-          padding: const EdgeInsets.all(10),
-          child: TextFormField(
-            controller: searchEditController,
-            decoration: searchInputDecoration,
-          ),
-        ),
-        value: controller.value != null && controller.value!.isNotEmpty
-            ? controller.value?.first
-            : null,
-        hint: Text(decoration?.hintText ?? '', style: style.inputDecoration.hintStyle,),
-        dropdownDecoration: _boxDecoration(newStyle),
-        onChanged: isReadOnly(context) ? null : (value) {},
-        isExpanded: true,
-        onMenuStateChange: (isOpen) =>
-            _onMenuStateChange(isOpen, searchEditController),
-        itemPadding:
-            itemsPadding ?? const EdgeInsets.symmetric(horizontal: 15.0),
-        selectedItemBuilder: (context) {
-          return items.map(
-            (item) {
-              return Container(
-                alignment: AlignmentDirectional.centerStart,
-                padding: resultTextPadding ??
-                    const EdgeInsets.symmetric(horizontal: 0.0),
-                child: Text(
-                  controller.value
-                          ?.map((e) => convertItemToString(e))
-                          .join(', ') ??
-                      '',
-                  style: resultTextStyle?.copyWith(
-                        overflow: TextOverflow.ellipsis,
-                      ) ??
-                      const TextStyle(
-                        fontSize: 14,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                  maxLines: 1,
+      child: ValueListenableBuilder(
+          valueListenable: controller.hideError,
+          builder: (BuildContext context, bool value, Widget? child) {
+            final InputDecoration newStyle =
+                getDecoration(context, haveError: value)
+                    .copyWith(contentPadding: const EdgeInsets.all(0));
+            return DropdownButtonFormField2<T?>(
+              dropdownOverButton: false,
+              dropdownElevation: 0,
+              decoration: newStyle,
+              buttonHeight: 50,
+              itemHeight: 50,
+              searchInnerWidgetHeight: 20,
+              searchController: searchEditController,
+              dropdownMaxHeight: 250,
+              items: _buildItems(controller, context, isReadOnly),
+              searchInnerWidget: Padding(
+                padding: const EdgeInsets.all(10),
+                child: TextFormField(
+                  controller: searchEditController,
+                  decoration: searchInputDecoration,
                 ),
-              );
-            },
-          ).toList();
-        },
-      ),
+              ),
+              value: controller.value != null && controller.value!.isNotEmpty
+                  ? controller.value?.first
+                  : null,
+              hint: Text(
+                decoration?.hintText ?? '',
+                style: style.inputDecoration.hintStyle,
+              ),
+              dropdownDecoration: _boxDecoration(newStyle),
+              onChanged: isReadOnly(context) ? null : (value) {},
+              isExpanded: true,
+              onMenuStateChange: (isOpen) =>
+                  _onMenuStateChange(isOpen, searchEditController),
+              itemPadding:
+                  itemsPadding ?? const EdgeInsets.symmetric(horizontal: 15.0),
+              selectedItemBuilder: (context) {
+                return items.map(
+                  (item) {
+                    return Container(
+                      alignment: AlignmentDirectional.centerStart,
+                      padding: resultTextPadding ??
+                          const EdgeInsets.symmetric(horizontal: 0.0),
+                      child: Text(
+                        controller.value
+                                ?.map((e) => convertItemToString(e))
+                                .join(', ') ??
+                            '',
+                        style: resultTextStyle?.copyWith(
+                              overflow: TextOverflow.ellipsis,
+                            ) ??
+                            const TextStyle(
+                              fontSize: 14,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                        maxLines: 1,
+                      ),
+                    );
+                  },
+                ).toList();
+              },
+            );
+          }),
     );
   }
 

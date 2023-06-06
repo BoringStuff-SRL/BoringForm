@@ -26,7 +26,7 @@ class FormExample extends StatelessWidget {
           formController: c,
           fields: [
             BoringFormStepper(
-              validStepAfterContinue: true,
+              validStepAfterContinue: false,
               jsonKey: 'asd',
               stepperDecoration: BoringStepperDecoration(),
               sections: [
@@ -72,6 +72,10 @@ class FormExample extends StatelessWidget {
                 ),
                 BoringSection(jsonKey: 'saddsa', fields: [
                   BoringTextField(
+                    fieldController: BoringFieldController(
+                      validationFunction: (value) =>
+                          (value == null) ? "ERROR" : null,
+                    ),
                     decoration: BoringFieldDecoration(
                         icon: const Icon(Icons.all_inbox),
                         prefixIcon: const Icon(Icons.inbox_outlined),
@@ -84,13 +88,20 @@ class FormExample extends StatelessWidget {
                 ]),
                 BoringSection(jsonKey: 'sadsf', fields: [
                   BoringDateField(
-                    fieldController: BoringFieldController(),
+                    fieldController: BoringFieldController(
+                      validationFunction: (value) =>
+                          (value == null) ? "ERROR" : null,
+                    ),
                     jsonKey: 'date',
                     firstlDate: DateTime(1940),
                     lastDate: DateTime(2011),
                   ),
                   BoringPhoneNumberField(
                     invalidPhoneMessage: 'Phone not valid',
+                    fieldController: BoringFieldController(
+                      validationFunction: (value) =>
+                          (value == null) ? "ERROR" : null,
+                    ),
                     jsonKey: "emailf",
                   ),
                 ])
@@ -155,6 +166,41 @@ class FormExample2 extends StatelessWidget {
                       fieldController: BoringFieldController(
                         validationFunction: (value) {
                           if (value == null || value.isEmpty) {
+                            return "cognome vuoto";
+                          }
+                          return null;
+                        },
+                      ),
+                      decoration: BoringFieldDecoration(label: "Cognome"),
+                    ),
+                  ]),
+              BoringSection(
+                  decoration: BoringFieldDecoration(label: "ANAGRAFICAS"),
+                  collapsible: true,
+                  collapseOnHeaderTap: true,
+                  jsonKey: "anagraphs",
+                  fields: [
+                    BoringDateField(
+                      boringResponsiveSize: BoringResponsiveSize(md: 6, xl: 3),
+                      jsonKey: "names",
+                      fieldController: BoringFieldController(
+                        validationFunction: (value) {
+                          if (value == null) {
+                            return "nome vuoto";
+                          }
+                          return null;
+                        },
+                      ),
+                      decoration: BoringFieldDecoration(label: "Nome"),
+                      firstlDate: DateTime.now().subtract(Duration(days: 40)),
+                      lastDate: DateTime.now(),
+                    ),
+                    BoringSlider(
+                      boringResponsiveSize: BoringResponsiveSize(md: 6, xl: 3),
+                      jsonKey: "surnames",
+                      fieldController: BoringFieldController(
+                        validationFunction: (value) {
+                          if (value != 1) {
                             return "cognome vuoto";
                           }
                           return null;

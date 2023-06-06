@@ -32,7 +32,7 @@ class BoringPasswordField extends BoringField<String> {
       decoration?.label,
       child: PasswordTextField(
           textEditingController: textEditingController,
-          decoration: getDecoration(context),
+          decoration: getDecoration,
           visibilityOnIcon: visibilityOnIcon,
           visibilityOffIcon: visibilityOffIcon,
           controller: controller),
@@ -79,7 +79,7 @@ class PasswordTextField extends StatefulWidget {
       this.visibilityOnIcon});
 
   final TextEditingController textEditingController;
-  final InputDecoration decoration;
+  final InputDecoration Function(BuildContext, {bool haveError}) decoration;
   final BoringFieldController<String> controller;
   final Widget? visibilityOnIcon;
   final Widget? visibilityOffIcon;
@@ -105,32 +105,39 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: widget.textEditingController,
-      obscureText: hidden,
-      enableSuggestions: false,
-      autocorrect: false,
-      decoration: widget.decoration.copyWith(
-          suffixIcon: (widget.visibilityOffIcon == null ||
-                  widget.visibilityOnIcon == null)
-              ? IconButton(
-                  icon: Icon(
-                    hidden ? Icons.visibility_off : Icons.visibility,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  onPressed: toggleVisibility)
-              : GestureDetector(
-                  onTap: () {
-                    toggleVisibility();
-                  },
-                  child: hidden
-                      ? widget.visibilityOffIcon
-                      : widget.visibilityOnIcon,
-                )),
-      // InputDecoration(
-      onChanged: ((value) {
-        widget.controller.value = value;
-      }),
-    );
+    return ValueListenableBuilder(
+        valueListenable: widget.controller.hideError,
+        builder: (BuildContext context, bool value, Widget? child) {
+          return TextField(
+            controller: widget.textEditingController,
+            obscureText: hidden,
+            enableSuggestions: false,
+            autocorrect: false,
+            decoration: widget.decoration
+                .call(context, haveError: value)
+                .copyWith(
+                    suffixIcon: (widget.visibilityOffIcon == null ||
+                            widget.visibilityOnIcon == null)
+                        ? IconButton(
+                            icon: Icon(
+                              hidden ? Icons.visibility_off : Icons.visibility,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                            onPressed: toggleVisibility)
+                        : GestureDetector(
+                            onTap: () {
+                              toggleVisibility();
+                            },
+                            child: hidden
+                                ? widget.visibilityOffIcon
+                                : widget.visibilityOnIcon,
+                          )),
+            // InputDecoration(
+            onChanged: ((value) {
+              widget.controller.value = value;
+              widget.controller.isValid;
+            }),
+          );
+        });
   }
 }

@@ -48,17 +48,22 @@ class BoringPickerField<T> extends BoringField<T> {
     return BoringField.boringFieldBuilder(
       style,
       decoration?.label,
-      child: InkWell(
-        child: TextField(
-          enabled: !readOnly,
-          controller: textEditingController,
-          readOnly: true,
-          textAlign: style.textAlign,
-          style: style.textStyle,
-          onTap: () => readOnly ? null : _selectValue(context),
-          decoration: getDecoration(context),
-        ),
-      ),
+      child: ValueListenableBuilder(
+          valueListenable: controller.hideError,
+          builder: (BuildContext context, bool value, Widget? child) {
+            return TextField(
+              enabled: !readOnly,
+              controller: textEditingController,
+              readOnly: true,
+              textAlign: style.textAlign,
+              style: style.textStyle,
+              onTap: () => readOnly ? null : _selectValue(context),
+              decoration: getDecoration(context, haveError: value),
+              onChanged: ((value) {
+                controller.isValid;
+              }),
+            );
+          }),
     );
   }
 
@@ -77,8 +82,7 @@ class BoringPickerField<T> extends BoringField<T> {
       bool? updateValueOnDismiss}) {
     return BoringPickerField(
       fieldController: fieldController ?? this.fieldController,
-      onChanged: (onChanged as void Function(T?)?) ??
-          (this.onChanged as void Function(T?)?),
+      onChanged: onChanged ?? this.onChanged,
       decoration: decoration ?? this.decoration,
       boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
       jsonKey: jsonKey ?? this.jsonKey,

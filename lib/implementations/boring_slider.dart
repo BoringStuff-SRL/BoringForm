@@ -39,18 +39,31 @@ class BoringSlider extends BoringField<double> {
                 style: getDecoration(context).labelStyle,
               ),
             ),
-          Slider(
-            min: min,
-            max: max,
-            divisions: divisions,
-            value: fieldController.value ?? 0,
-            label: showValueLabel
-                ? fieldController.value?.toStringAsFixed(2)
-                : null,
-            // InputDecoration(
-            // ),
-            onChanged: (value) => fieldController.value = value,
-          ),
+          ValueListenableBuilder(
+              valueListenable: controller.hideError,
+              builder: (BuildContext context, bool value, Widget? child) {
+                print('lala');
+                return Slider(
+                  min: min,
+                  max: max,
+                  activeColor:
+                      value ? null : Theme.of(context).colorScheme.error,
+                  inactiveColor: value
+                      ? null
+                      : Theme.of(context).colorScheme.error.withAlpha(40),
+                  divisions: divisions,
+                  value: fieldController.value ?? 0,
+                  label: showValueLabel
+                      ? fieldController.value?.toStringAsFixed(2)
+                      : null,
+                  // InputDecoration(
+                  // ),
+                  onChanged: (value) {
+                    fieldController.value = value;
+                    controller.isValid;
+                  },
+                );
+              }),
         ],
       ),
     );

@@ -28,30 +28,38 @@ class BoringDropDownField<T> extends BoringField<T> {
   Widget builder(context, controller, child) {
     final style = BoringFormTheme.of(context).style;
 
-    final InputDecoration newStyle = getDecoration(context)
-        .copyWith(contentPadding: const EdgeInsets.all(0));
-
     return BoringField.boringFieldBuilder(
       style,
       decoration?.label,
-      child: DropdownButtonFormField2<T?>(
-        dropdownOverButton: false,
-        isExpanded: true,
-        dropdownElevation: 0,
-        decoration: newStyle,
-        buttonHeight: 51,
-        itemHeight: 50,
-        dropdownMaxHeight: 250,
-        items: items,
-        value: controller.value,
-        hint: Text(decoration?.hintText ?? '', style: style.inputDecoration.hintStyle,),
-        dropdownDecoration: _boxDecoration(newStyle),
-        onChanged: isReadOnly(context)
-            ? null
-            : ((value) {
-                controller.value = value;
-              }),
-      ),
+      child: ValueListenableBuilder(
+          valueListenable: controller.hideError,
+          builder: (BuildContext context, bool value, Widget? child) {
+            final InputDecoration newStyle =
+                getDecoration(context, haveError: value)
+                    .copyWith(contentPadding: const EdgeInsets.all(0));
+
+            return DropdownButtonFormField2<T?>(
+              dropdownOverButton: false,
+              isExpanded: true,
+              dropdownElevation: 0,
+              decoration: newStyle,
+              buttonHeight: 51,
+              itemHeight: 50,
+              dropdownMaxHeight: 250,
+              items: items,
+              value: controller.value,
+              hint: Text(
+                decoration?.hintText ?? '',
+                style: style.inputDecoration.hintStyle,
+              ),
+              dropdownDecoration: _boxDecoration(newStyle),
+              onChanged: isReadOnly(context)
+                  ? null
+                  : ((value) {
+                      controller.value = value;
+                    }),
+            );
+          }),
     );
   }
 

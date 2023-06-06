@@ -213,28 +213,33 @@ class BoringNumberField extends BoringField<num> {
     return BoringField.boringFieldBuilder(
       style,
       decoration?.label,
-      child: TextField(
-        readOnly: isReadOnly(context),
-        enabled: !isReadOnly(context),
-        controller: textEditingController,
-        keyboardType: TextInputType.number,
-        inputFormatters: [formatter],
-        decoration: getEnhancedDecoration(context),
-        onChanged: ((value) {
-          try {
-            if (tSeparator == ',') {
-              value = value.replaceAll(",", "");
-            } else if (tSeparator == '.') {
-              value = value.replaceAll(".", "");
-              value = value.replaceAll(",", ".");
-            }
+      child: ValueListenableBuilder(
+          valueListenable: controller.hideError,
+          builder: (BuildContext context, bool value, Widget? child) {
+            return TextField(
+              readOnly: isReadOnly(context),
+              enabled: !isReadOnly(context),
+              controller: textEditingController,
+              keyboardType: TextInputType.number,
+              inputFormatters: [formatter],
+              decoration: getDecoration(context, haveError: value),
+              onChanged: ((value) {
+                try {
+                  if (tSeparator == ',') {
+                    value = value.replaceAll(",", "");
+                  } else if (tSeparator == '.') {
+                    value = value.replaceAll(".", "");
+                    value = value.replaceAll(",", ".");
+                  }
 
-            controller.value = double.parse(value);
-          } catch (e) {
-            controller.value = null;
-          }
-        }),
-      ),
+                  controller.value = double.parse(value);
+                } catch (e) {
+                  controller.value = null;
+                }
+                controller.isValid;
+              }),
+            );
+          }),
     );
   }
 
