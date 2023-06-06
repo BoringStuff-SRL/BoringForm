@@ -28,10 +28,19 @@ abstract class BoringFieldsGroupController
     }
   }
 
-  bool _allSubControllersValid() => !((Map.from(subControllers))
-        ..removeWhere((key, value) => ignoreFields.contains(key)))
-      .values
-      .any((element) => !element.isValid);
+  bool _allSubControllersValid() {
+    bool valid = true;
+
+    ((Map.from(subControllers))
+          ..removeWhere((key, value) => ignoreFields.contains(key)))
+        .forEach((key, value) {
+      if (!value.isValid) {
+        valid = false;
+      }
+    });
+
+    return valid;
+  }
 
   @override
   bool get isValid => errorMessage == null && _allSubControllersValid();
@@ -117,7 +126,7 @@ abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
 
     final excluded = fieldsListProvider.notifyIfDifferentFields(
         fields, formController.value ?? {});
-    //print('$jsonKey: $excluded');
+
     if (true /*TODO add [exludeInvalidFields = true] attribute (ex: maybe you want to include invalid fields and so this condition should be false)*/) {
       controller.ignoreFields = excluded;
     }

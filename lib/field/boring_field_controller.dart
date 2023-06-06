@@ -125,10 +125,7 @@ class BoringFieldController<T> extends ChangeNotifier {
   void sendNotification() => notifyListeners();
 
   bool get isValid {
-    if (value != null || value.toString().isNotEmpty) {
-      hideError.value = errorMessage == null;
-    }
-
+    hideError.value = errorMessage == null;
     return errorMessage == null;
   }
 

@@ -59,6 +59,7 @@ class BoringFormStepper extends BoringField {
             valueListenable: _currentIndex,
             builder: (context, value, child) {
               return Stepper(
+                physics: const ClampingScrollPhysics(),
                 currentStep: value,
                 type: StepperType.vertical,
                 onStepTapped: (index) => _onStepTapped(index, controller),
@@ -69,6 +70,7 @@ class BoringFormStepper extends BoringField {
                 steps: List.generate(
                     _finalSections.length,
                     (i) => Step(
+                        state: StepState.indexed,
                         title: Text(_finalSections[i].decoration?.label ?? ''),
                         subtitle: _finalSections[i].decoration?.helperText !=
                                 null
