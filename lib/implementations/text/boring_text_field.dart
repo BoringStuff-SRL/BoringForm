@@ -16,7 +16,7 @@ class BoringTextField extends BoringField<String> {
       super.decoration})
       : super(readOnly: readOnly);
 
-  late final textEditingController = TextEditingController();
+  final textEditingController = TextEditingController();
 
   final int minLines;
   final int maxLines;
@@ -36,18 +36,24 @@ class BoringTextField extends BoringField<String> {
     return BoringField.boringFieldBuilder(
       style,
       decoration?.label,
-      child: TextField(
-        readOnly: isReadOnly(context),
-        enabled: !isReadOnly(context),
-        controller: textEditingController,
-        minLines: minLines,
-        maxLines: maxLines,
-        textAlign: style.textAlign,
-        style: style.textStyle,
-        decoration: getDecoration(context),
-        onChanged: ((value) {
-          controller.value = value;
-        }),
+      child: ValueListenableBuilder(
+        valueListenable: controller.hideError,
+        builder: (BuildContext context, bool value, Widget? child) {
+          return TextField(
+            readOnly: isReadOnly(context),
+            enabled: !isReadOnly(context),
+            controller: textEditingController,
+            minLines: minLines,
+            maxLines: maxLines,
+            textAlign: style.textAlign,
+            style: style.textStyle,
+            decoration: getDecoration(context, haveError: value),
+            onChanged: ((value) {
+              controller.value = value;
+              controller.isValid;
+            }),
+          );
+        },
       ),
     );
   }

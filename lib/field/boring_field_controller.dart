@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
@@ -31,6 +29,7 @@ class BoringFieldController<T> extends ChangeNotifier {
   T? _initialValue;
 
   String? Function(T? value)? validationFunction;
+  final ValueNotifier<bool> hideError = ValueNotifier(true);
 
   T? get value => _value;
 
@@ -125,7 +124,10 @@ class BoringFieldController<T> extends ChangeNotifier {
 
   void sendNotification() => notifyListeners();
 
-  bool get isValid => errorMessage == null;
+  bool get isValid {
+    hideError.value = errorMessage == null;
+    return errorMessage == null;
+  }
 
   void reset() {
     _value = initialValue;

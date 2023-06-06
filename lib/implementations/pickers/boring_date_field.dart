@@ -1,12 +1,6 @@
-import 'dart:convert';
-
 import 'package:boring_form/implementations/pickers/boring_picker_field.dart';
 import 'package:boring_form/utils/datetime_extnesions.dart';
 import 'package:flutter/material.dart';
-
-import '../../field/boring_field_controller.dart';
-import '../../theme/boring_field_decoration.dart';
-import '../../theme/boring_responsive_size.dart';
 
 //TODO BoringDateTimeField
 // class BoringDateTimeField extends BoringPickerField<TimeOfDay?> {
@@ -61,6 +55,7 @@ class BoringDateField extends BoringPickerField<DateTime?> {
     super.displayCondition,
     super.decoration,
     DateTime? initialDate,
+    this.initialEntryMode = DatePickerEntryMode.calendar,
     required this.firstlDate,
     required this.lastDate,
   })  : assert(firstlDate < lastDate, "firstDate must be less than lastDate"),
@@ -71,6 +66,7 @@ class BoringDateField extends BoringPickerField<DateTime?> {
         super(
             showPicker: (context) async => await showDatePicker(
                 context: context,
+                initialEntryMode: initialEntryMode,
                 initialDate: fieldController?.value ??
                     initialDate ??
                     middle(firstlDate, DateTime.now(), lastDate),
@@ -78,6 +74,7 @@ class BoringDateField extends BoringPickerField<DateTime?> {
                 lastDate: lastDate),
             valueToString: dateTimeToString);
   final DateTime firstlDate, lastDate;
+  final DatePickerEntryMode initialEntryMode;
 
   void initialDateAssertion(DateTime? initialDate) {
     assert(
@@ -99,6 +96,7 @@ class BoringTimeField extends BoringPickerField<TimeOfDay?> {
     super.fieldController,
     super.onChanged,
     required super.jsonKey,
+    this.initialEntryMode = TimePickerEntryMode.inputOnly,
     super.boringResponsiveSize,
     super.updateValueOnDismiss,
     super.displayCondition,
@@ -107,11 +105,14 @@ class BoringTimeField extends BoringPickerField<TimeOfDay?> {
   }) : super(
             showPicker: (context) async => await showTimePicker(
                   context: context,
+                  initialEntryMode: initialEntryMode,
                   initialTime: initialTime ?? TimeOfDay.now(),
                 ),
             valueToString: (value) => value == null
                 ? ""
                 : "${value.hour.toString().padLeft(2, '0')}:${value.minute.toString().padLeft(2, '0')}");
+
+  final TimePickerEntryMode initialEntryMode;
 }
 
 //TODO showDateRangePicker ALSO INSIDE DIALOG (not only full screen)

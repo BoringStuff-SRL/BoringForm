@@ -2,7 +2,6 @@ import 'package:boring_form/boring_form.dart';
 import 'package:boring_form/field/field_change_notification.dart';
 import 'package:boring_form/utils/value_holder.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 abstract class BoringField<T> extends StatelessWidget {
   BoringField(
@@ -50,23 +49,40 @@ abstract class BoringField<T> extends StatelessWidget {
 
   BoringFormStyle getStyle(BuildContext context) => getTheme(context).style;
 
-  InputDecoration getDecoration(BuildContext context) {
+  InputDecoration getDecoration(BuildContext context, {bool haveError = true}) {
     final style = getStyle(context);
-    return style.inputDecoration.copyWith(
-        labelText: (style.labelOverField || decoration?.label == null)
-            ? null
-            : decoration?.label,
-        icon: decoration?.icon,
-        errorText: fieldController.errorMessage,
-        helperText: decoration?.helperText,
-        hintText: decoration?.hintText,
-        prefix: decoration?.prefix,
-        prefixIcon: decoration?.prefixIcon,
-        prefixText: decoration?.prefixText,
-        suffix: decoration?.suffix,
-        suffixIcon: decoration?.suffixIcon,
-        suffixText: decoration?.suffixText,
-        counter: decoration?.counter?.call(fieldController.value));
+    if (!haveError) {
+      return style.inputDecoration.copyWith(
+          labelText: (style.labelOverField || decoration?.label == null)
+              ? null
+              : decoration?.label,
+          icon: decoration?.icon,
+          errorText: fieldController.errorMessage,
+          helperText: decoration?.helperText,
+          hintText: decoration?.hintText,
+          prefix: decoration?.prefix,
+          prefixIcon: decoration?.prefixIcon,
+          prefixText: decoration?.prefixText,
+          suffix: decoration?.suffix,
+          suffixIcon: decoration?.suffixIcon,
+          suffixText: decoration?.suffixText,
+          counter: decoration?.counter?.call(fieldController.value));
+    } else {
+      return style.inputDecoration.copyWith(
+          labelText: (style.labelOverField || decoration?.label == null)
+              ? null
+              : decoration?.label,
+          icon: decoration?.icon,
+          helperText: decoration?.helperText,
+          hintText: decoration?.hintText,
+          prefix: decoration?.prefix,
+          prefixIcon: decoration?.prefixIcon,
+          prefixText: decoration?.prefixText,
+          suffix: decoration?.suffix,
+          suffixIcon: decoration?.suffixIcon,
+          suffixText: decoration?.suffixText,
+          counter: decoration?.counter?.call(fieldController.value));
+    }
   }
 
   bool isReadOnly(BuildContext context) =>

@@ -16,7 +16,6 @@ class FormExample extends StatelessWidget {
     return Column(
       children: [
         BoringForm(
-          //onChanged: (p0) => print("->FORM CHANGED: $p0"),
           haveStepper: true,
           style: BoringFormStyle(
               labelOverField: false,
@@ -40,7 +39,8 @@ class FormExample extends StatelessWidget {
                     return a;
                   },
                   sectionController: BoringSectionController(),
-                  decoration: BoringFieldDecoration(label: "TITOLO", helperText: 'sadsadsadsa'),
+                  decoration: BoringFieldDecoration(
+                      label: "TITOLO", helperText: 'sadsadsadsa'),
                   collapsible: true,
                   fields: [
                     BoringSlider(
@@ -112,13 +112,7 @@ class FormExample extends StatelessWidget {
 }
 
 class FormExample2 extends StatelessWidget {
-  final formController = BoringFormController(initialValue: {
-    "anagraph": {
-      "name": "AAA",
-      "surname": 'Pippo',
-      "birthdate": DateTime(2005, 01, 02)
-    }
-  });
+  final formController = BoringFormController();
   final textFieldController = BoringFieldController<String>(
     validationFunction: (value) =>
         (value == null || value.isEmpty) ? "Campo richiesto" : null,
@@ -130,9 +124,6 @@ class FormExample2 extends StatelessWidget {
         children: [
           BoringForm(
             formController: formController,
-            onChanged: (p0) {
-              print("FORM CHANGED");
-            },
             style: BoringFormStyle(
                 //readOnly: true,
                 labelOverField: true,
@@ -145,44 +136,31 @@ class FormExample2 extends StatelessWidget {
                   collapseOnHeaderTap: true,
                   jsonKey: "anagraph",
                   fields: [
-                    BoringNumberField(jsonKey: 'ciaociao'),
-                    BoringSideField<String>(
-                      widgetDecoration: BoringSideFieldDecoration(
-                          backgroundColor: Colors.green),
-                      field: BoringTextField(
-                        boringResponsiveSize:
-                            BoringResponsiveSize(md: 6, xl: 3),
-                        jsonKey: "name",
-                        fieldController: BoringFieldController(
-                          validationFunction: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "vuoto";
-                            }
-                          },
-                        ),
-                        decoration: BoringFieldDecoration(label: "Nome"),
+                    BoringTextField(
+                      boringResponsiveSize: BoringResponsiveSize(md: 6, xl: 3),
+                      jsonKey: "name",
+                      fieldController: BoringFieldController(
+                        validationFunction: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "nome vuoto";
+                          }
+                          return null;
+                        },
                       ),
+                      decoration: BoringFieldDecoration(label: "Nome"),
                     ),
                     BoringTextField(
                       boringResponsiveSize: BoringResponsiveSize(md: 6, xl: 3),
                       jsonKey: "surname",
-                      decoration: BoringFieldDecoration(label: "Cognome"),
-                    ),
-                    BoringTextField(
-                      boringResponsiveSize: BoringResponsiveSize(md: 6, xl: 3),
-                      jsonKey: "birthplace",
-                      decoration: BoringFieldDecoration(label: "Nato a"),
-                    ),
-                    BoringDateField(
-                      fieldController: BoringFieldController<DateTime?>(
-                        validationFunction: (value) =>
-                            value == null ? "Campo richiesto" : null,
+                      fieldController: BoringFieldController(
+                        validationFunction: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "cognome vuoto";
+                          }
+                          return null;
+                        },
                       ),
-                      lastDate: DateTime(2011),
-                      firstlDate: DateTime(1940),
-                      boringResponsiveSize: BoringResponsiveSize(md: 6, xl: 3),
-                      jsonKey: "birthdate",
-                      decoration: BoringFieldDecoration(label: "Nato il"),
+                      decoration: BoringFieldDecoration(label: "Cognome"),
                     ),
                   ]),
             ],
