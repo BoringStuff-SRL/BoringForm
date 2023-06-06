@@ -71,7 +71,14 @@ class BoringDateField extends BoringPickerField<DateTime?> {
                     initialDate ??
                     middle(firstlDate, DateTime.now(), lastDate),
                 firstDate: firstlDate,
-                lastDate: lastDate),
+                lastDate: lastDate,
+                builder: (BuildContext context, Widget? child) {
+                  return MediaQuery(
+                    data: MediaQuery.of(context)
+                        .copyWith(alwaysUse24HourFormat: true),
+                    child: child!,
+                  );
+                }),
             valueToString: dateTimeToString);
   final DateTime firstlDate, lastDate;
   final DatePickerEntryMode initialEntryMode;
@@ -104,10 +111,16 @@ class BoringTimeField extends BoringPickerField<TimeOfDay?> {
     TimeOfDay? initialTime,
   }) : super(
             showPicker: (context) async => await showTimePicker(
-                  context: context,
-                  initialEntryMode: initialEntryMode,
-                  initialTime: initialTime ?? TimeOfDay.now(),
-                ),
+                context: context,
+                initialEntryMode: initialEntryMode,
+                initialTime: initialTime ?? TimeOfDay.now(),
+                builder: (BuildContext context, Widget? child) {
+                  return MediaQuery(
+                    data: MediaQuery.of(context)
+                        .copyWith(alwaysUse24HourFormat: true),
+                    child: child!,
+                  );
+                }),
             valueToString: (value) => value == null
                 ? ""
                 : "${value.hour.toString().padLeft(2, '0')}:${value.minute.toString().padLeft(2, '0')}");
@@ -130,10 +143,16 @@ class BoringDateRangeField extends BoringPickerField<DateTimeRange?> {
     required DateTime firstDate,
   }) : super(
             showPicker: (context) async => await showDateRangePicker(
-                  context: context,
-                  lastDate: lastDate,
-                  firstDate: firstDate,
-                ),
+                context: context,
+                lastDate: lastDate,
+                firstDate: firstDate,
+                builder: (BuildContext context, Widget? child) {
+                  return MediaQuery(
+                    data: MediaQuery.of(context)
+                        .copyWith(alwaysUse24HourFormat: true),
+                    child: child!,
+                  );
+                }),
             valueToString: (value) => value == null
                 ? ""
                 : "${dateTimeToString(value.start)} - ${dateTimeToString(value.end)}");
