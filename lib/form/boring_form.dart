@@ -50,7 +50,6 @@ class BoringForm extends BoringFieldsGroup<BoringFormController> {
   @override
   Widget buildWidget(BuildContext context,
       BoringFieldsGroupController controller, Widget content) {
-
     return BoringFormTheme(
       style: style ?? BoringFormStyle(),
       child: Column(

@@ -47,7 +47,9 @@ class BoringMultiChoiceDropDownField<T> extends BoringField<List<T>> {
       style,
       decoration?.label,
       child: ValueListenableBuilder(
-          valueListenable: controller.hideError,
+          valueListenable: controller.autoValidate
+              ? ValueNotifier(false)
+              : controller.hideError,
           builder: (BuildContext context, bool value, Widget? child) {
             final InputDecoration newStyle =
                 getDecoration(context, haveError: value)

@@ -60,17 +60,20 @@ abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
   final List<BoringField> fields;
   final T controller;
 
+  final bool autoValidate;
+
   BoringFieldsGroup(
       {super.key,
       required this.controller,
       required super.jsonKey,
+      this.autoValidate = false,
       super.onChanged,
       //TODO (was in SECTION) this.collapsible = false,
       //TODO (was in SECTION) this.collapseOnHeaderTap,
       super.decoration,
       super.displayCondition,
       required this.fields})
-      : assert(checkJsonKey(fields),
+      : assert(checkJsonKey(fields, autoValidate: autoValidate),
             "Confict error: found duplicate jsonKeys in section with jsonKey '$jsonKey'"),
         super(fieldController: controller) {
     _addFieldsSubcontrollers();
@@ -89,9 +92,14 @@ abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
     return v;
   }
 
-  static bool checkJsonKey(List<BoringField> fields) {
+  static bool checkJsonKey(List<BoringField> fields,
+      {bool autoValidate = false}) {
     List<String> keys = [];
     for (var field in fields) {
+      if (autoValidate) {
+        field.fieldController.autoValidate = autoValidate;
+      }
+
       if (keys.contains(field.jsonKey)) {
         return false;
       }

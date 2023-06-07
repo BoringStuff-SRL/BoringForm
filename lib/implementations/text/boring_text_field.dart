@@ -33,11 +33,14 @@ class BoringTextField extends BoringField<String> {
   @override
   Widget builder(context, controller, child) {
     final style = getStyle(context);
+
     return BoringField.boringFieldBuilder(
       style,
       decoration?.label,
       child: ValueListenableBuilder(
-        valueListenable: controller.hideError,
+        valueListenable: controller.autoValidate
+            ? ValueNotifier(false)
+            : controller.hideError,
         builder: (BuildContext context, bool value, Widget? child) {
           return TextField(
             readOnly: isReadOnly(context),

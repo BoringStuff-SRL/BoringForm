@@ -22,6 +22,7 @@ class BoringSection extends BoringFieldsGroup {
       this.collapsible = false,
       this.collapseOnHeaderTap,
       this.startExpanded = true,
+      super.autoValidate = false,
       super.decoration,
       super.displayCondition,
       required super.fields})
@@ -126,11 +127,11 @@ class BoringSection extends BoringFieldsGroup {
       BoringSectionController? sectionController,
       bool? collapsible,
       bool? collapseOnHeaderTap,
+      bool? autoValidate,
       List<BoringField<dynamic>>? fields}) {
-
     return BoringSection(
-
       jsonKey: jsonKey ?? this.jsonKey,
+      autoValidate: autoValidate ?? this.autoValidate,
       decoration: decoration ?? this.decoration,
       onChanged: onChanged ?? this.onChanged,
       displayCondition: displayCondition ?? this.displayCondition,

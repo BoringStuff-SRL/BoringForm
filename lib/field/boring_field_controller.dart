@@ -6,12 +6,16 @@ enum ChangedEvent { valueChanged, sumbittedForValidation }
 enum ValidationType { always, onSubmit }
 
 class BoringFieldController<T> extends ChangeNotifier {
-  BoringFieldController({T? initialValue, this.validationFunction})
+  BoringFieldController(
+      {T? initialValue, this.validationFunction, this.autoValidate = false})
       : _initialValue = initialValue,
         _value = initialValue;
 
   BoringFieldController.withValue(
-      {T? initialValue, this.validationFunction, required T? value})
+      {T? initialValue,
+      this.validationFunction,
+      required T? value,
+      this.autoValidate = false})
       : _initialValue = initialValue,
         _value = value;
 
@@ -32,6 +36,8 @@ class BoringFieldController<T> extends ChangeNotifier {
   final ValueNotifier<bool> hideError = ValueNotifier(true);
 
   T? get value => _value;
+
+  bool autoValidate;
 
   bool get changed => !const DeepCollectionEquality().equals(
         _fromEmptyStringToNull(value as Map),

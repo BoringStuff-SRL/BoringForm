@@ -106,7 +106,9 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-        valueListenable: widget.controller.hideError,
+        valueListenable: widget.controller.autoValidate
+            ? ValueNotifier(false)
+            : widget.controller.hideError,
         builder: (BuildContext context, bool value, Widget? child) {
           return TextField(
             controller: widget.textEditingController,

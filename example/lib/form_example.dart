@@ -142,6 +142,7 @@ class FormExample2 extends StatelessWidget {
                     const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             fields: [
               BoringSection(
+                  autoValidate: false,
                   decoration: BoringFieldDecoration(label: "ANAGRAFICA"),
                   collapsible: true,
                   collapseOnHeaderTap: true,
@@ -160,6 +161,14 @@ class FormExample2 extends StatelessWidget {
                       ),
                       decoration: BoringFieldDecoration(label: "Nome"),
                     ),
+                  ]),
+              BoringSection(
+                  autoValidate: true,
+                  decoration: BoringFieldDecoration(label: "ANAGRAFICAS"),
+                  collapsible: true,
+                  collapseOnHeaderTap: true,
+                  jsonKey: "anagraphs",
+                  fields: [
                     BoringTextField(
                       boringResponsiveSize: BoringResponsiveSize(md: 6, xl: 3),
                       jsonKey: "surname",
@@ -173,13 +182,6 @@ class FormExample2 extends StatelessWidget {
                       ),
                       decoration: BoringFieldDecoration(label: "Cognome"),
                     ),
-                  ]),
-              BoringSection(
-                  decoration: BoringFieldDecoration(label: "ANAGRAFICAS"),
-                  collapsible: true,
-                  collapseOnHeaderTap: true,
-                  jsonKey: "anagraphs",
-                  fields: [
                     BoringDateField(
                       boringResponsiveSize: BoringResponsiveSize(md: 6, xl: 3),
                       jsonKey: "names",

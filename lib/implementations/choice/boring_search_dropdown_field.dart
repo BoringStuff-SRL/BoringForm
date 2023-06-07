@@ -48,78 +48,86 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
   Widget builder(context, controller, child) {
     final style = BoringFormTheme.of(context).style;
 
-    final newStyle = getDecoration(context)
-        .copyWith(contentPadding: const EdgeInsets.all(0));
-
     return BoringField.boringFieldBuilder(
       style,
       decoration?.label,
       child: ValueListenableBuilder(
           valueListenable: _itemsNotifier,
           builder: (context, items, child) {
-            return DropdownButtonFormField2<T?>(
-              dropdownOverButton: false,
-              key: _dropdownKey,
-              isExpanded: isExpanded,
-              searchInnerWidgetHeight: 20,
-              dropdownElevation: 0,
-              decoration: newStyle,
-              buttonHeight: 50,
-              itemHeight: 50,
-              focusColor: Colors.transparent,
-              buttonSplashColor: Colors.transparent,
-              buttonHighlightColor: Colors.transparent,
-              buttonOverlayColor: MaterialStateProperty.resolveWith((states) {
-                return Colors.transparent;
-              }),
-              dropdownMaxHeight: 250,
-              searchController: searchEditController,
-              items: items,
-              value: controller.value,
-              
-              hint: Text(
-                decoration?.hintText ?? '',
-                style: style.inputDecoration.hintStyle,
-              ),
-              dropdownDecoration: _boxDecoration(newStyle),
-              onChanged: isReadOnly(context)
-                  ? null
-                  : ((value) {
-                      controller.value = value;
-                    }),
-              searchInnerWidget: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  children: [
-                    if (onAdd != null) ...[
-                      MouseRegion(
-                        cursor: SystemMouseCursors.click,
-                        child: GestureDetector(
-                          onTap: () async {
-                            await _onAdd(
-                                _dropdownKey.currentContext!, controller);
-                          },
-                          child: onAddIcon,
+            return ValueListenableBuilder(
+              valueListenable: controller.autoValidate
+                  ? ValueNotifier(false)
+                  : controller.hideError,
+              builder: (BuildContext context, bool value, Widget? child) {
+                final newStyle = getDecoration(context, haveError: value)
+                    .copyWith(contentPadding: const EdgeInsets.all(0));
+
+                return DropdownButtonFormField2<T?>(
+                  dropdownOverButton: false,
+                  key: _dropdownKey,
+                  isExpanded: isExpanded,
+                  searchInnerWidgetHeight: 20,
+                  dropdownElevation: 0,
+                  decoration: newStyle,
+                  buttonHeight: 50,
+                  itemHeight: 50,
+                  focusColor: Colors.transparent,
+                  buttonSplashColor: Colors.transparent,
+                  buttonHighlightColor: Colors.transparent,
+                  buttonOverlayColor:
+                      MaterialStateProperty.resolveWith((states) {
+                    return Colors.transparent;
+                  }),
+                  dropdownMaxHeight: 250,
+                  searchController: searchEditController,
+                  items: items,
+                  value: controller.value,
+                  hint: Text(
+                    decoration?.hintText ?? '',
+                    style: style.inputDecoration.hintStyle,
+                  ),
+                  dropdownDecoration: _boxDecoration(newStyle),
+                  onChanged: isReadOnly(context)
+                      ? null
+                      : ((value) {
+                          controller.value = value;
+                          controller.isValid;
+                        }),
+                  searchInnerWidget: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Row(
+                      children: [
+                        if (onAdd != null) ...[
+                          MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: GestureDetector(
+                              onTap: () async {
+                                await _onAdd(
+                                    _dropdownKey.currentContext!, controller);
+                              },
+                              child: onAddIcon,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                        ],
+                        Expanded(
+                          child: TextFormField(
+                            controller: searchEditController,
+                            decoration: searchInputDecoration,
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                    ],
-                    Expanded(
-                      child: TextFormField(
-                        controller: searchEditController,
-                        decoration: searchInputDecoration,
-                      ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-              searchMatchFn: (item, searchValue) =>
-                  searchMatchFunction?.call(item, searchValue) ??
-                  _searchDefaultMatchFn(item, searchValue),
-              onMenuStateChange: (isOpen) =>
-                  _onMenuStateChange(isOpen, searchEditController),
+                  ),
+                  searchMatchFn: (item, searchValue) =>
+                      searchMatchFunction?.call(item, searchValue) ??
+                      _searchDefaultMatchFn(item, searchValue),
+                  onMenuStateChange: (isOpen) =>
+                      _onMenuStateChange(isOpen, searchEditController),
+                );
+              },
             );
           }),
     );

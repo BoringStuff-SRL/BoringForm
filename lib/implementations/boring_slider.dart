@@ -40,9 +40,10 @@ class BoringSlider extends BoringField<double> {
               ),
             ),
           ValueListenableBuilder(
-              valueListenable: controller.hideError,
+              valueListenable: controller.autoValidate
+                  ? ValueNotifier(false)
+                  : controller.hideError,
               builder: (BuildContext context, bool value, Widget? child) {
-                print('lala');
                 return Slider(
                   min: min,
                   max: max,

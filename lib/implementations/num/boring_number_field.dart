@@ -214,7 +214,9 @@ class BoringNumberField extends BoringField<num> {
       style,
       decoration?.label,
       child: ValueListenableBuilder(
-          valueListenable: controller.hideError,
+          valueListenable: controller.autoValidate
+              ? ValueNotifier(false)
+              : controller.hideError,
           builder: (BuildContext context, bool value, Widget? child) {
             return TextField(
               readOnly: isReadOnly(context),
