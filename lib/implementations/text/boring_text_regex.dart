@@ -7,6 +7,7 @@ class BoringTextRegExpField extends BoringTextField {
       super.onChanged,
       required super.jsonKey,
       this.canEmpty = false,
+      super.readOnly,
       super.boringResponsiveSize,
       required String regExpError,
       super.displayCondition,
