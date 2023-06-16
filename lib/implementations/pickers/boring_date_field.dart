@@ -59,7 +59,7 @@ class BoringDateField extends BoringPickerField<DateTime?> {
     this.initialEntryMode = DatePickerEntryMode.calendar,
     required this.firstlDate,
     required this.lastDate,
-  })  : assert(firstlDate < lastDate, "firstDate must be less than lastDate"),
+  })  : assert(firstlDate <= lastDate, "firstDate must be less than lastDate"),
         assert(
             initialDate == null ||
                 (initialDate <= lastDate && initialDate >= firstlDate),
