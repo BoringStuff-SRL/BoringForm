@@ -57,11 +57,14 @@ class BoringFilePicker extends BoringField<List<PlatformFile>> {
   final Border? border;
   final String? label;
 
-  Text _feedback(BoringFieldController<List<PlatformFile>> controller) =>
-      controller.value == null
-          ? noFilesSelectedText ?? const Text("No files selected")
-          : feedbackTextBuilder?.call(controller.value!.length) ??
-              Text("${controller.value!.length} files selected");
+  Widget _feedback(BoringFieldController<List<PlatformFile>> controller) =>
+      Flexible(
+        child: feedbackTextBuilder?.call(controller.value?.length ?? 0) ??
+            Text(
+              "${controller.value?.length ?? 0} files selected",
+              overflow: TextOverflow.ellipsis,
+            ),
+      );
 
   @override
   Widget builder(BuildContext context, controller, Widget? child) {
