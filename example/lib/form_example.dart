@@ -51,8 +51,10 @@ class FormExample extends StatelessWidget {
                     BoringTextField(
                       // displayCondition: (formValue) =>
                       //     (formValue["slider"] ?? 0 as double) < 0.2,
-                      decoration: BoringFieldDecoration(label: "Ciao"),
-                      jsonKey: "text1",
+                      decoration: BoringFieldDecoration(label: "TEXT2"),
+                      jsonKey: "text",
+
+                      displayCondition: (value) => false,
                       fieldController: BoringFieldController(
                         validationFunction: (value) =>
                             (value == null || value.isEmpty) ? "ERROR" : null,
@@ -61,8 +63,8 @@ class FormExample extends StatelessWidget {
                     BoringTextField(
                       // displayCondition: (formValue) =>
                       //     (formValue["slider"] ?? 0 as double) < 0.2,
-                      decoration: BoringFieldDecoration(label: "Ciao"),
-                      jsonKey: "text",
+                      decoration: BoringFieldDecoration(label: "TEXT1"),
+                      jsonKey: "text1",
                       fieldController: BoringFieldController(
                         validationFunction: (value) =>
                             (value == null || value.isEmpty) ? "ERROR" : null,
@@ -70,51 +72,15 @@ class FormExample extends StatelessWidget {
                     ),
                   ],
                 ),
-                BoringSection(jsonKey: 'saddsa', fields: [
-                  BoringTextField(
-                    fieldController: BoringFieldController(
-                      validationFunction: (value) =>
-                          (value == null) ? "ERROR" : null,
-                    ),
-                    decoration: BoringFieldDecoration(
-                        icon: const Icon(Icons.all_inbox),
-                        prefixIcon: const Icon(Icons.inbox_outlined),
-                        suffixIcon: const Icon(Icons.inbox_outlined),
-                        prefixText: "CIAO",
-                        suffixText: "WEWE",
-                        counter: ((value) => Text(value ?? ""))),
-                    jsonKey: "text",
-                  ),
-                ]),
-                BoringSection(jsonKey: 'sadsf', fields: [
-                  BoringDateField(
-                    fieldController: BoringFieldController(
-                      validationFunction: (value) =>
-                          (value == null) ? "ERROR" : null,
-                    ),
-                    jsonKey: 'date',
-                    firstlDate: DateTime(1940),
-                    lastDate: DateTime(2011),
-                  ),
-                  BoringPhoneNumberField(
-                    invalidPhoneMessage: 'Phone not valid',
-                    fieldController: BoringFieldController(
-                      validationFunction: (value) =>
-                          (value == null) ? "ERROR" : null,
-                    ),
-                    jsonKey: "emailf",
-                  ),
-                ])
               ],
             ),
           ],
         ),
         ElevatedButton(
             onPressed: () {
-              print("Value: ${c.value}");
-              print("Valid: ${c.isValid}");
-              print("Init value: ${c.initialValue}");
-              print("Changed: ${c.changed}");
+              print("FORM IS ${c.isValid}");
+              print("FORM VALUE ${c.value}");
+              print("IGNORE ${c.ignoreFields}");
             },
             child: Text("VALUE")),
       ],
@@ -151,6 +117,7 @@ class FormExample2 extends StatelessWidget {
                     BoringTextField(
                       boringResponsiveSize: BoringResponsiveSize(md: 6, xl: 3),
                       jsonKey: "name",
+                      displayCondition: (value) => false,
                       fieldController: BoringFieldController(
                         validationFunction: (value) {
                           if (value == null || value.isEmpty) {

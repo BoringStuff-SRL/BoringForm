@@ -31,13 +31,13 @@ abstract class BoringFieldsGroupController
   bool _allSubControllersValid() {
     bool valid = true;
 
-    ((Map.from(subControllers))
+    for (var element in ((Map.from(subControllers))
           ..removeWhere((key, value) => ignoreFields.contains(key)))
-        .forEach((key, value) {
-      if (!value.isValid) {
+        .values) {
+      if (!element.isValid) {
         valid = false;
       }
-    });
+    }
 
     return valid;
   }
