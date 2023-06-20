@@ -171,22 +171,21 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
   void onValueChanged(T? newValue) {}
 
   @override
-  BoringSearchDropDownField copyWith(
+  BoringSearchDropDownField<T> copyWith(
       {BoringFieldController<T>? fieldController,
       void Function(T? p1)? onChanged,
       BoringFieldDecoration? decoration,
       BoringResponsiveSize? boringResponsiveSize,
       String? jsonKey,
       bool Function(Map<String, dynamic> p1)? displayCondition,
-      List<DropdownMenuItem<dynamic>>? items,
+      List<DropdownMenuItem<T>>? items,
       InputDecoration? searchInputDecoration,
       double? radius}) {
     return BoringSearchDropDownField(
       boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
       jsonKey: jsonKey ?? this.jsonKey,
       decoration: decoration ?? this.decoration,
-      onChanged: (onChanged as void Function(dynamic)?) ??
-          (this.onChanged as void Function(dynamic)),
+      onChanged: onChanged ?? this.onChanged,
       displayCondition: displayCondition ?? this.displayCondition,
       fieldController: fieldController ?? this.fieldController,
       items: items ?? this.items,

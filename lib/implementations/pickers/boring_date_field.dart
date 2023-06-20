@@ -54,11 +54,12 @@ class BoringDateField extends BoringPickerField<DateTime?> {
     super.updateValueOnDismiss,
     super.displayCondition,
     super.decoration,
+    super.readOnly,
     DateTime? initialDate,
     this.initialEntryMode = DatePickerEntryMode.calendar,
     required this.firstlDate,
     required this.lastDate,
-  })  : assert(firstlDate < lastDate, "firstDate must be less than lastDate"),
+  })  : assert(firstlDate <= lastDate, "firstDate must be less than lastDate"),
         assert(
             initialDate == null ||
                 (initialDate <= lastDate && initialDate >= firstlDate),
@@ -108,6 +109,7 @@ class BoringTimeField extends BoringPickerField<TimeOfDay?> {
     super.updateValueOnDismiss,
     super.displayCondition,
     super.decoration,
+    super.readOnly,
     TimeOfDay? initialTime,
   }) : super(
             showPicker: (context) async => await showTimePicker(
@@ -134,6 +136,7 @@ class BoringDateRangeField extends BoringPickerField<DateTimeRange?> {
     super.key,
     super.fieldController,
     super.onChanged,
+    super.readOnly,
     required super.jsonKey,
     super.boringResponsiveSize,
     super.updateValueOnDismiss,
