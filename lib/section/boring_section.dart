@@ -81,43 +81,48 @@ class BoringSection extends BoringFieldsGroup {
     contextHolder.value = context;
   }
 
+  Widget _wrap({required BuildContext context, required Widget child}) {
+    final formStyle = BoringFormTheme.of(context).style;
+    return Container(
+      padding: formStyle.sectionPadding,
+      decoration: formStyle.sectionBoxDecoration,
+      margin: formStyle.sectionMargin,
+      child: child,
+    );
+  }
+
   @override
   Widget buildWidget(BuildContext context,
       BoringFieldsGroupController controller, Widget content) {
     _setFormContext(context);
 
-    final formStyle = BoringFormTheme.of(context).style;
-
-    if (decoration?.label != null) {
-      return Container(
-        padding: formStyle.sectionPadding,
-        decoration: formStyle.sectionBoxDecoration,
-        margin: formStyle.sectionMargin,
-        child: BoringExpandable(
-          startExpanded: startExpanded,
-          header: (toggleExpansion, animation) => ListTile(
-            onTap: (collapseOnHeaderTap == true ||
-                    (collapsible && collapseOnHeaderTap == null))
-                ? () => toggleExpansion()
-                : null,
-            dense: true,
-            title: Text(
-              (decoration?.label)!,
-              style: BoringFormTheme.of(context).style.sectionTitleStyle,
-            ),
-            trailing: collapsible
-                ? IconButton(
-                    splashRadius: 16,
-                    icon: const Icon(Icons.expand_more),
-                    onPressed: () => toggleExpansion(),
-                  )
-                : null,
-          ),
-          child: (toggleExpansion, animation) => content,
-        ),
-      );
-    }
-    return content;
+    return _wrap(
+      context: context,
+      child: (decoration?.label != null)
+          ? BoringExpandable(
+              startExpanded: startExpanded,
+              header: (toggleExpansion, animation) => ListTile(
+                onTap: (collapseOnHeaderTap == true ||
+                        (collapsible && collapseOnHeaderTap == null))
+                    ? () => toggleExpansion()
+                    : null,
+                dense: true,
+                title: Text(
+                  (decoration?.label)!,
+                  style: BoringFormTheme.of(context).style.sectionTitleStyle,
+                ),
+                trailing: collapsible
+                    ? IconButton(
+                        splashRadius: 16,
+                        icon: const Icon(Icons.expand_more),
+                        onPressed: () => toggleExpansion(),
+                      )
+                    : null,
+              ),
+              child: (toggleExpansion, animation) => content,
+            )
+          : content,
+    );
   }
 
   @override
