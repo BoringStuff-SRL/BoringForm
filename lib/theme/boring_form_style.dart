@@ -11,6 +11,8 @@ class BoringFormStyle {
   final TextAlign textAlign;
   final TextStyle? textStyle;
   final BoxDecoration? sectionBoxDecoration;
+  final EdgeInsets? sectionPadding;
+  final EdgeInsets? sectionMargin;
 
   BoringFormStyle(
       {this.fieldsPadding = const EdgeInsets.all(8),
@@ -19,6 +21,8 @@ class BoringFormStyle {
       this.inputDecoration = const InputDecoration(),
       this.labelOverField = false,
       this.readOnly = false,
+      this.sectionPadding,
+      this.sectionMargin,
       this.textStyle,
       this.sectionBoxDecoration,
       this.textAlign = TextAlign.start})
@@ -56,6 +60,8 @@ class BoringFormStyle {
     TextAlign? textAlign,
     TextStyle? textStyle,
     BoxDecoration? sectionBoxDecoration,
+    EdgeInsets? sectionPadding,
+    EdgeInsets? sectionMargin,
   }) {
     return BoringFormStyle(
       inputDecoration: inputDecoration ?? this.inputDecoration,
@@ -67,6 +73,8 @@ class BoringFormStyle {
       textAlign: textAlign ?? this.textAlign,
       textStyle: textStyle ?? this.textStyle,
       sectionBoxDecoration: sectionBoxDecoration ?? this.sectionBoxDecoration,
+      sectionMargin: sectionMargin ?? this.sectionMargin,
+      sectionPadding: sectionPadding ?? this.sectionPadding,
     );
   }
 }

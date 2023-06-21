@@ -31,7 +31,6 @@ class BoringSection extends BoringFieldsGroup {
             collapsible),
         super(controller: sectionController ?? BoringSectionController());
 
-  final double sectionPadding = 0;
   final bool collapsible;
   final bool? collapseOnHeaderTap;
   final bool startExpanded;
@@ -86,10 +85,14 @@ class BoringSection extends BoringFieldsGroup {
   Widget buildWidget(BuildContext context,
       BoringFieldsGroupController controller, Widget content) {
     _setFormContext(context);
+
+    final formStyle = BoringFormTheme.of(context).style;
+
     if (decoration?.label != null) {
       return Container(
-        padding: EdgeInsets.all(sectionPadding),
-        decoration: BoringFormTheme.of(context).style.sectionBoxDecoration,
+        padding: formStyle.sectionPadding,
+        decoration: formStyle.sectionBoxDecoration,
+        margin: formStyle.sectionMargin,
         child: BoringExpandable(
           startExpanded: startExpanded,
           header: (toggleExpansion, animation) => ListTile(
