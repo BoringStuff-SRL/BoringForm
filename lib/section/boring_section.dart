@@ -87,8 +87,9 @@ class BoringSection extends BoringFieldsGroup {
       BoringFieldsGroupController controller, Widget content) {
     _setFormContext(context);
     if (decoration?.label != null) {
-      return Padding(
+      return Container(
         padding: EdgeInsets.all(sectionPadding),
+        decoration: BoringFormTheme.of(context).style.sectionBoxDecoration,
         child: BoringExpandable(
           startExpanded: startExpanded,
           header: (toggleExpansion, animation) => ListTile(
