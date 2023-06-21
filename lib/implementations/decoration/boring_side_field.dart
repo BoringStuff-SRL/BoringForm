@@ -117,8 +117,7 @@ class BoringSideField<T> extends BoringField<T> {
       ),
     );
   }
-
-  @override
+ @override
   BoringField copyWith({
     BoringFieldController<T>? fieldController,
     void Function(T? p1)? onChanged,
@@ -126,8 +125,15 @@ class BoringSideField<T> extends BoringField<T> {
     BoringResponsiveSize? boringResponsiveSize,
     String? jsonKey,
     bool Function(Map<String, dynamic> p1)? displayCondition,
+    BoringField<T>? field,
+    BoringSideFieldDecoration? widgetDecoration,
   }) {
-    // TODO: implement copyWith
-    throw UnimplementedError();
+    return BoringSideField(
+      field: field ?? this.field,
+      displayCondition: displayCondition ?? this.displayCondition,
+      boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
+      widgetDecoration: widgetDecoration ?? this.widgetDecoration,
+    );
   }
+ 
 }
