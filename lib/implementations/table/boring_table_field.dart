@@ -9,6 +9,7 @@ import 'boring_table_field_controller.dart';
 class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
   BoringTableField(
       {super.key,
+      this.rowHeight,
       BoringTableFieldController? tableFieldController,
       super.onChanged,
       required super.jsonKey,
@@ -44,6 +45,7 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
   final String? deleteActionText;
   final String? copyActionText;
   final bool atLeastOneItem;
+  final double? rowHeight;
   final bool readOnly = false;
 
   @override
@@ -75,18 +77,22 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
     }
   }
 
+  final int tableHeaderHeight = 150;
+
   @override
   Widget builder(context, controller, child) {
     final style = getStyle(context);
 
     return BoringField.boringFieldBuilder(style, decoration?.label,
-        child: SizedBox(
-          height: 600,
-          child: ValueListenableBuilder(
-            valueListenable: _tableRows,
-            builder: (BuildContext context, List<BoringTableFieldRow> tableRows,
-                Widget? child) {
-              return BoringTable.fromList(
+        child: ValueListenableBuilder(
+          valueListenable: _tableRows,
+          builder: (BuildContext context, List<BoringTableFieldRow> tableRows,
+              Widget? child) {
+            return SizedBox(
+              height: rowHeight != null
+                  ? tableHeaderHeight + (rowHeight! * tableRows.length)
+                  : 600,
+              child: BoringTable.fromList(
                 groupActions: groupActions,
                 actionGroupTextStyle: actionGroupTextStyle,
                 groupActionsMenuShape: groupActionsMenuShape,
@@ -128,9 +134,9 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
                               icon: copyIconWidget)
                       ]
                     : [],
-              );
-            },
-          ),
+              ),
+            );
+          },
         ));
   }
 
