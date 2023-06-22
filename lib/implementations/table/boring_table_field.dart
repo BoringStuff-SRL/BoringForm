@@ -102,8 +102,8 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
                 title: BoringTableTitle(
                   title: tableFormDecoration?.tableTitle ?? const Text('Title'),
                   actions: [
-                    if (tableFormDecoration?.showAddButton ??
-                        false || !readOnly)
+                    if (!readOnly &&
+                        (tableFormDecoration?.showAddButton ?? false))
                       ElevatedButton(
                         onPressed: _onAddAction,
                         style: tableFormDecoration?.addButtonActionStyle,
@@ -120,8 +120,8 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
                 widgetWhenEmpty: tableFormDecoration?.widgetWhenEmpty,
                 headerRow: tableHeader,
                 items: tableRows,
-                rowActions: (tableFormDecoration?.showAddButton ??
-                        false || !readOnly)
+                rowActions: (!readOnly &&
+                        (tableFormDecoration?.showAddButton ?? false))
                     ? [
                         if (deleteIconWidget != null)
                           BoringRowAction(
