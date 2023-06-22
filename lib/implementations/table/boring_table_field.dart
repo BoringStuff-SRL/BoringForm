@@ -15,6 +15,7 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
       required super.jsonKey,
       required this.items,
       required this.tableHeader,
+      this.maxRowsAllowed,
       this.tableFormDecoration,
       this.groupActions = false,
       this.groupActionsMenuShape,
@@ -46,6 +47,7 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
   final String? copyActionText;
   final bool atLeastOneItem;
   final double? rowHeight;
+  final int? maxRowsAllowed;
   final bool readOnly = false;
 
   @override
@@ -142,9 +144,15 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
 
   void _onAddAction({List<BoringField>? initItems}) {
     final newRow = BoringTableFieldRow.fromItems(items: initItems ?? items);
-    _tableRows.addValue(newRow);
-    (fieldController as BoringTableFieldController)
-        .addControllers(newRow.items);
+    if (maxRowsAllowed != null && _tableRows.value.length < maxRowsAllowed!) {
+      _tableRows.addValue(newRow);
+      (fieldController as BoringTableFieldController)
+          .addControllers(newRow.items);
+    } else if (maxRowsAllowed == null) {
+      _tableRows.addValue(newRow);
+      (fieldController as BoringTableFieldController)
+          .addControllers(newRow.items);
+    }
   }
 
   _onDeleteAction(int index) {
