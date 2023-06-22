@@ -28,6 +28,7 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
       this.atLeastOneItem = false,
       this.copyActionText,
       this.deleteActionText,
+      super.readOnly,
       super.decoration})
       : super(
             fieldController:
@@ -48,7 +49,6 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
   final bool atLeastOneItem;
   final double? rowHeight;
   final int? maxRowsAllowed;
-  final bool readOnly = false;
 
   @override
   bool setInitialValue(List<Map<String, dynamic>>? initialValue) {
@@ -85,6 +85,8 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
   Widget builder(context, controller, child) {
     final style = getStyle(context);
 
+    readOnly ??= style.readOnly;
+
     return BoringField.boringFieldBuilder(style, decoration?.label,
         child: ValueListenableBuilder(
           valueListenable: _tableRows,
@@ -102,7 +104,7 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
                 title: BoringTableTitle(
                   title: tableFormDecoration?.tableTitle ?? const Text('Title'),
                   actions: [
-                    if (!readOnly &&
+                    if (!readOnly! &&
                         (tableFormDecoration?.showAddButton ?? false))
                       ElevatedButton(
                         onPressed: _onAddAction,
@@ -120,7 +122,7 @@ class BoringTableField extends BoringField<List<Map<String, dynamic>>> {
                 widgetWhenEmpty: tableFormDecoration?.widgetWhenEmpty,
                 headerRow: tableHeader,
                 items: tableRows,
-                rowActions: (!readOnly &&
+                rowActions: (!readOnly! &&
                         (tableFormDecoration?.showAddButton ?? false))
                     ? [
                         if (deleteIconWidget != null)
