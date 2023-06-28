@@ -83,6 +83,7 @@ class BoringTextField extends BoringField<String> {
       displayCondition: displayCondition ?? this.displayCondition,
       minLines: minLines ?? this.minLines,
       maxLines: maxLines ?? this.maxLines,
+      readOnly: readOnly,
     );
   }
 }
