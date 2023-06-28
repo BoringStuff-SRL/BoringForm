@@ -222,22 +222,24 @@ class BoringNumberField extends BoringField<num> {
               readOnly: isReadOnly(context),
               enabled: !isReadOnly(context),
               controller: textEditingController,
-              keyboardType: TextInputType.number,
-              inputFormatters: [formatter],
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.allow(
+                    RegExp(r'[0-9]+[,.]{0,1}[0-9]*')),
+                TextInputFormatter.withFunction(
+                  (oldValue, newValue) => newValue.copyWith(
+                    text: newValue.text.replaceAll(',', '.'),
+                  ),
+                ),
+              ],
               decoration: getDecoration(context, haveError: value),
               onChanged: ((value) {
                 try {
-                  if (tSeparator == ',') {
-                    value = value.replaceAll(",", "");
-                  } else if (tSeparator == '.') {
-                    value = value.replaceAll(".", "");
-                    value = value.replaceAll(",", ".");
-                  }
-
                   controller.value = double.parse(value);
                 } catch (e) {
                   controller.value = null;
                 }
+
                 controller.isValid;
               }),
             );

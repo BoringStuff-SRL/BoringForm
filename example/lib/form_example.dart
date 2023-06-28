@@ -114,6 +114,7 @@ class FormExample2 extends StatelessWidget {
                   collapseOnHeaderTap: true,
                   jsonKey: "anagraph",
                   fields: [
+                    BoringNumberField(jsonKey: 'number'),
                     BoringTextField(
                       boringResponsiveSize: BoringResponsiveSize(md: 6, xl: 3),
                       jsonKey: "name",
