@@ -72,6 +72,7 @@ class BoringTextField extends BoringField<String> {
       BoringResponsiveSize? boringResponsiveSize,
       String? jsonKey,
       bool Function(Map<String, dynamic> p1)? displayCondition,
+      bool? readOnly,
       int? minLines,
       int? maxLines}) {
     return BoringTextField(
@@ -83,7 +84,7 @@ class BoringTextField extends BoringField<String> {
       displayCondition: displayCondition ?? this.displayCondition,
       minLines: minLines ?? this.minLines,
       maxLines: maxLines ?? this.maxLines,
-      readOnly: readOnly,
+      readOnly: readOnly ?? this.readOnly,
     );
   }
 }
