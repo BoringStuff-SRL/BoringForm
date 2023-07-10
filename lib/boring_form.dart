@@ -18,6 +18,7 @@ export 'implementations/num/boring_number_field.dart';
 export 'implementations/pickers/boring_date_field.dart';
 export 'implementations/table/boring_table_field.dart';
 export 'implementations/table/boring_table_field_controller.dart';
+export 'implementations/table/boring_table_form_decoration.dart';
 export 'implementations/text/boring_email_field.dart';
 export 'implementations/text/boring_password_field.dart';
 export 'implementations/text/boring_phone_number_field.dart';
