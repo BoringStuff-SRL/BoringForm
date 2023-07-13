@@ -93,6 +93,7 @@ class BoringSideField<T> extends BoringField<T> {
               child: field.copyWith(
                 onChanged: (p0) {
                   controller.setValueSilently(p0);
+                  field.onChanged?.call(p0);
                 },
                 fieldController: BoringFieldController<T>(
                     validationFunction:
