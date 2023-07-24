@@ -14,7 +14,11 @@ class BoringTextField extends BoringField<String> {
       super.boringResponsiveSize,
       bool? readOnly,
       super.decoration})
-      : super(readOnly: readOnly);
+      : super(readOnly: readOnly) {
+    fieldController.onReset = () {
+      textEditingController.text = '';
+    };
+  }
 
   final textEditingController = TextEditingController();
 

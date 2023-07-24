@@ -32,6 +32,7 @@ class BoringFieldController<T> extends ChangeNotifier {
   T? _value;
   T? _initialValue;
 
+  void Function()? onReset;
   String? Function(T? value)? validationFunction;
   final ValueNotifier<bool> hideError = ValueNotifier(true);
 
@@ -137,6 +138,7 @@ class BoringFieldController<T> extends ChangeNotifier {
 
   void reset() {
     _value = initialValue;
+    onReset?.call();
     notifyListeners();
   }
 }
