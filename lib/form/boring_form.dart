@@ -65,8 +65,8 @@ class BoringForm extends BoringFieldsGroup<BoringFormController> {
               onAnyChanged();
               return true;
             },
-            child: ChangeNotifierProvider(
-                create: (context) => fieldsListProvider,
+            child: ChangeNotifierProvider.value(
+                value: fieldsListProvider,
                 child: Consumer<FieldsListProvider>(
                   builder: (context, value, _) {
                     return Column(
@@ -88,11 +88,12 @@ class BoringForm extends BoringFieldsGroup<BoringFormController> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (context) => controller,
-        child: Consumer<BoringFormController>(
-          builder: builder,
-        ));
+    return ChangeNotifierProvider.value(
+      value: controller,
+      builder: (context, child) => Consumer<BoringFormController>(
+        builder: builder,
+      ),
+    );
   }
 
   @override

@@ -24,6 +24,7 @@ dependencies:
     git:
       url: https://github.com/BoringStuff-SRL/FlutterBoringTable.git
       ref: develop
+  omni_datetime_picker: ^1.0.8
 
 dev_dependencies:
   flutter_lints: ^2.0.1

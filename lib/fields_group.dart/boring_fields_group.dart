@@ -126,6 +126,7 @@ abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
     if (controller is BoringFormController) {
       formController = controller as BoringFormController;
     } else if (contextHolder.value != null) {
+
       formController = Provider.of<BoringFormController>(contextHolder.value!,
           listen: false);
     } else {

@@ -1,25 +1,38 @@
 import 'package:boring_form/implementations/pickers/boring_picker_field.dart';
 import 'package:boring_form/utils/datetime_extnesions.dart';
 import 'package:flutter/material.dart';
+import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 
-//TODO BoringDateTimeField
-// class BoringDateTimeField extends BoringPickerField<TimeOfDay?> {
-//   BoringDateTimeField(
-//       {super.key,
-//       required super.fieldController,
-//       super.onChanged,
-//       required super.jsonKey,
-//       super.boringResponsiveSize,
-//       super.decoration})
-//       : super(
-//             showPicker: (context) async => await showDate(
-//                   context: context,
-//                   initialTime: TimeOfDay.now(),
-//                 ),
-//             valueToString: (value) => value == null
-//                 ? ""
-//                 : "${value.hour.toString().padLeft(2, '0')}:${value.minute.toString().padLeft(2, '0')}");
-// }
+class BoringDateTimeField extends BoringPickerField<DateTime?> {
+  BoringDateTimeField({
+    super.key,
+    super.fieldController,
+    super.onChanged,
+    required super.jsonKey,
+    super.boringResponsiveSize,
+    super.updateValueOnDismiss,
+    super.displayCondition,
+    super.decoration,
+    super.readOnly,
+    DateTime? initialDate,
+    required DateTime firstDate,
+    required DateTime lastDate,
+  })  : assert(
+            initialDate == null ||
+                (initialDate <= lastDate && initialDate >= firstDate),
+            "initial date must be between firstDate and lastDate"),
+        super(
+            showPicker: (context) async => await showOmniDateTimePicker(
+                context: context,
+                initialDate: DateTime.now(),
+                is24HourMode: true,
+                firstDate: firstDate,
+                lastDate: lastDate,
+                isForce2Digits: true),
+            valueToString: (value) => value == null
+                ? ''
+                : "${dateTimeToString(value)}, ${value.hour.toString().padLeft(2, '0')}:${value.minute.toString().padLeft(2, '0')}");
+}
 
 String dateTimeToString(DateTime? dt) =>
     dt != null ? "${dt.day}/${dt.month}/${dt.year}" : "";

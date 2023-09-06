@@ -95,100 +95,124 @@ class FormExample2 extends StatelessWidget {
         (value == null || value.isEmpty) ? "Campo richiesto" : null,
   );
 
+  final ValueNotifier<int> _counter = ValueNotifier(0);
+
   Widget profileForm(BuildContext context) {
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          BoringForm(
-            formController: formController,
-            style: BoringFormStyle(
-                //readOnly: true,
-                labelOverField: true,
-                sectionTitleStyle:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            fields: [
-              BoringSection(
-                  autoValidate: false,
-                  decoration: BoringFieldDecoration(label: "ANAGRAFICA"),
-                  collapsible: true,
-                  collapseOnHeaderTap: true,
-                  jsonKey: "anagraph",
-                  fields: [
-                    BoringNumberField(jsonKey: 'number'),
-                    BoringTextField(
-                      boringResponsiveSize: BoringResponsiveSize(md: 6, xl: 3),
-                      jsonKey: "name",
-                      displayCondition: (value) => false,
-                      fieldController: BoringFieldController(
-                        validationFunction: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "nome vuoto";
-                          }
-                          return null;
-                        },
+      child: ValueListenableBuilder(
+        valueListenable: _counter,
+        builder: (context, value, child) => Column(
+          children: [
+            ElevatedButton(
+                onPressed: () {
+                  _counter.value = ++_counter.value;
+                },
+                child: Text('fai qualcosa')),
+            Text(value.toString()),
+            BoringForm(
+              formController: formController,
+              style: BoringFormStyle(
+                  //readOnly: true,
+                  labelOverField: true,
+                  sectionTitleStyle: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold)),
+              fields: [
+                BoringSection(
+                    autoValidate: false,
+                    decoration: BoringFieldDecoration(label: "ANAGRAFICA"),
+                    collapsible: true,
+                    collapseOnHeaderTap: true,
+                    jsonKey: "anagraph",
+                    fields: [
+                      BoringDateTimeField(
+                        decoration: BoringFieldDecoration(
+                          label: 'data e orario',
+                          hintText: 'seleziona la data e orario',
+                        ),
+                        jsonKey: 'dateTimeTest',
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime(2025),
                       ),
-                      decoration: BoringFieldDecoration(label: "Nome"),
-                    ),
-                  ]),
-              BoringSection(
-                  autoValidate: true,
-                  decoration: BoringFieldDecoration(label: "ANAGRAFICAS"),
-                  collapsible: true,
-                  collapseOnHeaderTap: true,
-                  jsonKey: "anagraphs",
-                  fields: [
-                    BoringTextField(
-                      boringResponsiveSize: BoringResponsiveSize(md: 6, xl: 3),
-                      jsonKey: "surname",
-                      fieldController: BoringFieldController(
-                        validationFunction: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "cognome vuoto";
-                          }
-                          return null;
-                        },
+                      BoringNumberField(jsonKey: 'number'),
+                      BoringTextField(
+                        boringResponsiveSize:
+                            BoringResponsiveSize(md: 6, xl: 3),
+                        jsonKey: "name",
+                        displayCondition: (value) => false,
+                        fieldController: BoringFieldController(
+                          validationFunction: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "nome vuoto";
+                            }
+                            return null;
+                          },
+                        ),
+                        decoration: BoringFieldDecoration(label: "Nome"),
                       ),
-                      decoration: BoringFieldDecoration(label: "Cognome"),
-                    ),
-                    BoringDateField(
-                      boringResponsiveSize: BoringResponsiveSize(md: 6, xl: 3),
-                      jsonKey: "names",
-                      fieldController: BoringFieldController(
-                        validationFunction: (value) {
-                          if (value == null) {
-                            return "nome vuoto";
-                          }
-                          return null;
-                        },
+                    ]),
+                BoringSection(
+                    autoValidate: true,
+                    decoration: BoringFieldDecoration(label: "ANAGRAFICAS"),
+                    collapsible: true,
+                    collapseOnHeaderTap: true,
+                    jsonKey: "anagraphs",
+                    fields: [
+                      BoringTextField(
+                        boringResponsiveSize:
+                            BoringResponsiveSize(md: 6, xl: 3),
+                        jsonKey: "surname",
+                        fieldController: BoringFieldController(
+                          validationFunction: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "cognome vuoto";
+                            }
+                            return null;
+                          },
+                        ),
+                        decoration: BoringFieldDecoration(label: "Cognome"),
                       ),
-                      decoration: BoringFieldDecoration(label: "Nome"),
-                      firstlDate: DateTime.now().subtract(Duration(days: 40)),
-                      lastDate: DateTime.now(),
-                    ),
-                    BoringSlider(
-                      boringResponsiveSize: BoringResponsiveSize(md: 6, xl: 3),
-                      jsonKey: "surnames",
-                      fieldController: BoringFieldController(
-                        validationFunction: (value) {
-                          if (value != 1) {
-                            return "cognome vuoto";
-                          }
-                          return null;
-                        },
+                      BoringDateField(
+                        boringResponsiveSize:
+                            BoringResponsiveSize(md: 6, xl: 3),
+                        jsonKey: "names",
+                        fieldController: BoringFieldController(
+                          validationFunction: (value) {
+                            if (value == null) {
+                              return "nome vuoto";
+                            }
+                            return null;
+                          },
+                        ),
+                        decoration: BoringFieldDecoration(label: "Nome"),
+                        firstlDate: DateTime.now().subtract(Duration(days: 40)),
+                        lastDate: DateTime.now(),
                       ),
-                      decoration: BoringFieldDecoration(label: "Cognome"),
-                    ),
-                  ]),
-            ],
-          ),
-          ElevatedButton(
-              onPressed: () {
-                print("FORM IS ${formController.isValid}");
-                print("FORM VALUE ${formController.value}");
-                print("IGNORE ${formController.ignoreFields}");
-              },
-              child: Text("GET INFO")),
-        ],
+                      BoringSlider(
+                        boringResponsiveSize:
+                            BoringResponsiveSize(md: 6, xl: 3),
+                        jsonKey: "surnames",
+                        fieldController: BoringFieldController(
+                          validationFunction: (value) {
+                            if (value != 1) {
+                              return "cognome vuoto";
+                            }
+                            return null;
+                          },
+                        ),
+                        decoration: BoringFieldDecoration(label: "Cognome"),
+                      ),
+                    ]),
+              ],
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  print("FORM IS ${formController.isValid}");
+                  print("FORM VALUE ${formController.value}");
+                  print("IGNORE ${formController.ignoreFields}");
+                },
+                child: Text("GET INFO")),
+          ],
+        ),
       ),
     );
   }
