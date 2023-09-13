@@ -174,6 +174,7 @@ class BoringNumberField extends BoringField<num> {
     this.decimalPlaces,
     this.fieldFormatter,
     bool? readOnly,
+    this.onlyIntegers = false,
     super.displayCondition,
   }) : super(readOnly: readOnly);
 
@@ -183,6 +184,7 @@ class BoringNumberField extends BoringField<num> {
   final String thousandsSeparator;
   final int? decimalPlaces;
   final NumberFormat? fieldFormatter;
+  final bool onlyIntegers;
 
   InputDecoration getEnhancedDecoration(BuildContext context) {
     return getDecoration(context).copyWith();
@@ -222,10 +224,13 @@ class BoringNumberField extends BoringField<num> {
               readOnly: isReadOnly(context),
               enabled: !isReadOnly(context),
               controller: textEditingController,
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              keyboardType:
+                  TextInputType.numberWithOptions(decimal: !onlyIntegers),
               inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.allow(
-                    RegExp(r'[0-9]+[,.]{0,1}[0-9]*')),
+                onlyIntegers
+                    ? FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+                    : FilteringTextInputFormatter.allow(
+                        RegExp(r'[0-9]+[,.]{0,1}[0-9]*')),
                 TextInputFormatter.withFunction(
                   (oldValue, newValue) => newValue.copyWith(
                     text: newValue.text.replaceAll(',', '.'),
@@ -235,7 +240,7 @@ class BoringNumberField extends BoringField<num> {
               decoration: getDecoration(context, haveError: value),
               onChanged: ((value) {
                 try {
-                  controller.value = double.parse(value);
+                  controller.value = num.parse(value);
                 } catch (e) {
                   controller.value = null;
                 }

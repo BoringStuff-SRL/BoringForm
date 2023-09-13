@@ -134,6 +134,8 @@ class FormExample2 extends StatelessWidget {
                         lastDate: DateTime(2025),
                       ),
                       BoringNumberField(jsonKey: 'number'),
+                      BoringNumberField(
+                          jsonKey: 'numberInts', onlyIntegers: true),
                       BoringTextField(
                         boringResponsiveSize:
                             BoringResponsiveSize(md: 6, xl: 3),
