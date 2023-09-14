@@ -1,5 +1,7 @@
 import 'package:boring_form/implementations/pickers/boring_picker_field.dart';
 import 'package:boring_form/utils/datetime_extnesions.dart';
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+
 import 'package:flutter/material.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 
@@ -158,17 +160,22 @@ class BoringDateRangeField extends BoringPickerField<DateTimeRange?> {
     required DateTime lastDate,
     required DateTime firstDate,
   }) : super(
-            showPicker: (context) async => await showDateRangePicker(
+            showPicker: (context) async {
+              final dates = await showCalendarDatePicker2Dialog(
                 context: context,
-                lastDate: lastDate,
-                firstDate: firstDate,
-                builder: (BuildContext context, Widget? child) {
-                  return MediaQuery(
-                    data: MediaQuery.of(context)
-                        .copyWith(alwaysUse24HourFormat: true),
-                    child: child!,
-                  );
-                }),
+                config: CalendarDatePicker2WithActionButtonsConfig(
+                  calendarType: CalendarDatePicker2Type.range,
+                ),
+                useSafeArea: true,
+                useRootNavigator: true,
+                
+                dialogSize: Size(500, 1),
+              );
+
+              return dates != null
+                  ? DateTimeRange(start: dates.first!, end: dates.last!)
+                  : null;
+            },
             valueToString: (value) => value == null
                 ? ""
                 : "${dateTimeToString(value.start)} - ${dateTimeToString(value.end)}");

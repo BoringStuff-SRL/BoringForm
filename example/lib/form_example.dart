@@ -133,6 +133,10 @@ class FormExample2 extends StatelessWidget {
                         firstDate: DateTime.now(),
                         lastDate: DateTime(2025),
                       ),
+                      BoringDateRangeField(
+                          jsonKey: 'asdasd',
+                          lastDate: DateTime.now(),
+                          firstDate: DateTime.now()),
                       BoringNumberField(jsonKey: 'number'),
                       BoringNumberField(
                           jsonKey: 'numberInts', onlyIntegers: true),
