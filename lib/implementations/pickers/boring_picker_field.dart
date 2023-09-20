@@ -17,14 +17,17 @@ class BoringPickerField<T> extends BoringField<T> {
       super.displayCondition,
       super.readOnly,
       this.updateValueOnDismiss = false,
-      super.decoration});
+      super.decoration,
+      this.eraseValueWidget = const Icon(Icons.close),
+      this.showEraseValueButton = false});
 
   late final textEditingController = TextEditingController();
 
   final bool updateValueOnDismiss;
 
   final String Function(T? value) valueToString;
-
+  final bool showEraseValueButton;
+  final Widget eraseValueWidget;
   final Future<T?> Function(BuildContext context) showPicker;
 
   @override
@@ -54,17 +57,36 @@ class BoringPickerField<T> extends BoringField<T> {
               ? ValueNotifier(false)
               : controller.hideError,
           builder: (BuildContext context, bool value, Widget? child) {
-            return TextField(
-              enabled: !readOnly,
-              controller: textEditingController,
-              readOnly: true,
-              textAlign: style.textAlign,
-              style: style.textStyle,
-              onTap: () => readOnly ? null : _selectValue(context),
-              decoration: getDecoration(context, haveError: value),
-              onChanged: ((value) {
-                controller.isValid;
-              }),
+            return Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    enabled: !readOnly,
+                    controller: textEditingController,
+                    readOnly: true,
+                    textAlign: style.textAlign,
+                    style: style.textStyle,
+                    onTap: () => readOnly ? null : _selectValue(context),
+                    decoration: getDecoration(context, haveError: value),
+                    onChanged: ((value) {
+                      controller.isValid;
+                    }),
+                  ),
+                ),
+                if (showEraseValueButton && controller.value != null) ...[
+                  const SizedBox(width: 5),
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () {
+                        controller.value = null;
+                        textEditingController.text = '';
+                      },
+                      child: eraseValueWidget,
+                    ),
+                  ),
+                ]
+              ],
             );
           }),
     );

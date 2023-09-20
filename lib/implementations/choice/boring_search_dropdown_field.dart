@@ -26,6 +26,7 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
       super.decoration,
       super.displayCondition,
       super.boringResponsiveSize,
+      this.showEraseValueButton = true,
       super.onChanged})
       : _itemsNotifier = ValueNotifier(items),
         super(readOnly: readOnly);
@@ -43,6 +44,8 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
   final Widget onAddIcon;
   final bool Function(DropdownMenuItem<dynamic>, String)? searchMatchFunction;
   final GlobalKey _dropdownKey = GlobalKey();
+
+  final bool showEraseValueButton;
 
   @override
   Widget builder(context, controller, child) {
@@ -62,70 +65,80 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
                 final newStyle = getDecoration(context, haveError: value)
                     .copyWith(contentPadding: const EdgeInsets.all(0));
 
-                return DropdownButtonFormField2<T?>(
-                  dropdownOverButton: false,
-                  key: _dropdownKey,
-                  isExpanded: isExpanded,
-                  searchInnerWidgetHeight: 20,
-                  dropdownElevation: 0,
-                  decoration: newStyle,
-                  buttonHeight: 50,
-                  itemHeight: 50,
-                  focusColor: Colors.transparent,
-                  buttonSplashColor: Colors.transparent,
-                  buttonHighlightColor: Colors.transparent,
-                  buttonOverlayColor:
-                      MaterialStateProperty.resolveWith((states) {
-                    return Colors.transparent;
-                  }),
-                  dropdownMaxHeight: 250,
-                  searchController: searchEditController,
-                  items: items,
-                  value: controller.value,
-                  hint: Text(
-                    decoration?.hintText ?? '',
-                    style: style.inputDecoration.hintStyle,
-                  ),
-                  dropdownDecoration: _boxDecoration(newStyle),
-                  onChanged: isReadOnly(context)
-                      ? null
-                      : ((value) {
-                          controller.value = value;
-                          controller.isValid;
+                return Row(
+                  children: [
+                    Expanded(
+                      child: DropdownButtonFormField2<T?>(
+                        dropdownOverButton: false,
+                        key: _dropdownKey,
+                        isExpanded: isExpanded,
+                        searchInnerWidgetHeight: 20,
+                        dropdownElevation: 0,
+                        decoration: newStyle,
+                        buttonHeight: 50,
+                        itemHeight: 50,
+                        focusColor: Colors.transparent,
+                        buttonSplashColor: Colors.transparent,
+                        buttonHighlightColor: Colors.transparent,
+                        buttonOverlayColor:
+                            MaterialStateProperty.resolveWith((states) {
+                          return Colors.transparent;
                         }),
-                  searchInnerWidget: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Row(
-                      children: [
-                        if (onAdd != null) ...[
-                          MouseRegion(
-                            cursor: SystemMouseCursors.click,
-                            child: GestureDetector(
-                              onTap: () async {
-                                await _onAdd(
-                                    _dropdownKey.currentContext!, controller);
-                              },
-                              child: onAddIcon,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                        ],
-                        Expanded(
-                          child: TextFormField(
-                            controller: searchEditController,
-                            decoration: searchInputDecoration,
+                        dropdownMaxHeight: 250,
+                        searchController: searchEditController,
+                        items: items,
+                        value: controller.value,
+                        hint: Text(
+                          decoration?.hintText ?? '',
+                          style: style.inputDecoration.hintStyle,
+                        ),
+                        dropdownDecoration: _boxDecoration(newStyle),
+                        onChanged: isReadOnly(context)
+                            ? null
+                            : ((value) {
+                                controller.value = value;
+                                controller.isValid;
+                              }),
+                        searchInnerWidget: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Row(
+                            children: [
+                              if (onAdd != null) ...[
+                                MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      await _onAdd(_dropdownKey.currentContext!,
+                                          controller);
+                                    },
+                                    child: onAddIcon,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                              ],
+                              Expanded(
+                                child: TextFormField(
+                                  controller: searchEditController,
+                                  decoration: searchInputDecoration,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
+                        searchMatchFn: (item, searchValue) =>
+                            searchMatchFunction?.call(item, searchValue) ??
+                            _searchDefaultMatchFn(item, searchValue),
+                        onMenuStateChange: (isOpen) =>
+                            _onMenuStateChange(isOpen, searchEditController),
+                      ),
                     ),
-                  ),
-                  searchMatchFn: (item, searchValue) =>
-                      searchMatchFunction?.call(item, searchValue) ??
-                      _searchDefaultMatchFn(item, searchValue),
-                  onMenuStateChange: (isOpen) =>
-                      _onMenuStateChange(isOpen, searchEditController),
+                    if (showEraseValueButton && controller.value != null) ...[
+                      const SizedBox(width: 5),
+                      eraseButtonWidget(style.eraseValueWidget),
+                    ],
+                  ],
                 );
               },
             );
@@ -160,12 +173,12 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
   _onMenuStateChange(isOpen, searchEditController) =>
       !isOpen ? searchEditController.clear() : null;
 
-  _boxDecoration(newStyle) => BoxDecoration(
+  _boxDecoration(InputDecoration newStyle) => BoxDecoration(
       borderRadius: BorderRadius.circular(radius),
       color: newStyle.fillColor,
       border: Border.all(
-          color: newStyle.border?.borderSide.color,
-          width: newStyle.border?.borderSide.width));
+          color: newStyle.border?.borderSide.color ?? const Color(0xFF000000),
+          width: newStyle.border?.borderSide.width ?? 1.0));
 
   @override
   void onValueChanged(T? newValue) {}

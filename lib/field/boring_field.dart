@@ -129,6 +129,19 @@ abstract class BoringField<T> extends StatelessWidget {
     return true;
   }
 
+  Widget eraseButtonWidget(Widget eraseButtonWidget,
+          [Function()? moreActions]) =>
+      MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: () {
+            fieldController.value = null;
+            moreActions?.call();
+          },
+          child: eraseButtonWidget,
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     contextHolder.value = context;

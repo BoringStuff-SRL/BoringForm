@@ -25,6 +25,7 @@ class BoringMultiChoiceDropDownField<T> extends BoringField<List<T>> {
       super.decoration,
       super.displayCondition,
       super.boringResponsiveSize,
+      this.showEraseValueButton = true,
       super.onChanged});
 
   //final List<DropdownMenuItem<T?>> items;
@@ -38,6 +39,7 @@ class BoringMultiChoiceDropDownField<T> extends BoringField<List<T>> {
   final EdgeInsets? itemsPadding;
   final EdgeInsets? resultTextPadding;
   final double? dropdownItemsSpaceBetweenIcon;
+  final bool showEraseValueButton;
 
   @override
   Widget builder(context, controller, child) {
@@ -55,51 +57,62 @@ class BoringMultiChoiceDropDownField<T> extends BoringField<List<T>> {
                 getDecoration(context, haveError: value)
                     .copyWith(contentPadding: const EdgeInsets.all(0));
 
-            return DropdownButtonFormField2<T?>(
-              dropdownOverButton: false,
-              dropdownElevation: 0,
-              decoration: newStyle,
-              buttonHeight: 50,
-              itemHeight: 50,
-              dropdownMaxHeight: 250,
-              items: _buildItems(controller, context, isReadOnly),
-              value: controller.value != null && controller.value!.isNotEmpty
-                  ? controller.value?.first
-                  : null,
-              hint: Text(
-                decoration?.hintText ?? '',
-                style: style.inputDecoration.hintStyle,
-              ),
-              dropdownDecoration: _boxDecoration(newStyle),
-              onChanged: isReadOnly(context) ? null : (value) {},
-              isExpanded: true,
-              itemPadding:
-                  itemsPadding ?? const EdgeInsets.symmetric(horizontal: 15.0),
-              selectedItemBuilder: (context) {
-                return items.map(
-                  (item) {
-                    return Container(
-                      alignment: AlignmentDirectional.centerStart,
-                      padding: resultTextPadding ??
-                          const EdgeInsets.symmetric(horizontal: 0.0),
-                      child: Text(
-                        controller.value
-                                ?.map((e) => convertItemToString(e))
-                                .join(', ') ??
-                            '',
-                        style: resultTextStyle?.copyWith(
-                              overflow: TextOverflow.ellipsis,
-                            ) ??
-                            const TextStyle(
-                              fontSize: 14,
-                              overflow: TextOverflow.ellipsis,
+            return Row(
+              children: [
+                Expanded(
+                  child: DropdownButtonFormField2<T?>(
+                    dropdownOverButton: false,
+                    dropdownElevation: 0,
+                    decoration: newStyle,
+                    buttonHeight: 50,
+                    itemHeight: 50,
+                    dropdownMaxHeight: 250,
+                    items: _buildItems(controller, context, isReadOnly),
+                    value:
+                        controller.value != null && controller.value!.isNotEmpty
+                            ? controller.value?.first
+                            : null,
+                    hint: Text(
+                      decoration?.hintText ?? '',
+                      style: style.inputDecoration.hintStyle,
+                    ),
+                    dropdownDecoration: _boxDecoration(newStyle),
+                    onChanged: isReadOnly(context) ? null : (value) {},
+                    isExpanded: true,
+                    itemPadding: itemsPadding ??
+                        const EdgeInsets.symmetric(horizontal: 15.0),
+                    selectedItemBuilder: (context) {
+                      return items.map(
+                        (item) {
+                          return Container(
+                            alignment: AlignmentDirectional.centerStart,
+                            padding: resultTextPadding ??
+                                const EdgeInsets.symmetric(horizontal: 0.0),
+                            child: Text(
+                              controller.value
+                                      ?.map((e) => convertItemToString(e))
+                                      .join(', ') ??
+                                  '',
+                              style: resultTextStyle?.copyWith(
+                                    overflow: TextOverflow.ellipsis,
+                                  ) ??
+                                  const TextStyle(
+                                    fontSize: 14,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                              maxLines: 1,
                             ),
-                        maxLines: 1,
-                      ),
-                    );
-                  },
-                ).toList();
-              },
+                          );
+                        },
+                      ).toList();
+                    },
+                  ),
+                ),
+                if (showEraseValueButton && controller.value != null) ...[
+                  const SizedBox(width: 5),
+                  eraseButtonWidget(style.eraseValueWidget),
+                ],
+              ],
             );
           }),
     );

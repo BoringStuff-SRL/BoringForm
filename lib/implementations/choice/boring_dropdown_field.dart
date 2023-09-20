@@ -18,11 +18,13 @@ class BoringDropDownField<T> extends BoringField<T> {
       super.displayCondition,
       super.boringResponsiveSize,
       bool? readOnly,
-      super.onChanged})
+      super.onChanged,
+      this.showEraseValueButton = true})
       : super(readOnly: readOnly);
 
   final List<DropdownMenuItem<T?>> items;
   final double radius;
+  final bool showEraseValueButton;
 
   @override
   Widget builder(context, controller, child) {
@@ -40,26 +42,36 @@ class BoringDropDownField<T> extends BoringField<T> {
                 getDecoration(context, haveError: value)
                     .copyWith(contentPadding: const EdgeInsets.all(0));
 
-            return DropdownButtonFormField2<T?>(
-              dropdownOverButton: false,
-              isExpanded: true,
-              dropdownElevation: 0,
-              decoration: newStyle,
-              buttonHeight: 51,
-              itemHeight: 50,
-              dropdownMaxHeight: 250,
-              items: items,
-              value: controller.value,
-              hint: Text(
-                decoration?.hintText ?? '',
-                style: style.inputDecoration.hintStyle,
-              ),
-              dropdownDecoration: _boxDecoration(newStyle),
-              onChanged: isReadOnly(context)
-                  ? null
-                  : ((value) {
-                      controller.value = value;
-                    }),
+            return Row(
+              children: [
+                Expanded(
+                  child: DropdownButtonFormField2<T?>(
+                    dropdownOverButton: false,
+                    isExpanded: true,
+                    dropdownElevation: 0,
+                    decoration: newStyle,
+                    buttonHeight: 51,
+                    itemHeight: 50,
+                    dropdownMaxHeight: 250,
+                    items: items,
+                    value: controller.value,
+                    hint: Text(
+                      decoration?.hintText ?? '',
+                      style: style.inputDecoration.hintStyle,
+                    ),
+                    dropdownDecoration: _boxDecoration(newStyle),
+                    onChanged: isReadOnly(context)
+                        ? null
+                        : ((value) {
+                            controller.value = value;
+                          }),
+                  ),
+                ),
+                if (showEraseValueButton && controller.value != null) ...[
+                  const SizedBox(width: 5),
+                  eraseButtonWidget(style.eraseValueWidget),
+                ],
+              ],
             );
           }),
     );
