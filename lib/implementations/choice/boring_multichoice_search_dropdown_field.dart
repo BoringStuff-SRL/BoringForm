@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:async';
+
 import 'package:boring_form/field/boring_field.dart';
 import 'package:boring_form/field/boring_field_controller.dart';
 import 'package:boring_form/theme/boring_field_decoration.dart';
@@ -14,13 +16,17 @@ class BoringSearchMultiChoiceDropDownField<T> extends BoringField<List<T>> {
       required this.items,
       required this.convertItemToString,
       this.searchInputDecoration,
+      bool? readOnly,
       this.radius = 0,
       this.checkedIcon,
+      this.onAdd,
       this.dropdownItemsSpaceBetweenIcon,
       this.uncheckedIcon,
       this.itemsPadding,
       this.resultTextPadding,
       this.itemsTextStyle,
+      this.onItemAlreadyExisting,
+      this.onAddIcon = const Icon(Icons.add),
       this.resultTextStyle,
       this.searchMatchFunction,
       super.fieldController,
@@ -28,7 +34,9 @@ class BoringSearchMultiChoiceDropDownField<T> extends BoringField<List<T>> {
       super.displayCondition,
       super.boringResponsiveSize,
       super.onChanged,
-      this.showEraseValueButton = true});
+      this.showEraseValueButton = true})
+      : _itemsNotifier = ValueNotifier(items),
+        super(readOnly: readOnly);
 
   //final List<DropdownMenuItem<T?>> items;
   final List<T> items;
@@ -42,10 +50,15 @@ class BoringSearchMultiChoiceDropDownField<T> extends BoringField<List<T>> {
   final EdgeInsets? itemsPadding;
   final EdgeInsets? resultTextPadding;
   final double? dropdownItemsSpaceBetweenIcon;
+  final FutureOr<void> Function(BuildContext dropdownContext)?
+      onItemAlreadyExisting;
   final bool Function(DropdownMenuItem<dynamic>, String)? searchMatchFunction;
   final searchEditController = TextEditingController();
-
+  final FutureOr<T?> Function(String searchTextFieldValue)? onAdd;
+  final GlobalKey _dropdownKey = GlobalKey();
+  final ValueNotifier<List<T?>> _itemsNotifier;
   final bool showEraseValueButton;
+  final Widget onAddIcon;
 
   _searchMatchFn(item, searchValue) =>
       searchMatchFunction?.call(item, searchValue) ??
@@ -87,9 +100,30 @@ class BoringSearchMultiChoiceDropDownField<T> extends BoringField<List<T>> {
                     items: _buildItems(controller, context, isReadOnly),
                     searchInnerWidget: Padding(
                       padding: const EdgeInsets.all(10),
-                      child: TextFormField(
-                        controller: searchEditController,
-                        decoration: searchInputDecoration,
+                      child: Row(
+                        children: [
+                          if (onAdd != null) ...[
+                            MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: GestureDetector(
+                                onTap: () async {
+                                  await _onAdd(
+                                      _dropdownKey.currentContext!, controller);
+                                },
+                                child: onAddIcon,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                          ],
+                          Expanded(
+                            child: TextFormField(
+                              controller: searchEditController,
+                              decoration: searchInputDecoration,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     value:
@@ -142,6 +176,28 @@ class BoringSearchMultiChoiceDropDownField<T> extends BoringField<List<T>> {
             );
           }),
     );
+  }
+
+  _onAdd(BuildContext dialogContext,
+      BoringFieldController<List<T?>> controller) async {
+    if (searchEditController.text.isNotEmpty) {
+      final newList = _itemsNotifier.value;
+      final item = await onAdd!.call(searchEditController.text);
+      if (item != null) {
+        for (var e in newList) {
+          if ((e as DropdownMenuItem).value ==
+              (item as DropdownMenuItem).value) {
+            onItemAlreadyExisting?.call(_dropdownKey.currentContext!);
+            return;
+          }
+        }
+        newList.add(item);
+        _itemsNotifier.value = newList;
+
+        controller.value = (item as DropdownMenuItem).value;
+        Navigator.pop(_dropdownKey.currentContext!);
+      }
+    }
   }
 
   _buildItems(BoringFieldController<List<T>> controller, BuildContext context,
