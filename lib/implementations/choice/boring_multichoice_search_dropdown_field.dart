@@ -89,6 +89,7 @@ class BoringSearchMultiChoiceDropDownField<T> extends BoringField<List<T>> {
               children: [
                 Expanded(
                   child: DropdownButtonFormField2<T?>(
+                    key: _dropdownKey,
                     dropdownOverButton: false,
                     dropdownElevation: 0,
                     decoration: newStyle,
