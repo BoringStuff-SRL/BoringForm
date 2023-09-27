@@ -124,6 +124,20 @@ class FormExample2 extends StatelessWidget {
                   collapseOnHeaderTap: true,
                   jsonKey: "anagraph",
                   fields: [
+                    BoringSearchMultiChoiceDropDownField<String>(
+                      jsonKey: "extras",
+                      onAdd: (value) async {
+                        return "ciao";
+                      },
+                      convertItemToString: (item) => item,
+                      boringResponsiveSize:
+                          const BoringResponsiveSize(sm: 6, md: 6),
+                      decoration: BoringFieldDecoration(
+                        label: "_works",
+                        hintText: '_worksTitle',
+                      ),
+                      items: ['1', '2'],
+                    ),
                     BoringDateTimeField(
                       decoration: BoringFieldDecoration(
                         label: 'data e orario',

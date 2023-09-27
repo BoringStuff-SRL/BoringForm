@@ -186,8 +186,7 @@ class BoringSearchMultiChoiceDropDownField<T> extends BoringField<List<T>> {
       final item = await onAdd!.call(searchEditController.text);
       if (item != null) {
         for (var e in newList) {
-          if ((e as DropdownMenuItem).value ==
-              (item as DropdownMenuItem).value) {
+          if (e == item) {
             onItemAlreadyExisting?.call(_dropdownKey.currentContext!);
             return;
           }
@@ -195,7 +194,10 @@ class BoringSearchMultiChoiceDropDownField<T> extends BoringField<List<T>> {
         newList.add(item);
         _itemsNotifier.value = newList;
 
-        controller.value = (item as DropdownMenuItem).value;
+        controller.value ??= <T>[];
+        controller.value?.add(item);
+        controller.sendNotification();
+
         Navigator.pop(_dropdownKey.currentContext!);
       }
     }
