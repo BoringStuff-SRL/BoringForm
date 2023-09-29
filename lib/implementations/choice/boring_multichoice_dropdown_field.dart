@@ -113,7 +113,7 @@ class BoringMultiChoiceDropDownField<T> extends BoringField<List<T>> {
                 ),
                 if (showEraseValueButton && controller.value != null) ...[
                   const SizedBox(width: 5),
-                  eraseButtonWidget(style.eraseValueWidget),
+                  eraseButtonWidget(context, style.eraseValueWidget),
                 ],
               ],
             );
