@@ -104,16 +104,7 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
                           child: Row(
                             children: [
                               if (onAdd != null) ...[
-                                MouseRegion(
-                                  cursor: SystemMouseCursors.click,
-                                  child: GestureDetector(
-                                    onTap: () async {
-                                      await _onAdd(_dropdownKey.currentContext!,
-                                          controller);
-                                    },
-                                    child: onAddIcon,
-                                  ),
-                                ),
+                                _onAddWidget(controller),
                                 const SizedBox(
                                   width: 10,
                                 ),
@@ -134,6 +125,9 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
                             _onMenuStateChange(isOpen, searchEditController),
                       ),
                     ),
+                    if (onAdd != null && items.isEmpty) ...[
+                      _onAddWidget(controller),
+                    ],
                     if (showEraseValueButton && controller.value != null) ...[
                       const SizedBox(width: 5),
                       eraseButtonWidget(context, style.eraseValueWidget),
@@ -146,11 +140,23 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
     );
   }
 
+  Widget _onAddWidget(BoringFieldController<T> controller) => MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: () async {
+            await _onAdd(_dropdownKey.currentContext!, controller);
+          },
+          child: onAddIcon,
+        ),
+      );
+
   _onAdd(
       BuildContext dialogContext, BoringFieldController<T> controller) async {
-    if (searchEditController.text.isNotEmpty) {
+    if (searchEditController.text.isNotEmpty || items.isEmpty) {
+      bool needsToPop = items.isNotEmpty;
       final newList = _itemsNotifier.value;
       final item = await onAdd!.call(searchEditController.text);
+
       if (item != null) {
         for (DropdownMenuItem element in newList) {
           if (element.value == item.value) {
@@ -158,11 +164,15 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
             return;
           }
         }
+
         newList.add(item);
         _itemsNotifier.value = newList;
 
         controller.value = item.value;
-        Navigator.pop(_dropdownKey.currentContext!);
+
+        if (needsToPop) {
+          Navigator.pop(_dropdownKey.currentContext!);
+        }
       }
     }
   }
