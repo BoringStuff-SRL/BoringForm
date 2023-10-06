@@ -126,6 +126,7 @@ class BoringSearchDropDownField<T> extends BoringField<T> {
                       ),
                     ),
                     if (onAdd != null && items.isEmpty) ...[
+                      const SizedBox(width: 5),
                       _onAddWidget(controller),
                     ],
                     if (showEraseValueButton && controller.value != null) ...[
