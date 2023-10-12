@@ -109,14 +109,14 @@ class BoringFilePicker extends BoringField<List<PlatformFile>> {
                   child: GestureDetector(
                     onTap: !readOnly
                         ? () async {
-                            FilePickerResult? result =
-                                await FilePicker.platform.pickFiles(
-                              type: allowedExtensions == null
-                                  ? FileType.any
-                                  : FileType.custom,
-                              allowMultiple: allowMultiple ?? true,
-                              allowedExtensions: allowedExtensions,
-                            );
+                            FilePickerResult? result = await FilePicker.platform
+                                .pickFiles(
+                                    type: allowedExtensions == null
+                                        ? FileType.any
+                                        : FileType.custom,
+                                    allowMultiple: allowMultiple ?? true,
+                                    allowedExtensions: allowedExtensions,
+                                    withData: true);
 
                             if (result != null) {
                               controller.value = result.files;
