@@ -162,15 +162,16 @@ class BoringDateRangeField extends BoringPickerField<DateTimeRange?> {
     super.displayCondition,
     required DateTime lastDate,
     required DateTime firstDate,
+    DateTime? currentDate,
   }) : super(
             showPicker: (context) async {
               final dates = await showCalendarDatePicker2Dialog(
                 context: context,
                 config: CalendarDatePicker2WithActionButtonsConfig(
-                  calendarType: CalendarDatePicker2Type.range,
-                  firstDate: firstDate,
-                  lastDate: lastDate,
-                ),
+                    calendarType: CalendarDatePicker2Type.range,
+                    firstDate: firstDate,
+                    lastDate: lastDate,
+                    currentDate: currentDate),
                 useSafeArea: true,
                 useRootNavigator: true,
                 dialogSize: Size(500, 1),
