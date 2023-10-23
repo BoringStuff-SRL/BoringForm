@@ -1,7 +1,6 @@
 import 'package:boring_form/implementations/pickers/boring_picker_field.dart';
 import 'package:boring_form/utils/datetime_extnesions.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
-
 import 'package:flutter/material.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 
@@ -169,6 +168,8 @@ class BoringDateRangeField extends BoringPickerField<DateTimeRange?> {
                 context: context,
                 config: CalendarDatePicker2WithActionButtonsConfig(
                   calendarType: CalendarDatePicker2Type.range,
+                  firstDate: firstDate,
+                  lastDate: lastDate,
                 ),
                 useSafeArea: true,
                 useRootNavigator: true,
