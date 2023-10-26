@@ -1,4 +1,6 @@
 import "package:boring_form/boring_form.dart";
+import 'package:boring_form/implementations/boring_connected_field.dart';
+import 'package:boring_form/implementations/pickers/boring_picker_field.dart';
 import 'package:flutter/material.dart';
 
 class FormExample extends StatelessWidget {
@@ -89,7 +91,9 @@ class FormExample extends StatelessWidget {
 }
 
 class FormExample2 extends StatelessWidget {
-  final formController = BoringFormController();
+  final formController = BoringFormController(initialValue: {
+    "endDate": ['25']
+  });
   final textFieldController = BoringFieldController<String>(
     validationFunction: (value) =>
         (value == null || value.isEmpty) ? "Campo richiesto" : null,
@@ -117,6 +121,48 @@ class FormExample2 extends StatelessWidget {
                   sectionTitleStyle: const TextStyle(
                       fontSize: 16, fontWeight: FontWeight.bold)),
               fields: [
+                BoringDateField(
+                    jsonKey: 'startDate',
+                    fieldController: BoringFieldController(),
+                    firstlDate:
+                        DateTime.now().subtract(const Duration(days: 365)),
+                    lastDate: DateTime.now().add(const Duration(days: 365))),
+                BoringConnectedField<List<String>, DateTime?>(
+                  childJsonKey: 'endDate',
+                  pathToConnectedJsonKey: ['startDate'],
+                  childBuilder:
+                      (BuildContext context, DateTime? connectedToValue) {
+                    return BoringSearchMultiChoiceDropDownField<String>(
+                      jsonKey: 'endDate',
+                      convertItemToString: (item) => item,
+                      items: connectedToValue != null
+                          ? ['25', '26', '27']
+                              .where((element) =>
+                                  element == connectedToValue.day.toString())
+                              .toList()
+                          : ['25', '26', '27'],
+                    );
+                  },
+                  formController: formController,
+                ),
+                BoringConnectedField<String, DateTime?>(
+                  childJsonKey: 'test123',
+                  pathToConnectedJsonKey: ['startDate'],
+                  childBuilder:
+                      (BuildContext context, DateTime? connectedToValue) {
+                    return BoringTextField(jsonKey: 'test123');
+                  },
+                  formController: formController,
+                ),
+                BoringSection(jsonKey: 'depth1', fields: [
+                  BoringSection(jsonKey: 'depth2', fields: [
+                    BoringTextField(
+                      jsonKey: 'test',
+                      fieldController:
+                          BoringFieldController(initialValue: 'qweqew'),
+                    ),
+                  ])
+                ]),
                 BoringSection(
                   autoValidate: false,
                   decoration: BoringFieldDecoration(label: "ANAGRAFICA"),
