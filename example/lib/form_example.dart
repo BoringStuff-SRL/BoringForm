@@ -1,4 +1,5 @@
 import "package:boring_form/boring_form.dart";
+import 'package:boring_form/implementations/boring_connected_field.dart';
 import 'package:boring_form/implementations/choice/boring_dropdown_2/boring_dropdown_2.dart';
 import 'package:boring_form/implementations/choice/boring_dropdown_2/boring_multichoice_dropdown_2.dart';
 import 'package:flutter/material.dart';
@@ -123,40 +124,25 @@ class FormExample2 extends StatelessWidget {
                   sectionTitleStyle: const TextStyle(
                       fontSize: 16, fontWeight: FontWeight.bold)),
               fields: [
-                BoringDropdownField2(
-                  jsonKey: 'test',
-                  fieldController: BoringFieldController(
-                    validationFunction: (value) {
-                      if(value == null){
-                        return 'asdads';
-                      }
-                    },
-                  ),
-                  onChanged: (p0) {
-                    print('changed');
-                  },
-                  decoration: BoringFieldDecoration(
-                      hintText: 'prova', label: 'labelll'),
-                  convertItemToString: (element) => element,
-                  items: ['primo', 'secondo', 'terzo'],
-                ),
-                BoringMultichoiceDropdownField2<String>(
-                  jsonKey: 'test1',
-                  fieldController: BoringFieldController(
-                    validationFunction: (value) {
-                      if(value == null || value.isEmpty){
-                        return 'asdads';
-                      }
-                    },
-                  ),
-                  onChanged: (p0) {
-                    print('changed');
-                  },
-                  decoration: BoringFieldDecoration(
-                      hintText: 'prova', label: 'labelll'),
-                  convertItemToString: (element) => element,
-                  items: ['primo', 'secondo', 'terzo'],
-                ),
+                BoringConnectedField<String?, String?>(
+                    childJsonKey: 'connection',
+                    pathToConnectedJsonKey: [
+                      'test1',
+                    ],
+                    childBuilder: (context, connectedToValue) =>
+                        BoringSearchDropDownField<String>(
+                          jsonKey: 'connection',
+                          key: GlobalKey(),
+                          items: connectedToValue != null
+                              ? [
+                                  DropdownMenuItem(
+                                      value: connectedToValue,
+                                      child: Text(connectedToValue))
+                                ]
+                              : [],
+                        ),
+                    formController: formController),
+                BoringTextField(jsonKey: 'test1'),
               ],
             ),
             ElevatedButton(

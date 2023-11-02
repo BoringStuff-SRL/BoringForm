@@ -84,7 +84,7 @@ class BoringConnectedField<T, R> extends BoringField<T> {
           controller.setValueSilently(child.fieldController.value);
         });
 
-        return child;
+        return Container(key: GlobalKey(), child: child);
       },
     );
   }

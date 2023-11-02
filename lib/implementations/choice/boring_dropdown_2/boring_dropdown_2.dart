@@ -31,10 +31,15 @@ class BoringDropdownField2<T> extends BoringField<T> {
           value: e, child: Text(convertItemToString.call(e))))
       .toList();
 
+  final dropdownKey = BoringDropdownKey();
+
+  dynamic oldDropdownValue;
+
   @override
   Widget builder(BuildContext context, BoringFieldController<T> controller,
       Widget? child) {
     final style = BoringFormTheme.of(context).style;
+
     return BoringField.boringFieldBuilder(
       style,
       super.decoration?.label,
@@ -43,6 +48,7 @@ class BoringDropdownField2<T> extends BoringField<T> {
           Expanded(
             child: BoringDropdown<T>(
               items: _dropdownItems,
+              key: dropdownKey,
               convertItemToString: convertItemToString,
               searchInputDecoration: searchInputDecoration,
               onAdd: onAdd,
