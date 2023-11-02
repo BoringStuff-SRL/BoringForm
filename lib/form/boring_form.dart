@@ -4,6 +4,7 @@ import 'package:boring_form/field/field_change_notification.dart';
 import 'package:boring_form/field/filtered_fields_provider.dart';
 import 'package:boring_form/fields_group.dart/boring_fields_group.dart';
 import 'package:flutter/material.dart';
+import 'package:universal_html/js.dart';
 
 class BoringForm extends BoringFieldsGroup<BoringFormController> {
   BoringForm(

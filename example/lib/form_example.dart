@@ -1,4 +1,7 @@
 import "package:boring_form/boring_form.dart";
+import 'package:boring_form/implementations/boring_connected_field.dart';
+import 'package:boring_form/implementations/choice/boring_dropdown_2/boring_dropdown_2.dart';
+import 'package:boring_form/implementations/choice/boring_dropdown_2/boring_multichoice_dropdown_2.dart';
 import 'package:flutter/material.dart';
 
 class FormExample extends StatelessWidget {
@@ -89,7 +92,9 @@ class FormExample extends StatelessWidget {
 }
 
 class FormExample2 extends StatelessWidget {
-  final formController = BoringFormController();
+  final formController = BoringFormController(initialValue: {
+    "endDate": ['25']
+  });
   final textFieldController = BoringFieldController<String>(
     validationFunction: (value) =>
         (value == null || value.isEmpty) ? "Campo richiesto" : null,
@@ -113,43 +118,37 @@ class FormExample2 extends StatelessWidget {
               formController: formController,
               style: BoringFormStyle(
                   //readOnly: true,
+                  inputDecoration:
+                      InputDecoration(border: OutlineInputBorder()),
                   labelOverField: true,
                   sectionTitleStyle: const TextStyle(
                       fontSize: 16, fontWeight: FontWeight.bold)),
               fields: [
-                BoringSection(
-                  autoValidate: false,
-                  decoration: BoringFieldDecoration(label: "ANAGRAFICA"),
-                  collapsible: true,
-                  collapseOnHeaderTap: true,
-                  jsonKey: "anagraph",
-                  fields: [
-                    BoringSearchDropDownField<String>(
-                      jsonKey: "extras",
-                      onAdd: (value) async {
-                        return DropdownMenuItem(
-                            value: 'ciao', child: Text("ciao"));
-                      },
-                      boringResponsiveSize:
-                          const BoringResponsiveSize(sm: 6, md: 6),
-                      decoration: BoringFieldDecoration(
-                        label: "_works",
-                        hintText: '_worksTitle',
-                      ),
-                      items: [
-                        // DropdownMenuItem(
-                        //     value: 'teststs', child: Text("teststs"))
-                      ],
-                    ),
-                  ],
-                ),
+                BoringConnectedField<String?, String?>(
+                    childJsonKey: 'connection',
+                    pathToConnectedJsonKey: [
+                      'test1',
+                    ],
+                    childBuilder: (context, connectedToValue) =>
+                        BoringSearchDropDownField<String>(
+                          jsonKey: 'connection',
+                          key: GlobalKey(),
+                          items: connectedToValue != null
+                              ? [
+                                  DropdownMenuItem(
+                                      value: connectedToValue,
+                                      child: Text(connectedToValue))
+                                ]
+                              : [],
+                        ),
+                    formController: formController),
+                BoringTextField(jsonKey: 'test1'),
               ],
             ),
             ElevatedButton(
                 onPressed: () {
-                  print("FORM IS ${formController.isValid}");
+                  print("FORM VALUE ${formController.isValid}");
                   print("FORM VALUE ${formController.value}");
-                  print("IGNORE ${formController.ignoreFields}");
                 },
                 child: Text("GET INFO")),
           ],
