@@ -91,7 +91,9 @@ class FormExample extends StatelessWidget {
 }
 
 class FormExample2 extends StatelessWidget {
-  final formController = BoringFormController();
+  final formController = BoringFormController(initialValue: {
+    "endDate": ['25']
+  });
   final textFieldController = BoringFieldController<String>(
     validationFunction: (value) =>
         (value == null || value.isEmpty) ? "Campo richiesto" : null,
