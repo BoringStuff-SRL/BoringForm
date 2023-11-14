@@ -1,7 +1,5 @@
 import "package:boring_form/boring_form.dart";
 import 'package:boring_form/implementations/boring_connected_field.dart';
-import 'package:boring_form/implementations/choice/boring_dropdown_2/boring_dropdown_2.dart';
-import 'package:boring_form/implementations/choice/boring_dropdown_2/boring_multichoice_dropdown_2.dart';
 import 'package:flutter/material.dart';
 
 class FormExample extends StatelessWidget {
@@ -124,6 +122,10 @@ class FormExample2 extends StatelessWidget {
                   sectionTitleStyle: const TextStyle(
                       fontSize: 16, fontWeight: FontWeight.bold)),
               fields: [
+                BoringNumberField(
+                  jsonKey: 'sdaasd',
+                  onlyIntegers: false,
+                ),
                 BoringConnectedField<String?, String?>(
                     childJsonKey: 'connection',
                     pathToConnectedJsonKey: [

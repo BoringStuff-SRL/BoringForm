@@ -176,12 +176,18 @@ class BoringNumberField extends BoringField<num> {
     bool? readOnly,
     this.onlyIntegers = false,
     super.displayCondition,
-  }) : super(readOnly: readOnly);
+  })  : assert(decimalSeparator != thousandsSeparator,
+            'Decimal and thousands separator must be defference'),
+        assert(
+            (decimalSeparator == '.' || decimalSeparator == ',') &&
+                (thousandsSeparator == '.' || thousandsSeparator == ','),
+            'Invalid value entered for decimalSeparator AND thousandsSeparator. Consider only these characters valid [,] or [.]'),
+        super(readOnly: readOnly);
 
   final TextEditingController textEditingController = TextEditingController();
 
   final String? decimalSeparator;
-  final String thousandsSeparator;
+  final String? thousandsSeparator;
   final int? decimalPlaces;
   final NumberFormat? fieldFormatter;
   final bool onlyIntegers;
@@ -203,14 +209,14 @@ class BoringNumberField extends BoringField<num> {
   @override
   Widget builder(context, controller, child) {
     final style = BoringFormTheme.of(context).style;
-    final dSeparator =
+    final dSeparator = decimalSeparator ??
         numberFormatSymbols[Platform.localeName.split('_').first]?.DECIMAL_SEP;
-    final tSeparator =
+    final tSeparator = thousandsSeparator ??
         numberFormatSymbols[Platform.localeName.split('_').first]?.GROUP_SEP;
     final formatter = NumberFormatter2(
         decimalPlaces: decimalPlaces,
-        decimalSeparator: dSeparator ?? decimalSeparator,
-        thousandsSeparator: tSeparator ?? thousandsSeparator);
+        decimalSeparator: dSeparator,
+        thousandsSeparator: tSeparator);
 
     return BoringField.boringFieldBuilder(
       style,
@@ -225,27 +231,27 @@ class BoringNumberField extends BoringField<num> {
               enabled: !isReadOnly(context),
               controller: textEditingController,
               keyboardType:
-                  TextInputType.numberWithOptions(decimal: !onlyIntegers),
-              inputFormatters: <TextInputFormatter>[
+                  TextInputType.numberWithOptions(decimal: onlyIntegers),
+              inputFormatters: [
                 onlyIntegers
                     ? FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
-                    : FilteringTextInputFormatter.allow(
-                        RegExp(r'[0-9]+[,.]{0,1}[0-9]*')),
-                TextInputFormatter.withFunction(
-                  (oldValue, newValue) => newValue.copyWith(
-                    text: newValue.text.replaceAll(',', '.'),
-                  ),
-                ),
+                    : formatter
               ],
               decoration: getDecoration(context, haveError: value),
               onChanged: ((value) {
                 try {
+                  if (tSeparator == ',') {
+                    value = value.replaceAll(",", "");
+                  } else if (tSeparator == '.') {
+                    value = value.replaceAll(".", "");
+                    value = value.replaceAll(",", ".");
+                  }
+
                   controller.value = num.parse(value);
                 } catch (e) {
+                  print(e);
                   controller.value = null;
                 }
-
-                controller.isValid;
               }),
             );
           }),
