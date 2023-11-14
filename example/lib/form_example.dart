@@ -124,7 +124,7 @@ class FormExample2 extends StatelessWidget {
               fields: [
                 BoringNumberField(
                   jsonKey: 'sdaasd',
-                  onlyIntegers: false,
+                  onlyIntegers: true,
                 ),
                 BoringConnectedField<String?, String?>(
                     childJsonKey: 'connection',

@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/number_symbols_data.dart' show numberFormatSymbols;
-import 'package:universal_io/io.dart';
 
 TextEditingValue formatFunction(
     TextEditingValue oldValue,
@@ -209,13 +208,13 @@ class BoringNumberField extends BoringField<num> {
   @override
   Widget builder(context, controller, child) {
     final style = BoringFormTheme.of(context).style;
-    final dSeparator = decimalSeparator ??
-        numberFormatSymbols[Platform.localeName.split('_').first]?.DECIMAL_SEP;
-    final tSeparator = thousandsSeparator ??
-        numberFormatSymbols[Platform.localeName.split('_').first]?.GROUP_SEP;
+    final dSeparator =
+        decimalSeparator ?? numberFormatSymbols['it_it']?.DECIMAL_SEP;
+    final tSeparator =
+        thousandsSeparator ?? numberFormatSymbols['it_it']?.GROUP_SEP;
     final formatter = NumberFormatter2(
         decimalPlaces: decimalPlaces,
-        decimalSeparator: dSeparator,
+        decimalSeparator: onlyIntegers ? '_null_' : dSeparator,
         thousandsSeparator: tSeparator);
 
     return BoringField.boringFieldBuilder(
@@ -232,11 +231,7 @@ class BoringNumberField extends BoringField<num> {
               controller: textEditingController,
               keyboardType:
                   TextInputType.numberWithOptions(decimal: onlyIntegers),
-              inputFormatters: [
-                onlyIntegers
-                    ? FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
-                    : formatter
-              ],
+              inputFormatters: [formatter],
               decoration: getDecoration(context, haveError: value),
               onChanged: ((value) {
                 try {
@@ -249,7 +244,6 @@ class BoringNumberField extends BoringField<num> {
 
                   controller.value = num.parse(value);
                 } catch (e) {
-                  print(e);
                   controller.value = null;
                 }
               }),
