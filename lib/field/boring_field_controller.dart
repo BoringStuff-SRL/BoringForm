@@ -36,7 +36,13 @@ class BoringFieldController<T> extends ChangeNotifier {
   String? Function(T? value)? validationFunction;
   final ValueNotifier<bool> hideError = ValueNotifier(true);
 
-  T? get value => _value;
+  T? get value {
+    if (_value != null && _value is String) {
+      return (_value as String).trim() as T;
+    }
+
+    return _value;
+  }
 
   bool autoValidate;
 
