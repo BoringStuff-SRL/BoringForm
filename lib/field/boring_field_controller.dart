@@ -38,6 +38,9 @@ class BoringFieldController<T> extends ChangeNotifier {
 
   T? get value {
     if (_value != null && _value is String) {
+      if ((_value as String) == '') {
+        return null;
+      }
       return (_value as String).trim() as T;
     }
 
