@@ -16,6 +16,7 @@ class BoringDateTimeField extends BoringPickerField<DateTime?> {
     super.decoration,
     super.readOnly,
     super.showEraseValueButton,
+    super.eraseValueWidget,
     DateTime? initialDate,
     required DateTime firstDate,
     required DateTime lastDate,
@@ -71,6 +72,7 @@ class BoringDateField extends BoringPickerField<DateTime?> {
     super.decoration,
     super.readOnly,
     super.showEraseValueButton,
+    super.eraseValueWidget,
     DateTime? initialDate,
     this.initialEntryMode = DatePickerEntryMode.calendar,
     required this.firstlDate,
@@ -127,6 +129,7 @@ class BoringTimeField extends BoringPickerField<TimeOfDay?> {
     super.decoration,
     super.readOnly,
     super.showEraseValueButton,
+    super.eraseValueWidget,
     TimeOfDay? initialTime,
   }) : super(
             showPicker: (context) async => await showTimePicker(
@@ -160,6 +163,7 @@ class BoringDateRangeField extends BoringPickerField<DateTimeRange?> {
     super.decoration,
     super.showEraseValueButton,
     super.displayCondition,
+    super.eraseValueWidget,
     required DateTime lastDate,
     required DateTime firstDate,
     DateTime? currentDate,
