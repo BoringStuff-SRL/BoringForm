@@ -36,5 +36,5 @@ export 'theme/boring_field_decoration.dart';
 export 'theme/boring_form_style.dart';
 export 'theme/boring_form_theme.dart';
 export 'implementations/choice/boring_switch_field.dart';
-
+export 'implementations/boring_connected_field.dart';
 export 'theme/boring_responsive_size.dart';
