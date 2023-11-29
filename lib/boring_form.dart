@@ -38,3 +38,5 @@ export 'theme/boring_form_theme.dart';
 export 'implementations/choice/boring_switch_field.dart';
 export 'implementations/boring_connected_field.dart';
 export 'theme/boring_responsive_size.dart';
+export 'implementations/choice/boring_dropdown_2/boring_multichoice_dropdown_2.dart';
+export 'implementations/choice/boring_dropdown_2/boring_dropdown_2.dart';
