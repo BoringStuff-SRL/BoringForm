@@ -122,29 +122,68 @@ class FormExample2 extends StatelessWidget {
                   sectionTitleStyle: const TextStyle(
                       fontSize: 16, fontWeight: FontWeight.bold)),
               fields: [
-                BoringNumberField(
-                  jsonKey: 'sdaasd',
-                  onlyIntegers: true,
-                ),
-                BoringConnectedField<String?, String?>(
+                BoringSection(autoValidate: false, jsonKey: 'test', fields: [
+                  BoringConnectedField<String?, String?>(
                     childJsonKey: 'connection',
                     pathToConnectedJsonKey: [
+                      'test',
                       'test1',
                     ],
-                    childBuilder: (context, connectedToValue) =>
-                        BoringSearchDropDownField<String>(
-                          jsonKey: 'connection',
-                          key: GlobalKey(),
-                          items: connectedToValue != null
-                              ? [
-                                  DropdownMenuItem(
-                                      value: connectedToValue,
-                                      child: Text(connectedToValue))
-                                ]
-                              : [],
+                    childBuilder: (context, connectedToValue) {
+                      late List<String> items;
+
+                      if (connectedToValue == 'uno') {
+                        items = [
+                          'taglio',
+                          'assemblaggio',
+                          'controllo',
+                          'imballo',
+                        ];
+                      } else if (connectedToValue == 'due') {
+                        items = [
+                          'disegno',
+                          'dime',
+                          'foratura',
+                          'foglio',
+                        ];
+                      } else {
+                        items = ['altro'];
+                      }
+
+                      final items1 = items
+                          .map(
+                              (e) => DropdownMenuItem(value: e, child: Text(e)))
+                          .toList();
+
+                      return BoringDropDownField<String>(
+                        jsonKey: 'connection',
+                        key: GlobalKey(),
+                        fieldController: BoringFieldController(
+                          validationFunction: (value) {
+                            return (value == null) ? '_invalidField' : null;
+                          },
                         ),
-                    formController: formController),
-                BoringTextField(jsonKey: 'test1'),
+                        items: items1,
+                      );
+                    },
+                    formController: formController,
+                  ),
+                  BoringDropDownField(
+                    jsonKey: 'test1',
+                    onChanged: (p0) {
+                      print('asdasdasd');
+                    },
+                    fieldController: BoringFieldController(
+                      validationFunction: (value) =>
+                          value == null ? 'asdasd' : null,
+                    ),
+                    items: [
+                      const DropdownMenuItem(value: 'uno', child: Text('uno')),
+                      const DropdownMenuItem(value: 'due', child: Text('due')),
+                      const DropdownMenuItem(value: 'tre', child: Text('tre')),
+                    ],
+                  ),
+                ]),
               ],
             ),
             ElevatedButton(

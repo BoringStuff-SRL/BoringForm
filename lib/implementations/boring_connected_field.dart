@@ -14,7 +14,9 @@ class BoringConnectedField<T, R> extends BoringField<T> {
     required this.formController,
     super.boringResponsiveSize,
     super.displayCondition,
-  }) : super(jsonKey: childJsonKey);
+  }) : super(
+          jsonKey: childJsonKey,
+        );
 
   final List<String> pathToConnectedJsonKey;
   final BoringField<T> Function(BuildContext context, R? connectedToValue)
@@ -46,6 +48,7 @@ class BoringConnectedField<T, R> extends BoringField<T> {
   Widget builder(BuildContext context, BoringFieldController<T> controller,
       Widget? child) {
     int currentDepth = 0;
+
     late BoringFieldController connectedToController;
     bool hasInitialValue = controller.initialValue != null;
     formController.subControllers.forEach((key, value) {
@@ -58,21 +61,23 @@ class BoringConnectedField<T, R> extends BoringField<T> {
       }
     });
 
-    BoringField<T>? oldChild;
+    //BoringField<T>? oldChild;
 
     return ListenableBuilder(
       listenable: connectedToController,
       builder: (context, child) {
         controller.setValueSilently(null);
-        if (oldChild != null) {
-          oldChild!.fieldController.value = null;
-        }
+        // if (oldChild != null) {
+        //   oldChild!.fieldController.value = null;
+        // }
         final connectedToValue = connectedToController.value as R;
 
         final child = childBuilder.call(context, connectedToValue);
-        oldChild = child;
+        controller.validationFunction =
+            child.fieldController.validationFunction;
+        //oldChild = child;
 
-        child.fieldController.value = (null);
+        // child.fieldController.value = (null);
         assert(child.jsonKey == jsonKey, 'The jsonKeys must match');
         if (hasInitialValue && !hasSetInitialValue) {
           controller.setValueSilently(controller.initialValue);
@@ -90,16 +95,17 @@ class BoringConnectedField<T, R> extends BoringField<T> {
   }
 
   @override
-  BoringConnectedField<T, R> copyWith(
-      {BoringFieldController<T>? fieldController,
-      List<String>? pathToConnectedJsonKey,
-      void Function(T? p1)? onChanged,
-      BoringFieldDecoration? decoration,
-      BoringResponsiveSize? boringResponsiveSize,
-      String? jsonKey,
-      bool Function(Map<String, dynamic> p1)? displayCondition,
-      BoringField<T> Function(BuildContext, R?)? childBuilder,
-      BoringFormController? formController}) {
+  BoringConnectedField<T, R> copyWith({
+    BoringFieldController<T>? fieldController,
+    List<String>? pathToConnectedJsonKey,
+    void Function(T? p1)? onChanged,
+    BoringFieldDecoration? decoration,
+    BoringResponsiveSize? boringResponsiveSize,
+    String? jsonKey,
+    bool Function(Map<String, dynamic> p1)? displayCondition,
+    BoringField<T> Function(BuildContext, R?)? childBuilder,
+    BoringFormController? formController,
+  }) {
     return BoringConnectedField(
         childJsonKey: jsonKey ?? this.jsonKey,
         pathToConnectedJsonKey:
