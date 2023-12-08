@@ -3,68 +3,71 @@ import 'package:boring_form/field/field_change_notification.dart';
 import 'package:boring_form/field/filtered_fields_provider.dart';
 import 'package:flutter/material.dart';
 
-abstract class BoringFieldsGroupController
-    extends BoringFieldController<Map<String, dynamic>> {
-  BoringFieldsGroupController({super.initialValue, super.validationFunction});
+// abstract class BoringFieldsGroupController
+//     extends BoringFieldController<Map<String, dynamic>> {
+//   BoringFieldsGroupController({super.initialValue, super.validationFunction});
 
-  Map<String, BoringFieldController> subControllers = {};
-  Set<String> ignoreFields = {};
+//   Map<String, BoringFieldController> subControllers = {};
+//   Set<String> ignoreFields = {};
 
-  @override
-  Map<String, dynamic>? get value {
-    return subControllers.map((key, value) => MapEntry(key, value.value))
-      ..removeWhere((key, value) => ignoreFields.contains(key));
-  }
+//   @override
+//   Map<String, dynamic>? get value {
+//     return subControllers.map((key, value) => MapEntry(key, value.value))
+//       ..removeWhere((key, value) => ignoreFields.contains(key));
+//   }
 
-  @override
-  set value(Map<String, dynamic>? newValue) {
-    super.value = newValue;
-    for (var key in subControllers.keys) {
-      if (newValue?.containsKey(key) ?? false) {
-        subControllers[key]?.value = newValue![key];
-      } else {
-        subControllers[key]?.value = null;
-      }
-    }
-  }
+//   @override
+//   set value(Map<String, dynamic>? newValue) {
+//     super.value = newValue;
+//     for (var key in subControllers.keys) {
+//       if (newValue?.containsKey(key) ?? false) {
+//         subControllers[key]?.value = newValue![key];
+//       } else {
+//         subControllers[key]?.value = null;
+//       }
+//     }
+//   }
 
-  bool _allSubControllersValid() {
-    bool valid = true;
+//   bool _allSubControllersValid() {
+//     bool valid = true;
 
-    for (var element in ((Map.from(subControllers))
-          ..removeWhere((key, value) => ignoreFields.contains(key)))
-        .values) {
-      if (!element.isValid) {
-        valid = false;
-      }
-    }
+//     for (var element in ((Map.from(subControllers))
+//           ..removeWhere((key, value) => ignoreFields.contains(key)))
+//         .values) {
+//       if (!element.isValid) {
+//         valid = false;
+//       }
+//     }
 
-    return valid;
-  }
+//     return valid;
+//   }
 
-  @override
-  bool get isValid => errorMessage == null && _allSubControllersValid();
+//   @override
+//   bool get isValid => errorMessage == null && _allSubControllersValid();
 
-  @override
-  void reset() {
-    super.reset();
-    for (var controller in subControllers.values) {
-      controller.reset();
-    }
-    notifyListeners();
-  }
-}
+//   @override
+//   void reset() {
+//     super.reset();
+//     for (var controller in subControllers.values) {
+//       controller.reset();
+//     }
+//     notifyListeners();
+//   }
+// }
 
-abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
-    extends BoringField<Map<String, dynamic>> {
+const IGNORE_JSON_KEY = "\$IGNORE_JSON_KEY\$";
+
+abstract class BoringFieldsGroup extends BoringField<Map<String, dynamic>> {
   final List<BoringField> fields;
-  final T controller;
+
+  @override
+  final BoringFieldsGroupController controller;
 
   final bool autoValidate;
 
   BoringFieldsGroup(
       {super.key,
-      required this.controller,
+      BoringFieldsGroupController? controller,
       required super.jsonKey,
       this.autoValidate = false,
       super.onChanged,
@@ -74,84 +77,84 @@ abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
       super.displayCondition,
       required this.fields})
       : assert(checkJsonKey(fields, autoValidate: autoValidate),
-            "Confict error: found duplicate jsonKeys in section with jsonKey '$jsonKey'"),
-        super(fieldController: controller) {
+            "Confict error: found duplicate jsonKeys in group with jsonKey '$jsonKey'"),
+        controller = controller ?? BoringFieldsGroupController() {
     _addFieldsSubcontrollers();
   }
 
-  @override
-  bool ignoreInitialValue(Map<String, dynamic>? value) =>
-      value != null && value.isNotEmpty;
+  // @override
+  // bool ignoreInitialValue(Map<String, dynamic>? value) =>
+  //     value != null && value.isNotEmpty;
 
-  @override
-  bool setInitialValue(Map<String, dynamic>? initialValue) {
-    final v = super.setInitialValue(initialValue);
-    if (v) {
-      _setSubFieldsInitialValues();
-    }
-    return v;
-  }
+  // @override
+  // bool setInitialValue(Map<String, dynamic>? initialValue) {
+  //   final v = super.setInitialValue(initialValue);
+  //   if (v) {
+  //     _setSubFieldsInitialValues();
+  //   }
+  //   return v;
+  // }
 
   static bool checkJsonKey(List<BoringField> fields,
       {bool autoValidate = false}) {
     List<String> keys = [];
     for (var field in fields) {
-      if (autoValidate) {
-        field.fieldController.autoValidate = autoValidate;
+      if (field.jsonKey != IGNORE_JSON_KEY) {
+        if (keys.contains(field.jsonKey)) {
+          return false;
+        }
+        keys.add(field.jsonKey);
       }
-
-      if (keys.contains(field.jsonKey)) {
-        return false;
-      }
-      keys.add(field.jsonKey);
     }
     return true;
   }
 
-  final blockNotificationPropagation = false;
-  final fieldsListProvider = FieldsListProvider();
+  // final blockNotificationPropagation = false;
+  // final fieldsListProvider = FieldsListProvider();
 
-  void formChanged() {
-    updateFilteredFieldsList();
-  }
+  // void formChanged() {
+  //   updateFilteredFieldsList();
+  // }
 
-  @protected
-  void onAnyChanged() {
-    onChanged?.call(controller.value);
-  }
+  // @protected
+  // void onAnyChanged() {
+  //   onChanged?.call(controller.value);
+  // }
 
-  @protected
-  void updateFilteredFieldsList() {
-    BoringFormController formController;
-    if (controller is BoringFormController) {
-      formController = controller as BoringFormController;
-    } else if (contextHolder.value != null) {
+  // @protected
+  // void updateFilteredFieldsList() {
+  //   BoringFormController formController;
+  //   if (controller is BoringFormController) {
+  //     formController = controller as BoringFormController;
+  //   } else if (contextHolder.value != null) {
+  //     formController = Provider.of<BoringFormController>(contextHolder.value!,
+  //         listen: false);
+  //   } else {
+  //     return;
+  //   }
 
-      formController = Provider.of<BoringFormController>(contextHolder.value!,
-          listen: false);
-    } else {
-      return;
-    }
+  //   final excluded = fieldsListProvider.notifyIfDifferentFields(
+  //       fields, formController.value ?? {});
 
-    final excluded = fieldsListProvider.notifyIfDifferentFields(
-        fields, formController.value ?? {});
+  //   if (true /*TODO add [exludeInvalidFields = true] attribute (ex: maybe you want to include invalid fields and so this condition should be false)*/) {
+  //     controller.ignoreFields = excluded;
+  //   }
+  // }
 
-    if (true /*TODO add [exludeInvalidFields = true] attribute (ex: maybe you want to include invalid fields and so this condition should be false)*/) {
-      controller.ignoreFields = excluded;
-    }
-  }
-
-  void _setSubFieldsInitialValues() {
-    for (var field in fields) {
-      if (controller.initialValue?[field.jsonKey] != null) {
-        field.setInitialValue(controller.initialValue?[field.jsonKey]);
-      }
-    }
-  }
+  // void _setSubFieldsInitialValues() {
+  //   for (var field in fields) {
+  //     if (controller.initialValue?[field.jsonKey] != null) {
+  //       field.setInitialValue(controller.initialValue?[field.jsonKey]);
+  //     }
+  //   }
+  // }
 
   void _addFieldsSubcontrollers() {
     for (var field in fields) {
-      controller.subControllers[field.jsonKey] = field.fieldController;
+      // controller.subControllers[field.jsonKey] = field.fieldController;
+      if (field.jsonKey != IGNORE_JSON_KEY) {
+        controller.addSubController(field.controller, field.jsonKey);
+      }
     }
     //_setSubFieldsInitialValues();
   }
@@ -198,8 +201,8 @@ abstract class BoringFieldsGroup<T extends BoringFieldsGroupController>
       );
 
   @override
-  Widget builder(context, controller, child) {
-    formChanged();
+  Widget builder(context, controller) {
+    // formChanged();
     return buildWidget(context, this.controller, _content());
   }
 
