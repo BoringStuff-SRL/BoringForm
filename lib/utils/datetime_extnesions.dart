@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 
 extension DateComparison on DateTime {
   bool operator >(other) => compareTo(other) > 0;
+
   bool operator <(other) => compareTo(other) < 0;
+
   bool operator >=(other) => compareTo(other) >= 0;
+
   bool operator <=(other) => compareTo(other) <= 0;
 }
 
@@ -17,7 +20,10 @@ extension TimeComparison on TimeOfDay {
   }
 
   bool operator >(other) => compareTo(other) > 0;
+
   bool operator <(other) => compareTo(other) < 0;
+
   bool operator >=(other) => compareTo(other) >= 0;
+
   bool operator <=(other) => compareTo(other) <= 0;
 }

@@ -20,9 +20,13 @@ class BoringResponsiveSize {
   final int? _xl;
 
   int get xs => _xs ?? 12;
+
   int get sm => _sm ?? xs;
+
   int get md => _md ?? sm;
+
   int get lg => _lg ?? md;
+
   int get xl => _xl ?? lg;
 
   int breakpointValue(double width) {

@@ -1,10 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-
 import 'package:boring_form/field/boring_field_controller.dart';
 import 'package:boring_form/theme/boring_field_decoration.dart';
 import 'package:boring_form/theme/boring_responsive_size.dart';
+import 'package:flutter/material.dart';
 
 import '../../field/boring_field.dart';
 import '../../theme/boring_form_style.dart';

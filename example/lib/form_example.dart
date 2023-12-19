@@ -1,5 +1,4 @@
 import "package:boring_form/boring_form.dart";
-import 'package:boring_form/implementations/boring_connected_field.dart';
 import 'package:flutter/material.dart';
 
 class FormExample extends StatelessWidget {

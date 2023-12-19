@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'form_example.dart';
 
 void main() async {
-  
   runApp(const MyApp());
 }
 

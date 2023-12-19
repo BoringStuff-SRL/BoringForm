@@ -118,7 +118,8 @@ class BoringSideField<T> extends BoringField<T> {
       ),
     );
   }
- @override
+
+  @override
   BoringField copyWith({
     BoringFieldController<T>? fieldController,
     void Function(T? p1)? onChanged,
@@ -136,5 +137,4 @@ class BoringSideField<T> extends BoringField<T> {
       widgetDecoration: widgetDecoration ?? this.widgetDecoration,
     );
   }
- 
 }

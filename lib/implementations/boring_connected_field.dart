@@ -1,13 +1,11 @@
 import 'package:boring_form/boring_form.dart';
-import 'package:boring_form/implementations/pickers/boring_picker_field.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 /// T è il tipo di valore del child
 /// R è il tipo di valore del campo a cui sono connesso
 class BoringConnectedField<T, R> extends BoringField<T> {
   BoringConnectedField({
+    super.key,
     required String childJsonKey,
     required this.pathToConnectedJsonKey,
     required this.childBuilder,

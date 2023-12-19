@@ -1,23 +1,18 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/widgets.dart';
-import 'package:path/path.dart' as p;
 
 import 'package:boring_form/field/boring_field.dart';
 import 'package:boring_form/field/boring_field_controller.dart';
 import 'package:boring_form/theme/boring_field_decoration.dart';
 import 'package:boring_form/theme/boring_responsive_size.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
 
 enum FeedbackPosition { top, left, right, bottom }
 
 class BoringFilePicker extends BoringField<List<PlatformFile>> {
   BoringFilePicker(
-      {required super.jsonKey,
+      {super.key,
+      required super.jsonKey,
       this.textSpacingFromIcon,
       this.borderRadius,
       this.buttonWidth,
