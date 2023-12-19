@@ -1,5 +1,3 @@
-import 'dart:ui_web';
-
 import 'package:boring_form/boring_form.dart';
 import 'package:flutter/material.dart';
 
