@@ -1,3 +1,5 @@
+import 'dart:ui_web';
+
 import 'package:boring_form/boring_form.dart';
 import 'package:flutter/material.dart';
 
@@ -71,17 +73,28 @@ class BoringConnectedField<T, R> extends BoringField<T> {
         final connectedToValue = connectedToController.value as R;
 
         final child = childBuilder.call(context, connectedToValue);
+
         controller.validationFunction =
             child.fieldController.validationFunction;
+
+        final childHasInitialValueInController =
+            child.fieldController.initialValue != null;
+        if (childHasInitialValueInController) {
+          controller.setValueSilently(child.fieldController.initialValue);
+        }
+
         //oldChild = child;
 
         // child.fieldController.value = (null);
         assert(child.jsonKey == jsonKey, 'The jsonKeys must match');
         if (hasInitialValue && !hasSetInitialValue) {
+          controller.validationFunction?.call(controller.value);
           controller.setValueSilently(controller.initialValue);
           child.setInitialValue(controller.initialValue);
           hasSetInitialValue = true;
         }
+
+        controller.validationFunction?.call(child.fieldController.value);
 
         child.fieldController.addListener(() {
           controller.setValueSilently(child.fieldController.value);
