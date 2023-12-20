@@ -84,30 +84,30 @@ class BoringDropDownField<T> extends BoringField<T> {
           color: newStyle.border?.borderSide.color ?? Colors.grey,
           width: newStyle.border?.borderSide.width ?? 1));
 
-  @override
-  void onValueChanged(T? newValue) {}
+  // @override
+  // void onValueChanged(T? newValue) {}
 
-  @override
-  BoringDropDownField copyWith({
-    BoringFieldController<T>? fieldController,
-    void Function(T? p1)? onChanged,
-    BoringFieldDecoration? decoration,
-    BoringResponsiveSize? boringResponsiveSize,
-    String? jsonKey,
-    bool Function(Map<String, dynamic> p1)? displayCondition,
-    List<DropdownMenuItem<dynamic>>? items,
-    InputDecoration? searchInputDecoration,
-    double? radius,
-  }) {
-    return BoringDropDownField(
-      boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
-      jsonKey: jsonKey ?? this.jsonKey,
-      decoration: decoration ?? this.decoration,
-      onChanged: (onChanged as void Function(dynamic)?) ??
-          (this.onChanged as void Function(dynamic)?),
-      displayCondition: displayCondition ?? this.displayCondition,
-      fieldController: fieldController ?? this.fieldController,
-      items: items ?? this.items,
-    );
-  }
+  // @override
+  // BoringDropDownField copyWith({
+  //   BoringFieldController<T>? fieldController,
+  //   void Function(T? p1)? onChanged,
+  //   BoringFieldDecoration? decoration,
+  //   BoringResponsiveSize? boringResponsiveSize,
+  //   String? jsonKey,
+  //   bool Function(Map<String, dynamic> p1)? displayCondition,
+  //   List<DropdownMenuItem<dynamic>>? items,
+  //   InputDecoration? searchInputDecoration,
+  //   double? radius,
+  // }) {
+  //   return BoringDropDownField(
+  //     boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
+  //     jsonKey: jsonKey ?? this.jsonKey,
+  //     decoration: decoration ?? this.decoration,
+  //     onChanged: (onChanged as void Function(dynamic)?) ??
+  //         (this.onChanged as void Function(dynamic)?),
+  //     displayCondition: displayCondition ?? this.displayCondition,
+  //     fieldController: fieldController ?? this.fieldController,
+  //     items: items ?? this.items,
+  //   );
+  // }
 }

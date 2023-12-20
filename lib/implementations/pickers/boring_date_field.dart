@@ -1,43 +1,49 @@
+import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_form/implementations/pickers/boring_picker_field.dart';
 import 'package:boring_form/utils/datetime_extnesions.dart';
-import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 
-class BoringDateTimeField extends BoringPickerField<DateTime?> {
+class BoringDateTimeField extends BoringPickerField<DateTime> {
+  static const outOfBoundError =
+      "initial date must be between firstDate and lastDate"; //TODO make this a parameter [or better: add translations]
   BoringDateTimeField({
     super.key,
-    super.fieldController,
-    super.onChanged,
-    required super.jsonKey,
-    super.boringResponsiveSize,
-    super.updateValueOnDismiss,
-    super.displayCondition,
+    required super.fieldPath,
+    super.observedFields,
+    ValidationFunction<DateTime>? validationFunction,
     super.decoration,
     super.readOnly,
+    super.updateValueOnDismiss,
     super.showEraseValueButton,
     super.eraseValueWidget,
-    DateTime? initialDate,
     required DateTime firstDate,
     required DateTime lastDate,
-  })  : assert(
-            initialDate == null ||
-                (initialDate <= lastDate && initialDate >= firstDate),
-            "initial date must be between firstDate and lastDate"),
-        super(
-            showPicker: (context) async => await showOmniDateTimePicker(
-                context: context,
-                initialDate: DateTime.now(),
-                is24HourMode: true,
-                firstDate: firstDate,
-                lastDate: lastDate,
-                isForce2Digits: true),
+  }) : super(
+            validationFunction:
+                (BoringFormController formController, DateTime? value) {
+              final error = validationFunction?.call(formController, value);
+              final boundsError =
+                  value == null || (value <= lastDate && value >= firstDate)
+                      ? null
+                      : outOfBoundError;
+              return error ?? boundsError;
+            },
+            showPicker: (context, formController, fieldValue) async =>
+                await showOmniDateTimePicker(
+                    context: context,
+                    initialDate: fieldValue,
+                    is24HourMode: true,
+                    firstDate: firstDate,
+                    lastDate: lastDate,
+                    isForce2Digits: true),
             valueToString: (value) => value == null
                 ? ''
                 : "${dateTimeToString(value)}, ${value.hour.toString().padLeft(2, '0')}:${value.minute.toString().padLeft(2, '0')}");
 }
 
-String dateTimeToString(DateTime? dt) =>
+String dateTimeToString(
+        DateTime? dt) => //TODO add internazionalization for this function too
     dt != null ? "${dt.day}/${dt.month}/${dt.year}" : "";
 
 DateTime middle(DateTime dt1, DateTime dt2, DateTime dt3) {
@@ -60,132 +66,88 @@ DateTime middle(DateTime dt1, DateTime dt2, DateTime dt3) {
   }
 }
 
-class BoringDateField extends BoringPickerField<DateTime?> {
+class BoringDateField extends BoringPickerField<DateTime> {
+  static const outOfBoundError = BoringDateTimeField
+      .outOfBoundError; //TODO make this a parameter [or better: add translations]
   BoringDateField({
     super.key,
-    super.fieldController,
-    super.onChanged,
-    required super.jsonKey,
-    super.boringResponsiveSize,
-    super.updateValueOnDismiss,
-    super.displayCondition,
+    required super.fieldPath,
+    super.observedFields,
+    ValidationFunction<DateTime>? validationFunction,
     super.decoration,
     super.readOnly,
+    super.updateValueOnDismiss,
     super.showEraseValueButton,
     super.eraseValueWidget,
-    DateTime? initialDate,
-    this.initialEntryMode = DatePickerEntryMode.calendar,
-    required this.firstlDate,
-    required this.lastDate,
-  })  : assert(firstlDate <= lastDate, "firstDate must be less than lastDate"),
-        assert(
-            initialDate == null ||
-                (initialDate <= lastDate && initialDate >= firstlDate),
-            "initial date must be between firstDate and lastDate"),
+    DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar,
+    required DateTime firstDate,
+    required DateTime lastDate,
+  })  : assert(firstDate <= lastDate, "firstDate must be less than lastDate"),
         super(
-            showPicker: (context) async => await showDatePicker(
-                context: context,
-                initialEntryMode: initialEntryMode,
-                initialDate: fieldController?.value ??
-                    initialDate ??
-                    middle(firstlDate, DateTime.now(), lastDate),
-                firstDate: firstlDate,
-                lastDate: lastDate,
-                builder: (BuildContext context, Widget? child) {
-                  return MediaQuery(
-                    data: MediaQuery.of(context)
-                        .copyWith(alwaysUse24HourFormat: true),
-                    child: child!,
-                  );
-                }),
+            validationFunction:
+                (BoringFormController formController, DateTime? value) {
+              final error = validationFunction?.call(formController, value);
+              final boundsError =
+                  value == null || (value <= lastDate && value >= firstDate)
+                      ? null
+                      : outOfBoundError;
+              return error ?? boundsError;
+            },
+            showPicker: (context, formController, fieldValue) async =>
+                await showDatePicker(
+                    context: context,
+                    initialEntryMode: initialEntryMode,
+                    initialDate: fieldValue ??
+                        middle(firstDate, DateTime.now(), lastDate),
+                    firstDate: firstDate,
+                    lastDate: lastDate,
+                    builder: (BuildContext context, Widget? child) {
+                      return MediaQuery(
+                        data: MediaQuery.of(context)
+                            .copyWith(alwaysUse24HourFormat: true),
+                        child: child!,
+                      );
+                    }),
             valueToString: dateTimeToString);
-  final DateTime firstlDate, lastDate;
-  final DatePickerEntryMode initialEntryMode;
+  // final DateTime firstDate, lastDate;
+  // final DatePickerEntryMode initialEntryMode;
 
-  void initialDateAssertion(DateTime? initialDate) {
-    assert(
-        initialDate == null ||
-            (initialDate < lastDate && initialDate > firstlDate),
-        "initial date must be between firstDate and lastDate");
-  }
-
-  @override
-  bool setInitialValue(DateTime? initialValue, [bool forceSet = false]) {
-    initialDateAssertion(initialValue);
-    return super.setInitialValue(initialValue);
-  }
+  // void initialDateAssertion(DateTime? initialDate) {
+  //   assert(
+  //       initialDate == null ||
+  //           (initialDate < lastDate && initialDate > firstDate),
+  //       "initial date must be between firstDate and lastDate");
+  // }
 }
 
-class BoringTimeField extends BoringPickerField<TimeOfDay?> {
+class BoringTimeField extends BoringPickerField<TimeOfDay> {
   BoringTimeField({
     super.key,
-    super.fieldController,
-    super.onChanged,
-    required super.jsonKey,
-    this.initialEntryMode = TimePickerEntryMode.inputOnly,
-    super.boringResponsiveSize,
-    super.updateValueOnDismiss,
-    super.displayCondition,
+    required super.fieldPath,
+    super.observedFields,
+    ValidationFunction<DateTime>? validationFunction,
     super.decoration,
     super.readOnly,
+    super.updateValueOnDismiss,
     super.showEraseValueButton,
     super.eraseValueWidget,
-    TimeOfDay? initialTime,
+    TimePickerEntryMode initialEntryMode = TimePickerEntryMode.inputOnly,
+    // required DateTime firstDate,
+    // required DateTime lastDate,
   }) : super(
-            showPicker: (context) async => await showTimePicker(
-                context: context,
-                initialEntryMode: initialEntryMode,
-                initialTime: initialTime ?? TimeOfDay.now(),
-                builder: (BuildContext context, Widget? child) {
-                  return MediaQuery(
-                    data: MediaQuery.of(context)
-                        .copyWith(alwaysUse24HourFormat: true),
-                    child: child!,
-                  );
-                }),
+            showPicker: (context, formController, fieldValue) async =>
+                await showTimePicker(
+                    context: context,
+                    initialEntryMode: initialEntryMode,
+                    initialTime: fieldValue ?? TimeOfDay.now(),
+                    builder: (BuildContext context, Widget? child) {
+                      return MediaQuery(
+                        data: MediaQuery.of(context)
+                            .copyWith(alwaysUse24HourFormat: true),
+                        child: child!,
+                      );
+                    }),
             valueToString: (value) => value == null
                 ? ""
                 : "${value.hour.toString().padLeft(2, '0')}:${value.minute.toString().padLeft(2, '0')}");
-
-  final TimePickerEntryMode initialEntryMode;
-}
-
-//TODO showDateRangePicker ALSO INSIDE DIALOG (not only full screen)
-class BoringDateRangeField extends BoringPickerField<DateTimeRange?> {
-  BoringDateRangeField({
-    super.key,
-    super.fieldController,
-    super.onChanged,
-    super.readOnly,
-    required super.jsonKey,
-    super.boringResponsiveSize,
-    super.updateValueOnDismiss,
-    super.decoration,
-    super.showEraseValueButton,
-    super.displayCondition,
-    super.eraseValueWidget,
-    required DateTime lastDate,
-    required DateTime firstDate,
-    DateTime? currentDate,
-  }) : super(
-            showPicker: (context) async {
-              final dates = await showCalendarDatePicker2Dialog(
-                context: context,
-                config: CalendarDatePicker2WithActionButtonsConfig(
-                    calendarType: CalendarDatePicker2Type.range,
-                    firstDate: firstDate,
-                    lastDate: lastDate,
-                    currentDate: currentDate),
-                useSafeArea: true,
-                useRootNavigator: true,
-                dialogSize: Size(500, 1),
-              );
-
-              return dates != null
-                  ? DateTimeRange(start: dates.first!, end: dates.last!)
-                  : null;
-            },
-            valueToString: (value) => value == null
-                ? ""
-                : "${dateTimeToString(value.start)} - ${dateTimeToString(value.end)}");
 }

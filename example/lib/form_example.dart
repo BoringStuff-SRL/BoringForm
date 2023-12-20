@@ -1,4 +1,6 @@
 import "package:boring_form/boring_form.dart";
+import 'package:boring_form/implementations/num/boring_slider.dart';
+import 'package:boring_form/implementations/text/boring_password_field.dart';
 import 'package:flutter/material.dart';
 
 // class FormExample extends StatelessWidget {
@@ -124,14 +126,35 @@ class FormExample0 extends StatelessWidget {
           const Text("CIAO LEO"),
           BoringFormChildWidget(
               observedFields: const [
-                ["cognome"]
+                ["cognome"],
+                ["anag", "nome"]
               ],
               builder: (context, formController) {
                 return Text("${formController.getValue([
                       'nome'
-                    ])} ${formController.getValue(['cognome'])}");
+                    ])} ${formController.getValue([
+                      'cognome'
+                    ])} ${formController.getValue(
+                  ['anag', 'nome'],
+                )}");
                 // return Text(formController.value["asd"]);
               }),
+          BoringFormChildWidget(
+              observeAllFields: true,
+              builder: (context, formController) {
+                print(formController.value);
+                return const Text("WATCHER");
+                // return Text(formController.value["asd"]);
+              }),
+          BoringPasswordField(
+            // allowEmpty: true,
+            fieldPath: const ["anag", "nome"],
+            validationFunction: (formController, value) =>
+                ((value?.length ?? 0) > 8) ? null : "Password at least 8 chars",
+          ),
+          const BoringSlider(
+            fieldPath: ["test", "num"],
+          ),
           ElevatedButton(
               onPressed: () {
                 c.setFieldValue(["nome"], "(${c.getValue(["nome"])})");
@@ -142,6 +165,26 @@ class FormExample0 extends StatelessWidget {
                 c.setFieldValue(["cognome"], "[${c.getValue(["cognome"])}]");
               },
               child: const Text("SET SURNAME")),
+          ElevatedButton(
+              onPressed: () {
+                print(c.value);
+              },
+              child: const Text("PRINT")),
+          ElevatedButton(
+              onPressed: () {
+                c.value = {
+                  "nome": "Francesco",
+                  "cognome": "De Salvo",
+                  "anag": {"nome": "TextField"},
+                  "test": {"num": 0.5}
+                };
+              },
+              child: const Text("SET FORM VALUE")),
+          ElevatedButton(
+              onPressed: () {
+                // print(c.isValid);
+              },
+              child: const Text("IS VALID")),
         ],
       ),
     );

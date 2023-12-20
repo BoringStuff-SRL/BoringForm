@@ -1,12 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 
-class BoringFieldDecoration {
+class BoringFieldDecoration<T> {
   final String? label;
   final Widget? icon;
   final String? helperText;
   final String? hintText;
-  final Widget? Function(dynamic value)? counter;
+  final Widget? Function(T? value)? counter;
 
   final Widget? prefix;
   final Widget? prefixIcon;
@@ -35,7 +35,7 @@ class BoringFieldDecoration {
     Widget? icon,
     String? helperText,
     String? hintText,
-    Widget? Function(dynamic value)? counter,
+    Widget? Function(T? value)? counter,
     Widget? prefix,
     Widget? prefixIcon,
     String? prefixText,
@@ -43,7 +43,7 @@ class BoringFieldDecoration {
     Widget? suffixIcon,
     String? suffixText,
   }) {
-    return BoringFieldDecoration(
+    return BoringFieldDecoration<T>(
       label: label ?? this.label,
       icon: icon ?? this.icon,
       helperText: helperText ?? this.helperText,

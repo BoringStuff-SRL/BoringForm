@@ -1,120 +1,108 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:boring_form/field/boring_field.dart';
-import 'package:boring_form/field/boring_field_controller.dart';
-import 'package:boring_form/theme/boring_field_decoration.dart';
-import 'package:boring_form/theme/boring_responsive_size.dart';
+import 'package:boring_form/field/boring_form_field.dart';
+import 'package:boring_form/form/boring_form_controller.dart';
+import 'package:boring_form/theme/boring_form_theme.dart';
 import 'package:flutter/material.dart';
 
-class BoringPickerField<T> extends BoringField<T> {
-  BoringPickerField(
-      {super.key,
-      super.fieldController,
-      super.onChanged,
-      required super.jsonKey,
-      required this.valueToString,
-      required this.showPicker,
-      super.boringResponsiveSize,
-      super.displayCondition,
-      super.readOnly,
-      this.updateValueOnDismiss = false,
-      super.decoration,
-      this.eraseValueWidget = const Icon(Icons.close),
-      this.showEraseValueButton = false});
-
-  late final textEditingController = TextEditingController();
-
+class BoringPickerField<T> extends BoringFormField<T> {
+  final _textEditingController = TextEditingController();
   final bool updateValueOnDismiss;
-
   final String Function(T? value) valueToString;
   final bool showEraseValueButton;
   final Widget eraseValueWidget;
-  final Future<T?> Function(BuildContext context) showPicker;
+  final Future<T?> Function(BuildContext context,
+      BoringFormController formController, T? fieldValue) showPicker;
+
+  BoringPickerField(
+      {super.key,
+      required super.fieldPath,
+      super.observedFields,
+      super.decoration,
+      super.readOnly,
+      super.validationFunction,
+      required this.valueToString,
+      required this.showPicker,
+      this.updateValueOnDismiss = false,
+      this.eraseValueWidget = const Icon(Icons.close),
+      this.showEraseValueButton = false});
 
   @override
-  bool setInitialValue(initialValue) {
-    super.setInitialValue(initialValue);
-    textEditingController.text = valueToString(fieldController.value);
-    return true;
-  }
-
-  Future _selectValue(BuildContext context) async {
-    T? v = await showPicker(context);
-    if (v != null || updateValueOnDismiss) {
-      fieldController.value = v;
-      textEditingController.text = valueToString(v);
-    }
-  }
-
-  @override
-  Widget builder(context, controller, child) {
-    final style = getStyle(context);
-    final readOnly = isReadOnly(context);
-    return BoringField.boringFieldBuilder(
-      style,
-      decoration?.label,
-      child: ValueListenableBuilder(
-          valueListenable: controller.autoValidate
-              ? ValueNotifier(false)
-              : controller.hideError,
-          builder: (BuildContext context, bool value, Widget? child) {
-            return Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    enabled: !readOnly,
-                    controller: textEditingController,
-                    readOnly: true,
-                    textAlign: style.textAlign,
-                    style: style.textStyle,
-                    onTap: () => readOnly ? null : _selectValue(context),
-                    decoration: getDecoration(context, haveError: value),
-                    onChanged: ((value) {
-                      controller.isValid;
-                    }),
-                  ),
-                ),
-                if (showEraseValueButton && controller.value != null) ...[
-                  const SizedBox(width: 5),
-                  MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: GestureDetector(
-                      onTap: () {
-                        controller.value = null;
-                        textEditingController.text = '';
-                      },
-                      child: eraseValueWidget,
-                    ),
-                  ),
-                ]
-              ],
-            );
-          }),
+  Widget builder(BuildContext context, BoringFormTheme formTheme,
+      BoringFormController formController, T? fieldValue, String? errror) {
+    return Row(
+      children: [
+        Expanded(
+          child: TextField(
+            enabled: isReadOnly(formTheme),
+            readOnly: true,
+            controller: _textEditingController,
+            textAlign: formTheme.style.textAlign,
+            style: formTheme.style.textStyle,
+            decoration: getInputDecoration(
+                formController, formTheme, errror, fieldValue),
+            // onChanged: ((value) {
+            //   controller.isValid;
+            // }),
+            onTap: () async {
+              if (isReadOnly(formTheme)) {
+                return;
+              }
+              T? value = await showPicker(context, formController, fieldValue);
+              if (value != null || updateValueOnDismiss) {
+                formController.setFieldValue(fieldPath, value);
+                _textEditingController.text = valueToString(value);
+              }
+            },
+          ),
+        ),
+        if (showEraseValueButton && fieldValue != null) ...[
+          const SizedBox(width: 5),
+          MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: () {
+                formController.setFieldValue(fieldPath, null);
+                _textEditingController.text = "";
+              },
+              child: eraseValueWidget,
+            ),
+          ),
+        ]
+      ],
     );
   }
 
-  void onValueChanged(T? newValue) {}
+  @override
+  void onObservedFieldsChange(BoringFormController formController) {}
 
   @override
-  BoringPickerField<T> copyWith(
-      {BoringFieldController<T>? fieldController,
-      void Function(T? value)? onChanged,
-      BoringFieldDecoration? decoration,
-      BoringResponsiveSize? boringResponsiveSize,
-      String? jsonKey,
-      bool Function(Map<String, dynamic> p1)? displayCondition,
-      String Function(T?)? valueToString,
-      Future<T> Function(BuildContext)? showPicker,
-      bool? updateValueOnDismiss}) {
-    return BoringPickerField(
-      fieldController: fieldController ?? this.fieldController,
-      onChanged: onChanged ?? this.onChanged,
-      decoration: decoration ?? this.decoration,
-      boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
-      jsonKey: jsonKey ?? this.jsonKey,
-      displayCondition: displayCondition ?? this.displayCondition,
-      valueToString: valueToString ?? this.valueToString,
-      showPicker: showPicker ?? this.showPicker,
-      updateValueOnDismiss: updateValueOnDismiss ?? this.updateValueOnDismiss,
-    );
+  void onSelfChange(BoringFormController formController, T? fieldValue) {
+    _textEditingController.text = valueToString(fieldValue);
   }
+
+  // void onValueChanged(T? newValue) {}
+
+  // @override
+  // BoringPickerField<T> copyWith(
+  //     {BoringFieldController<T>? fieldController,
+  //     void Function(T? value)? onChanged,
+  //     BoringFieldDecoration? decoration,
+  //     BoringResponsiveSize? boringResponsiveSize,
+  //     String? jsonKey,
+  //     bool Function(Map<String, dynamic> p1)? displayCondition,
+  //     String Function(T?)? valueToString,
+  //     Future<T> Function(BuildContext)? showPicker,
+  //     bool? updateValueOnDismiss}) {
+  //   return BoringPickerField(
+  //     fieldController: fieldController ?? this.fieldController,
+  //     onChanged: onChanged ?? this.onChanged,
+  //     decoration: decoration ?? this.decoration,
+  //     boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
+  //     jsonKey: jsonKey ?? this.jsonKey,
+  //     displayCondition: displayCondition ?? this.displayCondition,
+  //     valueToString: valueToString ?? this.valueToString,
+  //     showPicker: showPicker ?? this.showPicker,
+  //     updateValueOnDismiss: updateValueOnDismiss ?? this.updateValueOnDismiss,
+  //   );
+  // }
 }

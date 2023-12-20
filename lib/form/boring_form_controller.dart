@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 //enum ChangedEvent { valueChanged, sumbittedForValidation }
+enum ValidationBehaviour { always, onSubmit, never }
 
 class MapKeyListException implements Exception {
   int _errorIndex;
@@ -59,7 +60,7 @@ extension on Map<String, dynamic> {
       return;
     }
     if (!containsKey(key)) {
-      this[key] = {};
+      this[key] = <String, dynamic>{};
     }
     final element = this[key];
     if (element is Map) {
@@ -70,8 +71,9 @@ extension on Map<String, dynamic> {
         e.pushFieldLeft(key);
         rethrow;
       }
+    } else {
+      throw MapKeyListException(keysList);
     }
-    throw MapKeyListException(keysList);
   }
 
   void mergeValue(Map<String, dynamic> map, [bool mergeSubMaps = false]) {
@@ -81,20 +83,44 @@ extension on Map<String, dynamic> {
     //TODO
     throw UnimplementedError();
   }
+
+  void addEntry(MapEntry<String, dynamic> entry) {
+    this[entry.key] = entry.value;
+  }
+
+  Map<String, dynamic> plain(String nestingChar) {
+    final plainMap = <String, dynamic>{};
+    for (var entry in entries) {
+      if (entry.value is Map<String, dynamic>) {
+        final toAdd = (entry.value as Map<String, dynamic>).plain(nestingChar);
+        for (var newEntry in toAdd.entries) {
+          final newKey = "${entry.key}$nestingChar${newEntry.key}";
+          plainMap[newKey] = newEntry.value;
+        }
+      } else {
+        plainMap.addEntry(entry);
+      }
+    }
+    return plainMap;
+  }
 }
 
 class BoringFormControllerValue extends ChangeNotifier {
-  final Map<String, dynamic> _value;
-  final Map<String, dynamic> initialValue;
-
+  static const NESTING_CHAR = '.';
   static const DeepCollectionEquality _equality = DeepCollectionEquality();
 
-  BoringFormControllerValue({this.initialValue = const {}})
+  final Map<String, dynamic> _value;
+  final Map<String, dynamic> initialValue;
+  final ValidationBehaviour validationBehaviour;
+
+  BoringFormControllerValue(
+      {this.initialValue = const {},
+      this.validationBehaviour = ValidationBehaviour.always})
       : _value = initialValue;
 
   dynamic getValue(List<String> fieldPath) => _value.getValue(fieldPath);
 
-  List<dynamic> getMultiValues(List<List<String>> fieldPaths) =>
+  List<dynamic> _getMultiValues(List<List<String>> fieldPaths) =>
       fieldPaths.map((keysList) => _value.getValue(keysList)).toList();
 
   void setFieldValue(List<String> fieldPath, dynamic value) {
@@ -103,8 +129,11 @@ class BoringFormControllerValue extends ChangeNotifier {
       return;
     }
     _value.setValue(fieldPath, value);
+    // print(_value);
     notifyListeners();
   }
+
+  Map<String, dynamic> get value => _value;
 
   set value(Map<String, dynamic> newValue) {
     if (_equality.equals(_value, newValue)) {
@@ -115,15 +144,8 @@ class BoringFormControllerValue extends ChangeNotifier {
     notifyListeners();
   }
 
-  Map<String, dynamic> get value => _value;
-
-  void mergeValue(Map<String, dynamic> map, [bool mergeSubMaps = false]) =>
-      _value.mergeValue(map, mergeSubMaps);
-}
-
-class BoringFormController extends BoringFormControllerValue {
-  final Map<List<String>, String?> _errors = {};
-  BoringFormController({super.initialValue});
+  // void mergeValue(Map<String, dynamic> map, [bool mergeSubMaps = false]) =>
+  //     _value.mergeValue(map, mergeSubMaps);
 
   void reset() {
     value = initialValue;
@@ -132,9 +154,61 @@ class BoringFormController extends BoringFormControllerValue {
   bool get hasChanged =>
       !BoringFormControllerValue._equality.equals(_value, initialValue);
 
-  void setFieldError(List<String> fieldPath, String? errror) {
-    _errors[fieldPath] = errror;
+  //PLAIN VERSIONS OF METHODS
+  dynamic getValuePlain(String fieldPath) =>
+      getValue(fieldPath.split(NESTING_CHAR));
+
+  List<dynamic> _getMultiValuesPlain(List<String> fieldPaths) =>
+      _getMultiValues(fieldPaths.map((e) => e.split(NESTING_CHAR)).toList());
+
+  void setFieldValuePlain(String fieldPath, dynamic value) =>
+      setFieldValue(fieldPath.split(NESTING_CHAR), value);
+
+  Map<String, dynamic> get valuePlain => _value.plain(NESTING_CHAR);
+  //TODO only `set value` and `void mergeValue` don't have a plain version
+}
+
+typedef ValidationFunction<T> = String? Function(
+    BoringFormController formController, T? value)?;
+typedef FieldPath = List<String>;
+
+class BoringFormController extends BoringFormControllerValue {
+  // final Map<FieldPath, bool> _errors = {};
+
+  final Map<FieldPath, ValidationFunction> _validationFunctions = {};
+  BoringFormController({super.initialValue});
+
+  void setValidationFunction<T>(
+      FieldPath fieldPath, ValidationFunction<T>? validationFunction) {
+    _validationFunctions[fieldPath] = validationFunction != null
+        ? ((controller, val) => validationFunction(controller, val as T?))
+        : null;
   }
 
-  bool get isValid => _errors.values.every((element) => element == null);
+  // @override
+  // void notifyListeners() {
+  //   // TODO: implement notifyListeners
+
+  //   super.notifyListeners();
+  // }
+
+  String? _getFieldError(FieldPath fieldPath) =>
+      _validationFunctions[fieldPath]?.call(this, getValue(fieldPath));
+
+  String? getFieldError(FieldPath fieldPath) => _shouldShowError
+      ? _validationFunctions[fieldPath]?.call(this, getValue(fieldPath))
+      : null;
+
+  bool get _isSubmitted => true;
+
+  bool get _shouldShowError =>
+      validationBehaviour == ValidationBehaviour.always ||
+      (validationBehaviour == ValidationBehaviour.onSubmit && _isSubmitted);
+
+  List<dynamic> selectPaths(
+          /*FieldPath fieldPath,*/ List<FieldPath> observedPaths,
+          {required bool includeError}) =>
+      [includeError && _shouldShowError, ..._getMultiValues(observedPaths)];
+
+  // bool get isValid => _errors.values.every((element) => element == false);
 }
