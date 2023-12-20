@@ -118,7 +118,8 @@ class BoringFormControllerValue extends ChangeNotifier {
       this.validationBehaviour = ValidationBehaviour.always})
       : _value = initialValue;
 
-  dynamic getValue(List<String> fieldPath) => _value.getValue(fieldPath);
+  dynamic getValue(List<String> fieldPath, {dynamic defaultValue}) =>
+      _value.getValue(fieldPath) ?? defaultValue;
 
   List<dynamic> _getMultiValues(List<List<String>> fieldPaths) =>
       fieldPaths.map((keysList) => _value.getValue(keysList)).toList();
