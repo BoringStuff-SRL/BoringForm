@@ -26,10 +26,15 @@ dependencies:
   #     url: https://github.com/BoringStuff-SRL/FlutterBoringTable.git
   #     ref: develop
   
-  boring_dropdown:
+  # boring_dropdown:
+  #   git:
+  #     url: https://github.com/LeoRc01/boring_dropdown
+  #     ref: main
+  boringcore:
     git:
-      url: https://github.com/LeoRc01/boring_dropdown
+      url: https://github.com/BoringStuff-SRL/BoringCore.git
       ref: main
+
   collection: ^1.17.2
 
 dev_dependencies:

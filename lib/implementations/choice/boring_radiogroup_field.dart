@@ -2,14 +2,8 @@
 import 'package:boring_form/field/boring_form_field.dart';
 import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_form/theme/boring_form_theme.dart';
+import 'package:boringcore/boring_dropdown.dart';
 import 'package:flutter/material.dart';
-
-class BoringChoiceItem<T> {
-  const BoringChoiceItem({required this.display, required this.value});
-
-  final String display;
-  final T? value;
-}
 
 class BoringRadioGroupField<T> extends BoringFormField<T> {
   const BoringRadioGroupField({
