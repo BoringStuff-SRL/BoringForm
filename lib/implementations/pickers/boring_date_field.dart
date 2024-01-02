@@ -16,7 +16,6 @@ class BoringDateTimeField extends BoringPickerField<DateTime> {
     super.readOnly,
     super.updateValueOnDismiss,
     super.showEraseValueButton,
-    super.eraseValueWidget,
     required DateTime firstDate,
     required DateTime lastDate,
   }) : super(
@@ -78,7 +77,6 @@ class BoringDateField extends BoringPickerField<DateTime> {
     super.readOnly,
     super.updateValueOnDismiss,
     super.showEraseValueButton,
-    super.eraseValueWidget,
     DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar,
     required DateTime firstDate,
     required DateTime lastDate,
@@ -130,7 +128,6 @@ class BoringTimeField extends BoringPickerField<TimeOfDay> {
     super.readOnly,
     super.updateValueOnDismiss,
     super.showEraseValueButton,
-    super.eraseValueWidget,
     TimePickerEntryMode initialEntryMode = TimePickerEntryMode.inputOnly,
     // required DateTime firstDate,
     // required DateTime lastDate,

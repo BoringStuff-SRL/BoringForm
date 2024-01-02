@@ -107,26 +107,20 @@ class BoringSwitchField extends BoringFormField<bool> {
     super.key,
     required super.fieldPath,
     super.observedFields,
-    super.validationFunction,
     super.decoration,
     super.readOnly,
     this.switchDecoration,
   });
-  // required super.jsonKey,
-  // super.fieldController,
-  // super.decoration,
-  // super.displayCondition,
-  // super.boringResponsiveSize,
-  // super.onChanged,
-  // this.switchDecoration});
 
   final BoringSwitchDecoration? switchDecoration;
   @override
   Widget builder(BuildContext context, BoringFormTheme formTheme,
-      BoringFormController formController, bool? fieldValue, String? errror) {
+      BoringFormController formController, bool? fieldValue, String? error) {
     return _SwitchWithDecoration(
-      value: formController.getValue(fieldPath),
-      onChanged: (value) => formController.setFieldValue(fieldPath, value),
+      value: formController.getValue(fieldPath) ?? false,
+      onChanged: (value) {
+        setChangedValue(formController, (value ?? false));
+      },
       switchDecoration: switchDecoration,
     );
   }
@@ -142,12 +136,14 @@ class _SwitchWithDecoration extends StatelessWidget {
   final Function(bool?) onChanged;
   final bool value;
   final BoringSwitchDecoration? switchDecoration;
+
   const _SwitchWithDecoration({
     Key? key,
     required this.onChanged,
     required this.value,
     this.switchDecoration,
   }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Switch(

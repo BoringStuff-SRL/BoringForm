@@ -48,7 +48,7 @@ class BoringTextField extends BoringFormField<String> {
       decoration:
           getInputDecoration(formController, formTheme, errror, fieldValue),
       onChanged: (value) {
-        formController.setFieldValue(fieldPath, value);
+        setChangedValue(formController, value);
       },
     );
   }

@@ -16,7 +16,7 @@ abstract class BoringFormField<T> extends BoringFormFieldBase<T, void> {
   });
 
   Widget builder(BuildContext context, BoringFormTheme formTheme,
-      BoringFormController formController, T? fieldValue, String? errror);
+      BoringFormController formController, T? fieldValue, String? error);
 
   @override
   void onObservedFieldsChange(BoringFormController formController) {}

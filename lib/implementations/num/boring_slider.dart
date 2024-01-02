@@ -7,19 +7,17 @@ class BoringSlider extends BoringFormField<double> {
   const BoringSlider({
     super.key,
     required super.fieldPath,
-    // super.fieldController,
     super.decoration,
-    // super.boringResponsiveSize,
+    //super.observedFields,
+    super.readOnly,
+    //super.validationFunction,
     this.min = 0,
     this.max = 1,
-    // super.displayCondition,
     this.showValueLabel = true,
     this.divisions,
-    // super.onChanged
   });
 
   final double min, max;
-  // late final initialValue = fieldController.initialValue ?? 0;
   final int? divisions;
   final bool showValueLabel;
 
@@ -28,9 +26,9 @@ class BoringSlider extends BoringFormField<double> {
 
   @override
   Widget builder(BuildContext context, BoringFormTheme formTheme,
-      BoringFormController formController, double? fieldValue, String? errror) {
+      BoringFormController formController, double? fieldValue, String? error) {
     final inputDecoration =
-        getInputDecoration(formController, formTheme, errror, fieldValue);
+        getInputDecoration(formController, formTheme, error, fieldValue);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -45,18 +43,13 @@ class BoringSlider extends BoringFormField<double> {
         Slider(
           min: min,
           max: max,
-          // activeColor:
-          //     value ? null : Theme.of(context).colorScheme.error,
-          // inactiveColor: value
-          //     ? null
-          //     : Theme.of(context).colorScheme.error.withAlpha(40),
           divisions: divisions,
           value: fieldValue ?? 0,
           label: showValueLabel ? fieldValue?.toStringAsFixed(2) : null,
-          // InputDecoration(
-          // ),
-          onChanged: (value) => formController.setFieldValue(fieldPath, value),
-        )
+          onChanged: isReadOnly(formTheme)
+              ? null
+              : (value) => setChangedValue(formController, value),
+        ),
       ],
     );
   }
@@ -141,7 +134,7 @@ class BoringRangeSlider extends BoringFormField<RangeValues> {
               ? RangeLabels(fieldValue?.start.toStringAsFixed(2) ?? "",
                   fieldValue?.end.toStringAsFixed(2) ?? "")
               : null,
-          onChanged: (value) => formController.setFieldValue(fieldPath, value),
+          onChanged: (value) => setChangedValue(formController, value),
         )
       ],
     );

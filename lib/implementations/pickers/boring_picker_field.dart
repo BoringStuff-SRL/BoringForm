@@ -9,7 +9,7 @@ class BoringPickerField<T> extends BoringFormField<T> {
   final bool updateValueOnDismiss;
   final String Function(T? value) valueToString;
   final bool showEraseValueButton;
-  final Widget eraseValueWidget;
+
   final Future<T?> Function(BuildContext context,
       BoringFormController formController, T? fieldValue) showPicker;
 
@@ -23,33 +23,30 @@ class BoringPickerField<T> extends BoringFormField<T> {
       required this.valueToString,
       required this.showPicker,
       this.updateValueOnDismiss = false,
-      this.eraseValueWidget = const Icon(Icons.close),
       this.showEraseValueButton = false});
 
   @override
   Widget builder(BuildContext context, BoringFormTheme formTheme,
-      BoringFormController formController, T? fieldValue, String? errror) {
+      BoringFormController formController, T? fieldValue, String? error) {
     return Row(
       children: [
         Expanded(
           child: TextField(
-            enabled: isReadOnly(formTheme),
+            enabled: !isReadOnly(formTheme),
             readOnly: true,
             controller: _textEditingController,
             textAlign: formTheme.style.textAlign,
             style: formTheme.style.textStyle,
             decoration: getInputDecoration(
-                formController, formTheme, errror, fieldValue),
-            // onChanged: ((value) {
-            //   controller.isValid;
-            // }),
+                formController, formTheme, error, fieldValue),
             onTap: () async {
               if (isReadOnly(formTheme)) {
                 return;
               }
+
               T? value = await showPicker(context, formController, fieldValue);
               if (value != null || updateValueOnDismiss) {
-                formController.setFieldValue(fieldPath, value);
+                setChangedValue(formController, value);
                 _textEditingController.text = valueToString(value);
               }
             },
@@ -61,10 +58,10 @@ class BoringPickerField<T> extends BoringFormField<T> {
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
               onTap: () {
-                formController.setFieldValue(fieldPath, null);
+                setChangedValue(formController, null);
                 _textEditingController.text = "";
               },
-              child: eraseValueWidget,
+              child: formTheme.style.eraseValueWidget,
             ),
           ),
         ]

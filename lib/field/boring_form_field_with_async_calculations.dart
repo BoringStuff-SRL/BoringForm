@@ -32,7 +32,7 @@ abstract class BoringFormFieldWithAsyncCalculations<T, TT>
       BoringFormTheme formTheme,
       BoringFormController formController,
       T? fieldValue,
-      String? errror,
+      String? error,
       AsyncSnapshot<TT> calculations);
 
   @override

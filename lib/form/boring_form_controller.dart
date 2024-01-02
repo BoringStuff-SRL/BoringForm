@@ -124,7 +124,7 @@ class BoringFormControllerValue extends ChangeNotifier {
   List<dynamic> _getMultiValues(List<List<String>> fieldPaths) =>
       fieldPaths.map((keysList) => _value.getValue(keysList)).toList();
 
-  void setFieldValue(List<String> fieldPath, dynamic value) {
+  void setFieldValue<R>(List<String> fieldPath, R value) {
     dynamic old = _value.getValue(fieldPath);
     if (_equality.equals(old, value)) {
       return;

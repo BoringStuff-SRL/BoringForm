@@ -31,13 +31,15 @@ class BoringPasswordField extends BoringFormField<String> {
       focusNode: _focusNode,
       textEditingController: _textEditingController,
       formTheme: formTheme,
-      formController: formController,
       readOnly: isReadOnly(formTheme),
       fieldPath: fieldPath,
       inputDecoration: inputDecoration,
       startsHidden: true,
       visibilityOnIcon: visibilityOnIcon,
       visibilityOffIcon: visibilityOffIcon,
+      onChanged: (value) {
+        setChangedValue(formController, value);
+      },
     );
   }
 
@@ -58,10 +60,10 @@ class BoringPasswordTextField extends StatefulWidget {
       required this.focusNode,
       required this.textEditingController,
       required this.formTheme,
-      required this.formController,
       required this.readOnly,
       required this.fieldPath,
       required this.inputDecoration,
+      required this.onChanged,
       this.visibilityOnIcon,
       this.visibilityOffIcon,
       required this.startsHidden});
@@ -69,13 +71,14 @@ class BoringPasswordTextField extends StatefulWidget {
   final FocusNode focusNode;
   final TextEditingController textEditingController;
   final BoringFormTheme formTheme;
-  final BoringFormController formController;
+
   final bool readOnly;
   final FieldPath fieldPath;
   final InputDecoration inputDecoration;
   final Widget? visibilityOnIcon;
   final Widget? visibilityOffIcon;
   final bool startsHidden;
+  final Function(String value) onChanged;
 
   @override
   State<BoringPasswordTextField> createState() =>
@@ -113,9 +116,7 @@ class _BoringPasswordTextFieldState extends State<BoringPasswordTextField> {
                     hidden = !hidden;
                   }),
               icon: hidden ? _visibilityOffIcon : _visibilityOnIcon)),
-      onChanged: (value) {
-        widget.formController.setFieldValue(widget.fieldPath, value);
-      },
+      onChanged: widget.onChanged,
     );
   }
 }

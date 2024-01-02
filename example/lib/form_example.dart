@@ -1,6 +1,18 @@
 import "package:boring_form/boring_form.dart";
+import 'package:boring_form/implementations/choice/boring_checkbox_field.dart';
+import 'package:boring_form/implementations/choice/boring_dropdown_field.dart';
+import 'package:boring_form/implementations/choice/boring_dropdown_multi_field.dart';
+import 'package:boring_form/implementations/choice/boring_radiogroup_field.dart';
+import 'package:boring_form/implementations/choice/boring_switch_field.dart';
+import 'package:boring_form/implementations/num/boring_number_field.dart';
 import 'package:boring_form/implementations/num/boring_slider.dart';
+import 'package:boring_form/implementations/pickers/boring_date_field.dart';
+import 'package:boring_form/implementations/pickers/boring_file_picker.dart';
+import 'package:boring_form/implementations/text/boring_email_field.dart';
 import 'package:boring_form/implementations/text/boring_password_field.dart';
+import 'package:boring_form/implementations/text/boring_phone_number_field.dart';
+import 'package:boring_form/implementations/text/boring_text_field.dart';
+import 'package:boringcore/widgets/boring_dropdown/utils/boring_choice_item.dart';
 import 'package:flutter/material.dart';
 
 // class FormExample extends StatelessWidget {
@@ -115,14 +127,127 @@ class FormExample0 extends StatelessWidget {
 
   // formController.plainValue
   // formController.value
-  // final myStyle = BoringStyle(...)
+  final myStyle = BoringFormStyle(
+      inputDecoration: InputDecoration(
+        border: OutlineInputBorder(),
+      ),
+      textStyle: TextStyle(color: Colors.red),
+      eraseValueWidget: Icon(Icons.abc_outlined));
+
+  final titleStyle = TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
+
   @override
   Widget build(BuildContext context) {
     return BoringForm(
-      // style: myStyle
+      style: myStyle,
       formController: c,
       child: Column(
         children: [
+          Text("Choice", style: titleStyle),
+          Text("checkbox"),
+          BoringCheckBoxField(
+            fieldPath: ["check"],
+            validationFunction: (formController, value) =>
+                value == false || value == null ? "Insert value" : null,
+            decoration: (formController) =>
+                BoringFieldDecoration(label: "ciaotest123"),
+          ),
+          Text("radio group"),
+          BoringRadioGroupField(
+            fieldPath: ["group"],
+            items: [
+              BoringChoiceItem(value: "test", display: "test"),
+              BoringChoiceItem(value: "asd", display: "asd"),
+            ],
+          ),
+          Text("switch"),
+          BoringSwitchField(fieldPath: ["switch"]),
+          Text("Multichoice dropdown"),
+          BoringDropdownMultiChoiceField(
+            fieldPath: ["multi"],
+            getItems: (search) async => await List.generate(20,
+                (index) => BoringChoiceItem(value: index, display: "$index")),
+            toBoringChoiceItem: (p0) =>
+                BoringChoiceItem(value: p0, display: "$p0"),
+            validationFunction: (formController, value) =>
+                (value?.length ?? 0) < 3 ? "almeno 3 elementi" : null,
+          ),
+          Text("Singlechoice dropdown"),
+          BoringDropdownField(
+            fieldPath: ["single"],
+            getItems: (search) async => await List.generate(20,
+                (index) => BoringChoiceItem(value: index, display: "$index")),
+            toBoringChoiceItem: (p0) =>
+                BoringChoiceItem(value: p0, display: "$p0"),
+            validationFunction: (formController, value) =>
+                (value == null) ? "seleziona un elemento" : null,
+          ),
+          //////////////////////////////
+          Text("Pickers", style: titleStyle),
+          Text("Date field"),
+          BoringDateField(
+              fieldPath: ["date"],
+              firstDate: DateTime.now(),
+              validationFunction: (formController, value) =>
+                  value == null ? "Insert value" : null,
+              lastDate: DateTime.now().add(const Duration(days: 300))),
+          Text("Datetime field"),
+          BoringDateTimeField(
+              fieldPath: ["datetime"],
+              firstDate: DateTime.now(),
+              validationFunction: (formController, value) =>
+                  value == null ? "Insert value" : null,
+              lastDate: DateTime.now().add(const Duration(days: 300))),
+          Text("Time field"),
+          BoringTimeField(
+            fieldPath: ["timefield"],
+            validationFunction: (formController, value) =>
+                value == null ? "Insert value" : null,
+          ),
+          Text("File picker"),
+          BoringFilePicker(
+            fieldPath: ["file"],
+            validationFunction: (formController, value) =>
+                value == null ? "Insert value" : null,
+          ),
+          //////////////////////////////
+          Text("Number fields", style: titleStyle),
+          Text("number"),
+          BoringNumberField(
+            fieldPath: ["num"],
+            validationFunction: (formController, value) =>
+                value == null ? "Insert value" : null,
+          ),
+          Text("slider"),
+          BoringSlider(
+            fieldPath: ["slider"],
+          ),
+          /////////////////////////////
+          Text("Text fields", style: titleStyle),
+          Text("email"),
+          BoringEmailField(
+            fieldPath: ["email"],
+            invalidEmailMessage: "invalid email",
+            validationFunction: (formController, value) =>
+                value == null ? "Insert value" : null,
+          ),
+          Text("password"),
+          BoringPasswordField(
+            fieldPath: ["password"],
+            validationFunction: (formController, value) =>
+                value == null ? "Insert value" : null,
+          ),
+          Text("phone"),
+          BoringPhoneNumberField(
+            fieldPath: ["phone"],
+            invalidPhoneMessage: "Invalid phone",
+          ),
+          Text("Text"),
+          BoringTextField(
+            fieldPath: ["text"],
+            validationFunction: (formController, value) =>
+                value == null ? "Insert value" : null,
+          ),
           const Text("CIAO LEO"),
           BoringFormChildWidget(
               observedFields: const [

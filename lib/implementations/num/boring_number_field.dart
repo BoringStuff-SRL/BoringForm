@@ -247,9 +247,9 @@ class BoringNumberField extends BoringFormField<num> {
           value = value.replaceAll(decimalSeparator!, ".");
         }
         try {
-          formController.setFieldValue(fieldPath, num.parse(value));
+          setChangedValue(formController, num.parse(value));
         } catch (e) {
-          formController.setFieldValue(fieldPath, null);
+          setChangedValue(formController, null);
         }
       },
     );

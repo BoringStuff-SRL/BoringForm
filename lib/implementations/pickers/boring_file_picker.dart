@@ -64,7 +64,7 @@ class BoringFilePicker extends BoringFormField<List<PlatformFile>> {
       // User canceled the picker
       return;
     }
-    formController.setFieldValue(fieldPath, pickerResult.files);
+    setChangedValue(formController, pickerResult.files);
   }
 
   @override
@@ -73,10 +73,10 @@ class BoringFilePicker extends BoringFormField<List<PlatformFile>> {
       BoringFormTheme formTheme,
       BoringFormController formController,
       List<PlatformFile>? fieldValue,
-      String? errror) {
+      String? error) {
     final style = formTheme.style;
     final decoration =
-        getInputDecoration(formController, formTheme, errror, fieldValue);
+        getInputDecoration(formController, formTheme, error, fieldValue);
     final readOnly = style.readOnly;
 
     return Align(
@@ -159,6 +159,8 @@ class BoringFilePicker extends BoringFormField<List<PlatformFile>> {
                     _feedback(fieldValue),
                   ],
                 ),
+              if (error != null)
+                Text(error, style: TextStyle(color: Colors.red))
             ],
           ),
           const SizedBox(

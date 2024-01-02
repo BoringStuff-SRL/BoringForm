@@ -27,17 +27,17 @@ class BoringCheckBoxField extends BoringFormField<bool> {
 
   @override
   Widget builder(BuildContext context, BoringFormTheme formTheme,
-      BoringFormController formController, bool? fieldValue, String? errror) {
+      BoringFormController formController, bool? fieldValue, String? error) {
     final fieldDecoration = getFieldDecoration(formController);
     final inputDecoration =
-        getInputDecoration(formController, formTheme, errror, fieldValue);
+        getInputDecoration(formController, formTheme, error, fieldValue);
     return Column(
       children: [
         GestureDetector(
           onTap: isReadOnly(formTheme)
               ? null
-              : () => formController.setFieldValue(
-                  fieldPath, !(formController.getValue(fieldPath))),
+              : () => setChangedValue(formController,
+                  !(formController.getValue(fieldPath) ?? false)),
           // {
           //     controller.value = !(controller.value ?? false);
           //   },
@@ -56,16 +56,27 @@ class BoringCheckBoxField extends BoringFormField<bool> {
                 width: 8,
               ),
               Flexible(
-                child: Text(
-                  fieldDecoration?.label ?? '',
-                  style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: ((formController.getValue(fieldPath) as bool?) ??
-                              false)
-                          ? checkColor ?? inputDecoration.iconColor
-                          : unCheckColor ?? inputDecoration.prefixIconColor),
+                child: Column(
+                  children: [
+                    Text(
+                      fieldDecoration?.label ?? '',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color:
+                              ((formController.getValue(fieldPath) as bool?) ??
+                                      false)
+                                  ? checkColor ?? inputDecoration.iconColor
+                                  : unCheckColor ??
+                                      inputDecoration.prefixIconColor),
+                    ),
+                    if (error != null) ...[
+                      Text(error,
+                          style: inputDecoration.errorStyle ??
+                              const TextStyle(color: Colors.red)),
+                    ],
+                  ],
                 ),
-              )
+              ),
             ],
           ),
         ),

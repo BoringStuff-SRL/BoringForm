@@ -1,7 +1,7 @@
 import 'package:boring_form/implementations/text/boring_text_regex.dart';
 
-class BoringEmailField extends BoringTextRegExpField {
-  BoringEmailField({
+class BoringPhoneNumberField extends BoringTextRegExpField {
+  BoringPhoneNumberField({
     super.key,
     required super.fieldPath,
     super.observedFields,

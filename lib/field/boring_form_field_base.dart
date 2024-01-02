@@ -25,7 +25,7 @@ abstract class BoringFormFieldBase<T, TT> extends StatelessWidget {
       _readOnly ?? formTheme.style.readOnly;
 
   void setChangedValue(BoringFormController formController, T? newValue) {
-    formController.setFieldValue(fieldPath, newValue);
+    formController.setFieldValue<T?>(fieldPath, newValue);
   }
 
   TT onObservedFieldsChange(BoringFormController formController);
