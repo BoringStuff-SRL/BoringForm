@@ -62,10 +62,10 @@ class BoringDropdownField<T>
       boringDropdownLoadingMode: boringDropdownLoadingMode,
       searchable: searchable,
       boringDropdownStyle: boringDropdownStyle.copyWith(
-        inputDecoration: formTheme.style.inputDecoration,
-        onClearIcon: formTheme.style.eraseValueWidget,
-        choiceItemDisplayTextStyle: formTheme.style.textStyle,
-      ),
+          inputDecoration:
+              getInputDecoration(formController, formTheme, error, fieldValue),
+          onClearIcon: formTheme.style.eraseValueWidget,
+          choiceItemDisplayTextStyle: formTheme.style.textStyle),
       clearable: clearable,
       errorMessage: error,
       debouncingTime: debouncingTime,

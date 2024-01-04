@@ -52,6 +52,8 @@ class BoringDropdownMultiChoiceField<T>
       List<T>? fieldValue,
       String? error,
       AsyncSnapshot<List<BoringChoiceItem<T>>> calculations) {
+    final fieldDecoration = getFieldDecoration(formController);
+
     return BoringDropdownMultichoice(
       value: fieldValue?.map((e) => toBoringChoiceItem(e)).toList(),
       searchItems: getItems,
@@ -63,10 +65,10 @@ class BoringDropdownMultiChoiceField<T>
       boringDropdownLoadingMode: boringDropdownLoadingMode,
       searchable: searchable,
       boringDropdownStyle: boringDropdownStyle.copyWith(
-        inputDecoration: formTheme.style.inputDecoration,
-        onClearIcon: formTheme.style.eraseValueWidget,
-        choiceItemDisplayTextStyle: formTheme.style.textStyle,
-      ),
+          inputDecoration:
+              getInputDecoration(formController, formTheme, error, fieldValue),
+          onClearIcon: formTheme.style.eraseValueWidget,
+          choiceItemDisplayTextStyle: formTheme.style.textStyle),
       clearable: clearable,
       errorMessage: error,
       debouncingTime: debouncingTime,

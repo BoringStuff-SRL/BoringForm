@@ -142,8 +142,9 @@ class FormExample0 extends StatelessWidget {
             fieldPath: ["check"],
             validationFunction: (formController, value) =>
                 value == false || value == null ? "Insert value" : null,
-            decoration: (formController) =>
-                BoringFieldDecoration(label: "ciaotest123"),
+            decoration: (formController) => BoringFieldDecoration(
+              label: "ciaotest123",
+            ),
           ),
           Text("radio group"),
           BoringRadioGroupField(
@@ -162,6 +163,8 @@ class FormExample0 extends StatelessWidget {
                 (index) => BoringChoiceItem(value: index, display: "$index")),
             toBoringChoiceItem: (p0) =>
                 BoringChoiceItem(value: p0, display: "$p0"),
+            decoration: (formController) => BoringFieldDecoration(
+                label: 'LABEL', hintText: 'THIS IS THE HINT'),
             validationFunction: (formController, value) =>
                 (value?.length ?? 0) < 3 ? "almeno 3 elementi" : null,
           ),
@@ -238,6 +241,8 @@ class FormExample0 extends StatelessWidget {
           Text("Text"),
           BoringTextField(
             fieldPath: ["text"],
+            decoration: (formController) =>
+                BoringFieldDecoration(label: 'labell'),
             validationFunction: (formController, value) =>
                 value == null ? "Insert value" : null,
           ),
