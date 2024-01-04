@@ -114,9 +114,10 @@ class BoringFormControllerValue extends ChangeNotifier {
   final ValidationBehaviour validationBehaviour;
 
   BoringFormControllerValue(
-      {this.initialValue = const {},
+      {Map<String, dynamic>? initialValue,
       this.validationBehaviour = ValidationBehaviour.always})
-      : _value = initialValue;
+      : _value = initialValue ?? {},
+        initialValue = initialValue ?? {};
 
   dynamic getValue(List<String> fieldPath, {dynamic defaultValue}) =>
       _value.getValue(fieldPath) ?? defaultValue;

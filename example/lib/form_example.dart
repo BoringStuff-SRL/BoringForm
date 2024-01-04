@@ -104,14 +104,7 @@ import 'package:flutter/material.dart';
 class FormExample0 extends StatelessWidget {
   FormExample0({super.key});
 
-  final c = BoringFormController(initialValue: {
-    // 'asd': {
-    //   "key": {"text1": "ale", "text32": "asdsad"},
-    //   "asdsda": {"text1": "ale", "text": "ale"},
-    // },
-    "nome": "Nome",
-    "cognome": "Cognome"
-  });
+  final c = BoringFormController();
 
   // "nome", "cognome", "indirizzo.citta.nome", "indirizzo.citta.cap", "indirizzo.provincia"
 
