@@ -53,15 +53,19 @@ class BoringFormChildWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Selector<BoringFormController, List<dynamic>>(
-        selector: (_, formController) => observeAllFields
-            ? [formController.value]
-            : formController.selectPaths(observedFields, includeError: false),
-        builder: (context, _, __) {
-          // final formController = context.read<BoringFormController>();
-          final formController =
-              Provider.of<BoringFormController>(context, listen: false);
-          return builder(context, formController);
-        });
+        selector: (_, formController) {
+      return observeAllFields
+          ? [
+              false,
+              ...formController.valuePlain.entries.map((e) => e.value).toList()
+            ]
+          : formController.selectPaths(observedFields, includeError: false);
+    }, builder: (context, _, __) {
+      // final formController = context.read<BoringFormController>();
+      final formController =
+          Provider.of<BoringFormController>(context, listen: false);
+      return builder(context, formController);
+    });
   }
 }
 
