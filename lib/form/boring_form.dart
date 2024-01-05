@@ -21,12 +21,14 @@ class BoringForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BoringFormTheme(
-        style: style ?? BoringFormStyle(),
-        child: ChangeNotifierProvider.value(
-          value: formController,
-          child: child,
-        ));
+    return FocusTraversalGroup(
+      child: BoringFormTheme(
+          style: style ?? BoringFormStyle(),
+          child: ChangeNotifierProvider.value(
+            value: formController,
+            child: child,
+          )),
+    );
   }
 }
 

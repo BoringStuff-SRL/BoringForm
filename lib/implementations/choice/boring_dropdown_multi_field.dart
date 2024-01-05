@@ -52,8 +52,6 @@ class BoringDropdownMultiChoiceField<T>
       List<T>? fieldValue,
       String? error,
       AsyncSnapshot<List<BoringChoiceItem<T>>> calculations) {
-    final fieldDecoration = getFieldDecoration(formController);
-
     return BoringDropdownMultichoice(
       value: fieldValue?.map((e) => toBoringChoiceItem(e)).toList(),
       searchItems: getItems,
