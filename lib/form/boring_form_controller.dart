@@ -180,6 +180,12 @@ class BoringFormController extends BoringFormControllerValue {
   final Map<FieldPath, ValidationFunction> _validationFunctions = {};
   BoringFormController({super.initialValue});
 
+  bool get isValid {
+    return _validationFunctions.entries.every(
+        (element) => element.value?.call(this, getValue(element.key)) == null);
+    //return _errors.values.every((element) => element == false);
+  }
+
   void setValidationFunction<T>(
       FieldPath fieldPath, ValidationFunction<T>? validationFunction) {
     _validationFunctions[fieldPath] = validationFunction != null
@@ -190,7 +196,6 @@ class BoringFormController extends BoringFormControllerValue {
   // @override
   // void notifyListeners() {
   //   // TODO: implement notifyListeners
-
   //   super.notifyListeners();
   // }
 
@@ -211,6 +216,4 @@ class BoringFormController extends BoringFormControllerValue {
           /*FieldPath fieldPath,*/ List<FieldPath> observedPaths,
           {required bool includeError}) =>
       [includeError && _shouldShowError, ..._getMultiValues(observedPaths)];
-
-  // bool get isValid => _errors.values.every((element) => element == false);
 }

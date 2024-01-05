@@ -4,14 +4,6 @@ import 'package:boring_form/implementations/choice/boring_dropdown_field.dart';
 import 'package:boring_form/implementations/choice/boring_dropdown_multi_field.dart';
 import 'package:boring_form/implementations/choice/boring_radiogroup_field.dart';
 import 'package:boring_form/implementations/choice/boring_switch_field.dart';
-import 'package:boring_form/implementations/num/boring_number_field.dart';
-import 'package:boring_form/implementations/num/boring_slider.dart';
-import 'package:boring_form/implementations/pickers/boring_date_field.dart';
-import 'package:boring_form/implementations/pickers/boring_file_picker.dart';
-import 'package:boring_form/implementations/text/boring_email_field.dart';
-import 'package:boring_form/implementations/text/boring_password_field.dart';
-import 'package:boring_form/implementations/text/boring_phone_number_field.dart';
-import 'package:boring_form/implementations/text/boring_text_field.dart';
 import 'package:boringcore/widgets/boring_dropdown/utils/boring_choice_item.dart';
 import 'package:flutter/material.dart';
 
@@ -179,105 +171,105 @@ class FormExample0 extends StatelessWidget {
                 (value == null) ? "seleziona un elemento" : null,
           ),
           //////////////////////////////
-          Text("Pickers", style: titleStyle),
-          Text("Date field"),
-          BoringDateField(
-              fieldPath: ["date"],
-              firstDate: DateTime.now(),
-              validationFunction: (formController, value) =>
-                  value == null ? "Insert value" : null,
-              lastDate: DateTime.now().add(const Duration(days: 300))),
-          Text("Datetime field"),
-          BoringDateTimeField(
-              fieldPath: ["datetime"],
-              firstDate: DateTime.now(),
-              validationFunction: (formController, value) =>
-                  value == null ? "Insert value" : null,
-              lastDate: DateTime.now().add(const Duration(days: 300))),
-          Text("Time field"),
-          BoringTimeField(
-            fieldPath: ["timefield"],
-            validationFunction: (formController, value) =>
-                value == null ? "Insert value" : null,
-          ),
-          Text("File picker"),
-          BoringFilePicker(
-            fieldPath: ["file"],
-            validationFunction: (formController, value) =>
-                value == null ? "Insert value" : null,
-          ),
-          //////////////////////////////
-          Text("Number fields", style: titleStyle),
-          Text("number"),
-          BoringNumberField(
-            fieldPath: ["num"],
-            validationFunction: (formController, value) =>
-                value == null ? "Insert value" : null,
-          ),
-          Text("slider"),
-          BoringSlider(
-            fieldPath: ["slider"],
-          ),
-          /////////////////////////////
-          Text("Text fields", style: titleStyle),
-          Text("email"),
-          BoringEmailField(
-            fieldPath: ["email"],
-            invalidEmailMessage: "invalid email",
-            validationFunction: (formController, value) =>
-                value == null ? "Insert value" : null,
-          ),
-          Text("password"),
-          BoringPasswordField(
-            fieldPath: ["password"],
-            validationFunction: (formController, value) =>
-                value == null ? "Insert value" : null,
-          ),
-          Text("phone"),
-          BoringPhoneNumberField(
-            fieldPath: ["phone"],
-            invalidPhoneMessage: "Invalid phone",
-          ),
-          Text("Text"),
-          BoringTextField(
-            fieldPath: ["text"],
-            decoration: (formController) =>
-                BoringFieldDecoration(label: 'labell'),
-            validationFunction: (formController, value) =>
-                value == null ? "Insert value" : null,
-          ),
-          const Text("CIAO LEO"),
-          BoringFormChildWidget(
-              observedFields: const [
-                ["cognome"],
-                ["anag", "nome"]
-              ],
-              builder: (context, formController) {
-                return Text("${formController.getValue([
-                      'nome'
-                    ])} ${formController.getValue([
-                      'cognome'
-                    ])} ${formController.getValue(
-                  ['anag', 'nome'],
-                )}");
-                // return Text(formController.value["asd"]);
-              }),
-          BoringFormChildWidget(
-              observeAllFields: true,
-              builder: (context, formController) {
-                print(formController.value);
-                return const Text("WATCHER");
-                // return Text(formController.value["asd"]);
-              }),
-          BoringPasswordField(
-            // allowEmpty: true,
-            fieldPath: const ["anag", "nome"],
-            validationFunction: (formController, value) =>
-                ((value?.length ?? 0) > 8) ? null : "Password at least 8 chars",
-          ),
-          const BoringSlider(
-            fieldPath: ["test", "num"],
-          ),
+          // Text("Pickers", style: titleStyle),
+          // Text("Date field"),
+          // BoringDateField(
+          //     fieldPath: ["date"],
+          //     firstDate: DateTime.now(),
+          //     validationFunction: (formController, value) =>
+          //         value == null ? "Insert value" : null,
+          //     lastDate: DateTime.now().add(const Duration(days: 300))),
+          // Text("Datetime field"),
+          // BoringDateTimeField(
+          //     fieldPath: ["datetime"],
+          //     firstDate: DateTime.now(),
+          //     validationFunction: (formController, value) =>
+          //         value == null ? "Insert value" : null,
+          //     lastDate: DateTime.now().add(const Duration(days: 300))),
+          // Text("Time field"),
+          // BoringTimeField(
+          //   fieldPath: ["timefield"],
+          //   validationFunction: (formController, value) =>
+          //       value == null ? "Insert value" : null,
+          // ),
+          // Text("File picker"),
+          // BoringFilePicker(
+          //   fieldPath: ["file"],
+          //   validationFunction: (formController, value) =>
+          //       value == null ? "Insert value" : null,
+          // ),
+          // //////////////////////////////
+          // Text("Number fields", style: titleStyle),
+          // Text("number"),
+          // BoringNumberField(
+          //   fieldPath: ["num"],
+          //   validationFunction: (formController, value) =>
+          //       value == null ? "Insert value" : null,
+          // ),
+          // Text("slider"),
+          // BoringSlider(
+          //   fieldPath: ["slider"],
+          // ),
+          // /////////////////////////////
+          // Text("Text fields", style: titleStyle),
+          // Text("email"),
+          // BoringEmailField(
+          //   fieldPath: ["email"],
+          //   invalidEmailMessage: "invalid email",
+          //   validationFunction: (formController, value) =>
+          //       value == null ? "Insert value" : null,
+          // ),
+          // Text("password"),
+          // BoringPasswordField(
+          //   fieldPath: ["password"],
+          //   validationFunction: (formController, value) =>
+          //       value == null ? "Insert value" : null,
+          // ),
+          // Text("phone"),
+          // BoringPhoneNumberField(
+          //   fieldPath: ["phone"],
+          //   invalidPhoneMessage: "Invalid phone",
+          // ),
+          // Text("Text"),
+          // BoringTextField(
+          //   fieldPath: ["text"],
+          //   decoration: (formController) =>
+          //       BoringFieldDecoration(label: 'labell'),
+          //   validationFunction: (formController, value) =>
+          //       value == null ? "Insert value" : null,
+          // ),
+          // const Text("CIAO LEO"),
+          // BoringFormChildWidget(
+          //     observedFields: const [
+          //       ["cognome"],
+          //       ["anag", "nome"]
+          //     ],
+          //     builder: (context, formController) {
+          //       return Text("${formController.getValue([
+          //             'nome'
+          //           ])} ${formController.getValue([
+          //             'cognome'
+          //           ])} ${formController.getValue(
+          //         ['anag', 'nome'],
+          //       )}");
+          //       // return Text(formController.value["asd"]);
+          //     }),
+          // BoringFormChildWidget(
+          //     observeAllFields: true,
+          //     builder: (context, formController) {
+          //       print(formController.value);
+          //       return const Text("WATCHER");
+          //       // return Text(formController.value["asd"]);
+          //     }),
+          // BoringPasswordField(
+          //   // allowEmpty: true,
+          //   fieldPath: const ["anag", "nome"],
+          //   validationFunction: (formController, value) =>
+          //       ((value?.length ?? 0) > 8) ? null : "Password at least 8 chars",
+          // ),
+          // const BoringSlider(
+          //   fieldPath: ["test", "num"],
+          // ),
           ElevatedButton(
               onPressed: () {
                 c.setFieldValue(["nome"], "(${c.getValue(["nome"])})");
@@ -305,7 +297,7 @@ class FormExample0 extends StatelessWidget {
               child: const Text("SET FORM VALUE")),
           ElevatedButton(
               onPressed: () {
-                // print(c.isValid);
+                print("IS-VALID: ${c.isValid}");
               },
               child: const Text("IS VALID")),
         ],
