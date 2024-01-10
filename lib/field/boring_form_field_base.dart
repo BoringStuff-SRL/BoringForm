@@ -29,6 +29,7 @@ abstract class BoringFormFieldBase<T, TT> extends StatelessWidget {
   }
 
   TT onObservedFieldsChange(BoringFormController formController);
+
   void onSelfChange(BoringFormController formController, T? fieldValue);
 
   @override

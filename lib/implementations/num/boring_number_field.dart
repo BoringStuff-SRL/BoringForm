@@ -2,6 +2,7 @@
 
 import 'package:boring_form/boring_form.dart';
 import 'package:boring_form/field/boring_form_field.dart';
+import 'package:flutter/foundation.dart';
 // import 'package:boring_form/field/boring_field.dart';
 // import 'package:boring_form/field/boring_field_controller.dart';
 // import 'package:boring_form/theme/boring_field_decoration.dart';
@@ -15,22 +16,16 @@ class BoringNumberField extends BoringFormField<num> {
   final _focusNode = FocusNode();
   BoringNumberField({
     super.key,
-    // super.fieldController,
-    // super.onChanged,
+    super.onChanged,
     required super.fieldPath,
     super.observedFields,
     super.validationFunction,
     super.decoration,
     super.readOnly,
-    // super.boringResponsiveSize,
-    // super.decoration,
     this.decimalSeparator = defaultDecimalSeparator,
     this.thousandsSeparator = defaultThousandsSeparator,
     this.decimalPlaces = 0,
     this.fieldFormatter,
-    // bool? readOnly,
-    // this.onlyIntegers = false,
-    // super.displayCondition,
   })  : assert(decimalSeparator != thousandsSeparator,
             'Decimal and thousands separator can\'t be the same'),
         assert(
@@ -38,7 +33,8 @@ class BoringNumberField extends BoringFormField<num> {
                 (['.', ','].contains(thousandsSeparator)),
             'Invalid value entered for decimalSeparator AND thousandsSeparator. Only valid characters are `,` or `.`');
 
-  final TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController _textEditingController =
+      TextEditingController(text: 'TESTESTSETSET');
 
   final String decimalSeparator;
   final String thousandsSeparator;
@@ -140,8 +136,13 @@ class BoringNumberField extends BoringFormField<num> {
           .replaceAll(decimalSeparatorTemporary, decimalSeparator);
 
       _textEditingController.text = tempString;
+      if (kIsWeb) {
+        _textEditingController.selection = TextSelection.fromPosition(
+            TextPosition(offset: _textEditingController.text.length));
+      }
     } else {
       _textEditingController.text = "";
     }
+    onChanged?.call(formController, fieldValue);
   }
 }

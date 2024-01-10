@@ -5,6 +5,7 @@ import 'package:boring_form/implementations/choice/boring_dropdown_multi_field.d
 import 'package:boring_form/implementations/choice/boring_radiogroup_field.dart';
 import 'package:boring_form/implementations/choice/boring_switch_field.dart';
 import 'package:boring_form/implementations/num/boring_number_field.dart';
+import 'package:boring_form/implementations/text/boring_text_field.dart';
 import 'package:boringcore/widgets/boring_dropdown/utils/boring_choice_item.dart';
 import 'package:flutter/material.dart';
 
@@ -234,14 +235,14 @@ class FormExample0 extends StatelessWidget {
           //   fieldPath: ["phone"],
           //   invalidPhoneMessage: "Invalid phone",
           // ),
-          // Text("Text"),
-          // BoringTextField(
-          //   fieldPath: ["text"],
-          //   decoration: (formController) =>
-          //       BoringFieldDecoration(label: 'labell'),
-          //   validationFunction: (formController, value) =>
-          //       value == null ? "Insert value" : null,
-          // ),
+          Text("Text"),
+          BoringTextField(
+            fieldPath: ["text"],
+            decoration: (formController) =>
+                BoringFieldDecoration(label: 'labell'),
+            validationFunction: (formController, value) =>
+                value == null ? "Insert value" : null,
+          ),
           // const Text("CIAO LEO"),
           // BoringFormChildWidget(
           //     observedFields: const [
