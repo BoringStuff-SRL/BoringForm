@@ -26,22 +26,25 @@ class BoringFormStepper extends BoringField {
     if (v) {
       if (sections.length != _finalSections.length) {
         for (var e in sections) {
-          _finalSections.add(e.copyWith(
-              sectionController: BoringSectionController(
-                  initialValue:
-                      (initialValue as Map<String, dynamic>?)?[e.jsonKey])));
+          _finalSections.add(e);
         }
       } else {
-        for (int i = 0; i < _finalSections.length; i++) {
-          _finalSections[i] = _finalSections[i].copyWith(
-              sectionController: BoringSectionController(
-                  initialValue: (initialValue
-                      as Map<String, dynamic>?)?[_finalSections[i].jsonKey]));
+        if (initialValue != null) {
+          for (int i = 0; i < _finalSections.length; i++) {
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+              _finalSections[i] = _finalSections[i].copyWith(
+                  sectionController: BoringSectionController(
+                      initialValue: (initialValue
+                          as Map<String, dynamic>?)?[_finalSections[i].jsonKey])
+                    ..ignoreFields = _finalSections[i].controller.ignoreFields);
+            });
+          }
         }
       }
     }
 
     (fieldController as BoringStepperController).addControllers(_finalSections);
+
     return false;
   }
 
