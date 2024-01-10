@@ -4,6 +4,7 @@ import 'package:boring_form/implementations/choice/boring_dropdown_field.dart';
 import 'package:boring_form/implementations/choice/boring_dropdown_multi_field.dart';
 import 'package:boring_form/implementations/choice/boring_radiogroup_field.dart';
 import 'package:boring_form/implementations/choice/boring_switch_field.dart';
+import 'package:boring_form/implementations/num/boring_number_field.dart';
 import 'package:boringcore/widgets/boring_dropdown/utils/boring_choice_item.dart';
 import 'package:flutter/material.dart';
 
@@ -162,7 +163,7 @@ class FormExample0 extends StatelessWidget {
           ),
           Text("Singlechoice dropdown"),
           BoringDropdownField(
-            fieldPath: ["single"],
+            fieldPath: ["single", 'test'],
             getItems: (search) async => await List.generate(20,
                 (index) => BoringChoiceItem(value: index, display: "$index")),
             toBoringChoiceItem: (p0) =>
@@ -199,13 +200,16 @@ class FormExample0 extends StatelessWidget {
           //       value == null ? "Insert value" : null,
           // ),
           // //////////////////////////////
-          // Text("Number fields", style: titleStyle),
-          // Text("number"),
-          // BoringNumberField(
-          //   fieldPath: ["num"],
-          //   validationFunction: (formController, value) =>
-          //       value == null ? "Insert value" : null,
-          // ),
+          Text("Number fields", style: titleStyle),
+          Text("number"),
+          BoringNumberField(
+            fieldPath: ["num"],
+            decimalSeparator: ',',
+            thousandsSeparator: '.',
+            decimalPlaces: 2,
+            validationFunction: (formController, value) =>
+                value == null ? "Insert value" : null,
+          ),
           // Text("slider"),
           // BoringSlider(
           //   fieldPath: ["slider"],
@@ -254,13 +258,18 @@ class FormExample0 extends StatelessWidget {
           //       )}");
           //       // return Text(formController.value["asd"]);
           //     }),
-          // BoringFormChildWidget(
-          //     observeAllFields: true,
-          //     builder: (context, formController) {
-          //       print(formController.value);
-          //       return const Text("WATCHER");
-          //       // return Text(formController.value["asd"]);
-          //     }),
+          BoringFormChildWidget(
+
+              // observedFields: [
+              //   ['single', 'test'],
+              //   ['multi'],
+              // ],
+              builder: (context, formController) {
+            // print(formController.value);
+
+            return const Text("WATCHER");
+            // return Text(formController.value["asd"]);
+          }),
           // BoringPasswordField(
           //   // allowEmpty: true,
           //   fieldPath: const ["anag", "nome"],
