@@ -2,7 +2,6 @@
 
 import 'package:boring_form/boring_form.dart';
 import 'package:boring_form/field/boring_form_field.dart';
-import 'package:flutter/foundation.dart';
 // import 'package:boring_form/field/boring_field.dart';
 // import 'package:boring_form/field/boring_field_controller.dart';
 // import 'package:boring_form/theme/boring_field_decoration.dart';
@@ -11,6 +10,89 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+
+class MyNumberFormatter extends TextInputFormatter {
+  final String decimalSeparator;
+  final String thousandsSeparator;
+  final int decimalPlaces;
+
+  MyNumberFormatter({
+    required this.decimalSeparator,
+    required this.thousandsSeparator,
+    required this.decimalPlaces,
+  });
+
+  bool get onlyIntegers => decimalPlaces == 0;
+
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    // se il testo nuovo e' vuoto allora torno vuoto
+    if (newValue.text.isEmpty) {
+      return const TextEditingValue();
+    }
+
+    // prendo il testo e lo trasformo in un numero parsabile
+    String valueText = newValue.text
+        .replaceAll(thousandsSeparator, '')
+        .replaceAll(decimalSeparator, '.');
+
+    // parso
+    final valueNum = num.tryParse(valueText);
+
+    if (valueNum == null) {
+      // se fallisco il parsing allora ritorno quello che c'era prima
+      return oldValue;
+    }
+
+    // calcolo il numero di tokens decimali da inserire
+    final decimalPlacesFormat =
+        List.generate(decimalPlaces, (index) => '#').join('');
+
+    // creo il formatter (bisogna lasciare en_US)
+    final myFormat = onlyIntegers
+        ? NumberFormat('###,###', 'en_US')
+        : NumberFormat('###,###.$decimalPlacesFormat', 'en_US');
+
+    // formatto la stringa
+    String result = myFormat
+        .format(valueNum)
+        .replaceAll('.', '#')
+        .replaceAll(',', thousandsSeparator)
+        .replaceAll('#', decimalSeparator);
+
+    // controllo se l'ultimo carattere inserito e' il separatore decimale
+    final lastCharacterIsDecimalSeparator =
+        newValue.text[newValue.text.length - 1] == decimalSeparator;
+
+    // se lo e' allora lo appendo al risultato
+    if (lastCharacterIsDecimalSeparator) {
+      result = '$result$decimalSeparator';
+    }
+
+    // controllo il numero dei separatori di migliaia che ho aggiunto in questa battitura
+    final numberOfThousandsSeparatorAdded =
+        (result.split(thousandsSeparator).length) -
+            (oldValue.text.split(thousandsSeparator).length);
+
+    int getNewOffset() {
+      final newOffset =
+          newValue.selection.extent.offset + numberOfThousandsSeparatorAdded;
+      if (newOffset > result.length) {
+        return newOffset - 1;
+      }
+
+      return newOffset;
+    }
+
+    return TextEditingValue(
+      text: result,
+      selection: TextSelection.fromPosition(
+        TextPosition(offset: getNewOffset()),
+      ),
+    );
+  }
+}
 
 class BoringNumberField extends BoringFormField<num> {
   final _focusNode = FocusNode();
@@ -33,8 +115,7 @@ class BoringNumberField extends BoringFormField<num> {
                 (['.', ','].contains(thousandsSeparator)),
             'Invalid value entered for decimalSeparator AND thousandsSeparator. Only valid characters are `,` or `.`');
 
-  final TextEditingController _textEditingController =
-      TextEditingController(text: 'TESTESTSETSET');
+  final TextEditingController _textEditingController = TextEditingController();
 
   final String decimalSeparator;
   final String thousandsSeparator;
@@ -42,45 +123,10 @@ class BoringNumberField extends BoringFormField<num> {
   final NumberFormat? fieldFormatter;
   bool get _onlyIntegers => decimalPlaces == 0;
 
-  // InputDecoration getEnhancedDecoration(BuildContext context) {
-  //   return getDecoration(context).copyWith();
-  // }
-
-  // @override
-  // bool setInitialValue(num? initialValue) {
-  //   final v = super.setInitialValue(initialValue);
-  //   if (v) {
-  //     textEditingController.text =
-  //         fieldController.value != null ? "${fieldController.value}" : "";
-  //   }
-  //   return v;
-  // }
-  //TODO get those values from the theme
   static const defaultDecimalSeparator = ".";
   static const defaultThousandsSeparator = ",";
   static const nullSeparator = '_null_';
   final signed = false;
-
-  RegExp get dotThousandsSeparatorRegex =>
-      RegExp(r'[0-9]+([.]?[0-9])*([,][0-9]*)?');
-
-  RegExp get commaThousandsSeparatorRegex =>
-      RegExp(r'[0-9]+([,]?[0-9])*([.][0-9]*)?');
-
-  RegExp get dotThousandsSeparatorRegexOnlyIntegers =>
-      RegExp(r'[0-9]+([.][0-9])*');
-
-  RegExp get commaThousandsSeparatorRegexOnlyIntegers =>
-      RegExp(r'[0-9]+(,[0-9])*');
-
-  FilteringTextInputFormatter get requestedNumberFilterFormat =>
-      FilteringTextInputFormatter.allow(_onlyIntegers
-          ? (thousandsSeparator == ','
-              ? commaThousandsSeparatorRegexOnlyIntegers
-              : dotThousandsSeparatorRegexOnlyIntegers)
-          : (thousandsSeparator == ','
-              ? commaThousandsSeparatorRegex
-              : dotThousandsSeparatorRegex));
 
   @override
   Widget builder(BuildContext context, BoringFormTheme formTheme,
@@ -94,7 +140,13 @@ class BoringNumberField extends BoringFormField<num> {
       style: formTheme.style.textStyle,
       keyboardType: TextInputType.numberWithOptions(
           decimal: _onlyIntegers, signed: signed),
-      inputFormatters: [requestedNumberFilterFormat],
+      inputFormatters: [
+        MyNumberFormatter(
+          decimalPlaces: decimalPlaces,
+          decimalSeparator: decimalSeparator,
+          thousandsSeparator: thousandsSeparator,
+        )
+      ],
       decoration:
           getInputDecoration(formController, formTheme, error, fieldValue),
       onChanged: (value) {
@@ -116,31 +168,7 @@ class BoringNumberField extends BoringFormField<num> {
 
   @override
   void onSelfChange(BoringFormController formController, num? fieldValue) {
-    if (fieldValue != null) {
-      // creating the string for the NumberFormat
-      final decimalPlacesFormat =
-          List.generate(decimalPlaces, (index) => '#').join('');
-
-      // creating the formatter (must leave en_US)
-      final myFormat = _onlyIntegers
-          ? NumberFormat('###,###', 'en_US')
-          : NumberFormat('###,###.$decimalPlacesFormat', 'en_US');
-
-      const decimalSeparatorTemporary = '#';
-
-      // replacing the characters for the correct visualization
-      final tempString = myFormat
-          .format(fieldValue)
-          .replaceAll('.', decimalSeparatorTemporary)
-          .replaceAll(',', thousandsSeparator)
-          .replaceAll(decimalSeparatorTemporary, decimalSeparator);
-
-      _textEditingController.text = tempString;
-      if (kIsWeb) {
-        _textEditingController.selection = TextSelection.fromPosition(
-            TextPosition(offset: _textEditingController.text.length));
-      }
-    } else {
+    if (fieldValue == null) {
       _textEditingController.text = "";
     }
     onChanged?.call(formController, fieldValue);
