@@ -20,7 +20,7 @@ dependencies:
 
   dropdown_button2:
     git:
-      url: https://github.com/enzo-desimone/drop_down.git
+      url: https://github.com/BoringStuff-SRL/drop_down.git
   
   boring_table:
     git:
