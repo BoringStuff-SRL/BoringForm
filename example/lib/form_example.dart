@@ -1,11 +1,7 @@
 import "package:boring_form/boring_form.dart";
-import 'package:boring_form/implementations/choice/boring_checkbox_field.dart';
-import 'package:boring_form/implementations/choice/boring_dropdown_field.dart';
 import 'package:boring_form/implementations/choice/boring_dropdown_multi_field.dart';
-import 'package:boring_form/implementations/choice/boring_radiogroup_field.dart';
-import 'package:boring_form/implementations/choice/boring_switch_field.dart';
-import 'package:boring_form/implementations/num/boring_number_field.dart';
-import 'package:boring_form/implementations/text/boring_text_field.dart';
+import 'package:boring_form/implementations/stepper/boring_step.dart';
+import 'package:boring_form/implementations/stepper/boring_stepper.dart';
 import 'package:boringcore/widgets/boring_dropdown/utils/boring_choice_item.dart';
 import 'package:flutter/material.dart';
 
@@ -202,6 +198,7 @@ class FormExample0 extends StatelessWidget {
           // ),
           // //////////////////////////////
           Text("Number fields", style: titleStyle),
+
           Text("number"),
           BoringNumberField(
             fieldPath: ["num"],
@@ -310,6 +307,93 @@ class FormExample0 extends StatelessWidget {
                 print("IS-VALID: ${c.isValid}");
               },
               child: const Text("IS VALID")),
+          ElevatedButton(
+              onPressed: () {
+                print("CHANGED: ${c.hasChanged}");
+              },
+              child: const Text("CHANGED")),
+          ElevatedButton(
+              onPressed: () {
+                final formController = BoringFormController();
+                final _stepNotifier = ValueNotifier(0);
+                showDialog(
+                  context: context,
+                  builder: (context) => BoringForm(
+                    formController: formController,
+                    child: AlertDialog(
+                      content: SizedBox(
+                        width: 700,
+                        height: 700,
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: BoringStepper(
+                                steps: [
+                                  BoringStep(
+                                    child: Column(
+                                      children: [
+                                        BoringTextField(fieldPath: ['test']),
+                                      ],
+                                    ),
+                                    title:
+                                        'This is the title of the first step',
+                                  ),
+                                  BoringStep(
+                                    child: Column(
+                                      children: [
+                                        BoringTextField(
+                                            fieldPath: ['te12st123']),
+                                      ],
+                                    ),
+                                    title:
+                                        'This is the title of the second step',
+                                  ),
+                                  BoringStep(
+                                    child: Column(
+                                      children: [
+                                        BoringTextField(
+                                            fieldPath: ['test1123']),
+                                      ],
+                                    ),
+                                    title:
+                                        'This is the title of the second step',
+                                  ),
+                                  BoringStep(
+                                    child: Column(
+                                      children: [
+                                        BoringTextField(
+                                            fieldPath: ['test23123']),
+                                      ],
+                                    ),
+                                    title:
+                                        'This is the title of the second step',
+                                  ),
+                                  BoringStep(
+                                    child: Column(
+                                      children: [
+                                        BoringTextField(
+                                            fieldPath: ['test1233']),
+                                      ],
+                                    ),
+                                    title:
+                                        'This is the title of the second step',
+                                  ),
+                                ],
+                              ),
+                            ),
+                            FilledButton(
+                                onPressed: () {
+                                  print(formController.value);
+                                },
+                                child: Text('print valuee')),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+              child: const Text("OPEN STEPPER")),
         ],
       ),
     );
