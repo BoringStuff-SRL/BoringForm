@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, overridden_fields, must_be_immutable
 import 'package:boring_form/boring_form.dart';
+import 'package:boringcore/boringcore_responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +19,26 @@ class BoringForm extends StatelessWidget {
       required this.child,
       this.style})
       : formController = formController ?? BoringFormController();
+
+  BoringForm.responsive(
+      {super.key,
+      BoringFormController? formController,
+      required List<Widget> children,
+      BoringResponsiveSize responsiveSize =
+          const BoringResponsiveSize.defaultSizes(),
+      this.style})
+      : formController = formController ?? BoringFormController(),
+        child = BoringResponsiveLayout(
+            children: children
+                .map(
+                  (e) => e is BoringResponsiveChild
+                      ? e
+                      : BoringResponsiveChild(
+                          responsiveSize: responsiveSize,
+                          child: e,
+                        ),
+                )
+                .toList());
 
   @override
   Widget build(BuildContext context) {
