@@ -29,9 +29,10 @@ dependencies:
   #   git:
   #     url: https://github.com/LeoRc01/boring_dropdown
   #     ref: main
+
   boringcore:
     git:
-      url: https://github.com/BoringStuff-SRL/BoringCore.git
+      url: https://github.com/BoringStuff-SRL/BoringCore
       ref: main
 
   collection: ^1.17.2
