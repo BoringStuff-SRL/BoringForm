@@ -1,4 +1,3 @@
-import 'package:example/form_table_example.dart';
 import 'package:flutter/material.dart';
 
 import 'form_example.dart';
@@ -27,7 +26,7 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("FORMS EXAMPLE")),
-      body: SingleChildScrollView(child: FormExample2()),
+      body: SingleChildScrollView(child: FormExample0()),
     );
   }
 }

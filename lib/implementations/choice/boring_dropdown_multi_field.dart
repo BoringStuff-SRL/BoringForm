@@ -6,9 +6,10 @@ import 'package:boring_form/theme/boring_form_theme.dart';
 import 'package:boringcore/boring_dropdown.dart';
 import 'package:flutter/material.dart';
 
-class BoringDropdownField<T>
-    extends BoringFormFieldWithAsyncCalculations<T, List<BoringChoiceItem<T>>> {
-  const BoringDropdownField({
+class BoringDropdownMultiChoiceField<T>
+    extends BoringFormFieldWithAsyncCalculations<List<T>,
+        List<BoringChoiceItem<T>>> {
+  const BoringDropdownMultiChoiceField({
     super.key,
     required super.fieldPath,
     required this.getItems,
@@ -16,8 +17,8 @@ class BoringDropdownField<T>
     super.observedFields,
     super.readOnly,
     super.validationFunction,
-    this.onChanged,
     required this.toBoringChoiceItem,
+    this.onChanged,
     this.onAdd,
     this.loadingIndicator = const CircularProgressIndicator(),
     this.clearable = true,
@@ -30,11 +31,11 @@ class BoringDropdownField<T>
   });
 
   final Future<List<BoringChoiceItem<T>>> Function(String search) getItems;
-  final BoringChoiceItem<T> Function(T element) toBoringChoiceItem;
-  final void Function(BoringFormController formController, T? fieldValue)?
+  final BoringChoiceItem<T> Function(T) toBoringChoiceItem;
+  final void Function(BoringFormController formController, List<T>? fieldValue)?
       onChanged;
 
-  final FutureOr<BoringChoiceItem<T>?> Function(String)? onAdd;
+  final FutureOr<List<BoringChoiceItem<T>>?> Function(String)? onAdd;
   final bool callFutureOnStopWriting;
   final bool searchable;
   final BoringDropdownStyle boringDropdownStyle;
@@ -43,19 +44,19 @@ class BoringDropdownField<T>
   final Duration debouncingTime;
   final AsyncSnapshot<List<BoringChoiceItem<T>>>? initialItems;
   final Widget loadingIndicator;
-
   @override
   Widget builder(
       BuildContext context,
       BoringFormTheme formTheme,
       BoringFormController formController,
-      T? fieldValue,
+      List<T>? fieldValue,
       String? error,
       AsyncSnapshot<List<BoringChoiceItem<T>>> calculations) {
-    return BoringDropdown(
-      value: fieldValue != null ? toBoringChoiceItem(fieldValue) : null,
+    return BoringDropdownMultichoice(
+      value: fieldValue?.map((e) => toBoringChoiceItem(e)).toList(),
       searchItems: getItems,
-      onChanged: (value) => setChangedValue(formController, value?.value),
+      onChanged: (values) =>
+          setChangedValue(formController, values?.map((e) => e.value).toList()),
       readOnly: isReadOnly(formTheme),
       onAdd: onAdd,
       callFutureOnStopWriting: callFutureOnStopWriting,
@@ -80,7 +81,7 @@ class BoringDropdownField<T>
       getItems("");
 
   @override
-  void onSelfChange(BoringFormController formController, T? fieldValue) {
+  void onSelfChange(BoringFormController formController, List<T>? fieldValue) {
     if (onChanged != null) {
       onChanged?.call(formController, fieldValue);
     }

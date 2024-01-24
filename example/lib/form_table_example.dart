@@ -1,6 +1,7 @@
-import 'dart:io';
+/*import 'dart:io';
 import 'package:boring_form/implementations/choice/boring_multichoice_search_dropdown_field.dart';
 import 'package:boring_form/implementations/dialog/boring_stepper.dart';
+import 'package:boring_form/implementations/dialog/boring_stepper_controller.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:boring_form/implementations/boring_file_picker.dart';
 import 'package:boring_form/implementations/choice/boring_multichoice_dropdown_field.dart';
@@ -28,7 +29,13 @@ class TableFormExample extends StatelessWidget {
   TableFormExample({super.key});
 
   final fc = BoringFormController();
-  final stepperController = BoringFormController();
+  final stepperController = BoringStepperController(initialValue: {
+    "stepper": {
+      "s1": {"text": "pippo"},
+      "s2": {"text": "pluto"}
+    }
+  });
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -58,6 +65,8 @@ class TableFormExample extends StatelessWidget {
                 ),
               ),
               onConfirmButtonPress: (context, isStepperValid) {
+                print(stepperController.value);
+                print(stepperController.initialValue);
                 print(isStepperValid);
               },
               sections: [
@@ -110,9 +119,7 @@ class TableFormExample extends StatelessWidget {
             BoringSection(
               jsonKey: 'test',
               fields: [
-
                 BoringNumberField(jsonKey: 'asdas'),
-
                 BoringSearchDropDownField<String>(
                   jsonKey: 'multichoicesearch',
                   onAddIcon: Icon(Icons.add_a_photo),
@@ -151,10 +158,6 @@ class TableFormExample extends StatelessWidget {
                 BoringNumberField(
                   jsonKey: 'kmSingolaTratta',
                   fieldController: BoringFieldController(),
-                  onChanged: (p0) {
-                    print("asdasd");
-                    print(p0);
-                  },
                   decoration: BoringFieldDecoration(
                     label: '_kmSingolaTratta',
                     hintText: "_kilometersHint",
@@ -164,8 +167,11 @@ class TableFormExample extends StatelessWidget {
                 BoringFilePicker(
                   verticalAlignment: 1.3,
                   boringResponsiveSize: BoringResponsiveSize(md: 6, sm: 6),
+                  border: Border.all(color: Colors.green),
                   feedbackPosition: FeedbackPosition.top,
                   noFilesSelectedText: Text("NESSUN FILE SELEZIONATO"),
+                  textDirection: TextDirection.rtl,
+                  label: '!@#',
                   feedbackTextBuilder: (filesSelected) {
                     if (filesSelected == 1) {
                       return Text("SOLO 1 FILE SELEZIONATO");
@@ -174,6 +180,7 @@ class TableFormExample extends StatelessWidget {
                   },
                   decoration: BoringFieldDecoration(
                     label: "asdas",
+                    hintText: "TEXT",
                   ),
                   jsonKey: "filePicker",
                   backgroundColor: Colors.red,
@@ -287,9 +294,13 @@ class TableFormExample extends StatelessWidget {
               ],
               tableHeader: [
                 TableHeaderElement(
-                    label: 'Colonna 0', alignment: TextAlign.center),
+                    label: 'Colonna 0',
+                    alignment: TextAlign.center,
+                    tableHeaderDecoration: TableHeaderDecoration()),
                 TableHeaderElement(
-                    label: 'Colonna 1', alignment: TextAlign.center),
+                    label: 'Colonna 1',
+                    alignment: TextAlign.center,
+                    tableHeaderDecoration: TableHeaderDecoration()),
               ],
             ),
           ],
@@ -302,4 +313,4 @@ class TableFormExample extends StatelessWidget {
       ],
     );
   }
-}
+}*/

@@ -1,113 +1,159 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:boring_form/boring_form.dart';
-import 'package:boring_form/theme/boring_form_theme.dart';
+import 'package:boring_form/field/boring_form_field.dart';
 import 'package:flutter/material.dart';
 
-class BoringCheckBoxField extends BoringField<bool> {
-  BoringCheckBoxField(
-      {super.key,
-      required super.jsonKey,
-      super.fieldController,
-      super.decoration,
-      this.checkColor,
-      this.mainAxisAlignment,
-      this.unCheckColor,
-      this.verticalPositioning = 1,
-      super.displayCondition,
-      super.boringResponsiveSize,
-      super.onChanged});
+class BoringCheckBoxField extends BoringFormField<bool> {
+  const BoringCheckBoxField({
+    super.key,
+    required super.fieldPath,
+    super.observedFields,
+    super.validationFunction,
+    super.decoration,
+    super.readOnly,
+    this.checkColor,
+    this.mainAxisAlignment,
+    this.unCheckColor,
+    // this.verticalPositioning = 1,
+    // super.displayCondition,
+    // super.boringResponsiveSize,
+    // super.onChanged
+  });
 
   final Color? unCheckColor;
   final Color? checkColor;
   final MainAxisAlignment? mainAxisAlignment;
-  final double verticalPositioning;
+  // final double verticalPositioning;
 
   @override
-  Widget builder(context, controller, child) {
-    final BoringFormStyle style = BoringFormTheme.of(context).style;
-
-    return BoringField.boringFieldBuilder(
-      BoringFormStyle(),
-      decoration?.label ?? '',
-      child: Align(
-        alignment: Alignment.center,
-        heightFactor: verticalPositioning,
-        child: Column(
-          children: [
-            GestureDetector(
-              onTap: style.readOnly
-                  ? null
-                  : () {
-                      controller.value = !(controller.value ?? false);
-                    },
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.start,
-                children: [
-                  Container(
-                    child: controller.value ?? false
-                        ? Icon(Icons.check_box_rounded,
-                            color:
-                                checkColor ?? style.inputDecoration.iconColor)
-                        : Icon(Icons.check_box_outline_blank_rounded,
-                            color: unCheckColor ??
-                                style.inputDecoration.prefixIconColor),
-                  ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  Flexible(
-                    child: Text(
-                      decoration?.label! ?? '',
+  Widget builder(BuildContext context, BoringFormTheme formTheme,
+      BoringFormController formController, bool? fieldValue, String? error) {
+    final fieldDecoration = getFieldDecoration(formController);
+    final inputDecoration =
+        getInputDecoration(formController, formTheme, error, fieldValue);
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: isReadOnly(formTheme)
+              ? null
+              : () => setChangedValue(formController,
+                  !(formController.getValue(fieldPath) ?? false)),
+          // {
+          //     controller.value = !(controller.value ?? false);
+          //   },
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.start,
+            children: [
+              Container(
+                child: (formController.getValue(fieldPath) as bool?) ?? false
+                    ? Icon(Icons.check_box_rounded,
+                        color: checkColor ?? inputDecoration.iconColor)
+                    : Icon(Icons.check_box_outline_blank_rounded,
+                        color: unCheckColor ?? inputDecoration.prefixIconColor),
+              ),
+              const SizedBox(
+                width: 8,
+              ),
+              Flexible(
+                child: Column(
+                  children: [
+                    Text(
+                      fieldDecoration?.label ?? '',
                       style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          color: controller.value ?? false
-                              ? checkColor ?? style.inputDecoration.iconColor
-                              : unCheckColor ??
-                                  style.inputDecoration.prefixIconColor),
+                          color:
+                              ((formController.getValue(fieldPath) as bool?) ??
+                                      false)
+                                  ? checkColor ?? inputDecoration.iconColor
+                                  : unCheckColor ??
+                                      inputDecoration.prefixIconColor),
                     ),
-                  )
-                ],
+                    if (error != null) ...[
+                      Text(error,
+                          style: inputDecoration.errorStyle ??
+                              const TextStyle(color: Colors.red)),
+                    ],
+                  ],
+                ),
               ),
-            ),
-            decoration?.helperText != null
-                ? Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Text(decoration!.helperText!),
-                  )
-                : Container(),
-          ],
+            ],
+          ),
         ),
-      ),
+        fieldDecoration?.helperText != null
+            ? Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Text(fieldDecoration?.helperText ?? ""),
+              )
+            : Container(),
+      ],
     );
   }
 
   @override
-  void onValueChanged(bool? newValue) {}
+  void onObservedFieldsChange(BoringFormController formController) {}
 
   @override
-  BoringCheckBoxField copyWith(
-      {BoringFieldController<bool>? fieldController,
-      void Function(bool? p1)? onChanged,
-      BoringFieldDecoration? decoration,
-      BoringResponsiveSize? boringResponsiveSize,
-      String? jsonKey,
-      bool Function(Map<String, dynamic> p1)? displayCondition,
-      List<BoringChoiceItem<dynamic>>? items,
-      MainAxisAlignment? mainAxisAlignment,
-      int? itemsPerRow,
-      Color? checkColor,
-      Color? unCheckColor}) {
-    return BoringCheckBoxField(
-      mainAxisAlignment: mainAxisAlignment ?? this.mainAxisAlignment,
-      boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
-      jsonKey: jsonKey ?? this.jsonKey,
-      decoration: decoration ?? this.decoration,
-      onChanged: onChanged ?? this.onChanged,
-      displayCondition: displayCondition ?? this.displayCondition,
-      fieldController: fieldController ?? this.fieldController,
-      checkColor: checkColor ?? this.checkColor,
-      unCheckColor: unCheckColor ?? this.unCheckColor,
-    );
-  }
+  void onSelfChange(BoringFormController formController, bool? fieldValue) {}
+
+  // @override
+  // Widget builder(context, controller, child) {
+  //   final BoringFormStyle style = BoringFormTheme.of(context).style;
+
+  //   return BoringField.boringFieldBuilder(
+  //     BoringFormStyle(),
+  //     decoration?.label ?? '',
+  //     child: Align(
+  //       alignment: Alignment.center,
+  //       heightFactor: verticalPositioning,
+  //       child:
+  //        Column(
+  //         children: [
+  //           GestureDetector(
+  //             onTap: style.readOnly
+  //                 ? null
+  //                 : () {
+  //                     controller.value = !(controller.value ?? false);
+  //                   },
+  //             child: Row(
+  //               mainAxisSize: MainAxisSize.max,
+  //               mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.start,
+  //               children: [
+  //                 Container(
+  //                   child: controller.value ?? false
+  //                       ? Icon(Icons.check_box_rounded,
+  //                           color:
+  //                               checkColor ?? style.inputDecoration.iconColor)
+  //                       : Icon(Icons.check_box_outline_blank_rounded,
+  //                           color: unCheckColor ??
+  //                               style.inputDecoration.prefixIconColor),
+  //                 ),
+  //                 const SizedBox(
+  //                   width: 8,
+  //                 ),
+  //                 Flexible(
+  //                   child: Text(
+  //                     decoration?.label! ?? '',
+  //                     style: TextStyle(
+  //                         fontWeight: FontWeight.w600,
+  //                         color: controller.value ?? false
+  //                             ? checkColor ?? style.inputDecoration.iconColor
+  //                             : unCheckColor ??
+  //                                 style.inputDecoration.prefixIconColor),
+  //                   ),
+  //                 )
+  //               ],
+  //             ),
+  //           ),
+  //           decoration?.helperText != null
+  //               ? Padding(
+  //                   padding: const EdgeInsets.only(left: 8.0),
+  //                   child: Text(decoration!.helperText!),
+  //                 )
+  //               : Container(),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 }

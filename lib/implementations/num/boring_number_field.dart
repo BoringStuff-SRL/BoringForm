@@ -1,266 +1,176 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
-import 'dart:math';
-
-import 'package:boring_form/field/boring_field.dart';
-import 'package:boring_form/field/boring_field_controller.dart';
-import 'package:boring_form/theme/boring_field_decoration.dart';
-import 'package:boring_form/theme/boring_form_theme.dart';
-import 'package:boring_form/theme/boring_responsive_size.dart';
+import 'package:boring_form/boring_form.dart';
+import 'package:boring_form/field/boring_form_field.dart';
+// import 'package:boring_form/field/boring_field.dart';
+// import 'package:boring_form/field/boring_field_controller.dart';
+// import 'package:boring_form/theme/boring_field_decoration.dart';
+// import 'package:boring_form/theme/boring_form_theme.dart';
+// import 'package:boring_form/theme/boring_responsive_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:intl/number_symbols_data.dart' show numberFormatSymbols;
-import 'package:universal_io/io.dart';
 
-TextEditingValue formatFunction(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-    FilteringTextInputFormatter? formatter,
-    String Function(String s)? formatPatern) {
-  String originalUserInput = newValue.text;
-  newValue = formatter != null
-      ? formatter.formatEditUpdate(oldValue, newValue)
-      : newValue;
-  int selectionIndex = newValue.selection.end;
-
-  String newText =
-      formatPatern != null ? formatPatern(newValue.text) : newValue.text;
-
-  if (newText == newValue.text) {
-    return newValue;
-  }
-
-  int insertCount = 0;
-  int inputCount = 0;
-
-  // ignore: no_leading_underscores_for_local_identifiers
-  bool _isUserInput(String s) {
-    return formatter == null
-        ? originalUserInput.contains(s)
-        : newValue.text.contains(s);
-  }
-
-  for (int i = 0; i < newText.length && inputCount < selectionIndex; i++) {
-    final character = newText[i];
-    if (_isUserInput(character)) {
-      inputCount++;
-    } else {
-      insertCount++;
-    }
-  }
-
-  selectionIndex += insertCount;
-  selectionIndex = min(selectionIndex, newText.length);
-  if (selectionIndex - 1 >= 0 &&
-      selectionIndex - 1 < newText.length &&
-      !_isUserInput(newText[selectionIndex - 1])) {
-    selectionIndex--;
-  }
-
-  return newValue.copyWith(
-      text: newText,
-      selection: TextSelection.collapsed(offset: selectionIndex),
-      composing: TextRange.empty);
-}
-
-//https://github.com/hnvn/flutter_pattern_formatter
-class NumberFormatter2 extends TextInputFormatter {
-  final String? decimalSeparator;
+class MyNumberFormatter extends TextInputFormatter {
+  final String decimalSeparator;
   final String thousandsSeparator;
-  final int? decimalPlaces;
+  final int decimalPlaces;
 
-  NumberFormatter2({
-    this.thousandsSeparator = ",",
-    this.decimalPlaces,
-    this.decimalSeparator = ".",
+  MyNumberFormatter({
+    required this.decimalSeparator,
+    required this.thousandsSeparator,
+    required this.decimalPlaces,
   });
 
-  NumberFormatter2.integer({
-    this.thousandsSeparator = "",
-  })  : decimalPlaces = 0,
-        decimalSeparator = null;
-
-  final formatter = NumberFormat("#,###");
-
-  String removeAllExceptFirst(String source, String pattern) {
-    int i = source.indexOf(pattern);
-    if (i < 0) return source;
-    String target = source.replaceAll(pattern, "");
-    return "${target.substring(0, i)}$pattern${target.substring(i)}";
-  }
-
-  num? parseString(String s) => num.tryParse(s
-      .replaceAll(thousandsSeparator, "")
-      .replaceAll(decimalSeparator ?? "", decimalSeparator != null ? "." : ""));
+  bool get onlyIntegers => decimalPlaces == 0;
 
   @override
-  TextEditingValue formatEditUpdate(oldValue, newValue) {
-    if (newValue.text.isEmpty) return newValue;
-
-    Pattern regex = RegExp("[^0-9$decimalSeparator]");
-
-    String newInputText = newValue.text.replaceAll(regex, "");
-    if (decimalSeparator != null) {
-      newInputText = removeAllExceptFirst(newInputText, decimalSeparator!);
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    // se il testo nuovo e' vuoto allora torno vuoto
+    if (newValue.text.isEmpty) {
+      return const TextEditingValue();
     }
 
-    if (newInputText.isEmpty) {
-      return newValue.copyWith(
-          text: newInputText,
-          selection: TextSelection.collapsed(offset: newInputText.length),
-          composing: TextRange.empty);
-    }
+    // prendo il testo e lo trasformo in un numero parsabile
+    String valueText = newValue.text
+        .replaceAll(thousandsSeparator, '')
+        .replaceAll(decimalSeparator, '.');
 
-    //NOW THE CURSOR SHOULD BE AFTER THE CHAR AT POSITION index
-    int offset = 0;
-    final splitted = decimalSeparator != null
-        ? newInputText.split(decimalSeparator!)
-        : [newInputText, ""];
-    String integerPart = splitted[0].replaceAll(thousandsSeparator, "");
-    if (integerPart.isEmpty) {
-      integerPart = "0";
-      offset++;
-    }
+    // parso
+    final valueNum = num.tryParse(valueText);
 
-    String decimalPart = splitted.length > 1 ? splitted[1] : "";
-    if (decimalPlaces != null && decimalPart.length > decimalPlaces!) {
-      decimalPart = decimalPart.substring(0, decimalPlaces!);
-    }
-    int? parsed = int.tryParse(integerPart);
-    if (parsed == null && newValue.text.length > oldValue.text.length) {
+    if (valueNum == null) {
+      // se fallisco il parsing allora ritorno quello che c'era prima
       return oldValue;
     }
-    //TODO fix paste a too big number
-    integerPart = formatter.format(parsed).replaceAll(',', thousandsSeparator);
-    String newText = decimalSeparator != null
-        ? "$integerPart${newInputText.contains(decimalSeparator!) ? decimalSeparator : ''}$decimalPart"
-        : integerPart;
 
-    int rcp = 0;
-    for (var i = 0;
-        i < min(newValue.text.length, newValue.selection.baseOffset);
-        i++) {
-      if (newValue.text[i] != thousandsSeparator) {
-        rcp++;
+    // calcolo il numero di tokens decimali da inserire
+    final decimalPlacesFormat =
+        List.generate(decimalPlaces, (index) => '#').join('');
+
+    // creo il formatter (bisogna lasciare en_US)
+    final myFormat = onlyIntegers
+        ? NumberFormat('###,###', 'en_US')
+        : NumberFormat('###,###.$decimalPlacesFormat', 'en_US');
+
+    // formatto la stringa
+    String result = myFormat
+        .format(valueNum)
+        .replaceAll('.', '#')
+        .replaceAll(',', thousandsSeparator)
+        .replaceAll('#', decimalSeparator);
+
+    // controllo se l'ultimo carattere inserito e' il separatore decimale
+    final lastCharacterIsDecimalSeparator =
+        newValue.text[newValue.text.length - 1] == decimalSeparator;
+
+    // se lo e' allora lo appendo al risultato
+    if (lastCharacterIsDecimalSeparator) {
+      result = '$result$decimalSeparator';
+    }
+
+    // controllo il numero dei separatori di migliaia che ho aggiunto in questa battitura
+    final numberOfThousandsSeparatorAdded =
+        (result.split(thousandsSeparator).length) -
+            (oldValue.text.split(thousandsSeparator).length);
+
+    int getNewOffset() {
+      final newOffset =
+          newValue.selection.extent.offset + numberOfThousandsSeparatorAdded;
+      if (newOffset > result.length) {
+        return newOffset - 1;
       }
+
+      return newOffset;
     }
 
-    int dec = rcp;
-    for (var i = 0; i < newText.length && dec > 0; i++) {
-      if (newText[i] != thousandsSeparator) {
-        dec--;
-      }
-      offset++;
-    }
-
-    return newValue.copyWith(
-        text: newText,
-        selection: TextSelection.collapsed(offset: offset),
-        composing: TextRange.empty);
-  }
-}
-
-class BoringNumberField extends BoringField<num> {
-  BoringNumberField({
-    super.key,
-    super.fieldController,
-    super.onChanged,
-    required super.jsonKey,
-    super.boringResponsiveSize,
-    super.decoration,
-    this.decimalSeparator = ".",
-    this.thousandsSeparator = ",",
-    this.decimalPlaces,
-    this.fieldFormatter,
-    bool? readOnly,
-    super.displayCondition,
-  }) : super(readOnly: readOnly);
-
-  final TextEditingController textEditingController = TextEditingController();
-
-  final String? decimalSeparator;
-  final String thousandsSeparator;
-  final int? decimalPlaces;
-  final NumberFormat? fieldFormatter;
-
-  InputDecoration getEnhancedDecoration(BuildContext context) {
-    return getDecoration(context).copyWith();
-  }
-
-  @override
-  bool setInitialValue(num? initialValue) {
-    final v = super.setInitialValue(initialValue);
-    if (v) {
-      textEditingController.text =
-          fieldController.value != null ? "${fieldController.value}" : "";
-    }
-    return v;
-  }
-
-  @override
-  Widget builder(context, controller, child) {
-    final style = BoringFormTheme.of(context).style;
-    final dSeparator =
-        numberFormatSymbols[Platform.localeName.split('_').first]?.DECIMAL_SEP;
-    final tSeparator =
-        numberFormatSymbols[Platform.localeName.split('_').first]?.GROUP_SEP;
-    final formatter = NumberFormatter2(
-        decimalPlaces: decimalPlaces,
-        decimalSeparator: dSeparator ?? decimalSeparator,
-        thousandsSeparator: tSeparator ?? thousandsSeparator);
-
-    return BoringField.boringFieldBuilder(
-      style,
-      decoration?.label,
-      child: TextField(
-        readOnly: isReadOnly(context),
-        enabled: !isReadOnly(context),
-        controller: textEditingController,
-        keyboardType: TextInputType.number,
-        inputFormatters: [formatter],
-        decoration: getEnhancedDecoration(context),
-        onChanged: ((value) {
-          try {
-            if (tSeparator == ',') {
-              value = value.replaceAll(",", "");
-            } else if (tSeparator == '.') {
-              value = value.replaceAll(".", "");
-              value = value.replaceAll(",", ".");
-            }
-
-            controller.value = double.parse(value);
-          } catch (e) {
-            controller.value = null;
-          }
-        }),
+    return TextEditingValue(
+      text: result,
+      selection: TextSelection.fromPosition(
+        TextPosition(offset: getNewOffset()),
       ),
     );
   }
+}
+
+class BoringNumberField extends BoringFormField<num> {
+  final _focusNode = FocusNode();
+  BoringNumberField({
+    super.key,
+    super.onChanged,
+    required super.fieldPath,
+    super.observedFields,
+    super.validationFunction,
+    super.decoration,
+    super.readOnly,
+    this.decimalSeparator = defaultDecimalSeparator,
+    this.thousandsSeparator = defaultThousandsSeparator,
+    this.decimalPlaces = 0,
+    this.fieldFormatter,
+  })  : assert(decimalSeparator != thousandsSeparator,
+            'Decimal and thousands separator can\'t be the same'),
+        assert(
+            (['.', ','].contains(decimalSeparator)) &&
+                (['.', ','].contains(thousandsSeparator)),
+            'Invalid value entered for decimalSeparator AND thousandsSeparator. Only valid characters are `,` or `.`');
+
+  final TextEditingController _textEditingController = TextEditingController();
+
+  final String decimalSeparator;
+  final String thousandsSeparator;
+  final int decimalPlaces;
+  final NumberFormat? fieldFormatter;
+  bool get _onlyIntegers => decimalPlaces == 0;
+
+  static const defaultDecimalSeparator = ".";
+  static const defaultThousandsSeparator = ",";
+  static const nullSeparator = '_null_';
+  final signed = false;
 
   @override
-  void onValueChanged(num? newValue) {
-    // aaadfg45544455
+  Widget builder(BuildContext context, BoringFormTheme formTheme,
+      BoringFormController formController, num? fieldValue, String? error) {
+    return TextField(
+      focusNode: _focusNode,
+      readOnly: isReadOnly(formTheme),
+      enabled: !isReadOnly(formTheme),
+      controller: _textEditingController,
+      textAlign: formTheme.style.textAlign,
+      style: formTheme.style.textStyle,
+      keyboardType: TextInputType.numberWithOptions(
+          decimal: _onlyIntegers, signed: signed),
+      inputFormatters: [
+        MyNumberFormatter(
+          decimalPlaces: decimalPlaces,
+          decimalSeparator: decimalSeparator,
+          thousandsSeparator: thousandsSeparator,
+        )
+      ],
+      decoration:
+          getInputDecoration(formController, formTheme, error, fieldValue),
+      onChanged: (value) {
+        String checkString = value
+            .replaceAll(thousandsSeparator, "")
+            .replaceAll(decimalSeparator, ".");
+
+        try {
+          setChangedValue(formController, num.parse(checkString));
+        } catch (e) {
+          setChangedValue(formController, null);
+        }
+      },
+    );
   }
 
   @override
-  BoringNumberField copyWith(
-      {BoringFieldController<num>? fieldController,
-      void Function(num? p1)? onChanged,
-      BoringFieldDecoration? decoration,
-      BoringResponsiveSize? boringResponsiveSize,
-      String? jsonKey,
-      bool Function(Map<String, dynamic> p1)? displayCondition,
-      String? decimalSeparator,
-      String? thousandsSeparator,
-      int? decimalPlaces}) {
-    return BoringNumberField(
-      boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
-      jsonKey: jsonKey ?? this.jsonKey,
-      decoration: decoration ?? this.decoration,
-      onChanged: onChanged ?? this.onChanged,
-      displayCondition: displayCondition ?? this.displayCondition,
-      fieldController: fieldController ?? this.fieldController,
-    );
+  void onObservedFieldsChange(BoringFormController formController) {}
+
+  @override
+  void onSelfChange(BoringFormController formController, num? fieldValue) {
+    if (fieldValue == null) {
+      _textEditingController.text = "";
+    }
+    onChanged?.call(formController, fieldValue);
   }
 }

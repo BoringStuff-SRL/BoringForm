@@ -8,14 +8,27 @@ class BoringFormStyle {
   final EdgeInsetsGeometry fieldsPadding;
   final TextStyle formTitleStyle;
   final bool readOnly;
-  BoringFormStyle({
-    this.fieldsPadding = const EdgeInsets.all(8),
-    this.sectionTitleStyle = const TextStyle(),
-    this.formTitleStyle = const TextStyle(),
-    this.inputDecoration = const InputDecoration(),
-    this.labelOverField = false,
-    this.readOnly = false,
-  })  : assert(inputDecoration.label == null, _getFieldAssertionError("label")),
+  final TextAlign textAlign;
+  final TextStyle? textStyle;
+  final BoxDecoration? sectionBoxDecoration;
+  final EdgeInsets? sectionPadding;
+  final EdgeInsets? sectionMargin;
+  final Widget eraseValueWidget;
+
+  BoringFormStyle(
+      {this.fieldsPadding = const EdgeInsets.all(8),
+      this.sectionTitleStyle = const TextStyle(),
+      this.formTitleStyle = const TextStyle(),
+      this.inputDecoration = const InputDecoration(),
+      this.labelOverField = false,
+      this.readOnly = false,
+      this.sectionPadding,
+      this.sectionMargin,
+      this.textStyle,
+      this.sectionBoxDecoration,
+      this.textAlign = TextAlign.start,
+      this.eraseValueWidget = const Icon(Icons.close)})
+      : assert(inputDecoration.label == null, _getFieldAssertionError("label")),
         assert(inputDecoration.icon == null, _getFieldAssertionError("icon")),
         assert(inputDecoration.helperText == null,
             _getFieldAssertionError("helperText")),
@@ -46,6 +59,11 @@ class BoringFormStyle {
     EdgeInsetsGeometry? fieldsPadding,
     TextStyle? formTitleStyle,
     bool? readOnly,
+    TextAlign? textAlign,
+    TextStyle? textStyle,
+    BoxDecoration? sectionBoxDecoration,
+    EdgeInsets? sectionPadding,
+    EdgeInsets? sectionMargin,
   }) {
     return BoringFormStyle(
       inputDecoration: inputDecoration ?? this.inputDecoration,
@@ -54,6 +72,11 @@ class BoringFormStyle {
       fieldsPadding: fieldsPadding ?? this.fieldsPadding,
       formTitleStyle: formTitleStyle ?? this.formTitleStyle,
       readOnly: readOnly ?? this.readOnly,
+      textAlign: textAlign ?? this.textAlign,
+      textStyle: textStyle ?? this.textStyle,
+      sectionBoxDecoration: sectionBoxDecoration ?? this.sectionBoxDecoration,
+      sectionMargin: sectionMargin ?? this.sectionMargin,
+      sectionPadding: sectionPadding ?? this.sectionPadding,
     );
   }
 }

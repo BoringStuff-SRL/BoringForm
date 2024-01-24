@@ -1,107 +1,103 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:boring_form/field/boring_field.dart';
-import 'package:boring_form/field/boring_field_controller.dart';
-import 'package:boring_form/theme/boring_field_decoration.dart';
-import 'package:boring_form/theme/boring_form_theme.dart';
-import 'package:boring_form/theme/boring_responsive_size.dart';
+import 'package:boring_form/boring_form.dart';
+import 'package:boring_form/field/boring_form_field.dart';
 import 'package:flutter/material.dart';
 
-class BoringPasswordField extends BoringField<String> {
+class BoringPasswordField extends BoringFormField<String> {
+  final _textEditingController = TextEditingController();
+  final _focusNode = FocusNode();
+
   BoringPasswordField(
       {super.key,
-      super.fieldController,
-      super.onChanged,
-      required super.jsonKey,
-      this.visibilityOffIcon,
+      required super.fieldPath,
+      super.observedFields,
+      required super.validationFunction,
+      super.decoration,
       this.visibilityOnIcon,
-      super.displayCondition,
-      super.boringResponsiveSize,
-      super.decoration})
-      : assert(decoration?.suffixIcon == null,
-            "You can't specify suffixIcon on BoringPasswordField!");
+      this.visibilityOffIcon,
+      super.readOnly});
 
-  final TextEditingController textEditingController = TextEditingController();
   final Widget? visibilityOnIcon;
   final Widget? visibilityOffIcon;
 
   @override
-  Widget builder(context, controller, child) {
-    final style = BoringFormTheme.of(context).style;
-    return BoringField.boringFieldBuilder(
-      style,
-      decoration?.label,
-      child: PasswordTextField(
-          textEditingController: textEditingController,
-          decoration: getDecoration(context),
-          visibilityOnIcon: visibilityOnIcon,
-          visibilityOffIcon: visibilityOffIcon,
-          controller: controller),
+  Widget builder(BuildContext context, BoringFormTheme formTheme,
+      BoringFormController formController, String? fieldValue, String? errror) {
+    final inputDecoration =
+        getInputDecoration(formController, formTheme, errror, fieldValue);
+    assert(inputDecoration.suffixIcon == null,
+        "You can't specify suffixIcon on BoringPasswordField!");
+    return BoringPasswordTextField(
+      focusNode: _focusNode,
+      textEditingController: _textEditingController,
+      formTheme: formTheme,
+      readOnly: isReadOnly(formTheme),
+      fieldPath: fieldPath,
+      inputDecoration: inputDecoration,
+      startsHidden: true,
+      visibilityOnIcon: visibilityOnIcon,
+      visibilityOffIcon: visibilityOffIcon,
+      onChanged: (value) {
+        setChangedValue(formController, value);
+      },
     );
   }
 
   @override
-  void onValueChanged(String? newValue) {
-    if (newValue != textEditingController.text) {
-      textEditingController.text = newValue ?? '';
+  void onObservedFieldsChange(BoringFormController formController) {}
+
+  @override
+  void onSelfChange(BoringFormController formController, String? fieldValue) {
+    if (!_focusNode.hasFocus) {
+      _textEditingController.text = (fieldValue ?? "").trim();
     }
   }
-
-  @override
-  BoringPasswordField copyWith(
-      {BoringFieldController<String>? fieldController,
-      void Function(String? p1)? onChanged,
-      BoringFieldDecoration? decoration,
-      BoringResponsiveSize? boringResponsiveSize,
-      String? jsonKey,
-      bool Function(Map<String, dynamic> p1)? displayCondition,
-      Widget? visibilityOffIcon,
-      Widget? visibilityOnIcon}) {
-    return BoringPasswordField(
-      boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
-      jsonKey: jsonKey ?? this.jsonKey,
-      decoration: decoration ?? this.decoration,
-      onChanged: onChanged ?? this.onChanged,
-      displayCondition: displayCondition ?? this.displayCondition,
-      fieldController: fieldController ?? this.fieldController,
-      visibilityOffIcon: visibilityOffIcon ?? this.visibilityOffIcon,
-      visibilityOnIcon: visibilityOnIcon ?? this.visibilityOnIcon,
-    );
-  }
 }
 
-class PasswordTextField extends StatefulWidget {
-  const PasswordTextField(
+class BoringPasswordTextField extends StatefulWidget {
+  const BoringPasswordTextField(
       {super.key,
+      required this.focusNode,
       required this.textEditingController,
-      required this.decoration,
-      required this.controller,
+      required this.formTheme,
+      required this.readOnly,
+      required this.fieldPath,
+      required this.inputDecoration,
+      required this.onChanged,
+      this.visibilityOnIcon,
       this.visibilityOffIcon,
-      this.visibilityOnIcon});
+      required this.startsHidden});
 
+  final FocusNode focusNode;
   final TextEditingController textEditingController;
-  final InputDecoration decoration;
-  final BoringFieldController<String> controller;
+  final BoringFormTheme formTheme;
+
+  final bool readOnly;
+  final FieldPath fieldPath;
+  final InputDecoration inputDecoration;
   final Widget? visibilityOnIcon;
   final Widget? visibilityOffIcon;
+  final bool startsHidden;
+  final Function(String value) onChanged;
 
   @override
-  State<PasswordTextField> createState() => _PasswordTextFieldState();
+  State<BoringPasswordTextField> createState() =>
+      _BoringPasswordTextFieldState();
 }
 
-class _PasswordTextFieldState extends State<PasswordTextField> {
+class _BoringPasswordTextFieldState extends State<BoringPasswordTextField> {
   bool hidden = true;
 
   @override
   void initState() {
+    hidden = widget.startsHidden;
     super.initState();
-    //hidden = startHidden
   }
 
-  void toggleVisibility() {
-    setState(() {
-      hidden = !hidden;
-    });
-  }
+  Widget get _visibilityOnIcon =>
+      widget.visibilityOnIcon ?? const Icon(Icons.visibility);
+  Widget get _visibilityOffIcon =>
+      widget.visibilityOffIcon ?? const Icon(Icons.visibility_off);
 
   @override
   Widget build(BuildContext context) {
@@ -109,28 +105,18 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
       controller: widget.textEditingController,
       obscureText: hidden,
       enableSuggestions: false,
-      autocorrect: false,
-      decoration: widget.decoration.copyWith(
-          suffixIcon: (widget.visibilityOffIcon == null ||
-                  widget.visibilityOnIcon == null)
-              ? IconButton(
-                  icon: Icon(
-                    hidden ? Icons.visibility_off : Icons.visibility,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  onPressed: toggleVisibility)
-              : GestureDetector(
-                  onTap: () {
-                    toggleVisibility();
-                  },
-                  child: hidden
-                      ? widget.visibilityOffIcon
-                      : widget.visibilityOnIcon,
-                )),
-      // InputDecoration(
-      onChanged: ((value) {
-        widget.controller.value = value;
-      }),
+      focusNode: widget.focusNode,
+      readOnly: widget.readOnly,
+      enabled: !widget.readOnly,
+      textAlign: widget.formTheme.style.textAlign,
+      style: widget.formTheme.style.textStyle,
+      decoration: widget.inputDecoration.copyWith(
+          suffixIcon: IconButton(
+              onPressed: () => setState(() {
+                    hidden = !hidden;
+                  }),
+              icon: hidden ? _visibilityOffIcon : _visibilityOnIcon)),
+      onChanged: widget.onChanged,
     );
   }
 }
