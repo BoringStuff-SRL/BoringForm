@@ -122,7 +122,7 @@ class FormExample0 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BoringForm(
-      style: myStyle,
+      style: (context) => myStyle,
       formController: c,
       child: Column(
         children: [
