@@ -45,6 +45,34 @@ class BoringForm extends BoringFormWidget {
   Widget get child => _child;
 }
 
+abstract class BoringResponsiveFormWidget extends BoringFormWidget {
+  BoringResponsiveFormWidget({
+    super.key,
+    BoringFormController? formController,
+    super.style,
+    BoringResponsiveSize responsiveSize =
+        const BoringResponsiveSize.defaultSizes(),
+  }) : _responsiveSize = responsiveSize;
+
+  final BoringResponsiveSize _responsiveSize;
+
+  List<Widget> get children;
+
+  @override
+  Widget get child => BoringResponsiveLayout(
+        children: children
+            .map(
+              (e) => e is BoringResponsiveChild
+                  ? e
+                  : BoringResponsiveChild(
+                      responsiveSize: _responsiveSize,
+                      child: e,
+                    ),
+            )
+            .toList(),
+      );
+}
+
 abstract class BoringFormWidget extends StatelessWidget {
   final BoringFormController formController;
   Widget get child;
