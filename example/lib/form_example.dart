@@ -268,12 +268,12 @@ class FormExample0 extends StatelessWidget {
             return const Text("WATCHER");
             // return Text(formController.value["asd"]);
           }),
-          // BoringPasswordField(
-          //   // allowEmpty: true,
-          //   fieldPath: const ["anag", "nome"],
-          //   validationFunction: (formController, value) =>
-          //       ((value?.length ?? 0) > 8) ? null : "Password at least 8 chars",
-          // ),
+          BoringPasswordField(
+            // allowEmpty: true,
+            fieldPath: const ["anag", "nome"],
+            validationFunction: (formController, value) =>
+                ((value?.length ?? 0) > 8) ? null : "Password at least 8 chars",
+          ),
           // const BoringSlider(
           //   fieldPath: ["test", "num"],
           // ),
