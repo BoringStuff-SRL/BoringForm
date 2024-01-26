@@ -9,36 +9,49 @@ extension on List<String> {
       map((e) => e.split(splitter)).toList();
 }
 
-class BoringForm extends StatelessWidget {
-  final BoringFormController formController;
-  final Widget child;
-  final BoringFormStyle? style;
+class BoringForm extends BoringFormWidget {
   BoringForm(
       {super.key,
       BoringFormController? formController,
-      required this.child,
-      this.style})
-      : formController = formController ?? BoringFormController();
+      super.style,
+      required Widget child})
+      : _child = child,
+        super(formController: formController);
 
-  BoringForm.responsive(
-      {super.key,
-      BoringFormController? formController,
-      required List<Widget> children,
-      BoringResponsiveSize responsiveSize =
-          const BoringResponsiveSize.defaultSizes(),
-      this.style})
-      : formController = formController ?? BoringFormController(),
-        child = BoringResponsiveLayout(
-            children: children
-                .map(
-                  (e) => e is BoringResponsiveChild
-                      ? e
-                      : BoringResponsiveChild(
-                          responsiveSize: responsiveSize,
-                          child: e,
-                        ),
-                )
-                .toList());
+  BoringForm.responsive({
+    super.key,
+    BoringFormController? formController,
+    required List<Widget> children,
+    BoringResponsiveSize responsiveSize =
+        const BoringResponsiveSize.defaultSizes(),
+    super.style,
+  })  : _child = BoringResponsiveLayout(
+          children: children
+              .map(
+                (e) => e is BoringResponsiveChild
+                    ? e
+                    : BoringResponsiveChild(
+                        responsiveSize: responsiveSize,
+                        child: e,
+                      ),
+              )
+              .toList(),
+        ),
+        super(formController: formController);
+
+  final Widget _child;
+
+  @override
+  Widget get child => _child;
+}
+
+abstract class BoringFormWidget extends StatelessWidget {
+  final BoringFormController formController;
+  Widget get child;
+  final BoringFormStyle? style;
+  BoringFormWidget(
+      {super.key, BoringFormController? formController, this.style})
+      : formController = formController ?? BoringFormController();
 
   @override
   Widget build(BuildContext context) {
