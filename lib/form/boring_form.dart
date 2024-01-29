@@ -76,7 +76,7 @@ abstract class BoringResponsiveFormWidget extends BoringFormWidget {
 abstract class BoringFormWidget extends StatelessWidget {
   final BoringFormController formController;
   Widget get child;
-  final BoringFormStyle? style;
+  final BoringFormStyle Function(BuildContext context)? style;
   BoringFormWidget(
       {super.key, BoringFormController? formController, this.style})
       : formController = formController ?? BoringFormController();
@@ -85,7 +85,7 @@ abstract class BoringFormWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return FocusTraversalGroup(
       child: BoringFormTheme(
-          style: style ?? BoringFormStyle(),
+          style: style?.call(context) ?? BoringFormStyle(),
           child: ChangeNotifierProvider.value(
             value: formController,
             child: child,
