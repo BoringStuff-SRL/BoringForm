@@ -48,7 +48,7 @@ class BoringForm extends BoringFormWidget {
 abstract class BoringResponsiveFormWidget extends BoringFormWidget {
   BoringResponsiveFormWidget({
     super.key,
-    BoringFormController? formController,
+    super.formController,
     super.style,
     BoringResponsiveSize responsiveSize =
         const BoringResponsiveSize.defaultSizes(),
