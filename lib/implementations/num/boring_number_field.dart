@@ -95,7 +95,6 @@ class MyNumberFormatter extends TextInputFormatter {
 }
 
 class BoringNumberField extends BoringFormField<num> {
-  final _focusNode = FocusNode();
   BoringNumberField({
     super.key,
     super.onChanged,
@@ -107,8 +106,12 @@ class BoringNumberField extends BoringFormField<num> {
     this.decimalSeparator = defaultDecimalSeparator,
     this.thousandsSeparator = defaultThousandsSeparator,
     this.decimalPlaces = 0,
-    this.fieldFormatter,
-  })  : assert(decimalSeparator != thousandsSeparator,
+  })  : _numberFormatter = MyNumberFormatter(
+          decimalPlaces: decimalPlaces,
+          decimalSeparator: decimalSeparator,
+          thousandsSeparator: thousandsSeparator,
+        ),
+        assert(decimalSeparator != thousandsSeparator,
             'Decimal and thousands separator can\'t be the same'),
         assert(
             (['.', ','].contains(decimalSeparator)) &&
@@ -120,7 +123,8 @@ class BoringNumberField extends BoringFormField<num> {
   final String decimalSeparator;
   final String thousandsSeparator;
   final int decimalPlaces;
-  final NumberFormat? fieldFormatter;
+  final MyNumberFormatter _numberFormatter;
+
   bool get _onlyIntegers => decimalPlaces == 0;
 
   static const defaultDecimalSeparator = ".";
@@ -128,11 +132,23 @@ class BoringNumberField extends BoringFormField<num> {
   static const nullSeparator = '_null_';
   final signed = false;
 
+  bool hasSetInitialValue = false;
+
   @override
   Widget builder(BuildContext context, BoringFormTheme formTheme,
       BoringFormController formController, num? fieldValue, String? error) {
+    if (!hasSetInitialValue && fieldValue != null) {
+      final formatter =
+          NumberFormat('###,###.###', decimalSeparator == '.' ? 'en' : 'it');
+
+      _textEditingController.text = _numberFormatter
+          .formatEditUpdate(TextEditingValue.empty,
+              TextEditingValue(text: formatter.format(fieldValue)))
+          .text;
+      hasSetInitialValue = true;
+    }
+
     return TextField(
-      focusNode: _focusNode,
       readOnly: isReadOnly(formTheme),
       enabled: !isReadOnly(formTheme),
       controller: _textEditingController,
@@ -140,13 +156,7 @@ class BoringNumberField extends BoringFormField<num> {
       style: formTheme.style.textStyle,
       keyboardType: TextInputType.numberWithOptions(
           decimal: _onlyIntegers, signed: signed),
-      inputFormatters: [
-        MyNumberFormatter(
-          decimalPlaces: decimalPlaces,
-          decimalSeparator: decimalSeparator,
-          thousandsSeparator: thousandsSeparator,
-        )
-      ],
+      inputFormatters: [_numberFormatter],
       decoration:
           getInputDecoration(formController, formTheme, error, fieldValue),
       onChanged: (value) {
