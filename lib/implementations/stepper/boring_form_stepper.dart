@@ -37,10 +37,9 @@ class BoringFormStepper extends StatelessWidget {
           : null,
       onStepTapped: mustBeValidToContinue
           ? (newIndex) {
-              if (newIndex > stepperController.activeStepIndex &&
-                  isFormValid(stepperController.activeStepIndex)) {
-                stepperController.changeStepIndex(newIndex);
-              } else if (newIndex < stepperController.activeStepIndex) {
+              if ((newIndex > stepperController.activeStepIndex &&
+                      isFormValid(stepperController.activeStepIndex)) ||
+                  (newIndex < stepperController.activeStepIndex)) {
                 stepperController.changeStepIndex(newIndex);
               }
             }
