@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:boring_form/implementations/stepper/boring_stepper_style.dart';
 import 'package:flutter/material.dart';
 
@@ -9,12 +11,18 @@ class BoringStepper extends StatelessWidget {
       {super.key,
       BoringStepperController? stepperController,
       this.stepperStyle = const BoringStepperStyle(),
+      this.onStepCancel,
+      this.onStepContinue,
+      this.onStepTapped,
       required this.steps})
       : stepperController = stepperController ?? BoringStepperController();
 
   final BoringStepperController stepperController;
   final List<BoringStep> steps;
   final BoringStepperStyle stepperStyle;
+  final Function(int newIndex)? onStepContinue;
+  final Function(int newIndex)? onStepCancel;
+  final Function(int newIndex)? onStepTapped;
 
   bool get canContinue => stepperController.activeStepIndex < steps.length - 1;
 
@@ -51,13 +59,31 @@ class BoringStepper extends StatelessWidget {
           );
         },
         onStepContinue: () {
-          if (canContinue) stepperController.nextStep();
+          if (canContinue) {
+            if (onStepContinue != null) {
+              onStepContinue?.call(stepperController.activeStepIndex + 1);
+            } else {
+              stepperController.nextStep();
+            }
+
+            // questa cosa mi esegue entrambe le chiamate
+            // onStepContinue?.call(stepperController.activeStepIndex + 1) ??
+            //     stepperController.nextStep();
+          }
         },
         onStepCancel: () {
-          stepperController.previousStep();
+          if (onStepCancel != null) {
+            onStepCancel?.call(max(0, stepperController.activeStepIndex - 1));
+          } else {
+            stepperController.previousStep();
+          }
         },
         onStepTapped: (value) {
-          stepperController.changeStepIndex(value);
+          if (onStepTapped != null) {
+            onStepTapped?.call(value);
+          } else {
+            stepperController.changeStepIndex(value);
+          }
         },
         steps: steps.map(
           (e) {
