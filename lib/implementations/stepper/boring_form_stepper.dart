@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 
 class BoringFormWithTitle {
   final String title;
-  final BoringForm form;
+  final BoringFormWidget form;
 
   BoringFormWithTitle({required this.title, required this.form});
 }
