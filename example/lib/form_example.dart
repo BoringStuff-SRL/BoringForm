@@ -1,7 +1,5 @@
 import "package:boring_form/boring_form.dart";
 import 'package:boring_form/implementations/choice/boring_dropdown_multi_field.dart';
-import 'package:boring_form/implementations/stepper/boring_step.dart';
-import 'package:boring_form/implementations/stepper/boring_stepper.dart';
 import 'package:boringcore/widgets/boring_dropdown/utils/boring_choice_item.dart';
 import 'package:flutter/material.dart';
 
@@ -327,57 +325,21 @@ class FormExample0 extends StatelessWidget {
                         child: Column(
                           children: [
                             Expanded(
-                              child: BoringStepper(
-                                steps: [
-                                  BoringStep(
-                                    child: Column(
-                                      children: [
-                                        BoringTextField(fieldPath: ['test']),
-                                      ],
-                                    ),
-                                    title:
-                                        'This is the title of the first step',
-                                  ),
-                                  BoringStep(
-                                    child: Column(
-                                      children: [
-                                        BoringTextField(
-                                            fieldPath: ['te12st123']),
-                                      ],
-                                    ),
-                                    title:
-                                        'This is the title of the second step',
-                                  ),
-                                  BoringStep(
-                                    child: Column(
-                                      children: [
-                                        BoringTextField(
-                                            fieldPath: ['test1123']),
-                                      ],
-                                    ),
-                                    title:
-                                        'This is the title of the second step',
-                                  ),
-                                  BoringStep(
-                                    child: Column(
-                                      children: [
-                                        BoringTextField(
-                                            fieldPath: ['test23123']),
-                                      ],
-                                    ),
-                                    title:
-                                        'This is the title of the second step',
-                                  ),
-                                  BoringStep(
-                                    child: Column(
-                                      children: [
-                                        BoringTextField(
-                                            fieldPath: ['test1233']),
-                                      ],
-                                    ),
-                                    title:
-                                        'This is the title of the second step',
-                                  ),
+                              child: BoringFormStepper(
+                                mustBeValidToContinue: false,
+                                forms: [
+                                  BoringFormWithTitle(
+                                      title: 'asd',
+                                      form: BoringForm(
+                                          child: BoringTextField(
+                                        fieldPath: ['sss'],
+                                      ))),
+                                  BoringFormWithTitle(
+                                      title: 'asd',
+                                      form: BoringForm(
+                                          child: BoringTextField(
+                                        fieldPath: ['sss'],
+                                      ))),
                                 ],
                               ),
                             ),
