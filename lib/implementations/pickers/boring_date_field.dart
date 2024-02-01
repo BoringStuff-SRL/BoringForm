@@ -123,7 +123,7 @@ class BoringTimeField extends BoringPickerField<TimeOfDay> {
     super.key,
     required super.fieldPath,
     super.observedFields,
-    ValidationFunction<DateTime>? validationFunction,
+    ValidationFunction<TimeOfDay>? validationFunction,
     super.decoration,
     super.readOnly,
     super.updateValueOnDismiss,
@@ -132,6 +132,12 @@ class BoringTimeField extends BoringPickerField<TimeOfDay> {
     // required DateTime firstDate,
     // required DateTime lastDate,
   }) : super(
+            validationFunction:
+                (BoringFormController formController, TimeOfDay? value) {
+              final error = validationFunction?.call(formController, value);
+
+              return error;
+            },
             showPicker: (context, formController, fieldValue) async =>
                 await showTimePicker(
                     context: context,
