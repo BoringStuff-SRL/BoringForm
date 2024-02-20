@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 class BoringFormStyle {
   final InputDecoration inputDecoration;
   final bool labelOverField;
+  final AlignmentGeometry labelOverFieldAlignment;
+  final EdgeInsets? labelOverFieldPadding;
   final TextStyle sectionTitleStyle;
   final EdgeInsetsGeometry fieldsPadding;
   final TextStyle formTitleStyle;
@@ -18,10 +20,12 @@ class BoringFormStyle {
   BoringFormStyle(
       {this.fieldsPadding = const EdgeInsets.all(8),
       this.sectionTitleStyle = const TextStyle(),
+      this.labelOverFieldPadding,
       this.formTitleStyle = const TextStyle(),
       this.inputDecoration = const InputDecoration(),
       this.labelOverField = false,
       this.readOnly = false,
+      this.labelOverFieldAlignment = Alignment.centerLeft,
       this.sectionPadding,
       this.sectionMargin,
       this.textStyle,

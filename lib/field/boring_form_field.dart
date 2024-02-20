@@ -29,6 +29,8 @@ abstract class BoringFormField<T> extends BoringFormFieldBase<T, void> {
     final formController =
         Provider.of<BoringFormController>(context, listen: false);
     final formTheme = BoringFormTheme.of(context);
+    final fieldDecoration = getFieldDecoration(formController);
+
     formController.setValidationFunction(fieldPath, validationFunction);
     return Selector<BoringFormController, List<dynamic>>(
         selector: (_, formController) =>
@@ -43,10 +45,28 @@ abstract class BoringFormField<T> extends BoringFormFieldBase<T, void> {
                   ),
               builder: (context, value, child) {
                 onSelfChange(formController, value.fieldValue);
+
                 return Padding(
                   padding: formTheme.style.fieldsPadding,
-                  child: builder(context, formTheme, formController,
-                      value.fieldValue, value.error),
+                  child: Column(
+                    children: [
+                      if (formTheme.style.labelOverField &&
+                          fieldDecoration?.label != null)
+                        Padding(
+                          padding: formTheme.style.labelOverFieldPadding ??
+                              const EdgeInsets.only(bottom: 4),
+                          child: Align(
+                            alignment: formTheme.style.labelOverFieldAlignment,
+                            child: Text(
+                              fieldDecoration!.label!,
+                              style: formTheme.style.inputDecoration.labelStyle,
+                            ),
+                          ),
+                        ),
+                      builder(context, formTheme, formController,
+                          value.fieldValue, value.error),
+                    ],
+                  ),
                 );
               });
         });
