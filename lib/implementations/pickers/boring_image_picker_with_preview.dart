@@ -4,7 +4,7 @@ import 'package:boring_form/theme/boring_form_theme.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pinch_zoom_release_unzoom/pinch_zoom_release_unzoom.dart';
+import 'package:widget_zoom/widget_zoom.dart';
 
 class BoringImagePickerWithPreviewDecoration {
   final BoxDecoration Function(bool hasValue)? boxDecoration;
@@ -95,24 +95,10 @@ class BoringImagePickerWithPreview extends BoringFormField<Uint8List> {
     );
     final child = Stack(
       children: [
-        MouseRegion(
-          cursor: SystemMouseCursors.click,
-          child: GestureDetector(
-            onTap: () {
-              showDialog(
-                context: context,
-                barrierDismissible: true,
-                builder: (context) => AlertDialog(
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  content: PinchZoomReleaseUnzoomWidget(
-                    child: image,
-                  ),
-                ),
-              );
-            },
-            child: image,
-          ),
+        WidgetZoom(
+          heroAnimationTag: "TAG",
+          zoomWidget: image,
+          fullScreenDoubleTapZoomScale: 2.5,
         ),
         Positioned(
           top: 5,

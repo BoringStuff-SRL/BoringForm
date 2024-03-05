@@ -36,7 +36,8 @@ dependencies:
       ref: main
 
   collection: ^1.17.2
-  pinch_zoom_release_unzoom: ^1.0.3
+  widget_zoom: ^0.0.3
+
 
 dev_dependencies:
   flutter_lints: ^2.0.1
