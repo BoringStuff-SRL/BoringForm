@@ -1,10 +1,10 @@
-import 'dart:typed_data';
-
 import 'package:boring_form/field/boring_form_field.dart';
 import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_form/theme/boring_form_theme.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:pinch_zoom_release_unzoom/pinch_zoom_release_unzoom.dart';
 
 class BoringImagePickerWithPreviewDecoration {
   final BoxDecoration Function(bool hasValue)? boxDecoration;
@@ -89,12 +89,51 @@ class BoringImagePickerWithPreview extends BoringFormField<Uint8List> {
 
   Widget _imagePreviewWidget(
       BuildContext context, BoringFormController formController) {
-    final child = _clickToPickWidget(
-      formController: formController,
-      child: Image.memory(
-        formController.getValue(fieldPath) as Uint8List,
-        fit: BoxFit.contain,
-      ),
+    final image = Image.memory(
+      formController.getValue(fieldPath) as Uint8List,
+      fit: BoxFit.contain,
+    );
+    final child = Stack(
+      children: [
+        MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+            onTap: () {
+              showDialog(
+                context: context,
+                barrierDismissible: true,
+                builder: (context) => AlertDialog(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  content: PinchZoomReleaseUnzoomWidget(
+                    child: image,
+                  ),
+                ),
+              );
+            },
+            child: image,
+          ),
+        ),
+        Positioned(
+          top: 5,
+          right: 5,
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Theme.of(context).colorScheme.primaryContainer,
+            ),
+            child: IconButton(
+              onPressed: () async {
+                await _handleSelectImage(formController);
+              },
+              icon: Icon(
+                Icons.edit,
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
 
     return _imagePickerWithPreviewBuilders.buildImagePreviewWidget(
@@ -109,21 +148,25 @@ class BoringImagePickerWithPreview extends BoringFormField<Uint8List> {
           cursor: SystemMouseCursors.click,
           child: GestureDetector(
             onTap: () async {
-              final selectedFileResult = await FilePicker.platform.pickFiles(
-                allowMultiple: false,
-                withData: true,
-                type: FileType.image,
-              );
-
-              if (selectedFileResult != null) {
-                formController.setFieldValue(
-                    fieldPath, selectedFileResult.files.first.bytes!);
-              }
+              await _handleSelectImage(formController);
             },
             child: child,
           ),
         );
       });
+
+  Future<void> _handleSelectImage(BoringFormController formController) async {
+    final selectedFileResult = await FilePicker.platform.pickFiles(
+      allowMultiple: false,
+      withData: true,
+      type: FileType.image,
+    );
+
+    if (selectedFileResult != null) {
+      formController.setFieldValue(
+          fieldPath, selectedFileResult.files.first.bytes!);
+    }
+  }
 
   @override
   void onSelfChange(
