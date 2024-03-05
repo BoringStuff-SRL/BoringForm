@@ -11,6 +11,8 @@ export 'implementations/choice/boring_radiogroup_field.dart';
 export 'implementations/choice/boring_switch_field.dart';
 export 'implementations/num/boring_number_field.dart';
 export 'implementations/pickers/boring_date_field.dart';
+export 'implementations/pickers/boring_file_picker.dart';
+export 'implementations/pickers/boring_image_picker_with_preview.dart';
 export 'implementations/stepper/boring_form_stepper.dart';
 export 'implementations/stepper/boring_step.dart';
 export 'implementations/stepper/boring_stepper.dart';
