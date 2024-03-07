@@ -14,18 +14,25 @@ class BoringImagePickerWithPreviewDecoration {
   final String? selectImageText;
   final Widget? selectImageIcon;
   final Color? selectImageColor;
+  final String? editText;
+  final String? clearText;
 
   final Widget Function(BuildContext context, Widget child) _selectImageWrapper;
   final Widget Function(BuildContext context, Widget child)
       _previewImageWrapper;
-
+  final Widget Function(
+          BuildContext context, BoringFormController formController)?
+      actionBuilder;
   BoringImagePickerWithPreviewDecoration({
+    this.editText,
+    this.clearText,
     this.boxDecoration,
     this.boxPadding,
     this.selectImagesWidget,
     this.selectImageText,
     this.selectImageIcon,
     this.selectImageColor,
+    this.actionBuilder,
     Widget Function(BuildContext context, Widget child)? selectImageWrapper,
     Widget Function(BuildContext context, Widget child)? previewImageWrapper,
   })  : _selectImageWrapper = selectImageWrapper ?? ((context, child) => child),
@@ -100,23 +107,56 @@ class BoringImagePickerWithPreview extends BoringFormField<Uint8List> {
           zoomWidget: image,
           fullScreenDoubleTapZoomScale: 2.5,
         ),
+        imagePickerWithPreviewDecoration.actionBuilder?.call(context, formController) ??
         Positioned(
           top: 5,
           right: 5,
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Theme.of(context).colorScheme.primaryContainer,
-            ),
-            child: IconButton(
-              onPressed: () async {
-                await _handleSelectImage(formController);
-              },
-              icon: Icon(
-                Icons.edit,
+          child: PopupMenuButton(
+            child: Container(
+              padding: const EdgeInsets.all(5.0),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Theme.of(context).colorScheme.primaryContainer,
+              ),
+              child: Icon(
+                Icons.more_vert,
                 color: Theme.of(context).colorScheme.onPrimaryContainer,
               ),
             ),
+            itemBuilder: (BuildContext context) => [
+              PopupMenuItem(
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.edit,
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    Text(imagePickerWithPreviewDecoration.editText ??
+                        "Edit image"),
+                  ],
+                ),
+                onTap: () => _handleSelectImage(formController),
+              ),
+              PopupMenuItem(
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.delete,
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    Text(imagePickerWithPreviewDecoration.clearText ??
+                        "Remove image"),
+                  ],
+                ),
+                onTap: () => _handleClearImage(formController),
+              ),
+            ],
           ),
         ),
       ],
@@ -152,6 +192,10 @@ class BoringImagePickerWithPreview extends BoringFormField<Uint8List> {
       formController.setFieldValue(
           fieldPath, selectedFileResult.files.first.bytes!);
     }
+  }
+
+  Future<void> _handleClearImage(BoringFormController formController) async {
+    formController.setFieldValue(fieldPath, null);
   }
 
   @override
