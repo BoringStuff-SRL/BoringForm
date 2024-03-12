@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:boring_form/boring_form.dart';
 import 'package:boring_form/field/boring_form_field.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class BoringTextField extends BoringFormField<String> {
@@ -55,7 +56,12 @@ class BoringTextField extends BoringFormField<String> {
 
   @override
   void onSelfChange(BoringFormController formController, String? fieldValue) {
-    if (!_focusNode.hasFocus) {
+    if (kIsWeb) {
+      var cursorPos = _textEditingController.selection.base.offset;
+      _textEditingController.text = (fieldValue ?? "").trim();
+      _textEditingController.selection =
+          TextSelection.collapsed(offset: cursorPos);
+    } else {
       _textEditingController.text = (fieldValue ?? "").trim();
     }
   }
