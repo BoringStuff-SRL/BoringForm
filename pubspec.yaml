@@ -36,6 +36,8 @@ dependencies:
       ref: main
 
   collection: ^1.17.2
+  widget_zoom: ^0.0.3
+
 
 dev_dependencies:
   flutter_lints: ^2.0.1

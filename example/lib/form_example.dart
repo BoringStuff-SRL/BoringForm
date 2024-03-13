@@ -1,4 +1,5 @@
 import "package:boring_form/boring_form.dart";
+import 'package:boring_form/implementations/pickers/boring_image_picker_with_preview.dart';
 import 'package:flutter/material.dart';
 
 class FormExample0 extends StatelessWidget {
@@ -22,6 +23,16 @@ class FormExample0 extends StatelessWidget {
       formController: c,
       child: Column(
         children: [
+          BoringImagePickerWithPreview(
+            fieldPath: ["image"],
+            imagePickerWithPreviewDecoration:
+                BoringImagePickerWithPreviewDecoration(
+              previewImageWrapper: (context, child) => ConstrainedBox(
+                constraints: const BoxConstraints(maxHeight: 100),
+                child: child,
+              ),
+            ),
+          ),
           /* Text("Choice", style: titleStyle),
           Text("checkbox"),
           BoringCheckBoxField(
