@@ -42,6 +42,11 @@ class MyNumberFormatter extends TextInputFormatter {
 
     if (valueNum == null) {
       // se fallisco il parsing allora ritorno quello che c'era prima
+
+      if (valueText.contains('-') && valueText.length == 1) {
+        return newValue;
+      }
+
       return oldValue;
     }
 

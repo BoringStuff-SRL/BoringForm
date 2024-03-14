@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class FormExample0 extends StatelessWidget {
   FormExample0({super.key});
 
-  final c = BoringFormController(initialValue: {'num': -12323.123});
+  final c = BoringFormController(/*initialValue: {'num': -12323.123}*/);
 
   final myStyle = BoringFormStyle(
       inputDecoration: InputDecoration(
