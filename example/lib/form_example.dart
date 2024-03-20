@@ -1,5 +1,4 @@
 import "package:boring_form/boring_form.dart";
-import 'package:boring_form/implementations/pickers/boring_image_picker_with_preview.dart';
 import 'package:flutter/material.dart';
 
 class FormExample0 extends StatelessWidget {
