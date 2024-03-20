@@ -18,6 +18,7 @@ class BoringDateTimeField extends BoringPickerField<DateTime> {
     super.showEraseValueButton,
     required DateTime firstDate,
     required DateTime lastDate,
+    super.onChanged,
   }) : super(
             validationFunction:
                 (BoringFormController formController, DateTime? value) {
@@ -80,6 +81,7 @@ class BoringDateField extends BoringPickerField<DateTime> {
     DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar,
     required DateTime firstDate,
     required DateTime lastDate,
+    super.onChanged,
   })  : assert(firstDate <= lastDate, "firstDate must be less than lastDate"),
         super(
             validationFunction:
@@ -129,6 +131,7 @@ class BoringTimeField extends BoringPickerField<TimeOfDay> {
     super.updateValueOnDismiss,
     super.showEraseValueButton,
     TimePickerEntryMode initialEntryMode = TimePickerEntryMode.inputOnly,
+    super.onChanged,
     // required DateTime firstDate,
     // required DateTime lastDate,
   }) : super(
