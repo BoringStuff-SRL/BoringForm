@@ -44,8 +44,8 @@ abstract class BoringFormField<T> extends BoringFormFieldBase<T, void> {
                     error: formController.getFieldError(fieldPath)
                   ),
               builder: (context, value, child) {
-                onChanged?.call(formController, value.fieldValue);
                 onSelfChange(formController, value.fieldValue);
+                onChanged?.call(formController, value.fieldValue);
 
                 return Padding(
                   padding: formTheme.style.fieldsPadding,

@@ -186,6 +186,5 @@ class BoringNumberField extends BoringFormField<num> {
     if (fieldValue == null) {
       _textEditingController.text = "";
     }
-    onChanged?.call(formController, fieldValue);
   }
 }
