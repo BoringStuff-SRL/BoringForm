@@ -16,15 +16,14 @@ class BoringTextRegExpField extends BoringTextField {
     required String regExpError,
   }) : super(validationFunction:
             (BoringFormController formController, String? value) {
-          if ((value == null || value!.isEmpty) && allowEmpty) {
-            return null;
-          }
-
           final error = validationFunction?.call(formController, value);
           if (error != null) {
             return error;
           }
           if (!regExp.hasMatch(value ?? '')) {
+            if (allowEmpty && (value ?? '').isEmpty) {
+              return null;
+            }
             return regExpError;
           }
           return null;
