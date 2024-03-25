@@ -8,15 +8,13 @@ import 'package:provider/provider.dart';
 abstract class BoringFormField<T> extends BoringFormFieldBase<T, void> {
   const BoringFormField({
     super.key,
-    this.onChanged,
+    super.onChanged,
     required super.fieldPath,
     super.observedFields = const [],
     super.validationFunction,
     super.decoration,
     super.readOnly,
   });
-
-  final Function(BoringFormController formController, T? fieldValue)? onChanged;
 
   Widget builder(BuildContext context, BoringFormTheme formTheme,
       BoringFormController formController, T? fieldValue, String? error);

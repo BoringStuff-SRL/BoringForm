@@ -1,11 +1,10 @@
 import "package:boring_form/boring_form.dart";
-import 'package:boring_form/implementations/pickers/boring_image_picker_with_preview.dart';
 import 'package:flutter/material.dart';
 
 class FormExample0 extends StatelessWidget {
   FormExample0({super.key});
 
-  final c = BoringFormController(initialValue: {'num': -12323.123});
+  final c = BoringFormController(/*initialValue: {'num': -12323.123}*/);
 
   final myStyle = BoringFormStyle(
       inputDecoration: InputDecoration(

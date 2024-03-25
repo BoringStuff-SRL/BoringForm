@@ -80,9 +80,5 @@ class BoringDropdownField<T>
       getItems("");
 
   @override
-  void onSelfChange(BoringFormController formController, T? fieldValue) {
-    if (onChanged != null) {
-      onChanged?.call(formController, fieldValue);
-    }
-  }
+  void onSelfChange(BoringFormController formController, T? fieldValue) {}
 }

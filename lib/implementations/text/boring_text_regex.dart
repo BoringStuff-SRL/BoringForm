@@ -21,6 +21,9 @@ class BoringTextRegExpField extends BoringTextField {
             return error;
           }
           if (!regExp.hasMatch(value ?? '')) {
+            if (allowEmpty && (value ?? '').isEmpty) {
+              return null;
+            }
             return regExpError;
           }
           return null;

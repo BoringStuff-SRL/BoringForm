@@ -13,17 +13,19 @@ class BoringPickerField<T> extends BoringFormField<T> {
   final Future<T?> Function(BuildContext context,
       BoringFormController formController, T? fieldValue) showPicker;
 
-  BoringPickerField(
-      {super.key,
-      required super.fieldPath,
-      super.observedFields,
-      super.decoration,
-      super.readOnly,
-      super.validationFunction,
-      required this.valueToString,
-      required this.showPicker,
-      this.updateValueOnDismiss = false,
-      this.showEraseValueButton = false});
+  BoringPickerField({
+    super.key,
+    required super.fieldPath,
+    super.observedFields,
+    super.decoration,
+    super.readOnly,
+    super.validationFunction,
+    required this.valueToString,
+    required this.showPicker,
+    this.updateValueOnDismiss = false,
+    this.showEraseValueButton = false,
+    super.onChanged,
+  });
 
   @override
   Widget builder(BuildContext context, BoringFormTheme formTheme,
