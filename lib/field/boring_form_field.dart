@@ -50,17 +50,7 @@ abstract class BoringFormField<T> extends BoringFormFieldBase<T, void> {
                     children: [
                       if (formTheme.style.labelOverField &&
                           fieldDecoration?.label != null)
-                        Padding(
-                          padding: formTheme.style.labelOverFieldPadding ??
-                              const EdgeInsets.only(bottom: 4),
-                          child: Align(
-                            alignment: formTheme.style.labelOverFieldAlignment,
-                            child: Text(
-                              fieldDecoration!.label!,
-                              style: formTheme.style.inputDecoration.labelStyle,
-                            ),
-                          ),
-                        ),
+                        labelOverField(formTheme, fieldDecoration!),
                       builder(context, formTheme, formController,
                           value.fieldValue, value.error),
                     ],
