@@ -35,6 +35,7 @@ abstract class BoringFormFieldWithCalculations<T, TT>
     final formController =
         Provider.of<BoringFormController>(context, listen: false);
     final formTheme = BoringFormTheme.of(context);
+    final fieldDecoration = getFieldDecoration(formController);
     formController.setValidationFunction(fieldPath, validationFunction);
     return Selector<BoringFormController, List<dynamic>>(
         selector: (_, formController) =>
@@ -52,8 +53,15 @@ abstract class BoringFormFieldWithCalculations<T, TT>
                 onSelfChange(formController, value.fieldValue);
                 return Padding(
                   padding: formTheme.style.fieldsPadding,
-                  child: builder(context, formTheme, formController,
-                      value.fieldValue, value.error, calculations),
+                  child: Column(
+                    children: [
+                      if (formTheme.style.labelOverField &&
+                          fieldDecoration?.label != null)
+                        labelOverField(formTheme, fieldDecoration!),
+                      builder(context, formTheme, formController,
+                          value.fieldValue, value.error, calculations),
+                    ],
+                  ),
                 );
               });
         });

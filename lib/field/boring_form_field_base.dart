@@ -35,6 +35,20 @@ abstract class BoringFormFieldBase<T, TT> extends StatelessWidget {
 
   void onSelfChange(BoringFormController formController, T? fieldValue);
 
+  Widget labelOverField(
+          BoringFormTheme formTheme, BoringFieldDecoration fieldDecoration) =>
+      Padding(
+        padding: formTheme.style.labelOverFieldPadding ??
+            const EdgeInsets.only(bottom: 4),
+        child: Align(
+          alignment: formTheme.style.labelOverFieldAlignment,
+          child: Text(
+            fieldDecoration.label!,
+            style: formTheme.style.inputDecoration.labelStyle,
+          ),
+        ),
+      );
+
   @override
   Widget build(BuildContext context);
 
