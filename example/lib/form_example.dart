@@ -1,15 +1,17 @@
 import "package:boring_form/boring_form.dart";
+import 'package:boringcore/boring_dropdown.dart';
 import 'package:flutter/material.dart';
 
 class FormExample0 extends StatelessWidget {
   FormExample0({super.key});
 
-  final c = BoringFormController(/*initialValue: {'num': -12323.123}*/);
+  final c = BoringFormController(initialValue: {'num': 123456});
 
   final myStyle = BoringFormStyle(
       inputDecoration: InputDecoration(
         border: OutlineInputBorder(),
       ),
+      labelOverField: true,
       textStyle: TextStyle(color: Colors.red),
       eraseValueWidget: Icon(Icons.abc_outlined));
 
@@ -63,7 +65,7 @@ class FormExample0 extends StatelessWidget {
                 label: 'LABEL', hintText: 'THIS IS THE HINT'),
             validationFunction: (formController, value) =>
                 (value?.length ?? 0) < 3 ? "almeno 3 elementi" : null,
-          ),
+          ),*/
           Text("Singlechoice dropdown"),
           BoringDropdownField(
             fieldPath: ["single", 'test'],
@@ -71,9 +73,10 @@ class FormExample0 extends StatelessWidget {
                 (index) => BoringChoiceItem(value: index, display: "$index")),
             toBoringChoiceItem: (p0) =>
                 BoringChoiceItem(value: p0, display: "$p0"),
+            decoration: (formController) => BoringFieldDecoration(label: "AA"),
             validationFunction: (formController, value) =>
                 (value == null) ? "seleziona un elemento" : null,
-          ),*/
+          ),
           //////////////////////////////
           // Text("Pickers", style: titleStyle),
           // Text("Date field"),
