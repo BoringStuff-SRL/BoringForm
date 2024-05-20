@@ -42,7 +42,7 @@ class BoringForm extends BoringFormWidget {
   final Widget _child;
 
   @override
-  Widget get child => _child;
+  Widget child(context) => _child;
 }
 
 abstract class BoringResponsiveFormWidget extends BoringFormWidget {
@@ -59,7 +59,7 @@ abstract class BoringResponsiveFormWidget extends BoringFormWidget {
   List<Widget> get children;
 
   @override
-  Widget get child => BoringResponsiveLayout(
+  Widget child(context) => BoringResponsiveLayout(
         children: children
             .map(
               (e) => e is BoringResponsiveChild
@@ -75,7 +75,7 @@ abstract class BoringResponsiveFormWidget extends BoringFormWidget {
 
 abstract class BoringFormWidget extends StatelessWidget {
   final BoringFormController formController;
-  Widget get child;
+  Widget child(BuildContext context);
   final BoringFormStyle Function(BuildContext context)? style;
   BoringFormWidget(
       {super.key, BoringFormController? formController, this.style})
@@ -88,7 +88,7 @@ abstract class BoringFormWidget extends StatelessWidget {
           style: style?.call(context) ?? BoringFormStyle(),
           child: ChangeNotifierProvider.value(
             value: formController,
-            child: child,
+            child: child(context),
           )),
     );
   }
