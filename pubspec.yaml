@@ -21,7 +21,7 @@ dependencies:
   boringcore:
     git:
       url: https://github.com/BoringStuff-SRL/BoringCore
-      ref: main
+      ref: develop-x
 
   collection: ^1.17.2
   widget_zoom: ^0.0.3
