@@ -83,4 +83,28 @@ class BoringFormStyle {
       sectionPadding: sectionPadding ?? this.sectionPadding,
     );
   }
+
+  factory BoringFormStyle.defaultFromThemeData(ThemeData themeData) {
+    return BoringFormStyle(
+      // inputDecoration: const InputDecoration()
+      //   ..applyDefaults(_defaultInputDecorationTheme(themeData)),
+      inputDecoration: const InputDecoration()
+        ..applyDefaults(themeData.inputDecorationTheme),
+      labelOverField: true,
+      readOnly: false,
+      textStyle: themeData
+          .titleSmallTheme, // .copyWith(color: dialogTitleColor,fontWeight: FontWeight.w400,fontSize: 14,),
+      eraseValueWidget: const Icon(
+        Icons.close_rounded,
+      ),
+      fieldsPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+      sectionTitleStyle:
+          themeData.bodyMediumTheme, //.copyWith(fontWeight: FontWeight.w600),
+    );
+  }
+}
+
+extension GetTextThemes on ThemeData {
+  TextStyle get titleSmallTheme => textTheme.titleSmall ?? const TextStyle();
+  TextStyle get bodyMediumTheme => textTheme.bodyMedium ?? const TextStyle();
 }
