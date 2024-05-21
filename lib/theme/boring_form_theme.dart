@@ -6,9 +6,11 @@ class BoringFormTheme extends InheritedWidget {
 
   const BoringFormTheme({super.key, required super.child, required this.style});
 
+  static BoringFormTheme? maybeOf(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<BoringFormTheme>();
+
   static BoringFormTheme of(BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType<BoringFormTheme>()
-          as BoringFormTheme;
+      maybeOf(context) as BoringFormTheme;
 
   @override
   bool updateShouldNotify(covariant BoringFormTheme oldWidget) => false;

@@ -43,6 +43,9 @@ class BoringForm extends BoringFormWidget {
 
   @override
   Widget child(context) => _child;
+
+  @override
+  BoringFormStyle styleManipulator(BoringFormStyle style) => style;
 }
 
 abstract class BoringResponsiveFormWidget extends BoringFormWidget {
@@ -77,15 +80,21 @@ abstract class BoringFormWidget extends StatelessWidget {
   final BoringFormController formController;
   Widget child(BuildContext context);
   final BoringFormStyle Function(BuildContext context)? style;
+  BoringFormStyle styleManipulator(BoringFormStyle style);
+
   BoringFormWidget(
       {super.key, BoringFormController? formController, this.style})
       : formController = formController ?? BoringFormController();
 
   @override
   Widget build(BuildContext context) {
+    final BoringFormStyle formStyle = styleManipulator(style?.call(context) ??
+        BoringFormTheme.maybeOf(context)?.style ??
+        BoringFormStyle());
+
     return FocusTraversalGroup(
       child: BoringFormTheme(
-          style: style?.call(context) ?? BoringFormStyle(),
+          style: formStyle,
           child: ChangeNotifierProvider.value(
             value: formController,
             child: child(context),
