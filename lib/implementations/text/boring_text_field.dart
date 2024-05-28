@@ -58,8 +58,10 @@ class BoringTextField extends BoringFormField<String> {
   void onSelfChange(BoringFormController formController, String? fieldValue) {
     var cursorPos = _textEditingController.selection.base.offset;
     _textEditingController.text = (fieldValue ?? "");
-    _textEditingController.selection =
-        TextSelection.collapsed(offset: cursorPos);
+    if (fieldValue != null) {
+      _textEditingController.selection =
+          TextSelection.collapsed(offset: cursorPos);
+    }
   }
 
   // @override
