@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, prefer_const_constructors
 
-import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_form/implementations/pickers/boringFilePickerV2/boring_drop_file_box.dart';
 import 'package:boring_form/implementations/pickers/boringFilePickerV2/boring_file_picker_settings.dart';
 import 'package:file_picker/file_picker.dart';
@@ -60,35 +59,38 @@ class BoringFileListTile extends StatelessWidget {
     final settings = BoringFilePickerSettings.of(context);
     final decoration = settings.decoration;
     final String extension = file.extension ?? '';
-    return BoringDropFileBox(
-        decoration: decoration,
-        currentColor: decoration.inActiveColor,
-        child: Row(
-          crossAxisAlignment:
-              decoration.crossAxisAlignment ?? CrossAxisAlignment.center,
-          mainAxisAlignment:
-              decoration.mainAxisAlignment ?? MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
+    return settings.decoration.listTileBuilder
+            ?.call(context, settings.formController) ??
+        BoringDropFileBox(
+            decoration: decoration,
+            currentColor: decoration.inActiveColor,
+            child: Row(
+              crossAxisAlignment:
+                  decoration.crossAxisAlignment ?? CrossAxisAlignment.center,
+              mainAxisAlignment: decoration.mainAxisAlignment ??
+                  MainAxisAlignment.spaceBetween,
               children: [
-                fromExtensionToIcon(extension),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(file.name),
+                Row(
+                  children: [
+                    fromExtensionToIcon(extension),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(file.name),
+                    ),
+                  ],
                 ),
+                IconButton(
+                    onPressed: () {
+                      final files = List<PlatformFile>.from(
+                          settings.formController.getValue(settings.fieldPath));
+
+                      files.removeWhere((element) => element.name == file.name);
+
+                      settings.formController
+                          .setFieldValue(settings.fieldPath, files);
+                    },
+                    icon: Icon(Icons.delete))
               ],
-            ),
-            IconButton(
-                onPressed: () {
-                  print(settings.formController.hashCode);
-                  final files = settings.formController
-                      .getValue(settings.fieldPath) as List<PlatformFile>;
-                  final newValue = List<PlatformFile>.from(files..remove(file));
-                  settings.formController
-                      .setFieldValue(settings.fieldPath, newValue);
-                },
-                icon: Icon(Icons.delete))
-          ],
-        ));
+            ));
   }
 }

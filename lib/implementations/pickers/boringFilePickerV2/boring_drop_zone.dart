@@ -4,11 +4,9 @@ import 'package:boring_form/boring_form.dart';
 import 'package:boring_form/implementations/pickers/boringFilePickerV2/boring_drop_file_box.dart';
 import 'package:boring_form/implementations/pickers/boringFilePickerV2/boring_drop_zone_decoration.dart';
 import 'package:boring_form/implementations/pickers/boringFilePickerV2/boring_file_picker_settings.dart';
-import 'package:boring_form/implementations/pickers/boring_picker_field.dart';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:universal_html/js.dart';
 
 class BoringDropZone extends StatelessWidget {
   final BoringFormController formController;
@@ -65,67 +63,69 @@ class BoringDropZone extends StatelessWidget {
     final settings = BoringFilePickerSettings.of(context);
     final decoration = settings.decoration;
     color = ValueNotifier(decoration.inActiveColor);
-    return DropTarget(
-      onDragEntered: (details) {
-        if (settings.readOnly) {
-          return;
-        }
-        color.value = decoration.activeColor;
-      },
-      onDragExited: (details) {
-        if (settings.readOnly) {
-          return;
-        }
-        color.value = decoration.inActiveColor;
-      },
-      onDragDone: (details) {
-        handleOnDragDone(context, settings, details);
-      },
-      child: ValueListenableBuilder(
-          valueListenable: color,
-          builder: (context, currentColor, child) {
-            return MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                onTap: () async {
-                  if (settings.readOnly) {
-                    return;
-                  }
-                  FilePickerResult? result = await FilePicker.platform
-                      .pickFiles(
-                          type: decoration.allowedExtensions == null
-                              ? FileType.any
-                              : FileType.custom,
-                          allowMultiple: decoration.allowMultiple,
-                          allowedExtensions: decoration.allowedExtensions,
-                          withData: true);
-                  _handlePick(result?.files ?? [], settings);
-                },
-                child: BoringDropFileBox(
-                  decoration: decoration,
-                  currentColor: currentColor,
-                  child: Column(
-                    children: [
-                      decoration.hintIcon ??
-                          Icon(
-                            Icons.download,
-                            color: currentColor,
-                            size: 40,
-                          ),
-                      Text(
-                        decoration.hintText ?? 'Drag and drop file or click',
-                        style: decoration.hintTextStyle ??
-                            TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500,
-                                color: currentColor),
-                      ),
-                    ],
+    return settings.decoration.dropzoneBuilder?.call(context, formController) ??
+        DropTarget(
+          onDragEntered: (details) {
+            if (settings.readOnly) {
+              return;
+            }
+            color.value = decoration.activeColor;
+          },
+          onDragExited: (details) {
+            if (settings.readOnly) {
+              return;
+            }
+            color.value = decoration.inActiveColor;
+          },
+          onDragDone: (details) {
+            handleOnDragDone(context, settings, details);
+          },
+          child: ValueListenableBuilder(
+            valueListenable: color,
+            builder: (context, currentColor, child) {
+              return MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: () async {
+                    if (settings.readOnly) {
+                      return;
+                    }
+                    FilePickerResult? result = await FilePicker.platform
+                        .pickFiles(
+                            type: decoration.allowedExtensions == null
+                                ? FileType.any
+                                : FileType.custom,
+                            allowMultiple: decoration.allowMultiple,
+                            allowedExtensions: decoration.allowedExtensions,
+                            withData: true);
+                    _handlePick(result?.files ?? [], settings);
+                  },
+                  child: BoringDropFileBox(
+                    decoration: decoration,
+                    currentColor: currentColor,
+                    child: Column(
+                      children: [
+                        decoration.hintIcon ??
+                            Icon(
+                              Icons.download,
+                              color: currentColor,
+                              size: 40,
+                            ),
+                        Text(
+                          decoration.hintText ?? 'Drag and drop file or click',
+                          style: decoration.hintTextStyle ??
+                              TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500,
+                                  color: currentColor),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          }),
-    );
+              );
+            },
+          ),
+        );
   }
 }
