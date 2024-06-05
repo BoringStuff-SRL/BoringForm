@@ -127,11 +127,15 @@ class BoringFormControllerValue extends ChangeNotifier {
 
   void setFieldValue<R>(List<String> fieldPath, R value) {
     dynamic old = _value.getValue(fieldPath);
+    print(1);
     if (_equality.equals(old, value)) {
+      print(2);
       return;
     }
+    print(3);
     _value.setValue(fieldPath, value);
     // print(_value);
+    print(4);
     notifyListeners();
   }
 

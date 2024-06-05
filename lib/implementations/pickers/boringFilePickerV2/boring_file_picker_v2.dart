@@ -30,8 +30,12 @@ class BoringFilePickerV2 extends BoringFormField<List<PlatformFile>> {
       String? error) {
     final style = formTheme.style;
     final readOnly = style.readOnly;
+    print(formController.hashCode);
     return BoringFilePickerSettings(
+      readOnly: readOnly,
       decoration: decoration,
+      formController: formController,
+      fieldPath: fieldPath,
       child: Column(
         children: [
           ListView.builder(
