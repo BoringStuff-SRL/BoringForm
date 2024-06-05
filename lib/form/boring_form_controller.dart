@@ -130,8 +130,10 @@ class BoringFormControllerValue extends ChangeNotifier {
     if (_equality.equals(old, value)) {
       return;
     }
+
     _value.setValue(fieldPath, value);
     // print(_value);
+
     notifyListeners();
   }
 

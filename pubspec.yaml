@@ -2,7 +2,7 @@ name: boring_form
 description: A new Flutter package project.
 version: 0.0.1
 
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 environment:
   sdk: ">=3.3.4 <4.0.0"
@@ -15,12 +15,17 @@ dependencies:
   provider: ^6.1.2
   file_picker: ^8.0.3
   universal_html: ^2.2.4
+  flutter_svg: ^2.0.10+1
   omni_datetime_picker: ^1.1.0
-
 
   boringcore:
     git:
       url: https://github.com/BoringStuff-SRL/BoringCore
+      ref: main
+
+  desktop_drop:
+    git:
+      url: https://github.com/BoringStuff-SRL/desktop_drop
       ref: main
 
   collection: ^1.18.0
@@ -31,5 +36,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-flutter: null
-
+flutter:
+  assets:
+    - assets/

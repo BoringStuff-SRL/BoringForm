@@ -8,14 +8,14 @@ class FormExample0 extends StatelessWidget {
   final c = BoringFormController(initialValue: {'num': 123456});
 
   final myStyle = BoringFormStyle(
-      inputDecoration: InputDecoration(
+      inputDecoration: const InputDecoration(
         border: OutlineInputBorder(),
       ),
       labelOverField: true,
       textStyle: TextStyle(color: Colors.red),
       eraseValueWidget: Icon(Icons.abc_outlined));
 
-  final titleStyle = TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
+  final titleStyle = const TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +24,11 @@ class FormExample0 extends StatelessWidget {
       formController: c,
       child: Column(
         children: [
+          const BoringFilePickerV2(
+            fieldPath: ['ccc'],
+          ),
           BoringImagePickerWithPreview(
-            fieldPath: ["image"],
+            fieldPath: const ["image"],
             imagePickerWithPreviewDecoration:
                 BoringImagePickerWithPreviewDecoration(
               previewImageWrapper: (context, child) => ConstrainedBox(
@@ -108,9 +111,9 @@ class FormExample0 extends StatelessWidget {
           // //////////////////////////////
           Text("Number fields", style: titleStyle),
 
-          Text("number"),
+          const Text("number"),
           BoringNumberField(
-            fieldPath: ["num"],
+            fieldPath: const ["num"],
             decimalSeparator: '.',
             thousandsSeparator: ',',
             decimalPlaces: 2,
@@ -141,9 +144,9 @@ class FormExample0 extends StatelessWidget {
           //   fieldPath: ["phone"],
           //   invalidPhoneMessage: "Invalid phone",
           // ),
-          Text("Text"),
+          const Text("Text"),
           BoringTextField(
-            fieldPath: ["text"],
+            fieldPath: const ["text"],
             decoration: (formController) =>
                 BoringFieldDecoration(label: 'labell'),
             validationFunction: (formController, value) =>
@@ -243,13 +246,13 @@ class FormExample0 extends StatelessWidget {
                                       title: 'asd',
                                       form: BoringForm(
                                           child: BoringTextField(
-                                        fieldPath: ['sss'],
+                                        fieldPath: const ['sss'],
                                       ))),
                                   BoringFormWithTitle(
                                       title: 'asd',
                                       form: BoringForm(
                                           child: BoringTextField(
-                                        fieldPath: ['sss'],
+                                        fieldPath: const ['sss'],
                                       ))),
                                 ],
                               ),
@@ -258,7 +261,7 @@ class FormExample0 extends StatelessWidget {
                                 onPressed: () {
                                   print(formController.value);
                                 },
-                                child: Text('print valuee')),
+                                child: const Text('print valuee')),
                           ],
                         ),
                       ),
