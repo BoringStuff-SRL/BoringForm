@@ -5,16 +5,19 @@ class FormExample0 extends StatelessWidget {
   FormExample0({super.key});
 
   final c = BoringFormController(
-      initialValue: {'num': 123456},
-      validationBehaviour: ValidationBehaviour.onSubmit);
+    initialValue: {'num': 123456},
+    validationBehaviour: ValidationBehaviour.onSubmit,
+    fieldRequiredLabelBehaviour: FieldRequiredLabelBehaviour.always,
+  );
 
   final myStyle = BoringFormStyle(
-      inputDecoration: const InputDecoration(
-        border: OutlineInputBorder(),
-      ),
-      labelOverField: true,
-      textStyle: TextStyle(color: Colors.red),
-      eraseValueWidget: Icon(Icons.abc_outlined));
+    inputDecoration: const InputDecoration(
+      border: OutlineInputBorder(),
+    ),
+    labelOverField: true,
+    textStyle: const TextStyle(color: Colors.red),
+    eraseValueWidget: const Icon(Icons.abc_outlined),
+  );
 
   final titleStyle = const TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
 
@@ -28,6 +31,8 @@ class FormExample0 extends StatelessWidget {
           BoringTextField(
             fieldPath: ['first'],
             allowEmpty: false,
+            decoration: (formController) =>
+                BoringFieldDecoration(label: 'QUESTA E LA LABEL'),
           ),
           BoringTextField(fieldPath: ['second'], allowEmpty: false),
           BoringFormChildWidget.withChildFieldPath(
