@@ -2,7 +2,6 @@
 
 import 'package:boring_form/boring_form.dart';
 import 'package:boring_form/implementations/pickers/boringFilePickerV2/boring_drop_file_box.dart';
-import 'package:boring_form/implementations/pickers/boringFilePickerV2/boring_drop_zone_decoration.dart';
 import 'package:boring_form/implementations/pickers/boringFilePickerV2/boring_file_picker_settings.dart';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:file_picker/file_picker.dart';
@@ -28,7 +27,12 @@ class BoringDropZone extends StatelessWidget {
         break;
       case BoringFilePickerBehaviour.add:
         final files = formController.getValue(fieldPath) as List<PlatformFile>?;
-        formController.setFieldValue(fieldPath, (files ?? []) + pickerResult);
+        if (settings.decoration.allowMultiple) {
+          formController.setFieldValue(fieldPath, (files ?? []) + pickerResult);
+        } else {
+          formController.setFieldValue(fieldPath, pickerResult);
+        }
+        break;
     }
   }
 

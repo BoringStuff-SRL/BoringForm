@@ -26,6 +26,10 @@ class FormExample0 extends StatelessWidget {
         children: [
           const BoringFilePickerV2(
             fieldPath: ['ccc'],
+            decoration: BoringFilePickerDecoration(
+                allowMultiple: true,
+                allowedExtensions: ['png'],
+                boringFilePickerBehaviour: BoringFilePickerBehaviour.overwrite),
           ),
           BoringImagePickerWithPreview(
             fieldPath: const ["image"],
