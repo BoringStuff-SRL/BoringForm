@@ -70,6 +70,8 @@ abstract class BoringFormFieldBase<T, TT> extends StatelessWidget {
 
   Widget _buildRequiredFieldLabelOverField(
       BoringFormStyle formStyle, BoringFormController formController) {
+    if (validationFunction == null) return Container();
+
     final label = formStyle.fieldRequiredLabelWidget ??
         const Text(' *', style: TextStyle(color: Colors.red));
 

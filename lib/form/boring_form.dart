@@ -112,8 +112,9 @@ class BoringFormChildWidget extends StatelessWidget {
       {super.key,
       this.observedFields = const [],
       required Widget Function(
-              BuildContext context, BoringFormController formController)
-          builder,
+        BuildContext context,
+        BoringFormController formController,
+      ) builder,
       this.observeAllFields = false})
       : childFieldPath = null,
         _withChildFieldPathBuilder = null,
@@ -122,9 +123,11 @@ class BoringFormChildWidget extends StatelessWidget {
   const BoringFormChildWidget.withChildFieldPath(
       {super.key,
       this.observedFields = const [],
-      required Widget Function(BuildContext context,
-              BoringFormController formController, FieldPath childFieldPath)
-          builder,
+      required Widget Function(
+        BuildContext context,
+        BoringFormController formController,
+        FieldPath childFieldPath,
+      ) builder,
       required this.childFieldPath,
       this.observeAllFields = false})
       : _withChildFieldPathBuilder = builder,

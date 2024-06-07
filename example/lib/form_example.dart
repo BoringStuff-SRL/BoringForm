@@ -30,11 +30,24 @@ class FormExample0 extends StatelessWidget {
         children: [
           BoringTextField(
             fieldPath: ['first'],
-            allowEmpty: false,
+            allowEmpty: true,
+            validationFunction: (formController, value) {
+              return '';
+            },
             decoration: (formController) =>
                 BoringFieldDecoration(label: 'QUESTA E LA LABEL'),
           ),
-          BoringTextField(fieldPath: ['second'], allowEmpty: false),
+          BoringTextField(
+            fieldPath: ['second'],
+            allowEmpty: true,
+            decoration: (formController) =>
+                BoringFieldDecoration(label: 'QUESTA E LA LABEL'),
+          ),
+          BoringNumberField(
+            fieldPath: ['nums'],
+            decoration: (formController) =>
+                BoringFieldDecoration(label: 'QUESTA E LA LABEL'),
+          ),
           BoringFormChildWidget.withChildFieldPath(
             childFieldPath: ['third'],
             observedFields: [

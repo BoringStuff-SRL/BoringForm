@@ -22,14 +22,18 @@ class BoringTextField extends BoringFormField<String> {
     super.decoration,
     super.readOnly,
     super.onChanged,
-  }) : super(validationFunction:
-            (BoringFormController formController, String? value) {
-          final error = validationFunction?.call(formController, value);
-          final emptyError = !allowEmpty && (value == null || value.isEmpty)
-              ? "Value cannot be empty"
-              : null;
-          return error ?? emptyError;
-        });
+  }) : super(
+            validationFunction: validationFunction == null && allowEmpty
+                ? null
+                : (BoringFormController formController, String? value) {
+                    final error =
+                        validationFunction?.call(formController, value);
+                    final emptyError =
+                        !allowEmpty && (value == null || value.isEmpty)
+                            ? "Value cannot be empty"
+                            : null;
+                    return error ?? emptyError;
+                  });
 
   @override
   void onObservedFieldsChange(BoringFormController formController) {}
