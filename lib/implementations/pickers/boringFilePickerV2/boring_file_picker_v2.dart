@@ -10,14 +10,13 @@ import 'package:flutter/material.dart';
 
 class BoringFilePickerV2 extends BoringFormField<List<PlatformFile>> {
   final BoringFilePickerDecoration decoration;
-  bool? readOnly;
 
   BoringFilePickerV2(
       {super.key,
       required super.fieldPath,
       super.observedFields,
       super.validationFunction,
-      this.readOnly,
+      super.readOnly,
       this.decoration = const BoringFilePickerDecoration()});
 
   @override
@@ -28,9 +27,8 @@ class BoringFilePickerV2 extends BoringFormField<List<PlatformFile>> {
       List<PlatformFile>? fieldValue,
       String? error) {
     final style = formTheme.style;
-    final readOnlySetting = readOnly ?? style.readOnly;
     return BoringFilePickerSettings(
-      readOnly: readOnlySetting,
+      readOnly: isReadOnly(formTheme),
       decoration: decoration,
       formController: formController,
       fieldPath: fieldPath,
