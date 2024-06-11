@@ -26,9 +26,9 @@ class BoringFilePickerV2 extends BoringFormField<List<PlatformFile>> {
       BoringFormController formController,
       List<PlatformFile>? fieldValue,
       String? error) {
-    final style = formTheme.style;
+    final bool readOnly = isReadOnly(formTheme);
     return BoringFilePickerSettings(
-      readOnly: isReadOnly(formTheme),
+      readOnly: readOnly,
       decoration: decoration,
       formController: formController,
       fieldPath: fieldPath,
@@ -43,14 +43,15 @@ class BoringFilePickerV2 extends BoringFormField<List<PlatformFile>> {
               );
             },
           ),
-          Row(
-            children: [
-              Expanded(
-                child: BoringDropZone(
-                    formController: formController, fieldPath: fieldPath),
-              ),
-            ],
-          ),
+          if (!readOnly)
+            Row(
+              children: [
+                Expanded(
+                  child: BoringDropZone(
+                      formController: formController, fieldPath: fieldPath),
+                ),
+              ],
+            ),
         ],
       ),
     );
