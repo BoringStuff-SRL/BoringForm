@@ -11,7 +11,6 @@ class FormExample0 extends StatelessWidget {
     validationBehaviour: ValidationBehaviour.onSubmit,
     fieldRequiredLabelBehaviour: FieldRequiredLabelBehaviour.always,
   );
-  final c = BoringFormController(initialValue: {'num': -12323.123});
 
   final myStyle = BoringFormStyle(
     inputDecoration: const InputDecoration(
