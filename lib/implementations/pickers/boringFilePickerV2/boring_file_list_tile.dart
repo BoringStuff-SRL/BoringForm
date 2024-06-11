@@ -79,21 +79,20 @@ class BoringFileListTile extends StatelessWidget {
                     ),
                   ],
                 ),
-                settings.readOnly
-                    ? Container()
-                    : IconButton(
-                        onPressed: () {
-                          final files = List<PlatformFile>.from(settings
-                              .formController
-                              .getValue(settings.fieldPath));
+                if (!settings.readOnly)
+                  IconButton(
+                      onPressed: () {
+                        final files = List<PlatformFile>.from(settings
+                            .formController
+                            .getValue(settings.fieldPath));
 
-                          files.removeWhere(
-                              (element) => element.name == file.name);
+                        files.removeWhere(
+                            (element) => element.name == file.name);
 
-                          settings.formController
-                              .setFieldValue(settings.fieldPath, files);
-                        },
-                        icon: Icon(Icons.delete))
+                        settings.formController.setFieldValue(
+                            settings.fieldPath, files.isEmpty ? null : files);
+                      },
+                      icon: Icon(Icons.delete))
               ],
             ));
   }
