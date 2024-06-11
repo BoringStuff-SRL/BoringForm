@@ -1,4 +1,5 @@
 import "package:boring_form/boring_form.dart";
+import 'package:boring_form/implementations/pickers/boringFilePickerV2/boring_drop_zone_decoration.dart';
 import 'package:boring_form/implementations/pickers/boringFilePickerV2/boring_file_picker_v2.dart';
 import 'package:flutter/material.dart';
 
@@ -23,8 +24,9 @@ class FormExample0 extends StatelessWidget {
       formController: c,
       child: Column(
         children: [
-          const BoringFilePickerV2(
+          BoringFilePickerV2(
             fieldPath: ['ccc'],
+            readOnly: true,
           ),
           BoringImagePickerWithPreview(
             fieldPath: const ["image"],
