@@ -1,4 +1,6 @@
 import "package:boring_form/boring_form.dart";
+import 'package:boring_form/implementations/pickers/boringFilePickerV2/boring_drop_zone_decoration.dart';
+import 'package:boring_form/implementations/pickers/boringFilePickerV2/boring_file_picker_v2.dart';
 import 'package:flutter/material.dart';
 
 class FormExample0 extends StatelessWidget {
@@ -9,6 +11,7 @@ class FormExample0 extends StatelessWidget {
     validationBehaviour: ValidationBehaviour.onSubmit,
     fieldRequiredLabelBehaviour: FieldRequiredLabelBehaviour.always,
   );
+  final c = BoringFormController(initialValue: {'num': -12323.123});
 
   final myStyle = BoringFormStyle(
     inputDecoration: const InputDecoration(
@@ -28,21 +31,94 @@ class FormExample0 extends StatelessWidget {
       formController: c,
       child: Column(
         children: [
-          BoringTextField(
-            fieldPath: ['first'],
-            allowEmpty: true,
-            validationFunction: (formController, value) {
-              return '';
-            },
-            decoration: (formController) =>
-                BoringFieldDecoration(label: 'QUESTA E LA LABEL'),
+          BoringFilePickerV2(
+            fieldPath: ['ccc'],
+            readOnly: true,
           ),
-          BoringTextField(
-            fieldPath: ['second'],
-            allowEmpty: true,
-            decoration: (formController) =>
-                BoringFieldDecoration(label: 'QUESTA E LA LABEL'),
+          BoringImagePickerWithPreview(
+            fieldPath: const ["image"],
+            imagePickerWithPreviewDecoration:
+                BoringImagePickerWithPreviewDecoration(
+              previewImageWrapper: (context, child) => ConstrainedBox(
+                constraints: const BoxConstraints(maxHeight: 100),
+                child: child,
+              ),
+            ),
           ),
+          /* Text("Choice", style: titleStyle),
+          Text("checkbox"),
+          BoringCheckBoxField(
+            fieldPath: ["check"],
+            validationFunction: (formController, value) =>
+                value == false || value == null ? "Insert value" : null,
+            decoration: (formController) => BoringFieldDecoration(
+              label: "ciaotest123",
+            ),
+          ),
+          Text("radio group"),
+          BoringRadioGroupField(
+            fieldPath: ["group"],
+            items: [
+              BoringChoiceItem(value: "test", display: "test"),
+              BoringChoiceItem(value: "asd", display: "asd"),
+            ],
+          ),
+          Text("switch"),
+          BoringSwitchField(fieldPath: ["switch"]),
+          Text("Multichoice dropdown"),
+          BoringDropdownMultiChoiceField(
+            fieldPath: ["multi"],
+            getItems: (search) async => await List.generate(20,
+                (index) => BoringChoiceItem(value: index, display: "$index")),
+            toBoringChoiceItem: (p0) =>
+                BoringChoiceItem(value: p0, display: "$p0"),
+            decoration: (formController) => BoringFieldDecoration(
+                label: 'LABEL', hintText: 'THIS IS THE HINT'),
+            validationFunction: (formController, value) =>
+                (value?.length ?? 0) < 3 ? "almeno 3 elementi" : null,
+          ),
+          Text("Singlechoice dropdown"),
+          BoringDropdownField(
+            fieldPath: ["single", 'test'],
+            getItems: (search) async => await List.generate(20,
+                (index) => BoringChoiceItem(value: index, display: "$index")),
+            toBoringChoiceItem: (p0) =>
+                BoringChoiceItem(value: p0, display: "$p0"),
+            validationFunction: (formController, value) =>
+                (value == null) ? "seleziona un elemento" : null,
+          ),*/
+          //////////////////////////////
+          // Text("Pickers", style: titleStyle),
+          // Text("Date field"),
+          // BoringDateField(
+          //     fieldPath: ["date"],
+          //     firstDate: DateTime.now(),
+          //     validationFunction: (formController, value) =>
+          //         value == null ? "Insert value" : null,
+          //     lastDate: DateTime.now().add(const Duration(days: 300))),
+          // Text("Datetime field"),
+          // BoringDateTimeField(
+          //     fieldPath: ["datetime"],
+          //     firstDate: DateTime.now(),
+          //     validationFunction: (formController, value) =>
+          //         value == null ? "Insert value" : null,
+          //     lastDate: DateTime.now().add(const Duration(days: 300))),
+          // Text("Time field"),
+          // BoringTimeField(
+          //   fieldPath: ["timefield"],
+          //   validationFunction: (formController, value) =>
+          //       value == null ? "Insert value" : null,
+          // ),
+          // Text("File picker"),
+          // BoringFilePicker(
+          //   fieldPath: ["file"],
+          //   validationFunction: (formController, value) =>
+          //       value == null ? "Insert value" : null,
+          // ),
+          // //////////////////////////////
+          Text("Number fields", style: titleStyle),
+
+          const Text("number"),
           BoringNumberField(
             fieldPath: ['nums'],
             decoration: (formController) =>
