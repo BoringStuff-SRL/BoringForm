@@ -107,14 +107,39 @@ class BoringFormChildWidget extends StatelessWidget {
   final List<List<String>> observedFields;
   final bool observeAllFields;
   final Widget Function(BuildContext context,
-          BoringFormController formController /*TODO expose changed fields*/)
-      builder;
+          BoringFormController formController /*TODO expose changed fields*/)?
+      _builder;
+
+  final FieldPath? childFieldPath;
+  final Widget Function(
+      BuildContext context,
+      BoringFormController formController,
+      FieldPath childFieldPath)? _withChildFieldPathBuilder;
 
   const BoringFormChildWidget(
       {super.key,
       this.observedFields = const [],
-      required this.builder,
-      this.observeAllFields = false});
+      required Widget Function(
+        BuildContext context,
+        BoringFormController formController,
+      ) builder,
+      this.observeAllFields = false})
+      : childFieldPath = null,
+        _withChildFieldPathBuilder = null,
+        _builder = builder;
+
+  const BoringFormChildWidget.withChildFieldPath(
+      {super.key,
+      this.observedFields = const [],
+      required Widget Function(
+        BuildContext context,
+        BoringFormController formController,
+        FieldPath childFieldPath,
+      ) builder,
+      required this.childFieldPath,
+      this.observeAllFields = false})
+      : _withChildFieldPathBuilder = builder,
+        _builder = null;
   // BoringFormChildWidget.plain(
   //     {super.key,
   //     List<String> observedFields = const [],
@@ -132,10 +157,17 @@ class BoringFormChildWidget extends StatelessWidget {
             ]
           : formController.selectPaths(observedFields, includeError: false);
     }, builder: (context, _, __) {
-      // final formController = context.read<BoringFormController>();
       final formController =
           Provider.of<BoringFormController>(context, listen: false);
-      return builder(context, formController);
+
+      if (_withChildFieldPathBuilder != null) {
+        formController.setFieldValue(childFieldPath!, null);
+        formController.removeValidationFunction(childFieldPath!);
+        return _withChildFieldPathBuilder(
+            context, formController, childFieldPath!);
+      }
+
+      return _builder!.call(context, formController);
     });
   }
 }
