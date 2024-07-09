@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:boring_form/boring_form.dart';
 import 'package:boring_form/field/boring_form_field.dart';
+import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
 class BoringTextField extends BoringFormField<String> {
@@ -39,7 +39,7 @@ class BoringTextField extends BoringFormField<String> {
   void onObservedFieldsChange(BoringFormController formController) {}
 
   @override
-  Widget builder(BuildContext context, BoringFormTheme formTheme,
+  Widget builder(BuildContext context, BoringFormStyle formTheme,
       BoringFormController formController, String? fieldValue, String? errror) {
     return TextField(
       focusNode: _focusNode,
@@ -48,8 +48,8 @@ class BoringTextField extends BoringFormField<String> {
       controller: _textEditingController,
       minLines: minLines,
       maxLines: maxLines,
-      textAlign: formTheme.style.textAlign,
-      style: formTheme.style.textStyle,
+      textAlign: formTheme.textAlign,
+      style: formTheme.textStyle,
       decoration:
           getInputDecoration(formController, formTheme, errror, fieldValue),
       onChanged: (value) {

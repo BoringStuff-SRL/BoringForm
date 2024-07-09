@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:boring_form/boring_form.dart';
 import 'package:boring_form/field/boring_form_field.dart';
+import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
 class BoringSlider extends BoringFormField<double> {
@@ -25,7 +25,7 @@ class BoringSlider extends BoringFormField<double> {
   onObservedFieldsChange(BoringFormController formController) {}
 
   @override
-  Widget builder(BuildContext context, BoringFormTheme formTheme,
+  Widget builder(BuildContext context, BoringFormStyle formTheme,
       BoringFormController formController, double? fieldValue, String? error) {
     final inputDecoration =
         getInputDecoration(formController, formTheme, error, fieldValue);
@@ -108,7 +108,7 @@ class BoringRangeSlider extends BoringFormField<RangeValues> {
   final int? divisions;
 
   @override
-  Widget builder(BuildContext context, BoringFormTheme formTheme,
+  Widget builder(BuildContext context, BoringFormStyle formTheme,
       BoringFormController formController, fieldValue, String? errror) {
     final inputDecoration =
         getInputDecoration(formController, formTheme, errror, fieldValue);

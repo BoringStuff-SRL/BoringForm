@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
-import 'package:boring_form/boring_form.dart';
 import 'package:boring_form/field/boring_form_field.dart';
+import 'package:boring_ui/boring_ui.dart';
 // import 'package:boring_form/field/boring_field.dart';
 // import 'package:boring_form/field/boring_field_controller.dart';
 // import 'package:boring_form/theme/boring_field_decoration.dart';
@@ -140,7 +140,7 @@ class BoringNumberField extends BoringFormField<num> {
   bool hasSetInitialValue = false;
 
   @override
-  Widget builder(BuildContext context, BoringFormTheme formTheme,
+  Widget builder(BuildContext context, BoringFormStyle formTheme,
       BoringFormController formController, num? fieldValue, String? error) {
     // for initial value
     if (!hasSetInitialValue && fieldValue != null) {
@@ -164,8 +164,8 @@ class BoringNumberField extends BoringFormField<num> {
       readOnly: isReadOnly(formTheme),
       enabled: !isReadOnly(formTheme),
       controller: _textEditingController,
-      textAlign: formTheme.style.textAlign,
-      style: formTheme.style.textStyle,
+      textAlign: formTheme.textAlign,
+      style: formTheme.textStyle,
       keyboardType: TextInputType.numberWithOptions(
           decimal: _onlyIntegers, signed: signed),
       inputFormatters: [_numberFormatter],

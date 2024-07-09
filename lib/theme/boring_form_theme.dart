@@ -1,4 +1,4 @@
-import 'package:boring_form/theme/boring_form_style.dart';
+import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
 class BoringFormTheme extends InheritedWidget {

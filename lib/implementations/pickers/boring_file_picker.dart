@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:boring_form/boring_form.dart';
 import 'package:boring_form/field/boring_form_field.dart';
+import 'package:boring_ui/boring_ui.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
@@ -70,11 +70,11 @@ class BoringFilePicker extends BoringFormField<List<PlatformFile>> {
   @override
   Widget builder(
       BuildContext context,
-      BoringFormTheme formTheme,
+      BoringFormStyle formTheme,
       BoringFormController formController,
       List<PlatformFile>? fieldValue,
       String? error) {
-    final style = formTheme.style;
+    final style = formTheme;
     final decoration =
         getInputDecoration(formController, formTheme, error, fieldValue);
     final readOnly = style.readOnly;

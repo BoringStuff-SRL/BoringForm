@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, overridden_fields, must_be_immutable
-import 'package:boring_form/boring_form.dart';
-import 'package:boringcore/boringcore_responsive.dart';
+import 'package:boring_form/theme/boring_form_theme.dart';
+import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,15 +22,14 @@ class BoringForm extends BoringFormWidget {
     super.key,
     BoringFormController? formController,
     required List<Widget> children,
-    BoringResponsiveSize responsiveSize =
-        const BoringResponsiveSize.defaultSizes(),
+    BResponsiveSize responsiveSize = const BResponsiveSize.defaultSizes(),
     super.style,
-  })  : _child = BoringResponsiveWrap(
+  })  : _child = BResponsiveWrap(
           children: children
               .map(
-                (e) => e is BoringResponsiveChild
+                (e) => e is BResponsiveChild
                     ? e
-                    : BoringResponsiveChild(
+                    : BResponsiveChild(
                         responsiveSize: responsiveSize,
                         child: e,
                       ),
@@ -53,21 +52,20 @@ abstract class BoringResponsiveFormWidget extends BoringFormWidget {
     super.key,
     super.formController,
     super.style,
-    BoringResponsiveSize responsiveSize =
-        const BoringResponsiveSize.defaultSizes(),
+    BResponsiveSize responsiveSize = const BResponsiveSize.defaultSizes(),
   }) : _responsiveSize = responsiveSize;
 
-  final BoringResponsiveSize _responsiveSize;
+  final BResponsiveSize _responsiveSize;
 
   List<Widget> get children;
 
   @override
-  Widget child(context) => BoringResponsiveWrap(
+  Widget child(context) => BResponsiveWrap(
         children: children
             .map(
-              (e) => e is BoringResponsiveChild
+              (e) => e is BResponsiveChild
                   ? e
-                  : BoringResponsiveChild(
+                  : BResponsiveChild(
                       responsiveSize: _responsiveSize,
                       child: e,
                     ),
@@ -88,17 +86,17 @@ abstract class BoringFormWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final BoringFormStyle formStyle = styleManipulator(style?.call(context) ??
-        BoringFormTheme.maybeOf(context)?.style ??
-        BoringFormStyle());
+    final BoringFormStyle formStyle = styleManipulator(
+        style?.call(context) ?? BoringTheme.of(context).boringFormStyle);
 
     return FocusTraversalGroup(
       child: BoringFormTheme(
-          style: formStyle,
-          child: ChangeNotifierProvider.value(
-            value: formController,
-            child: child(context),
-          )),
+        style: formStyle,
+        child: ChangeNotifierProvider.value(
+          value: formController,
+          child: child(context),
+        ),
+      ),
     );
   }
 }

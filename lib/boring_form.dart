@@ -27,6 +27,3 @@ export 'implementations/text/boring_phone_number_field.dart';
 export 'implementations/text/boring_text_field.dart';
 export 'implementations/text/boring_text_regex.dart';
 export 'theme/boring_field_decoration.dart';
-export 'theme/boring_form_style.dart';
-export 'theme/boring_form_theme.dart';
-export 'theme/boring_responsive_size.dart';

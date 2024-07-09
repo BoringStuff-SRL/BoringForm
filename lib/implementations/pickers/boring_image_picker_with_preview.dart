@@ -1,6 +1,5 @@
 import 'package:boring_form/field/boring_form_field.dart';
-import 'package:boring_form/form/boring_form_controller.dart';
-import 'package:boring_form/theme/boring_form_theme.dart';
+import 'package:boring_ui/boring_ui.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,8 +20,7 @@ class BoringImagePickerWithPreviewDecoration {
   final Widget Function(BuildContext context, Widget child)
       _previewImageWrapper;
   final Widget Function(
-          BuildContext context, BoringFormController formController)?
-      actionBuilder;
+      BuildContext context, BoringFormController formController)? actionBuilder;
   BoringImagePickerWithPreviewDecoration({
     this.editText,
     this.clearText,
@@ -62,7 +60,7 @@ class BoringImagePickerWithPreview extends BoringFormField<Uint8List> {
   @override
   Widget builder(
       BuildContext context,
-      BoringFormTheme formTheme,
+      BoringFormStyle formTheme,
       BoringFormController formController,
       Uint8List? fieldValue,
       String? error) {
@@ -107,58 +105,61 @@ class BoringImagePickerWithPreview extends BoringFormField<Uint8List> {
           zoomWidget: image,
           fullScreenDoubleTapZoomScale: 2.5,
         ),
-        imagePickerWithPreviewDecoration.actionBuilder?.call(context, formController) ??
-        Positioned(
-          top: 5,
-          right: 5,
-          child: PopupMenuButton(
-            child: Container(
-              padding: const EdgeInsets.all(5.0),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Theme.of(context).colorScheme.primaryContainer,
-              ),
-              child: Icon(
-                Icons.more_vert,
-                color: Theme.of(context).colorScheme.onPrimaryContainer,
+        imagePickerWithPreviewDecoration.actionBuilder
+                ?.call(context, formController) ??
+            Positioned(
+              top: 5,
+              right: 5,
+              child: PopupMenuButton(
+                child: Container(
+                  padding: const EdgeInsets.all(5.0),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                  ),
+                  child: Icon(
+                    Icons.more_vert,
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  ),
+                ),
+                itemBuilder: (BuildContext context) => [
+                  PopupMenuItem(
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.edit,
+                          color:
+                              Theme.of(context).colorScheme.onPrimaryContainer,
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Text(imagePickerWithPreviewDecoration.editText ??
+                            "Edit image"),
+                      ],
+                    ),
+                    onTap: () => _handleSelectImage(formController),
+                  ),
+                  PopupMenuItem(
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.delete,
+                          color:
+                              Theme.of(context).colorScheme.onPrimaryContainer,
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Text(imagePickerWithPreviewDecoration.clearText ??
+                            "Remove image"),
+                      ],
+                    ),
+                    onTap: () => _handleClearImage(formController),
+                  ),
+                ],
               ),
             ),
-            itemBuilder: (BuildContext context) => [
-              PopupMenuItem(
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.edit,
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
-                    ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Text(imagePickerWithPreviewDecoration.editText ??
-                        "Edit image"),
-                  ],
-                ),
-                onTap: () => _handleSelectImage(formController),
-              ),
-              PopupMenuItem(
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.delete,
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
-                    ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Text(imagePickerWithPreviewDecoration.clearText ??
-                        "Remove image"),
-                  ],
-                ),
-                onTap: () => _handleClearImage(formController),
-              ),
-            ],
-          ),
-        ),
       ],
     );
 

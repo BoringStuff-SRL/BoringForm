@@ -1,11 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
 import 'package:boring_form/field/boring_form_field.dart';
-import 'package:boring_form/form/boring_form_controller.dart';
+import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-
-import '../../theme/boring_form_theme.dart';
 
 enum BoringSwitchLabelPosition { left, right, top }
 
@@ -114,7 +112,7 @@ class BoringSwitchField extends BoringFormField<bool> {
 
   final BoringSwitchDecoration? switchDecoration;
   @override
-  Widget builder(BuildContext context, BoringFormTheme formTheme,
+  Widget builder(BuildContext context, BoringFormStyle formTheme,
       BoringFormController formController, bool? fieldValue, String? error) {
     return _SwitchWithDecoration(
       value: formController.getValue(fieldPath) ?? false,
