@@ -78,7 +78,7 @@ abstract class BoringFormWidget extends StatelessWidget {
   final BoringFormController formController;
   Widget child(BuildContext context);
   final BoringFormStyle Function(BuildContext context)? style;
-  BoringFormStyle styleManipulator(BoringFormStyle style);
+  BoringFormStyle styleManipulator(BoringFormStyle style) => style;
 
   BoringFormWidget(
       {super.key, BoringFormController? formController, this.style})
