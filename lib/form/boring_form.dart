@@ -29,7 +29,7 @@ class BoringForm extends BoringFormWidget {
               .map(
                 (e) => e is BResponsiveChild
                     ? e
-                    : BResponsiveChild(
+                    : BResponsiveChild.size(
                         responsiveSize: responsiveSize,
                         child: e,
                       ),
