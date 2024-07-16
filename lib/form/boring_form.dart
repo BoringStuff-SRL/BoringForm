@@ -65,7 +65,7 @@ abstract class BoringResponsiveFormWidget extends BoringFormWidget {
             .map(
               (e) => e is BResponsiveChild
                   ? e
-                  : BResponsiveChild(
+                  : BResponsiveChild.size(
                       responsiveSize: _responsiveSize,
                       child: e,
                     ),
