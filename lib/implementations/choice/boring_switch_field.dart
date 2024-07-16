@@ -112,9 +112,10 @@ class BoringSwitchField extends BoringFormField<bool> {
 
   final BoringSwitchDecoration? switchDecoration;
   @override
-  Widget builder(BuildContext context, BoringFormStyle formTheme,
+  Widget builder(BuildContext context, BoringFormStyle formStyle,
       BoringFormController formController, bool? fieldValue, String? error) {
     return _SwitchWithDecoration(
+      readOnly: isReadOnly(formStyle),
       value: formController.getValue(fieldPath) ?? false,
       onChanged: (value) {
         setChangedValue(formController, (value ?? false));
@@ -133,41 +134,46 @@ class BoringSwitchField extends BoringFormField<bool> {
 class _SwitchWithDecoration extends StatelessWidget {
   final Function(bool?) onChanged;
   final bool value;
+  final bool readOnly;
   final BoringSwitchDecoration? switchDecoration;
 
   const _SwitchWithDecoration({
     Key? key,
     required this.onChanged,
     required this.value,
+    required this.readOnly,
     this.switchDecoration,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Switch(
-      value: value,
-      onChanged: onChanged,
-      activeColor: switchDecoration?.activeColor,
-      activeTrackColor: switchDecoration?.activeTrackColor,
-      inactiveThumbColor: switchDecoration?.inactiveThumbColor,
-      inactiveTrackColor: switchDecoration?.inactiveTrackColor,
-      activeThumbImage: switchDecoration?.activeThumbImage,
-      onActiveThumbImageError: switchDecoration?.onActiveThumbImageError,
-      inactiveThumbImage: switchDecoration?.inactiveThumbImage,
-      onInactiveThumbImageError: switchDecoration?.onInactiveThumbImageError,
-      thumbColor: switchDecoration?.thumbColor,
-      trackColor: switchDecoration?.trackColor,
-      trackOutlineColor: switchDecoration?.trackColor,
-      trackOutlineWidth: switchDecoration?.trackOutlineWidth,
-      thumbIcon: switchDecoration?.thumbIcon,
-      materialTapTargetSize: switchDecoration?.materialTapTargetSize,
-      dragStartBehavior:
-          switchDecoration?.dragStartBehavior ?? DragStartBehavior.start,
-      mouseCursor: switchDecoration?.mouseCursor,
-      focusColor: switchDecoration?.focusColor,
-      hoverColor: switchDecoration?.hoverColor,
-      overlayColor: switchDecoration?.overlayColor,
-      splashRadius: switchDecoration?.splashRadius,
+    return IgnorePointer(
+      ignoring: readOnly,
+      child: Switch(
+        value: value,
+        onChanged: onChanged,
+        activeColor: switchDecoration?.activeColor,
+        activeTrackColor: switchDecoration?.activeTrackColor,
+        inactiveThumbColor: switchDecoration?.inactiveThumbColor,
+        inactiveTrackColor: switchDecoration?.inactiveTrackColor,
+        activeThumbImage: switchDecoration?.activeThumbImage,
+        onActiveThumbImageError: switchDecoration?.onActiveThumbImageError,
+        inactiveThumbImage: switchDecoration?.inactiveThumbImage,
+        onInactiveThumbImageError: switchDecoration?.onInactiveThumbImageError,
+        thumbColor: switchDecoration?.thumbColor,
+        trackColor: switchDecoration?.trackColor,
+        trackOutlineColor: switchDecoration?.trackColor,
+        trackOutlineWidth: switchDecoration?.trackOutlineWidth,
+        thumbIcon: switchDecoration?.thumbIcon,
+        materialTapTargetSize: switchDecoration?.materialTapTargetSize,
+        dragStartBehavior:
+            switchDecoration?.dragStartBehavior ?? DragStartBehavior.start,
+        mouseCursor: switchDecoration?.mouseCursor,
+        focusColor: switchDecoration?.focusColor,
+        hoverColor: switchDecoration?.hoverColor,
+        overlayColor: switchDecoration?.overlayColor,
+        splashRadius: switchDecoration?.splashRadius,
+      ),
     );
   }
 }

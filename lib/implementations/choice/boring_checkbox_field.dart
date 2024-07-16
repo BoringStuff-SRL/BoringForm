@@ -14,6 +14,7 @@ class BoringCheckBoxField extends BoringFormField<bool> {
     this.checkColor,
     this.mainAxisAlignment,
     this.unCheckColor,
+    super.onChanged,
     // this.verticalPositioning = 1,
     // super.displayCondition,
     // super.boringResponsiveSize,

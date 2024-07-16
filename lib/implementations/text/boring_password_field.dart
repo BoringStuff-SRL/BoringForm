@@ -21,17 +21,17 @@ class BoringPasswordField extends BoringFormField<String> {
   final Widget? visibilityOffIcon;
 
   @override
-  Widget builder(BuildContext context, BoringFormStyle formTheme,
-      BoringFormController formController, String? fieldValue, String? errror) {
+  Widget builder(BuildContext context, BoringFormStyle formStyle,
+      BoringFormController formController, String? fieldValue, String? error) {
     final inputDecoration =
-        getInputDecoration(formController, formTheme, errror, fieldValue);
+        getInputDecoration(formController, formStyle, error, fieldValue);
     assert(inputDecoration.suffixIcon == null,
         "You can't specify suffixIcon on BoringPasswordField!");
     return BoringPasswordTextField(
       focusNode: _focusNode,
       textEditingController: _textEditingController,
-      formTheme: formTheme,
-      readOnly: isReadOnly(formTheme),
+      formTheme: formStyle,
+      readOnly: isReadOnly(formStyle),
       fieldPath: fieldPath,
       inputDecoration: inputDecoration,
       startsHidden: true,
