@@ -58,10 +58,11 @@ class BoringRadioGroupField<T> extends BoringFormField<T> {
                   ))
               .toList(),
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: Text(dec?.helperText ?? ""),
-        ),
+        if (dec?.helperText != null && dec!.helperText!.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: Text(dec.helperText ?? ""),
+          ),
       ],
     );
   }
