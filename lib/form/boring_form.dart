@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, overridden_fields, must_be_immutable
-import 'package:boring_form/boring_form.dart';
-import 'package:boringcore/boringcore_responsive.dart';
+import 'package:boring_form/theme/boring_form_theme.dart';
+import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,15 +22,14 @@ class BoringForm extends BoringFormWidget {
     super.key,
     BoringFormController? formController,
     required List<Widget> children,
-    BoringResponsiveSize responsiveSize =
-        const BoringResponsiveSize.defaultSizes(),
+    BResponsiveSize responsiveSize = const BResponsiveSize.defaultSizes(),
     super.style,
-  })  : _child = BoringResponsiveLayout(
+  })  : _child = BResponsiveWrap(
           children: children
               .map(
-                (e) => e is BoringResponsiveChild
+                (e) => e is BResponsiveChild
                     ? e
-                    : BoringResponsiveChild(
+                    : BResponsiveChild.size(
                         responsiveSize: responsiveSize,
                         child: e,
                       ),
@@ -53,21 +52,20 @@ abstract class BoringResponsiveFormWidget extends BoringFormWidget {
     super.key,
     super.formController,
     super.style,
-    BoringResponsiveSize responsiveSize =
-        const BoringResponsiveSize.defaultSizes(),
+    BResponsiveSize responsiveSize = const BResponsiveSize.defaultSizes(),
   }) : _responsiveSize = responsiveSize;
 
-  final BoringResponsiveSize _responsiveSize;
+  final BResponsiveSize _responsiveSize;
 
   List<Widget> get children;
 
   @override
-  Widget child(context) => BoringResponsiveLayout(
+  Widget child(context) => BResponsiveWrap(
         children: children
             .map(
-              (e) => e is BoringResponsiveChild
+              (e) => e is BResponsiveChild
                   ? e
-                  : BoringResponsiveChild(
+                  : BResponsiveChild.size(
                       responsiveSize: _responsiveSize,
                       child: e,
                     ),
@@ -80,7 +78,7 @@ abstract class BoringFormWidget extends StatelessWidget {
   final BoringFormController formController;
   Widget child(BuildContext context);
   final BoringFormStyle Function(BuildContext context)? style;
-  BoringFormStyle styleManipulator(BoringFormStyle style);
+  BoringFormStyle styleManipulator(BoringFormStyle style) => style;
 
   BoringFormWidget(
       {super.key, BoringFormController? formController, this.style})
@@ -88,17 +86,17 @@ abstract class BoringFormWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final BoringFormStyle formStyle = styleManipulator(style?.call(context) ??
-        BoringFormTheme.maybeOf(context)?.style ??
-        BoringFormStyle());
+    final BoringFormStyle formStyle = styleManipulator(
+        style?.call(context) ?? BoringTheme.of(context).boringFormStyle);
 
     return FocusTraversalGroup(
       child: BoringFormTheme(
-          style: formStyle,
-          child: ChangeNotifierProvider.value(
-            value: formController,
-            child: child(context),
-          )),
+        style: formStyle,
+        child: ChangeNotifierProvider.value(
+          value: formController,
+          child: child(context),
+        ),
+      ),
     );
   }
 }
@@ -107,14 +105,39 @@ class BoringFormChildWidget extends StatelessWidget {
   final List<List<String>> observedFields;
   final bool observeAllFields;
   final Widget Function(BuildContext context,
-          BoringFormController formController /*TODO expose changed fields*/)
-      builder;
+          BoringFormController formController /*TODO expose changed fields*/)?
+      _builder;
+
+  final FieldPath? childFieldPath;
+  final Widget Function(
+      BuildContext context,
+      BoringFormController formController,
+      FieldPath childFieldPath)? _withChildFieldPathBuilder;
 
   const BoringFormChildWidget(
       {super.key,
       this.observedFields = const [],
-      required this.builder,
-      this.observeAllFields = false});
+      required Widget Function(
+        BuildContext context,
+        BoringFormController formController,
+      ) builder,
+      this.observeAllFields = false})
+      : childFieldPath = null,
+        _withChildFieldPathBuilder = null,
+        _builder = builder;
+
+  const BoringFormChildWidget.withChildFieldPath(
+      {super.key,
+      this.observedFields = const [],
+      required Widget Function(
+        BuildContext context,
+        BoringFormController formController,
+        FieldPath childFieldPath,
+      ) builder,
+      required this.childFieldPath,
+      this.observeAllFields = false})
+      : _withChildFieldPathBuilder = builder,
+        _builder = null;
   // BoringFormChildWidget.plain(
   //     {super.key,
   //     List<String> observedFields = const [],
@@ -132,10 +155,17 @@ class BoringFormChildWidget extends StatelessWidget {
             ]
           : formController.selectPaths(observedFields, includeError: false);
     }, builder: (context, _, __) {
-      // final formController = context.read<BoringFormController>();
       final formController =
           Provider.of<BoringFormController>(context, listen: false);
-      return builder(context, formController);
+
+      if (_withChildFieldPathBuilder != null) {
+        formController.setFieldValue(childFieldPath!, null);
+        formController.removeValidationFunction(childFieldPath!);
+        return _withChildFieldPathBuilder(
+            context, formController, childFieldPath!);
+      }
+
+      return _builder!.call(context, formController);
     });
   }
 }

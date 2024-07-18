@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, overridden_fields, must_be_immutable
 
-import 'package:boring_form/boring_form.dart';
+import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
 abstract class BoringFormFieldBase<T, TT> extends StatelessWidget {
@@ -23,8 +23,7 @@ abstract class BoringFormFieldBase<T, TT> extends StatelessWidget {
   })  : _readOnly = readOnly,
         _decorationBuilder = decoration;
 
-  bool isReadOnly(BoringFormTheme formTheme) =>
-      _readOnly ?? formTheme.style.readOnly;
+  bool isReadOnly(BoringFormStyle style) => _readOnly ?? style.readOnly;
 
   void setChangedValue(BoringFormController formController, T? newValue) {
     formController.setFieldValue<T?>(fieldPath, newValue);
@@ -36,18 +35,56 @@ abstract class BoringFormFieldBase<T, TT> extends StatelessWidget {
   void onSelfChange(BoringFormController formController, T? fieldValue);
 
   Widget labelOverField(
-          BoringFormTheme formTheme, BoringFieldDecoration fieldDecoration) =>
-      Padding(
-        padding: formTheme.style.labelOverFieldPadding ??
-            const EdgeInsets.only(bottom: 4),
-        child: Align(
-          alignment: formTheme.style.labelOverFieldAlignment,
-          child: Text(
+    BoringFieldDecoration fieldDecoration,
+    BoringFormController formController,
+    BoringFormStyle style,
+  ) {
+    return Padding(
+      padding: style.labelOverFieldPadding ?? const EdgeInsets.only(bottom: 4),
+      child: Align(
+        alignment: style.labelOverFieldAlignment,
+        child: _label(fieldDecoration, formController, style),
+      ),
+    );
+  }
+
+  Widget _label(
+    BoringFieldDecoration fieldDecoration,
+    BoringFormController formController,
+    BoringFormStyle style,
+  ) =>
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
             fieldDecoration.label!,
-            style: formTheme.style.inputDecoration.labelStyle,
+            style: style.inputDecoration.labelStyle,
           ),
-        ),
+          _buildRequiredFieldLabelOverField(style, formController),
+        ],
       );
+
+  Widget _buildRequiredFieldLabelOverField(
+      BoringFormStyle formStyle, BoringFormController formController) {
+    if (validationFunction == null) return Container();
+
+    final label = formStyle.fieldRequiredLabelWidget ??
+        const Text(' *', style: TextStyle(color: Colors.red));
+
+    switch (formController.fieldRequiredLabelBehaviour) {
+      case FieldRequiredLabelBehaviour.always:
+        return label;
+      case FieldRequiredLabelBehaviour.hiddenWhenValid:
+        final valFunValue = validationFunction?.call(
+            formController, formController.getValue(fieldPath));
+        if (valFunValue == null) {
+          return Container();
+        }
+        return label;
+      case FieldRequiredLabelBehaviour.never:
+        return Container();
+    }
+  }
 
   @override
   Widget build(BuildContext context);
@@ -57,15 +94,17 @@ abstract class BoringFormFieldBase<T, TT> extends StatelessWidget {
       _decorationBuilder?.call(formController);
 
   InputDecoration getInputDecoration(BoringFormController formController,
-      BoringFormTheme formTheme, String? errorMessage, T? value) {
-    final formStyle = formTheme.style;
+      BoringFormStyle style, String? errorMessage, T? value) {
+    final formStyle = style;
 
     final decoration = getFieldDecoration(formController);
 
     return formStyle.inputDecoration.copyWith(
-        labelText: (formStyle.labelOverField || decoration?.label == null)
+        label: (formStyle.labelOverField ||
+                decoration == null ||
+                decoration.label == null)
             ? null
-            : decoration?.label,
+            : _label(decoration, formController, formStyle),
         icon: decoration?.icon,
         errorText: errorMessage,
         helperText: decoration?.helperText,

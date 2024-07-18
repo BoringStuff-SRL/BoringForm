@@ -1,8 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:boring_form/field/boring_form_field.dart';
-import 'package:boring_form/form/boring_form_controller.dart';
-import 'package:boring_form/theme/boring_form_theme.dart';
-import 'package:boringcore/boring_dropdown.dart';
+import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
 class BoringRadioGroupField<T> extends BoringFormField<T> {
@@ -25,11 +23,11 @@ class BoringRadioGroupField<T> extends BoringFormField<T> {
     // super.onChanged
   });
 
-  final List<BoringChoiceItem<T>> items;
+  final List<BChoiceItem<T>> items;
   final int itemsPerRow;
 
   @override
-  Widget builder(BuildContext context, BoringFormTheme formTheme,
+  Widget builder(BuildContext context, BoringFormStyle formTheme,
       BoringFormController formController, T? fieldValue, String? errror) {
     final dec = getFieldDecoration(formController);
     final inputDecoration =

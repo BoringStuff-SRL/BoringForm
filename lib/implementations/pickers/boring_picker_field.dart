@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:boring_form/field/boring_form_field.dart';
-import 'package:boring_form/form/boring_form_controller.dart';
-import 'package:boring_form/theme/boring_form_theme.dart';
+import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
 class BoringPickerField<T> extends BoringFormField<T> {
@@ -28,7 +27,7 @@ class BoringPickerField<T> extends BoringFormField<T> {
   });
 
   @override
-  Widget builder(BuildContext context, BoringFormTheme formTheme,
+  Widget builder(BuildContext context, BoringFormStyle formTheme,
       BoringFormController formController, T? fieldValue, String? error) {
     return Row(
       children: [
@@ -37,8 +36,8 @@ class BoringPickerField<T> extends BoringFormField<T> {
             enabled: !isReadOnly(formTheme),
             readOnly: true,
             controller: _textEditingController,
-            textAlign: formTheme.style.textAlign,
-            style: formTheme.style.textStyle,
+            textAlign: formTheme.textAlign,
+            style: formTheme.textStyle,
             decoration: getInputDecoration(
                 formController, formTheme, error, fieldValue),
             onTap: () async {
@@ -63,7 +62,7 @@ class BoringPickerField<T> extends BoringFormField<T> {
                 setChangedValue(formController, null);
                 _textEditingController.text = "";
               },
-              child: formTheme.style.eraseValueWidget,
+              child: formTheme.eraseValueWidget,
             ),
           ),
         ]

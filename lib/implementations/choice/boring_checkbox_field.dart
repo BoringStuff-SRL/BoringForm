@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:boring_form/boring_form.dart';
 import 'package:boring_form/field/boring_form_field.dart';
+import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
 class BoringCheckBoxField extends BoringFormField<bool> {
@@ -14,6 +14,7 @@ class BoringCheckBoxField extends BoringFormField<bool> {
     this.checkColor,
     this.mainAxisAlignment,
     this.unCheckColor,
+    super.onChanged,
     // this.verticalPositioning = 1,
     // super.displayCondition,
     // super.boringResponsiveSize,
@@ -26,7 +27,7 @@ class BoringCheckBoxField extends BoringFormField<bool> {
   // final double verticalPositioning;
 
   @override
-  Widget builder(BuildContext context, BoringFormTheme formTheme,
+  Widget builder(BuildContext context, BoringFormStyle formTheme,
       BoringFormController formController, bool? fieldValue, String? error) {
     final fieldDecoration = getFieldDecoration(formController);
     final inputDecoration =

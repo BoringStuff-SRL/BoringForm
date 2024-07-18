@@ -1,9 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, overridden_fields, must_be_immutable
 
-import 'package:boring_form/boring_form.dart';
 import 'package:boring_form/field/boring_form_field_base.dart';
+import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../theme/boring_form_theme.dart';
 
 abstract class BoringFormField<T> extends BoringFormFieldBase<T, void> {
   const BoringFormField({
@@ -16,7 +18,7 @@ abstract class BoringFormField<T> extends BoringFormFieldBase<T, void> {
     super.readOnly,
   });
 
-  Widget builder(BuildContext context, BoringFormTheme formTheme,
+  Widget builder(BuildContext context, BoringFormStyle formStyle,
       BoringFormController formController, T? fieldValue, String? error);
 
   @override
@@ -26,7 +28,8 @@ abstract class BoringFormField<T> extends BoringFormFieldBase<T, void> {
   Widget build(BuildContext context) {
     final formController =
         Provider.of<BoringFormController>(context, listen: false);
-    final formTheme = BoringFormTheme.of(context);
+
+    final style = BoringFormTheme.of(context).style;
     final fieldDecoration = getFieldDecoration(formController);
 
     formController.setValidationFunction(fieldPath, validationFunction);
@@ -45,14 +48,14 @@ abstract class BoringFormField<T> extends BoringFormFieldBase<T, void> {
                 onSelfChange(formController, value.fieldValue);
 
                 return Padding(
-                  padding: formTheme.style.fieldsPadding,
+                  padding: style.fieldsPadding,
                   child: Column(
                     children: [
-                      if (formTheme.style.labelOverField &&
+                      if (style.labelOverField &&
                           fieldDecoration?.label != null)
-                        labelOverField(formTheme, fieldDecoration!),
-                      builder(context, formTheme, formController,
-                          value.fieldValue, value.error),
+                        labelOverField(fieldDecoration!, formController, style),
+                      builder(context, style, formController, value.fieldValue,
+                          value.error),
                     ],
                   ),
                 );

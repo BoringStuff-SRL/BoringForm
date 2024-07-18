@@ -11,8 +11,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  boring_form:
-    path: ../
+  boring_ui:
+    git:
+      url: https://github.com/BoringStuff-SRL/BoringUI
+      ref: develop-x-diretto
+
   easy_stepper: ^0.6.0
 
 dev_dependencies:

@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:boring_form/boring_form.dart';
 import 'package:boring_form/field/boring_form_field.dart';
+import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
 class BoringTextField extends BoringFormField<String> {
@@ -22,20 +22,24 @@ class BoringTextField extends BoringFormField<String> {
     super.decoration,
     super.readOnly,
     super.onChanged,
-  }) : super(validationFunction:
-            (BoringFormController formController, String? value) {
-          final error = validationFunction?.call(formController, value);
-          final emptyError = !allowEmpty && (value == null || value.isEmpty)
-              ? "Value cannot be empty"
-              : null;
-          return error ?? emptyError;
-        });
+  }) : super(
+            validationFunction: validationFunction == null && allowEmpty
+                ? null
+                : (BoringFormController formController, String? value) {
+                    final error =
+                        validationFunction?.call(formController, value);
+                    final emptyError =
+                        !allowEmpty && (value == null || value.isEmpty)
+                            ? "Value cannot be empty"
+                            : null;
+                    return error ?? emptyError;
+                  });
 
   @override
   void onObservedFieldsChange(BoringFormController formController) {}
 
   @override
-  Widget builder(BuildContext context, BoringFormTheme formTheme,
+  Widget builder(BuildContext context, BoringFormStyle formTheme,
       BoringFormController formController, String? fieldValue, String? errror) {
     return TextField(
       focusNode: _focusNode,
@@ -44,8 +48,8 @@ class BoringTextField extends BoringFormField<String> {
       controller: _textEditingController,
       minLines: minLines,
       maxLines: maxLines,
-      textAlign: formTheme.style.textAlign,
-      style: formTheme.style.textStyle,
+      textAlign: formTheme.textAlign,
+      style: formTheme.textStyle,
       decoration:
           getInputDecoration(formController, formTheme, errror, fieldValue),
       onChanged: (value) {
@@ -58,8 +62,10 @@ class BoringTextField extends BoringFormField<String> {
   void onSelfChange(BoringFormController formController, String? fieldValue) {
     var cursorPos = _textEditingController.selection.base.offset;
     _textEditingController.text = (fieldValue ?? "");
-    _textEditingController.selection =
-        TextSelection.collapsed(offset: cursorPos);
+    if (fieldValue != null) {
+      _textEditingController.selection =
+          TextSelection.collapsed(offset: cursorPos);
+    }
   }
 
   // @override
