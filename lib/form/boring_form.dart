@@ -44,7 +44,7 @@ abstract class BoringResponsiveFormWidget extends BoringFormWidget {
     super.key,
     super.formController,
     super.style,
-    BResponsiveSize responsiveSize = const BResponsiveSize.defaultSizes(),
+    BResponsiveSize responsiveSize = const BResponsiveSize(),
   }) : _responsiveSize = responsiveSize;
 
   final BResponsiveSize _responsiveSize;
