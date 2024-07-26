@@ -69,7 +69,7 @@ extension on Map<String, dynamic> {
       this[key] = value;
       return;
     }
-    if (!containsKey(key)) {
+    if (!containsKey(key) || this[key] == null) {
       this[key] = <String, dynamic>{};
     }
     final element = this[key];
