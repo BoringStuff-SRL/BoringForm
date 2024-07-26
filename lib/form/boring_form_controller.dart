@@ -168,6 +168,15 @@ class BoringFormControllerValue extends ChangeNotifier {
     value = initialValue;
   }
 
+  void resetFields(List<List<String>> fieldPaths) {
+    final newValue = value;
+    for (var fielPath in fieldPaths) {
+      final val = initialValue.getValue(fielPath);
+      newValue.setValue(fielPath, val);
+    }
+    value = newValue;
+  }
+
   bool get hasChanged =>
       !BoringFormControllerValue._equality.equals(_value, initialValue);
 
