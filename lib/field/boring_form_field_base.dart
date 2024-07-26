@@ -78,7 +78,8 @@ abstract class BoringFormFieldBase<T, TT> extends StatelessWidget {
         final valFunValue = validationFunction?.call(
             formController, formController.getValue(fieldPath));
         if (valFunValue == null) {
-          return Container();
+          return const Text(' *');
+
         }
         return label;
       case FieldRequiredLabelBehaviour.never:
