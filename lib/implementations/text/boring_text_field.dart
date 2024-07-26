@@ -19,6 +19,7 @@ class BoringTextField extends BoringFormField<String> {
     required super.fieldPath,
     super.observedFields,
     ValidationFunction<String>? validationFunction,
+    String errorMessage = "Value cannot be empty",
     super.decoration,
     super.readOnly,
     super.onChanged,
@@ -30,7 +31,7 @@ class BoringTextField extends BoringFormField<String> {
                         validationFunction?.call(formController, value);
                     final emptyError =
                         !allowEmpty && (value == null || value.isEmpty)
-                            ? "Value cannot be empty"
+                            ? errorMessage
                             : null;
                     return error ?? emptyError;
                   });

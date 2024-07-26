@@ -45,7 +45,7 @@ extension on Map<String, dynamic> {
       return null;
     }
     final element = this[key];
-    if (keysList.length == 1) {
+    if (keysList.length == 1 || element == null) {
       return element;
     }
     if (element is Map) {
@@ -69,7 +69,7 @@ extension on Map<String, dynamic> {
       this[key] = value;
       return;
     }
-    if (!containsKey(key)) {
+    if (!containsKey(key) || this[key] == null) {
       this[key] = <String, dynamic>{};
     }
     final element = this[key];
@@ -166,6 +166,15 @@ class BoringFormControllerValue extends ChangeNotifier {
 
   void reset() {
     value = initialValue;
+  }
+
+  void resetFields(List<List<String>> fieldPaths) {
+    final newValue = value;
+    for (var fielPath in fieldPaths) {
+      final val = initialValue.getValue(fielPath);
+      newValue.setValue(fielPath, val);
+    }
+    value = newValue;
   }
 
   bool get hasChanged =>
