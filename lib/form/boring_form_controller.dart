@@ -45,7 +45,7 @@ extension on Map<String, dynamic> {
       return null;
     }
     final element = this[key];
-    if (keysList.length == 1) {
+    if (keysList.length == 1 || element == null) {
       return element;
     }
     if (element is Map) {
