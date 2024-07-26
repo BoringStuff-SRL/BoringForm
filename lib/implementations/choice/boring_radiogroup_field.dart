@@ -11,6 +11,7 @@ class BoringRadioGroupField<T> extends BoringFormField<T> {
     super.validationFunction,
     super.decoration,
     super.readOnly,
+    this.allowEmpty = false,
 
     ///
     // required super.jsonKey,
@@ -25,6 +26,7 @@ class BoringRadioGroupField<T> extends BoringFormField<T> {
 
   final List<BChoiceItem<T>> items;
   final int itemsPerRow;
+  final bool allowEmpty;
 
   @override
   Widget builder(BuildContext context, BoringFormStyle formTheme,
@@ -44,12 +46,13 @@ class BoringRadioGroupField<T> extends BoringFormField<T> {
               .map((item) => FractionallySizedBox(
                     widthFactor: 1 / itemsPerRow,
                     child: RadioListTile<T?>(
+                        toggleable: allowEmpty,
                         activeColor: inputDecoration.focusColor,
                         contentPadding: inputDecoration.contentPadding,
                         value: item.value,
                         title: Text(item.display),
                         groupValue: formController.getValue(fieldPath),
-                        onChanged: isReadOnly(formTheme)
+                        onChanged: isReadOnly(formTheme) || allowEmpty
                             ? null
                             : (value) =>
                                 setChangedValue(formController, value)),
