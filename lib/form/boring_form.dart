@@ -24,17 +24,9 @@ class BoringForm extends BoringFormWidget {
     required List<Widget> children,
     BResponsiveSize responsiveSize = const BResponsiveSize.defaultSizes(),
     super.style,
-  })  : _child = BResponsiveWrap(
-          children: children
-              .map(
-                (e) => e is BResponsiveChild
-                    ? e
-                    : BResponsiveChild.size(
-                        responsiveSize: responsiveSize,
-                        child: e,
-                      ),
-              )
-              .toList(),
+  })  : _child = BResponsiveWrap.automatic(
+          responsiveSize: responsiveSize,
+          children: children,
         ),
         super(formController: formController);
 
