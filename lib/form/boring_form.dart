@@ -25,6 +25,7 @@ class BoringForm extends BoringFormWidget {
     BResponsiveSize responsiveSize = const BResponsiveSize.defaultSizes(),
     super.style,
   })  : _child = BResponsiveWrap(
+          bResponsiveTheme: BResponsiveTheme(spacing: 0),
           children: children
               .map(
                 (e) => e is BResponsiveChild
@@ -61,6 +62,7 @@ abstract class BoringResponsiveFormWidget extends BoringFormWidget {
 
   @override
   Widget child(context) => BResponsiveWrap(
+        bResponsiveTheme: BResponsiveTheme(spacing: 0),
         children: children
             .map(
               (e) => e is BResponsiveChild

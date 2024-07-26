@@ -3,6 +3,8 @@ import 'package:boring_form/field/boring_form_field.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
+import '../../form/boring_form_controller.dart';
+
 class BoringRadioGroupField<T> extends BoringFormField<T> {
   const BoringRadioGroupField({
     super.key,
