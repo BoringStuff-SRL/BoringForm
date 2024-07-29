@@ -128,7 +128,7 @@ class BoringFormControllerValue extends ChangeNotifier {
     Map<String, dynamic>? initialValue,
     this.validationBehaviour = ValidationBehaviour.onSubmit,
     this.fieldRequiredLabelBehaviour =
-        FieldRequiredLabelBehaviour.hiddenWhenValid,
+        FieldRequiredLabelBehaviour.always,
   })  : _value = initialValue ?? {},
         initialValue = initialValue ?? {};
 
