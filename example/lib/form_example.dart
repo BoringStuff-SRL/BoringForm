@@ -14,7 +14,6 @@ class FormExample0 extends StatelessWidget {
     inputDecoration: const InputDecoration(
       border: OutlineInputBorder(),
     ),
-    labelOverField: true,
     textStyle: const TextStyle(color: Colors.red),
     eraseValueWidget: const Icon(Icons.abc_outlined),
   );
@@ -24,11 +23,11 @@ class FormExample0 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BoringForm(
-      style: (context) => myStyle,
+      style: (context) => BoringFormStyle(), //myStyle,
       formController: c,
       child: Column(
         children: [
-          BoringFilePickerV2(
+          const BoringFilePickerV2(
             fieldPath: ['ccc'],
             readOnly: true,
           ),
@@ -42,80 +41,14 @@ class FormExample0 extends StatelessWidget {
               ),
             ),
           ),
-          /* Text("Choice", style: titleStyle),
-          Text("checkbox"),
-          BoringCheckBoxField(
-            fieldPath: ["check"],
-            validationFunction: (formController, value) =>
-                value == false || value == null ? "Insert value" : null,
-            decoration: (formController) => BoringFieldDecoration(
-              label: "ciaotest123",
-            ),
-          ),
-          Text("radio group"),
-          BoringRadioGroupField(
-            fieldPath: ["group"],
-            items: [
-              BoringChoiceItem(value: "test", display: "test"),
-              BoringChoiceItem(value: "asd", display: "asd"),
-            ],
-          ),
-          Text("switch"),
-          BoringSwitchField(fieldPath: ["switch"]),
-          Text("Multichoice dropdown"),
-          BoringDropdownMultiChoiceField(
-            fieldPath: ["multi"],
-            getItems: (search) async => await List.generate(20,
-                (index) => BoringChoiceItem(value: index, display: "$index")),
-            toBoringChoiceItem: (p0) =>
-                BoringChoiceItem(value: p0, display: "$p0"),
-            decoration: (formController) => BoringFieldDecoration(
-                label: 'LABEL', hintText: 'THIS IS THE HINT'),
-            validationFunction: (formController, value) =>
-                (value?.length ?? 0) < 3 ? "almeno 3 elementi" : null,
-          ),
-          Text("Singlechoice dropdown"),
-          BoringDropdownField(
-            fieldPath: ["single", 'test'],
-            getItems: (search) async => await List.generate(20,
-                (index) => BoringChoiceItem(value: index, display: "$index")),
-            toBoringChoiceItem: (p0) =>
-                BoringChoiceItem(value: p0, display: "$p0"),
-            validationFunction: (formController, value) =>
-                (value == null) ? "seleziona un elemento" : null,
-          ),*/
-          //////////////////////////////
-          // Text("Pickers", style: titleStyle),
-          // Text("Date field"),
-          // BoringDateField(
-          //     fieldPath: ["date"],
-          //     firstDate: DateTime.now(),
-          //     validationFunction: (formController, value) =>
-          //         value == null ? "Insert value" : null,
-          //     lastDate: DateTime.now().add(const Duration(days: 300))),
-          // Text("Datetime field"),
-          // BoringDateTimeField(
-          //     fieldPath: ["datetime"],
-          //     firstDate: DateTime.now(),
-          //     validationFunction: (formController, value) =>
-          //         value == null ? "Insert value" : null,
-          //     lastDate: DateTime.now().add(const Duration(days: 300))),
-          // Text("Time field"),
-          // BoringTimeField(
-          //   fieldPath: ["timefield"],
-          //   validationFunction: (formController, value) =>
-          //       value == null ? "Insert value" : null,
-          // ),
-          // Text("File picker"),
-          // BoringFilePicker(
-          //   fieldPath: ["file"],
-          //   validationFunction: (formController, value) =>
-          //       value == null ? "Insert value" : null,
-          // ),
-          // //////////////////////////////
           Text("Number fields", style: titleStyle),
-
           const Text("number"),
+          BoringTextField(
+            fieldPath: ['disabled'],
+            readOnly: true,
+            decoration: (context) =>
+                BoringFieldDecoration(label: 'Field disabilitato'),
+          ),
           BoringNumberField(
             fieldPath: ['nums'],
             decoration: (formController) =>
