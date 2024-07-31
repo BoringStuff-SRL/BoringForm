@@ -18,6 +18,10 @@ dependencies:
 
   easy_stepper: ^0.6.0
 
+dependency_overrides:
+  boring_form:
+    path: ../
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
