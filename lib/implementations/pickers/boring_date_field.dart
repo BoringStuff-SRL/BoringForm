@@ -2,6 +2,7 @@ import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_form/implementations/pickers/boring_picker_field.dart';
 import 'package:boring_form/utils/datetime_extnesions.dart';
 import 'package:flutter/material.dart';
+import 'package:month_year_picker/month_year_picker.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 
 class BoringDateTimeField extends BoringPickerField<DateTime> {
@@ -225,4 +226,34 @@ class BoringTimeField extends BoringPickerField<TimeOfDay> {
             valueToString: (value) => value == null
                 ? ""
                 : "${value.hour.toString().padLeft(2, '0')}:${value.minute.toString().padLeft(2, '0')}");
+}
+
+class BoringYearField extends BoringPickerField<DateTime> {
+  BoringYearField({
+    super.key,
+    super.decoration,
+    super.readOnly,
+    required super.fieldPath,
+    ValidationFunction<DateTime>? validationFunction,
+    required DateTime firstDate,
+    required DateTime lastDate,
+    DateTime? selected,
+  }) : super(
+          validationFunction:
+              (BoringFormController formController, DateTime? value) {
+            final error = validationFunction?.call(formController, value);
+            return error;
+          },
+          showPicker: (context, formController, fieldValue) async =>
+              await showMonthYearPicker(
+            initialMonthYearPickerMode: MonthYearPickerMode.year,
+            /// passarlo attreverso il context
+            locale: const Locale('it', 'IT'),
+            context: context,
+            initialDate: selected ?? DateTime.now(),
+            firstDate: firstDate,
+            lastDate: lastDate,
+          ),
+          valueToString: (value) => value == null ? "" : "${value.year}",
+        );
 }
