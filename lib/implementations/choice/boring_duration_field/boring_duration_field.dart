@@ -7,55 +7,6 @@ import 'package:flutter/material.dart';
 part 'boring_duration_dialog_form.dart';
 part 'boring_duration_field_dialog.dart';
 
-class BDurationFieldTheme {
-  final String setString;
-
-  final String Function(int value)? _yearsString;
-  final String Function(int value)? _monthsString;
-  final String Function(int value)? _daysString;
-  final String Function(int value)? _hoursString;
-  final String Function(int value)? _minutesString;
-
-  String yearsString(int val) =>
-      _yearsString?.call(val) ?? _defYearsString(val);
-
-  String monthsString(int val) =>
-      _monthsString?.call(val) ?? _defMonthsString(val);
-
-  String daysString(int val) => _daysString?.call(val) ?? _defDaysString(val);
-
-  String hoursString(int val) =>
-      _hoursString?.call(val) ?? _defHoursString(val);
-
-  String minutesString(int val) =>
-      _minutesString?.call(val) ?? _defMinutesString(val);
-
-  String _defYearsString(int value) => value == 1 ? "Anno" : "Anni";
-  String _defMonthsString(int value) => value == 1 ? "Mese" : "Mesi";
-  String _defDaysString(int value) => value == 1 ? "Giorno" : "Giorni";
-  String _defHoursString(int value) => value == 1 ? "Ora" : "Ore";
-  String _defMinutesString(int value) => value == 1 ? "Minuto" : "Minuti";
-
-  final String insertDurationString;
-
-  final String fieldRequiredString;
-
-  const BDurationFieldTheme({
-    this.fieldRequiredString = 'Campo richiesto',
-    this.insertDurationString = 'Inserisci durata',
-    this.setString = "Imposta",
-    String Function(int)? daysString,
-    String Function(int)? yearsString,
-    String Function(int)? monthsString,
-    String Function(int)? hoursString,
-    String Function(int)? minutesString,
-  })  : _minutesString = minutesString,
-        _hoursString = hoursString,
-        _daysString = daysString,
-        _monthsString = monthsString,
-        _yearsString = yearsString;
-}
-
 class BoringDurationField extends BoringFormField<Duration> {
   const BoringDurationField({
     super.key,
@@ -71,7 +22,7 @@ class BoringDurationField extends BoringFormField<Duration> {
   final BDurationFieldTheme? durationFieldTheme;
 
   BDurationFieldTheme durationFieldThemeOf(BuildContext context) =>
-      durationFieldTheme ?? const BDurationFieldTheme();
+      durationFieldTheme ?? BoringTheme.of(context).durationFieldTheme;
 
   @override
   Widget builder(

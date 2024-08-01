@@ -1,4 +1,4 @@
-import 'package:boring_form/implementations/choice/boring_duration_field/boring_duration_field.dart';
+import 'package:boring_ui/boring_ui.dart';
 
 class BoringDurationDataHandler {
   final int years;
