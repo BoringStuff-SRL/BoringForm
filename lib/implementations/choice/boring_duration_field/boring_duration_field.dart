@@ -4,7 +4,6 @@ import 'package:boring_form/field/boring_form_field.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
-part 'boring_duration_data_handler.dart';
 part 'boring_duration_dialog_form.dart';
 part 'boring_duration_field_dialog.dart';
 
@@ -84,8 +83,8 @@ class BoringDurationField extends BoringFormField<Duration> {
   ) {
     final durationTheme = durationFieldThemeOf(context);
 
-    final _BoringDurationDataHandler? dataHandler = fieldValue != null
-        ? _BoringDurationDataHandler.fromDuration(fieldValue)
+    final BoringDurationDataHandler? dataHandler = fieldValue != null
+        ? BoringDurationDataHandler.fromDuration(fieldValue)
         : null;
     final textEditingController = TextEditingController(
         text: dataHandler?.readableString(durationTheme) ?? '');

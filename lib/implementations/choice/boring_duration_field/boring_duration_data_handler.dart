@@ -1,13 +1,13 @@
-part of 'boring_duration_field.dart';
+import 'package:boring_form/implementations/choice/boring_duration_field/boring_duration_field.dart';
 
-class _BoringDurationDataHandler {
+class BoringDurationDataHandler {
   final int years;
   final int months;
   final int days;
   final int hours;
   final int minutes;
 
-  const _BoringDurationDataHandler({
+  const BoringDurationDataHandler({
     required this.years,
     required this.months,
     required this.days,
@@ -80,41 +80,40 @@ class _BoringDurationDataHandler {
     };
   }
 
-  factory _BoringDurationDataHandler.fromDuration(Duration duration) {
+  factory BoringDurationDataHandler.fromDuration(Duration duration) {
     int durationInSeconds = duration.inSeconds;
 
     final years =
-        durationInSeconds ~/ _BoringDurationDataHandler.oneYearInSeconds;
+        durationInSeconds ~/ BoringDurationDataHandler.oneYearInSeconds;
 
     /// tolgo la durata degli anni appena calcolati
     durationInSeconds = durationInSeconds -
-        (years * _BoringDurationDataHandler.oneYearInSeconds);
+        (years * BoringDurationDataHandler.oneYearInSeconds);
 
     final months =
-        durationInSeconds ~/ _BoringDurationDataHandler.oneMonthInSeconds;
+        durationInSeconds ~/ BoringDurationDataHandler.oneMonthInSeconds;
 
     /// tolgo la durata dei mesi appena calcolati
     durationInSeconds = durationInSeconds -
-        (months * _BoringDurationDataHandler.oneMonthInSeconds);
+        (months * BoringDurationDataHandler.oneMonthInSeconds);
 
-    final days =
-        durationInSeconds ~/ _BoringDurationDataHandler.oneDayInSeconds;
+    final days = durationInSeconds ~/ BoringDurationDataHandler.oneDayInSeconds;
 
     /// tolgo la durata dei giorni appena calcolati
     durationInSeconds =
-        durationInSeconds - (days * _BoringDurationDataHandler.oneDayInSeconds);
+        durationInSeconds - (days * BoringDurationDataHandler.oneDayInSeconds);
 
     final hours =
-        durationInSeconds ~/ _BoringDurationDataHandler.oneHourInSeconds;
+        durationInSeconds ~/ BoringDurationDataHandler.oneHourInSeconds;
 
     /// tolgo la durata delle ore appena calcolate
     durationInSeconds = durationInSeconds -
-        (hours * _BoringDurationDataHandler.oneHourInSeconds);
+        (hours * BoringDurationDataHandler.oneHourInSeconds);
 
     final minutes =
-        durationInSeconds ~/ _BoringDurationDataHandler.oneMinuteInSeconds;
+        durationInSeconds ~/ BoringDurationDataHandler.oneMinuteInSeconds;
 
-    return _BoringDurationDataHandler(
+    return BoringDurationDataHandler(
       years: years,
       months: months,
       days: days,
@@ -123,8 +122,8 @@ class _BoringDurationDataHandler {
     );
   }
 
-  factory _BoringDurationDataHandler.fromMap(Map<String, dynamic> map) {
-    return _BoringDurationDataHandler(
+  factory BoringDurationDataHandler.fromMap(Map<String, dynamic> map) {
+    return BoringDurationDataHandler(
       years: map['years'] as int? ?? 0,
       months: map['months'] as int? ?? 0,
       days: map['days'] as int? ?? 0,

@@ -1,11 +1,11 @@
 part of 'boring_duration_field.dart';
 
 class _BoringDurationDialogFormController extends BoringFormController {
-  _BoringDurationDialogFormController({_BoringDurationDataHandler? dataHandler})
+  _BoringDurationDialogFormController({BoringDurationDataHandler? dataHandler})
       : super(initialValue: dataHandler?.toMap());
 
-  _BoringDurationDataHandler get dataHandler =>
-      _BoringDurationDataHandler.fromMap(value);
+  BoringDurationDataHandler get dataHandler =>
+      BoringDurationDataHandler.fromMap(value);
 }
 
 class _BoringDurationDialogForm extends BoringFormWidget {

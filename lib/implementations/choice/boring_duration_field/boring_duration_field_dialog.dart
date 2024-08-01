@@ -4,7 +4,7 @@ class _BoringDurationFieldDialog extends BDialogInfo {
   _BoringDurationFieldDialog({
     required this.durationFieldTheme,
     required this.onSet,
-    _BoringDurationDataHandler? dataHandler,
+    BoringDurationDataHandler? dataHandler,
   }) : formController =
             _BoringDurationDialogFormController(dataHandler: dataHandler);
 
