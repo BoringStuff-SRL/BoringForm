@@ -8,6 +8,7 @@ export 'form/boring_form_controller.dart';
 export 'implementations/choice/boring_checkbox_field.dart';
 export 'implementations/choice/boring_dropdown_field.dart';
 export 'implementations/choice/boring_dropdown_multi_field.dart';
+export 'implementations/choice/boring_duration_field/boring_duration_field.dart';
 export 'implementations/choice/boring_radiogroup_field.dart';
 export 'implementations/choice/boring_switch_field.dart';
 export 'implementations/num/boring_number_field.dart';
