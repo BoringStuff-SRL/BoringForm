@@ -231,6 +231,8 @@ class BoringTimeField extends BoringPickerField<TimeOfDay> {
 class BoringYearField extends BoringPickerField<DateTime> {
   BoringYearField({
     super.key,
+    super.decoration,
+    super.readOnly,
     required super.fieldPath,
     ValidationFunction<DateTime>? validationFunction,
     required DateTime firstDate,
