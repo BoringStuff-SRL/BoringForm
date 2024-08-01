@@ -247,6 +247,8 @@ class BoringYearField extends BoringPickerField<DateTime> {
           showPicker: (context, formController, fieldValue) async =>
               await showMonthYearPicker(
             initialMonthYearPickerMode: MonthYearPickerMode.year,
+            /// passarlo attreverso il context
+            locale: const Locale('it', 'IT'),
             context: context,
             initialDate: selected ?? DateTime.now(),
             firstDate: firstDate,
