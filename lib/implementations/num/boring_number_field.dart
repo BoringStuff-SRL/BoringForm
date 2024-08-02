@@ -28,6 +28,7 @@ class MyNumberFormatter extends TextInputFormatter {
   TextEditingValue formatEditUpdate(
       TextEditingValue oldValue, TextEditingValue newValue) {
     // se il testo nuovo e' vuoto allora torno vuoto
+
     if (newValue.text.isEmpty) {
       return const TextEditingValue();
     }
@@ -66,15 +67,6 @@ class MyNumberFormatter extends TextInputFormatter {
         .replaceAll(',', thousandsSeparator)
         .replaceAll('#', decimalSeparator);
 
-    // controllo se l'ultimo carattere inserito e' il separatore decimale
-    final lastCharacterIsDecimalSeparator =
-        newValue.text[newValue.text.length - 1] == decimalSeparator;
-
-    // se lo e' allora lo appendo al risultato
-    if (lastCharacterIsDecimalSeparator) {
-      result = '$result$decimalSeparator';
-    }
-
     // controllo il numero dei separatori di migliaia che ho aggiunto in questa battitura
     final numberOfThousandsSeparatorAdded =
         (result.split(thousandsSeparator).length) -
@@ -88,6 +80,25 @@ class MyNumberFormatter extends TextInputFormatter {
       }
 
       return newOffset;
+    }
+
+    // controllo se l'ultimo carattere inserito e' il separatore decimale
+    final lastCharacterIsDecimalSeparator =
+        newValue.text[newValue.text.length - 1] == decimalSeparator;
+
+    // se lo e' allora lo appendo al risultato
+    if (lastCharacterIsDecimalSeparator) {
+      //controllo che effettivamente possa mettere dei separatori decimali
+      if (decimalPlaces > 0) {
+        result = '$result$decimalSeparator';
+      } else {
+        return TextEditingValue(
+          text: result,
+          selection: TextSelection.fromPosition(
+            TextPosition(offset: getNewOffset()),
+          ),
+        );
+      }
     }
 
     return TextEditingValue(
