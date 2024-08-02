@@ -23,7 +23,7 @@ dependencies:
   boring_ui:
     git:
       url: git@github.com:BoringStuff-SRL/BoringUI.git
-      ref: pubspec-links-from-html-to-ssh
+      ref: pubspec-links-from-html-to-ssh # develop-x-diretto
 
   desktop_drop:
     git:
