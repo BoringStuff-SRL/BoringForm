@@ -14,7 +14,7 @@ dependencies:
   boring_ui:
     git:
       url: git@github.com:BoringStuff-SRL/BoringUI.git
-      ref: pubspec-links-from-html-to-ssh
+      ref: develop-x-diretto
 
   easy_stepper: ^0.6.0
 
