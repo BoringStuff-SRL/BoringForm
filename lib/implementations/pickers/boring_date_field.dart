@@ -228,8 +228,8 @@ class BoringTimeField extends BoringPickerField<TimeOfDay> {
                 : "${value.hour.toString().padLeft(2, '0')}:${value.minute.toString().padLeft(2, '0')}");
 }
 
-class BoringYearField extends BoringPickerField<DateTime> {
-  BoringYearField({
+class BoringYearPicker extends BoringPickerField<DateTime> {
+  BoringYearPicker({
     super.key,
     super.decoration,
     super.readOnly,
@@ -245,15 +245,27 @@ class BoringYearField extends BoringPickerField<DateTime> {
             return error;
           },
           showPicker: (context, formController, fieldValue) async =>
-              await showMonthYearPicker(
-            initialMonthYearPickerMode: MonthYearPickerMode.year,
-            /// passarlo attreverso il context
-            locale: const Locale('it', 'IT'),
-            context: context,
-            initialDate: selected ?? DateTime.now(),
-            firstDate: firstDate,
-            lastDate: lastDate,
-          ),
+              await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text(decoration?.call(formController)?.label ??
+                          "Select a year"),
+                      content: SizedBox(
+                        width: 300,
+                        height: 300,
+                        child: YearPicker(
+                          firstDate: firstDate,
+                          lastDate: lastDate,
+                          selectedDate:
+                              fieldValue ?? selected ?? DateTime.now(),
+                          onChanged: (DateTime dateTime) {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ),
+                    );
+                  }),
           valueToString: (value) => value == null ? "" : "${value.year}",
         );
 }
