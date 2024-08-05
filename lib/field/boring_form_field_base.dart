@@ -56,7 +56,7 @@ abstract class BoringFormFieldBase<T, TT> extends StatelessWidget {
       Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Expanded(
+          Flexible(
             child: Text(
               fieldDecoration.label!,
               style: style.inputDecoration.labelStyle,
