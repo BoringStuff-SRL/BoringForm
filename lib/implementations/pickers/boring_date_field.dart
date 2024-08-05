@@ -260,6 +260,7 @@ class BoringYearPicker extends BoringPickerField<DateTime> {
                           selectedDate:
                               fieldValue ?? selected ?? DateTime.now(),
                           onChanged: (DateTime dateTime) {
+                            fieldValue = dateTime;
                             Navigator.pop(context);
                           },
                         ),
