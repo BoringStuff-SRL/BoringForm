@@ -55,6 +55,15 @@ class FormExample0 extends StatelessWidget {
                   ),
                 ),
               ),
+              BoringYearPicker(
+                firstDate: DateTime(1950),
+                lastDate: DateTime(2050),
+                fieldPath: ['year'],
+                decoration: (formController) => BoringFieldDecoration(
+                  hintText: 'Inserire anno',
+                  label: 'Anno',
+                ),
+              ),
               /* Text("Choice", style: titleStyle),
               Text("checkbox"),
               BoringCheckBoxField(

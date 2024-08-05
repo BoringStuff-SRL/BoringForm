@@ -1,6 +1,7 @@
 import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_form/implementations/pickers/boring_picker_field.dart';
 import 'package:boring_form/utils/datetime_extnesions.dart';
+import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
@@ -244,29 +245,42 @@ class BoringYearPicker extends BoringPickerField<DateTime> {
             final error = validationFunction?.call(formController, value);
             return error;
           },
-          showPicker: (context, formController, fieldValue) async =>
-              await showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text(decoration?.call(formController)?.hintText ??
-                          "Select a year"),
-                      content: SizedBox(
-                        width: 300,
-                        height: 300,
-                        child: YearPicker(
-                          firstDate: firstDate,
-                          lastDate: lastDate,
-                          selectedDate:
-                              fieldValue ?? selected ?? DateTime.now(),
-                          onChanged: (DateTime dateTime) {
-                            fieldValue = dateTime;
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ),
+          showPicker: (context, formController, fieldValue) async {
+            ValueNotifier<DateTime> notifier = ValueNotifier<DateTime>(
+                fieldValue ?? selected ?? DateTime.now());
+            return BDialog(
+              barrierDismissible: true,
+              width: 300,
+              title:
+                  decoration?.call(formController)?.hintText ?? "Select a year",
+              content: SizedBox(
+                height: 190,
+                child: ValueListenableBuilder(
+                    valueListenable: notifier,
+                    builder: (context, value, child) {
+                      return YearPicker(
+                        firstDate: firstDate,
+                        lastDate: lastDate,
+                        selectedDate: value,
+                        onChanged: (DateTime dateTime) {
+                          notifier.value = dateTime;
+                        },
+                      );
+                    }),
+              ),
+              actions: (ctx) => [
+                BButton(
+                  text: "Seleziona",
+                  onPressed: () {
+                    BDialog.pop(
+                      ctx,
+                      result: notifier.value,
                     );
-                  }),
+                  },
+                )
+              ],
+            ).show(context);
+          },
           valueToString: (value) => value == null ? "" : "${value.year}",
         );
 }
