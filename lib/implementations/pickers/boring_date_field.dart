@@ -1,9 +1,7 @@
-import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_form/implementations/pickers/boring_picker_field.dart';
 import 'package:boring_form/utils/datetime_extnesions.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:month_year_picker/month_year_picker.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 
 class BoringDateTimeField extends BoringPickerField<DateTime> {
@@ -235,16 +233,12 @@ class BoringYearPicker extends BoringPickerField<DateTime> {
     super.decoration,
     super.readOnly,
     required super.fieldPath,
-    ValidationFunction<DateTime>? validationFunction,
+    super.validationFunction,
     required DateTime firstDate,
     required DateTime lastDate,
     DateTime? selected,
+    super.showEraseValueButton = true,
   }) : super(
-          validationFunction:
-              (BoringFormController formController, DateTime? value) {
-            final error = validationFunction?.call(formController, value);
-            return error;
-          },
           showPicker: (context, formController, fieldValue) async {
             ValueNotifier<DateTime> notifier = ValueNotifier<DateTime>(
                 fieldValue ?? selected ?? DateTime.now());

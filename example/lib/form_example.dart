@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:js_interop';
 
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,10 @@ class FormExample0 extends StatelessWidget {
   FormExample0({super.key});
 
   final c = BoringFormController(
-    initialValue: {'num': 123456},
+    initialValue: {
+      'num': 123456,
+      'info': {'nome': "PIPPO"},
+    },
     validationBehaviour: ValidationBehaviour.onSubmit,
     fieldRequiredLabelBehaviour: FieldRequiredLabelBehaviour.always,
   );
@@ -27,141 +29,22 @@ class FormExample0 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Center(
-          child: BButton(
-            text: 'Form responsive',
-            onPressed: () {
-              FormDialog().show(context);
-            },
-          ),
-        ),
         BoringForm(
           style: (context) => myStyle,
           formController: c,
           child: Column(
             children: [
-              const BoringFilePickerV2(
-                fieldPath: ['ccc'],
-                readOnly: true,
-              ),
-              BoringImagePickerWithPreview(
-                fieldPath: const ["image"],
-                imagePickerWithPreviewDecoration:
-                    BoringImagePickerWithPreviewDecoration(
-                  previewImageWrapper: (context, child) => ConstrainedBox(
-                    constraints: const BoxConstraints(maxHeight: 100),
-                    child: child,
-                  ),
-                ),
-              ),
-              BoringYearPicker(
-                firstDate: DateTime(1950),
-                lastDate: DateTime(2050),
-                fieldPath: ['year'],
-                decoration: (formController) => BoringFieldDecoration(
-                  hintText: 'Inserire anno',
-                  label: 'Anno',
-                ),
-              ),
-              /* Text("Choice", style: titleStyle),
-              Text("checkbox"),
-              BoringCheckBoxField(
-                fieldPath: ["check"],
-                validationFunction: (formController, value) =>
-                    value == false || value == null ? "Insert value" : null,
-                decoration: (formController) => BoringFieldDecoration(
-                  label: "ciaotest123",
-                ),
-              ),
-              Text("radio group"),
-              BoringRadioGroupField(
-                fieldPath: ["group"],
-                items: [
-                  BoringChoiceItem(value: "test", display: "test"),
-                  BoringChoiceItem(value: "asd", display: "asd"),
-                ],
-              ),
-              Text("switch"),
-              BoringSwitchField(fieldPath: ["switch"]),
-              Text("Multichoice dropdown"),
-              BoringDropdownMultiChoiceField(
-                fieldPath: ["multi"],
-                getItems: (search) async => await List.generate(20,
-                    (index) => BoringChoiceItem(value: index, display: "$index")),
-                toBoringChoiceItem: (p0) =>
-                    BoringChoiceItem(value: p0, display: "$p0"),
-                decoration: (formController) => BoringFieldDecoration(
-                    label: 'LABEL', hintText: 'THIS IS THE HINT'),
-                validationFunction: (formController, value) =>
-                    (value?.length ?? 0) < 3 ? "almeno 3 elementi" : null,
-              ),
-              Text("Singlechoice dropdown"),
-              BoringDropdownField(
-                fieldPath: ["single", 'test'],
-                getItems: (search) async => await List.generate(20,
-                    (index) => BoringChoiceItem(value: index, display: "$index")),
-                toBoringChoiceItem: (p0) =>
-                    BoringChoiceItem(value: p0, display: "$p0"),
-                validationFunction: (formController, value) =>
-                    (value == null) ? "seleziona un elemento" : null,
-              ),*/
-              //////////////////////////////
-              // Text("Pickers", style: titleStyle),
-              // Text("Date field"),
-              // BoringDateField(
-              //     fieldPath: ["date"],
-              //     firstDate: DateTime.now(),
-              //     validationFunction: (formController, value) =>
-              //         value == null ? "Insert value" : null,
-              //     lastDate: DateTime.now().add(const Duration(days: 300))),
-              // Text("Datetime field"),
-              // BoringDateTimeField(
-              //     fieldPath: ["datetime"],
-              //     firstDate: DateTime.now(),
-              //     validationFunction: (formController, value) =>
-              //         value == null ? "Insert value" : null,
-              //     lastDate: DateTime.now().add(const Duration(days: 300))),
-              // Text("Time field"),
-              // BoringTimeField(
-              //   fieldPath: ["timefield"],
-              //   validationFunction: (formController, value) =>
-              //       value == null ? "Insert value" : null,
-              // ),
-              // Text("File picker"),
-              // BoringFilePicker(
-              //   fieldPath: ["file"],
-              //   validationFunction: (formController, value) =>
-              //       value == null ? "Insert value" : null,
-              // ),
-              // //////////////////////////////
-              Text("Number fields", style: titleStyle),
-
-              const Text("number"),
-              BoringNumberField(
-                fieldPath: const ['nums'],
-                decoration: (formController) =>
-                    BoringFieldDecoration(label: 'QUESTA E LA LABEL'),
-              ),
-              BoringFormChildWidget.withChildFieldPath(
-                childFieldPath: const ['third'],
-                observedFields: const [
-                  ['first']
-                ],
-                builder: (context, formController, fieldPath) {
-                  final firstVal = formController.value['first'];
-
-                  if (firstVal == null || firstVal == '') {
-                    return BoringTextField(
-                      fieldPath: fieldPath,
-                      allowEmpty: false,
-                      decoration: (formController) =>
-                          BoringFieldDecoration(label: 'Label'),
-                    );
-                  }
-                  return Container();
-                },
-              ),
+              BoringTextField(fieldPath: ['info', 'nome']),
+              BoringTextField(fieldPath: ['info', 'cognome']),
+              ElevatedButton(
+                  onPressed: () {
+                    c.resetFields([
+                      ['info']
+                    ]);
+                  },
+                  child: const Text("RESET VALUE")),
               ElevatedButton(
                   onPressed: () {
                     c.setFieldValue(["nome"], "(${c.getValue(["nome"])})");

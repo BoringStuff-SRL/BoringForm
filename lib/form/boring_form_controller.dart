@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
@@ -127,10 +129,9 @@ class BoringFormControllerValue extends ChangeNotifier {
   BoringFormControllerValue({
     Map<String, dynamic>? initialValue,
     this.validationBehaviour = ValidationBehaviour.onSubmit,
-    this.fieldRequiredLabelBehaviour =
-        FieldRequiredLabelBehaviour.always,
-  })  : _value = initialValue ?? {},
-        initialValue = initialValue ?? {};
+    this.fieldRequiredLabelBehaviour = FieldRequiredLabelBehaviour.always,
+  })  : _value = jsonDecode(jsonEncode(initialValue ?? {})),
+        initialValue = jsonDecode(jsonEncode(initialValue ?? {}));
 
   dynamic getValue(List<String> fieldPath, {dynamic defaultValue}) =>
       _value.getValue(fieldPath) ?? defaultValue;
@@ -169,12 +170,9 @@ class BoringFormControllerValue extends ChangeNotifier {
   }
 
   void resetFields(List<List<String>> fieldPaths) {
-    final newValue = value;
-    for (var fielPath in fieldPaths) {
-      final val = initialValue.getValue(fielPath);
-      newValue.setValue(fielPath, val);
+    for (var fieldPath in fieldPaths) {
+      setFieldValue(fieldPath, null);
     }
-    value = newValue;
   }
 
   bool get hasChanged =>
