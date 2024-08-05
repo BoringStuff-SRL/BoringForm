@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
@@ -130,8 +128,8 @@ class BoringFormControllerValue extends ChangeNotifier {
     Map<String, dynamic>? initialValue,
     this.validationBehaviour = ValidationBehaviour.onSubmit,
     this.fieldRequiredLabelBehaviour = FieldRequiredLabelBehaviour.always,
-  })  : _value = jsonDecode(jsonEncode(initialValue ?? {})),
-        initialValue = jsonDecode(jsonEncode(initialValue ?? {}));
+  })  : _value = Map.from(initialValue ?? {}),
+        initialValue = Map.from(initialValue ?? {});
 
   dynamic getValue(List<String> fieldPath, {dynamic defaultValue}) =>
       _value.getValue(fieldPath) ?? defaultValue;
