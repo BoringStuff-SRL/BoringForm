@@ -249,7 +249,7 @@ class BoringYearPicker extends BoringPickerField<DateTime> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text(decoration?.call(formController)?.label ??
+                      title: Text(decoration?.call(formController)?.hintText ??
                           "Select a year"),
                       content: SizedBox(
                         width: 300,
