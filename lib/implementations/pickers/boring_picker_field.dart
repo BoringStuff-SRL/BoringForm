@@ -24,6 +24,7 @@ class BoringPickerField<T> extends BoringFormField<T> {
     this.updateValueOnDismiss = false,
     this.showEraseValueButton = false,
     super.onChanged,
+    super.forceHideRequiredFieldLabel,
   });
 
   @override

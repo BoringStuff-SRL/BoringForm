@@ -8,6 +8,11 @@ abstract class BoringFormFieldBase<T, TT> extends StatelessWidget {
   final List<FieldPath> observedFields;
   final ValidationFunction<T> validationFunction;
   final DecorationBuilder<T>? _decorationBuilder;
+
+  /// se true, viene forzatamente nascosta la * del required
+  /// se false, non fa niente
+  final bool forceHideRequiredFieldLabel;
+  // null viene skippato e preso quello del tema
   final bool? _readOnly;
   final Function(BoringFormController formController, T? fieldValue)? onChanged;
 
@@ -20,6 +25,7 @@ abstract class BoringFormFieldBase<T, TT> extends StatelessWidget {
     this.validationFunction,
     DecorationBuilder<T>? decoration,
     bool? readOnly,
+    this.forceHideRequiredFieldLabel = false,
   })  : _readOnly = readOnly,
         _decorationBuilder = decoration;
 
@@ -63,7 +69,8 @@ abstract class BoringFormFieldBase<T, TT> extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          _buildRequiredFieldLabelOverField(style, formController),
+          if (!forceHideRequiredFieldLabel)
+            _buildRequiredFieldLabelOverField(style, formController),
         ],
       );
 

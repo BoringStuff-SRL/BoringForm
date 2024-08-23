@@ -16,6 +16,7 @@ abstract class BoringFormField<T> extends BoringFormFieldBase<T, void> {
     super.validationFunction,
     super.decoration,
     super.readOnly,
+    super.forceHideRequiredFieldLabel,
   });
 
   Widget builder(BuildContext context, BoringFormStyle formStyle,

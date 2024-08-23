@@ -36,8 +36,13 @@ class FormExample0 extends StatelessWidget {
           formController: c,
           child: Column(
             children: [
-              BoringTextField(fieldPath: ['info', 'nome']),
-              BoringTextField(fieldPath: ['info', 'cognome']),
+              BoringDateField(
+                fieldPath: ['date'],
+                firstDate: DateTime.now().toMidnight(),
+                lastDate: DateTime.now().toMidnight(),
+                decoration: (formController) =>
+                    BoringFieldDecoration(label: 'Data'),
+              ),
               ElevatedButton(
                   onPressed: () {
                     c.resetFields([
