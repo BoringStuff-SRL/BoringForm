@@ -18,9 +18,12 @@ class BoringDateTimeField extends BoringPickerField<DateTime> {
     super.showEraseValueButton,
     required DateTime firstDate,
     required DateTime lastDate,
+    bool forceHideRequiredFieldLabel = false,
     super.onChanged,
   }) : super(
-            forceHideRequiredFieldLabel: validationFunction == null,
+            forceHideRequiredFieldLabel: !forceHideRequiredFieldLabel
+                ? validationFunction == null
+                : forceHideRequiredFieldLabel,
             validationFunction:
                 (BoringFormController formController, DateTime? value) {
               final error = validationFunction?.call(formController, value);
@@ -89,10 +92,13 @@ class BoringDateRangeField extends BoringPickerField<DateTimeRange> {
     DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar,
     required DateTime firstDate,
     required DateTime lastDate,
+    bool forceHideRequiredFieldLabel = false,
     super.onChanged,
   })  : assert(firstDate <= lastDate, "firstDate must be less than lastDate"),
         super(
-          forceHideRequiredFieldLabel: validationFunction == null,
+          forceHideRequiredFieldLabel: !forceHideRequiredFieldLabel
+              ? validationFunction == null
+              : forceHideRequiredFieldLabel,
           validationFunction:
               (BoringFormController formController, DateTimeRange? value) {
             final error = validationFunction?.call(formController, value);
@@ -152,10 +158,13 @@ class BoringDateField extends BoringPickerField<DateTime> {
     DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar,
     required DateTime firstDate,
     required DateTime lastDate,
+    bool forceHideRequiredFieldLabel = false,
     super.onChanged,
   })  : assert(firstDate <= lastDate, "firstDate must be less than lastDate"),
         super(
-            forceHideRequiredFieldLabel: validationFunction == null,
+            forceHideRequiredFieldLabel: !forceHideRequiredFieldLabel
+                ? validationFunction == null
+                : forceHideRequiredFieldLabel,
             validationFunction:
                 (BoringFormController formController, DateTime? value) {
               final error = validationFunction?.call(formController, value);
@@ -204,10 +213,14 @@ class BoringTimeField extends BoringPickerField<TimeOfDay> {
     super.showEraseValueButton,
     TimePickerEntryMode initialEntryMode = TimePickerEntryMode.inputOnly,
     super.onChanged,
+    bool forceHideRequiredFieldLabel = false,
+
     // required DateTime firstDate,
     // required DateTime lastDate,
   }) : super(
-            forceHideRequiredFieldLabel: validationFunction == null,
+            forceHideRequiredFieldLabel: !forceHideRequiredFieldLabel
+                ? validationFunction == null
+                : forceHideRequiredFieldLabel,
             validationFunction:
                 (BoringFormController formController, TimeOfDay? value) {
               final error = validationFunction?.call(formController, value);
