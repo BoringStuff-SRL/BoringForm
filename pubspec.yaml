@@ -20,11 +20,11 @@ dependencies:
 
   dropdown_button2:
     git:
-      url: https://github.com/BoringStuff-SRL/drop_down.git
+      url: git@github.com:BoringStuff-SRL/drop_down.git
   
   boring_table:
     git:
-      url: https://github.com/BoringStuff-SRL/FlutterBoringTable.git
+      url: git@github.com:BoringStuff-SRL/FlutterBoringTable.git
       ref: develop
   
   boring_dropdown:
