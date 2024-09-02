@@ -28,7 +28,6 @@ class MyNumberFormatter extends TextInputFormatter {
   TextEditingValue formatEditUpdate(
       TextEditingValue oldValue, TextEditingValue newValue) {
     // se il testo nuovo e' vuoto allora torno vuoto
-
     if (newValue.text.isEmpty) {
       return const TextEditingValue();
     }
@@ -37,6 +36,15 @@ class MyNumberFormatter extends TextInputFormatter {
     String valueText = newValue.text
         .replaceAll(thousandsSeparator, '')
         .replaceAll(decimalSeparator, '.');
+
+    final valueTextDivided = valueText.split('.');
+    if (valueTextDivided.length > 1 && decimalPlaces > 0) {
+      final decimals = valueTextDivided[1];
+      if (decimals.length > decimalPlaces) {
+        final cutDecimals = decimals.substring(0, decimalPlaces);
+        valueText = "${valueTextDivided[0]}.$cutDecimals";
+      }
+    }
 
     // parso
     final valueNum = num.tryParse(valueText);

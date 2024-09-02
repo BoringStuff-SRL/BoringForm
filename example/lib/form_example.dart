@@ -36,10 +36,11 @@ class FormExample0 extends StatelessWidget {
           formController: c,
           child: Column(
             children: [
-              BoringDateField(
-                fieldPath: ['date'],
-                firstDate: DateTime.now().toMidnight(),
-                lastDate: DateTime.now().toMidnight(),
+              BoringNumberField(
+                fieldPath: ['num'],
+                decimalPlaces: 0,
+                decimalSeparator: ',',
+                thousandsSeparator: '.',
                 decoration: (formController) =>
                     BoringFieldDecoration(label: 'Data'),
               ),
