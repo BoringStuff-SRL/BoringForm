@@ -70,7 +70,6 @@ class FormExample0 extends StatelessWidget {
               ElevatedButton(onPressed: () {}, child: const Text("VAL FUNCS")),
               BoringSwitchField(
                 fieldPath: ["test"],
-                inputDecoration: InputDecoration(),
                 decoration: (_) => BoringFieldDecoration(label: "TESTTEST"),
               ),
               ElevatedButton(

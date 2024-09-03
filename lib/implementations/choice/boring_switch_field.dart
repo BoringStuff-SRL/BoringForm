@@ -111,12 +111,10 @@ class BoringSwitchField extends BoringFormField<bool> {
     super.onChanged,
     super.readOnly,
     super.decoration,
-    this.inputDecoration,
     this.switchDecoration = const BoringSwitchDecoration(),
   });
 
   final BoringSwitchDecoration switchDecoration;
-  final InputDecoration? inputDecoration;
 
   @override
   Widget builder(BuildContext context, BoringFormStyle formStyle,
@@ -176,10 +174,12 @@ class _SwitchWithDecoration extends StatelessWidget {
                   valueListenable: switchValue,
                   builder: (context, value, child) => Text(
                     label!,
-                    style: labelStyle.copyWith(
-                      fontWeight: value ? FontWeight.w500 : null,
-                      color: value ? Theme.of(context).primaryColor : null,
-                    ),
+                    style: value
+                        ? labelStyle.copyWith(
+                            fontWeight: FontWeight.w500,
+                            color: Theme.of(context).primaryColor,
+                          )
+                        : labelStyle,
                   ),
                 )
               : const SizedBox(),
