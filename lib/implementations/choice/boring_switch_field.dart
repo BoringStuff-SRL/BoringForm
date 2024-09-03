@@ -111,12 +111,12 @@ class BoringSwitchField extends BoringFormField<bool> {
     super.onChanged,
     super.readOnly,
     super.decoration,
-    required this.inputDecoration,
+    this.inputDecoration,
     this.switchDecoration = const BoringSwitchDecoration(),
   });
 
   final BoringSwitchDecoration switchDecoration;
-  final InputDecoration inputDecoration;
+  final InputDecoration? inputDecoration;
 
   @override
   Widget builder(BuildContext context, BoringFormStyle formStyle,
