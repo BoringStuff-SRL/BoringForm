@@ -53,27 +53,30 @@ enum BoringSwitchLabelPosition { left, right, top }
 // }
 
 class BoringSwitchDecoration {
-  Color? activeColor;
-  Color? activeTrackColor;
-  Color? inactiveThumbColor;
-  Color? inactiveTrackColor;
-  ImageProvider<Object>? activeThumbImage;
-  void Function(Object, StackTrace?)? onActiveThumbImageError;
-  ImageProvider<Object>? inactiveThumbImage;
-  void Function(Object, StackTrace?)? onInactiveThumbImageError;
-  MaterialStateProperty<Color?>? thumbColor;
-  MaterialStateProperty<Color?>? trackColor;
-  MaterialStateProperty<Color?>? trackOutlineColor;
-  MaterialStateProperty<double?>? trackOutlineWidth;
-  MaterialStateProperty<Icon?>? thumbIcon;
-  MaterialTapTargetSize? materialTapTargetSize;
-  DragStartBehavior dragStartBehavior;
-  MouseCursor? mouseCursor;
-  Color? focusColor;
-  Color? hoverColor;
-  MaterialStateProperty<Color?>? overlayColor;
-  double? splashRadius;
-  BoringSwitchDecoration({
+  final Axis direction;
+  final Color? activeColor;
+  final Color? activeTrackColor;
+  final Color? inactiveThumbColor;
+  final Color? inactiveTrackColor;
+  final ImageProvider<Object>? activeThumbImage;
+  final void Function(Object, StackTrace?)? onActiveThumbImageError;
+  final ImageProvider<Object>? inactiveThumbImage;
+  final void Function(Object, StackTrace?)? onInactiveThumbImageError;
+  final MaterialStateProperty<Color?>? thumbColor;
+  final MaterialStateProperty<Color?>? trackColor;
+  final MaterialStateProperty<Color?>? trackOutlineColor;
+  final MaterialStateProperty<double?>? trackOutlineWidth;
+  final MaterialStateProperty<Icon?>? thumbIcon;
+  final MaterialTapTargetSize? materialTapTargetSize;
+  final DragStartBehavior dragStartBehavior;
+  final MouseCursor? mouseCursor;
+  final Color? focusColor;
+  final Color? hoverColor;
+  final MaterialStateProperty<Color?>? overlayColor;
+  final double? splashRadius;
+  final WrapCrossAlignment switchAlignment;
+
+  const BoringSwitchDecoration({
     this.activeColor,
     this.activeTrackColor,
     this.inactiveThumbColor,
@@ -89,11 +92,13 @@ class BoringSwitchDecoration {
     this.thumbIcon,
     this.materialTapTargetSize,
     this.dragStartBehavior = DragStartBehavior.start,
+    this.switchAlignment = WrapCrossAlignment.center,
     this.mouseCursor,
     this.focusColor,
     this.hoverColor,
     this.overlayColor,
     this.splashRadius,
+    this.direction = Axis.horizontal,
   });
   // FocusNode? focusNode;
   // void Function(bool)? onFocusChange,
@@ -105,13 +110,14 @@ class BoringSwitchField extends BoringFormField<bool> {
     super.key,
     required super.fieldPath,
     super.observedFields,
-    super.decoration,
     super.onChanged,
     super.readOnly,
-    this.switchDecoration,
+    super.decoration,
+    this.switchDecoration = const BoringSwitchDecoration(),
   });
 
-  final BoringSwitchDecoration? switchDecoration;
+  final BoringSwitchDecoration switchDecoration;
+
   @override
   Widget builder(BuildContext context, BoringFormStyle formStyle,
       BoringFormController formController, bool? fieldValue, String? error) {
@@ -122,6 +128,9 @@ class BoringSwitchField extends BoringFormField<bool> {
         setChangedValue(formController, (value ?? false));
       },
       switchDecoration: switchDecoration,
+      decoration: getFieldDecoration(formController),
+      inputDecoration:
+          getInputDecoration(formController, formStyle, error, fieldValue),
     );
   }
 
@@ -136,44 +145,68 @@ class _SwitchWithDecoration extends StatelessWidget {
   final Function(bool?) onChanged;
   final bool value;
   final bool readOnly;
-  final BoringSwitchDecoration? switchDecoration;
+  final BoringSwitchDecoration switchDecoration;
+  final BoringFieldDecoration<bool>? decoration;
+  final InputDecoration? inputDecoration;
 
   const _SwitchWithDecoration({
     Key? key,
     required this.onChanged,
     required this.value,
     required this.readOnly,
-    this.switchDecoration,
+    required this.decoration,
+    this.inputDecoration,
+    this.switchDecoration = const BoringSwitchDecoration(),
   }) : super(key: key);
+
+  String? get label => decoration?.label;
+  TextStyle get labelStyle => inputDecoration?.labelStyle ?? const TextStyle();
 
   @override
   Widget build(BuildContext context) {
     return IgnorePointer(
       ignoring: readOnly,
-      child: Switch(
-        value: value,
-        onChanged: onChanged,
-        activeColor: switchDecoration?.activeColor,
-        activeTrackColor: switchDecoration?.activeTrackColor,
-        inactiveThumbColor: switchDecoration?.inactiveThumbColor,
-        inactiveTrackColor: switchDecoration?.inactiveTrackColor,
-        activeThumbImage: switchDecoration?.activeThumbImage,
-        onActiveThumbImageError: switchDecoration?.onActiveThumbImageError,
-        inactiveThumbImage: switchDecoration?.inactiveThumbImage,
-        onInactiveThumbImageError: switchDecoration?.onInactiveThumbImageError,
-        thumbColor: switchDecoration?.thumbColor,
-        trackColor: switchDecoration?.trackColor,
-        trackOutlineColor: switchDecoration?.trackColor,
-        trackOutlineWidth: switchDecoration?.trackOutlineWidth,
-        thumbIcon: switchDecoration?.thumbIcon,
-        materialTapTargetSize: switchDecoration?.materialTapTargetSize,
-        dragStartBehavior:
-            switchDecoration?.dragStartBehavior ?? DragStartBehavior.start,
-        mouseCursor: switchDecoration?.mouseCursor,
-        focusColor: switchDecoration?.focusColor,
-        hoverColor: switchDecoration?.hoverColor,
-        overlayColor: switchDecoration?.overlayColor,
-        splashRadius: switchDecoration?.splashRadius,
+      child: Wrap(
+        crossAxisAlignment: switchDecoration.switchAlignment,
+        direction: switchDecoration.direction,
+        children: [
+          label != null
+              ? Text(
+                  label!,
+                  style: value
+                      ? labelStyle.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: Theme.of(context).primaryColor,
+                        )
+                      : labelStyle,
+                )
+              : const SizedBox(),
+          Switch(
+            value: value,
+            onChanged: onChanged,
+            activeColor: switchDecoration.activeColor,
+            activeTrackColor: switchDecoration.activeTrackColor,
+            inactiveThumbColor: switchDecoration.inactiveThumbColor,
+            inactiveTrackColor: switchDecoration.inactiveTrackColor,
+            activeThumbImage: switchDecoration.activeThumbImage,
+            onActiveThumbImageError: switchDecoration.onActiveThumbImageError,
+            inactiveThumbImage: switchDecoration.inactiveThumbImage,
+            onInactiveThumbImageError:
+                switchDecoration.onInactiveThumbImageError,
+            thumbColor: switchDecoration.thumbColor,
+            trackColor: switchDecoration.trackColor,
+            trackOutlineColor: switchDecoration.trackColor,
+            trackOutlineWidth: switchDecoration.trackOutlineWidth,
+            thumbIcon: switchDecoration.thumbIcon,
+            materialTapTargetSize: switchDecoration.materialTapTargetSize,
+            dragStartBehavior: switchDecoration.dragStartBehavior,
+            mouseCursor: switchDecoration.mouseCursor,
+            focusColor: switchDecoration.focusColor,
+            hoverColor: switchDecoration.hoverColor,
+            overlayColor: switchDecoration.overlayColor,
+            splashRadius: switchDecoration.splashRadius,
+          ),
+        ],
       ),
     );
   }
