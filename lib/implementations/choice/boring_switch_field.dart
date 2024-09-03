@@ -74,6 +74,7 @@ class BoringSwitchDecoration {
   final Color? hoverColor;
   final MaterialStateProperty<Color?>? overlayColor;
   final double? splashRadius;
+  final bool isCentered;
 
   const BoringSwitchDecoration({
     this.activeColor,
@@ -91,6 +92,7 @@ class BoringSwitchDecoration {
     this.thumbIcon,
     this.materialTapTargetSize,
     this.dragStartBehavior = DragStartBehavior.start,
+    this.isCentered = true,
     this.mouseCursor,
     this.focusColor,
     this.hoverColor,
@@ -147,7 +149,7 @@ class _SwitchWithDecoration extends StatelessWidget {
   final BoringFieldDecoration<bool>? decoration;
   final InputDecoration? inputDecoration;
 
-  _SwitchWithDecoration({
+  const _SwitchWithDecoration({
     Key? key,
     required this.onChanged,
     required this.value,
@@ -155,11 +157,9 @@ class _SwitchWithDecoration extends StatelessWidget {
     required this.decoration,
     this.inputDecoration,
     this.switchDecoration = const BoringSwitchDecoration(),
-  })  : switchValue = ValueNotifier<bool>(value),
-        super(key: key);
+  }) : super(key: key);
 
   String? get label => decoration?.label;
-  final ValueNotifier<bool> switchValue;
   TextStyle get labelStyle => inputDecoration?.labelStyle ?? const TextStyle();
 
   @override
@@ -167,20 +167,20 @@ class _SwitchWithDecoration extends StatelessWidget {
     return IgnorePointer(
       ignoring: readOnly,
       child: Wrap(
+        crossAxisAlignment: switchDecoration.isCentered
+            ? WrapCrossAlignment.center
+            : WrapCrossAlignment.start,
         direction: switchDecoration.direction,
         children: [
           label != null
-              ? ValueListenableBuilder(
-                  valueListenable: switchValue,
-                  builder: (context, value, child) => Text(
-                    label!,
-                    style: value
-                        ? labelStyle.copyWith(
-                            fontWeight: FontWeight.w500,
-                            color: Theme.of(context).primaryColor,
-                          )
-                        : labelStyle,
-                  ),
+              ? Text(
+                  label!,
+                  style: value
+                      ? labelStyle.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: Theme.of(context).primaryColor,
+                        )
+                      : labelStyle,
                 )
               : const SizedBox(),
           Switch(
