@@ -74,7 +74,7 @@ class BoringSwitchDecoration {
   final Color? hoverColor;
   final MaterialStateProperty<Color?>? overlayColor;
   final double? splashRadius;
-  final bool isCentered;
+  final WrapCrossAlignment switchAlignment;
 
   const BoringSwitchDecoration({
     this.activeColor,
@@ -92,7 +92,7 @@ class BoringSwitchDecoration {
     this.thumbIcon,
     this.materialTapTargetSize,
     this.dragStartBehavior = DragStartBehavior.start,
-    this.isCentered = true,
+    this.switchAlignment = WrapCrossAlignment.center,
     this.mouseCursor,
     this.focusColor,
     this.hoverColor,
@@ -167,9 +167,7 @@ class _SwitchWithDecoration extends StatelessWidget {
     return IgnorePointer(
       ignoring: readOnly,
       child: Wrap(
-        crossAxisAlignment: switchDecoration.isCentered
-            ? WrapCrossAlignment.center
-            : WrapCrossAlignment.start,
+        crossAxisAlignment: switchDecoration.switchAlignment,
         direction: switchDecoration.direction,
         children: [
           label != null
