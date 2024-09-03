@@ -147,7 +147,7 @@ class _SwitchWithDecoration extends StatelessWidget {
   final bool readOnly;
   final BoringSwitchDecoration switchDecoration;
   final BoringFieldDecoration<bool>? decoration;
-  final InputDecoration inputDecoration;
+  final InputDecoration? inputDecoration;
 
   _SwitchWithDecoration({
     Key? key,
@@ -155,14 +155,14 @@ class _SwitchWithDecoration extends StatelessWidget {
     required this.value,
     required this.readOnly,
     required this.decoration,
-    required this.inputDecoration,
+    this.inputDecoration,
     this.switchDecoration = const BoringSwitchDecoration(),
   })  : switchValue = ValueNotifier<bool>(value),
         super(key: key);
 
   String? get label => decoration?.label;
   final ValueNotifier<bool> switchValue;
-  TextStyle get labelStyle => inputDecoration.labelStyle ?? const TextStyle();
+  TextStyle get labelStyle => inputDecoration?.labelStyle ?? const TextStyle();
 
   @override
   Widget build(BuildContext context) {
