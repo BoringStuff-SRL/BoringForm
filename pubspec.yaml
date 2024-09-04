@@ -20,12 +20,12 @@ dependencies:
 
   boringcore:
     git:
-      url: https://github.com/BoringStuff-SRL/BoringCore
+      url: git@github.com:BoringStuff-SRL/BoringCore
       ref: main
 
   desktop_drop:
     git:
-      url: https://github.com/BoringStuff-SRL/desktop_drop.git
+      url: git@github.com:BoringStuff-SRL/desktop_drop.git
       ref: main
 
   collection: ^1.18.0
