@@ -20,7 +20,7 @@ dependencies:
 
   boringcore:
     git:
-      url: git@github.com:BoringStuff-SRL/BoringCore
+      url: git@github.com:BoringStuff-SRL/BoringCore.git
       ref: main
 
   desktop_drop:
