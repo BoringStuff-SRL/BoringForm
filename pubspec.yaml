@@ -27,11 +27,12 @@ dependencies:
 
   desktop_drop:
     git:
-      url: https://github.com/BoringStuff-SRL/desktop_drop.git
+      url: git@github.com:BoringStuff-SRL/desktop_drop.git
       ref: main
 
   collection: ^1.18.0
   widget_zoom: ^0.0.3
+  month_year_picker: ^0.4.0+1
 
 dev_dependencies:
   flutter_lints: ^2.0.1

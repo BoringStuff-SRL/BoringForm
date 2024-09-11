@@ -37,6 +37,15 @@ class MyNumberFormatter extends TextInputFormatter {
         .replaceAll(thousandsSeparator, '')
         .replaceAll(decimalSeparator, '.');
 
+    final valueTextDivided = valueText.split('.');
+    if (valueTextDivided.length > 1 && decimalPlaces > 0) {
+      final decimals = valueTextDivided[1];
+      if (decimals.length > decimalPlaces) {
+        final cutDecimals = decimals.substring(0, decimalPlaces);
+        valueText = "${valueTextDivided[0]}.$cutDecimals";
+      }
+    }
+
     // parso
     final valueNum = num.tryParse(valueText);
 
@@ -66,15 +75,6 @@ class MyNumberFormatter extends TextInputFormatter {
         .replaceAll(',', thousandsSeparator)
         .replaceAll('#', decimalSeparator);
 
-    // controllo se l'ultimo carattere inserito e' il separatore decimale
-    final lastCharacterIsDecimalSeparator =
-        newValue.text[newValue.text.length - 1] == decimalSeparator;
-
-    // se lo e' allora lo appendo al risultato
-    if (lastCharacterIsDecimalSeparator) {
-      result = '$result$decimalSeparator';
-    }
-
     // controllo il numero dei separatori di migliaia che ho aggiunto in questa battitura
     final numberOfThousandsSeparatorAdded =
         (result.split(thousandsSeparator).length) -
@@ -88,6 +88,25 @@ class MyNumberFormatter extends TextInputFormatter {
       }
 
       return newOffset;
+    }
+
+    // controllo se l'ultimo carattere inserito e' il separatore decimale
+    final lastCharacterIsDecimalSeparator =
+        newValue.text[newValue.text.length - 1] == decimalSeparator;
+
+    // se lo e' allora lo appendo al risultato
+    if (lastCharacterIsDecimalSeparator) {
+      //controllo che effettivamente possa mettere dei separatori decimali
+      if (decimalPlaces > 0) {
+        result = '$result$decimalSeparator';
+      } else {
+        return TextEditingValue(
+          text: result,
+          selection: TextSelection.fromPosition(
+            TextPosition(offset: getNewOffset()),
+          ),
+        );
+      }
     }
 
     return TextEditingValue(

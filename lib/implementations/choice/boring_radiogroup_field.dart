@@ -3,6 +3,8 @@ import 'package:boring_form/field/boring_form_field.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
+import '../../form/boring_form_controller.dart';
+
 class BoringRadioGroupField<T> extends BoringFormField<T> {
   const BoringRadioGroupField({
     super.key,
@@ -18,6 +20,7 @@ class BoringRadioGroupField<T> extends BoringFormField<T> {
     // super.fieldController,
     // super.decoration,
     this.itemsPerRow = 1,
+    this.allowEmpty = false,
     // super.displayCondition,
     // super.boringResponsiveSize,
     // super.onChanged
@@ -25,6 +28,7 @@ class BoringRadioGroupField<T> extends BoringFormField<T> {
 
   final List<BChoiceItem<T>> items;
   final int itemsPerRow;
+  final bool allowEmpty;
 
   @override
   Widget builder(BuildContext context, BoringFormStyle formTheme,
@@ -46,6 +50,7 @@ class BoringRadioGroupField<T> extends BoringFormField<T> {
                     child: RadioListTile<T?>(
                         activeColor: inputDecoration.focusColor,
                         contentPadding: inputDecoration.contentPadding,
+                        toggleable: allowEmpty,
                         value: item.value,
                         title: Text(item.display),
                         groupValue: formController.getValue(fieldPath),

@@ -24,9 +24,18 @@ class BoringForm extends BoringFormWidget {
     required List<Widget> children,
     BResponsiveSize responsiveSize = const BResponsiveSize.defaultSizes(),
     super.style,
-  })  : _child = BResponsiveWrap.automatic(
-          responsiveSize: responsiveSize,
-          children: children,
+  })  : _child = BResponsiveWrap(
+          bResponsiveTheme: const BResponsiveTheme(spacing: 0),
+          children: children
+              .map(
+                (e) => e is BResponsiveChild
+                    ? e
+                    : BResponsiveChild.size(
+                        responsiveSize: responsiveSize,
+                        child: e,
+                      ),
+              )
+              .toList(),
         ),
         super(formController: formController);
 
@@ -44,7 +53,7 @@ abstract class BoringResponsiveFormWidget extends BoringFormWidget {
     super.key,
     super.formController,
     super.style,
-    BResponsiveSize responsiveSize = const BResponsiveSize(),
+    BResponsiveSize responsiveSize = const BResponsiveSize.defaultSizes(),
   }) : _responsiveSize = responsiveSize;
 
   final BResponsiveSize _responsiveSize;
@@ -53,6 +62,7 @@ abstract class BoringResponsiveFormWidget extends BoringFormWidget {
 
   @override
   Widget child(context) => BResponsiveWrap(
+        bResponsiveTheme: BResponsiveTheme(spacing: 0),
         children: children
             .map(
               (e) => e is BResponsiveChild

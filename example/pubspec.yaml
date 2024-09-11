@@ -13,19 +13,20 @@ dependencies:
     sdk: flutter
   boring_ui:
     git:
-      url: https://github.com/BoringStuff-SRL/BoringUI
+      url: git@github.com:BoringStuff-SRL/BoringUI.git
       ref: develop-x-diretto
 
   easy_stepper: ^0.6.0
 
+dependency_overrides:
+  boring_form:
+    path: ../
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  
 
   flutter_lints: ^2.0.0
 
 flutter:
-
   uses-material-design: true
-

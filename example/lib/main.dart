@@ -1,3 +1,4 @@
+import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
 import 'form_example.dart';
@@ -11,9 +12,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = DefaultBoringUI.defaultThemeData(
+      colorSchemeSeed: Colors.red,
+      brightness: Brightness.light,
+      additionalExtensions: [],
+    );
+
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData.light(),
+      theme: theme.copyWith(extensions: [
+        BUIThemeData.defaultTheme(defaultThemeData: theme),
+      ]),
       home: const MyHomePage(),
     );
   }
