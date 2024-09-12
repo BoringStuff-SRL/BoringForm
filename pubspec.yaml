@@ -23,7 +23,7 @@ dependencies:
   boring_ui:
     git:
       url: git@github.com:BoringStuff-SRL/BoringUI.git
-      ref: btable
+      ref: develop-x-diretto
 
   desktop_drop:
     git:
