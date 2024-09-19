@@ -4,7 +4,6 @@ import 'package:boring_form/implementations/pickers/boringFilePickerV2/boring_dr
 import 'package:boring_form/implementations/pickers/boringFilePickerV2/boring_file_list_tile.dart';
 import 'package:boring_form/implementations/pickers/boringFilePickerV2/boring_file_picker_settings.dart';
 import 'package:boring_ui/boring_ui.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 class BoringFilePickerV2 extends BoringFormField<List<PlatformFile>> {
@@ -20,11 +19,12 @@ class BoringFilePickerV2 extends BoringFormField<List<PlatformFile>> {
 
   @override
   Widget builder(
-      BuildContext context,
-      BoringFormStyle formTheme,
-      BoringFormController formController,
-      List<PlatformFile>? fieldValue,
-      String? error) {
+    BuildContext context,
+    BoringFormStyle formTheme,
+    BoringFormController formController,
+    List<PlatformFile>? fieldValue,
+    String? error,
+  ) {
     final bool readOnly = isReadOnly(formTheme);
     return BoringFilePickerSettings(
       readOnly: readOnly,
