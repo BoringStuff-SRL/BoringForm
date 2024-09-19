@@ -3,16 +3,20 @@
 import 'package:boring_form/boring_form.dart';
 import 'package:boring_form/implementations/pickers/boringFilePickerV2/boring_drop_file_box.dart';
 import 'package:boring_form/implementations/pickers/boringFilePickerV2/boring_file_picker_settings.dart';
-import 'package:desktop_drop/desktop_drop.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 
 class BoringDropZone extends StatelessWidget {
   final BoringFormController formController;
   final List<String> fieldPath;
   late final ValueNotifier<Color> color;
-  BoringDropZone(
-      {super.key, required this.formController, required this.fieldPath});
+
+  BoringDropZone({
+    super.key,
+    required this.formController,
+    required this.fieldPath,
+  });
 
   void _handlePick(
     List<PlatformFile> pickerResult,
@@ -36,6 +40,7 @@ class BoringDropZone extends StatelessWidget {
     }
   }
 
+/*
   Future<void> handleOnDragDone(BuildContext context,
       BoringFilePickerSettings settings, DropDoneDetails details) async {
     if (settings.readOnly) {
@@ -61,6 +66,7 @@ class BoringDropZone extends StatelessWidget {
     }
     _handlePick(files, settings);
   }
+*/
 
   @override
   Widget build(BuildContext context) {
@@ -68,21 +74,25 @@ class BoringDropZone extends StatelessWidget {
     final decoration = settings.decoration;
     color = ValueNotifier(decoration.inActiveColor);
     return settings.decoration.dropzoneBuilder?.call(context, formController) ??
-        DropTarget(
-          onDragEntered: (details) {
+        DropRegion(
+          formats: Formats.standardFormats,
+          onDropOver: (event) {
+            return DropOperation.move;
+          },
+          onPerformDrop: (event) async {
+            //handleOnDragDone(context, settings, details);
+          },
+          onDropEnter: (p0) {
             if (settings.readOnly) {
               return;
             }
             color.value = decoration.activeColor;
           },
-          onDragExited: (details) {
+          onDropLeave: (p0) {
             if (settings.readOnly) {
               return;
             }
             color.value = decoration.inActiveColor;
-          },
-          onDragDone: (details) {
-            handleOnDragDone(context, settings, details);
           },
           child: ValueListenableBuilder(
             valueListenable: color,
