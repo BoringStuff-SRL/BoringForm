@@ -159,6 +159,12 @@ class BoringDropZone extends StatelessWidget {
         DropRegion(
           formats: Formats.standardFormats,
           onDropOver: (event) {
+            if (settings.readOnly) {
+              return DropOperation.move;
+            }
+            if (color.value != decoration.activeColor) {
+              color.value = decoration.activeColor;
+            }
             return DropOperation.move;
           },
           onPerformDrop: (event) async {
@@ -168,7 +174,6 @@ class BoringDropZone extends StatelessWidget {
             if (settings.readOnly) {
               return;
             }
-            color.value = decoration.activeColor;
           },
           onDropLeave: (p0) {
             if (settings.readOnly) {
