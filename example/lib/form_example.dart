@@ -36,13 +36,10 @@ class FormExample0 extends StatelessWidget {
           formController: c,
           child: Column(
             children: [
-              BoringNumberField(
-                fieldPath: ['num'],
-                decimalPlaces: 0,
-                decimalSeparator: ',',
-                thousandsSeparator: '.',
-                decoration: (formController) =>
-                    BoringFieldDecoration(label: 'Data'),
+              BoringFilePickerV2(
+                fieldPath: ['file'],
+                decoration:
+                    BoringFilePickerDecoration(allowedExtensions: ['png']),
               ),
               ElevatedButton(
                   onPressed: () {
