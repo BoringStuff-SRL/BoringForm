@@ -2,12 +2,13 @@ import "package:boring_form/boring_form.dart";
 import 'package:boring_form/implementations/pickers/boringFilePickerV2/boring_drop_zone_decoration.dart';
 import 'package:boring_form/implementations/pickers/boringFilePickerV2/boring_file_picker_v2.dart';
 import 'package:flutter/material.dart';
+import 'package:boringcore/boringcore.dart';
 
 class FormExample0 extends StatelessWidget {
   FormExample0({super.key});
 
   final c = BoringFormController(
-    initialValue: {'num': 123456},
+    initialValue: {'num': 123456, 'test' : 12, 'test1' : [1,2,3]},
     validationBehaviour: ValidationBehaviour.onSubmit,
     fieldRequiredLabelBehaviour: FieldRequiredLabelBehaviour.always,
   );
@@ -30,6 +31,42 @@ class FormExample0 extends StatelessWidget {
       formController: c,
       child: Column(
         children: [
+          BoringDropdownField<int>(
+            fieldPath: ['test'],
+            getItems: (_) async {
+              return List.generate(10000, (e) => e)
+                  .map((e) => BoringChoiceItem(
+                        value: e,
+                        display: e.toString(),
+                      ))
+                  .toList();
+            },
+            toBoringChoiceItem: (e) {
+              return BoringChoiceItem<int>(
+                value: e,
+                display: e.toString(),
+              );
+            },
+          ),
+
+          BoringDropdownMultiChoiceField(
+            fieldPath: ['test1'],
+            getItems: (_) async {
+              return List.generate(10000, (e) => e)
+                  .map((e) => BoringChoiceItem(
+                        value: e,
+                        display: e.toString(),
+                      ))
+                  .toList();
+            },
+            toBoringChoiceItem: (e) {
+              return BoringChoiceItem<int>(
+                value: e,
+                display: e.toString(),
+              );
+            },
+          ),
+
           BoringFilePickerV2(
             fieldPath: ['ccc'],
             readOnly: true,
