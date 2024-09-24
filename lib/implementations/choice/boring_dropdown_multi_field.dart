@@ -45,26 +45,26 @@ class BoringDropdownMultiChoiceField<T>
   @override
   Widget builder(
       BuildContext context,
-      BoringFormStyle formTheme,
+      BoringFormStyle formStyle,
       BoringFormController formController,
       List<T>? fieldValue,
       String? error,
       AsyncSnapshot<List<BChoiceItem<T>>> calculations) {
-    return BDropdownMultichoice(
-      value: fieldValue?.map((e) => toBoringChoiceItem(e)).toList(),
+    return BDropdownMultiChoice(
+      value: ValueNotifier((fieldValue ?? []).map((e) => toBoringChoiceItem(e)).toList()),
       searchItems: getItems,
       onChanged: (values) =>
           setChangedValue(formController, values?.map((e) => e.value).toList()),
-      readOnly: isReadOnly(formTheme),
+      readOnly: isReadOnly(formStyle),
       onAdd: onAdd,
       callFutureOnStopWriting: callFutureOnStopWriting,
       boringDropdownLoadingMode: boringDropdownLoadingMode,
       searchable: searchable,
       boringDropdownStyle: boringDropdownStyle.copyWith(
           inputDecoration:
-              getInputDecoration(formController, formTheme, error, fieldValue),
-          onClearIcon: formTheme.eraseValueWidget,
-          choiceItemDisplayTextStyle: formTheme.textStyle),
+              getInputDecoration(formController, formStyle, error, fieldValue),
+          onClearIcon: formStyle.eraseValueWidget,
+          choiceItemDisplayTextStyle: formStyle.textStyle),
       clearable: clearable,
       errorMessage: error,
       debouncingTime: debouncingTime,

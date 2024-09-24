@@ -51,7 +51,7 @@ class BoringDropdownField<T>
       String? error,
       AsyncSnapshot<List<BChoiceItem<T>>> calculations) {
     return BDropdown(
-      value: fieldValue != null ? toBoringChoiceItem(fieldValue) : null,
+      value:ValueNotifier(fieldValue != null ? toBoringChoiceItem(fieldValue) : null),
       searchItems: getItems,
       onChanged: (value) => setChangedValue(formController, value?.value),
       readOnly: isReadOnly(formTheme),
