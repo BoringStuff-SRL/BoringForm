@@ -10,6 +10,7 @@ class FormExample0 extends StatelessWidget {
     initialValue: {
       'num': 123456,
       'info': {'nome': "PIPPO"},
+      'test' : 12, 'test1' : [1,2,3]
     },
     validationBehaviour: ValidationBehaviour.onSubmit,
     fieldRequiredLabelBehaviour: FieldRequiredLabelBehaviour.always,
@@ -36,6 +37,40 @@ class FormExample0 extends StatelessWidget {
           formController: c,
           child: Column(
             children: [
+              BoringDropdownField<int>(
+                fieldPath: ['test'],
+                getItems: (_) async {
+                  return List.generate(10000, (e) => e)
+                      .map((e) => BChoiceItem(
+                    value: e,
+                    display: e.toString(),
+                  ))
+                      .toList();
+                },
+                toBoringChoiceItem: (e) {
+                  return BChoiceItem<int>(
+                    value: e,
+                    display: e.toString(),
+                  );
+                },
+              ),
+              BoringDropdownMultiChoiceField(
+                fieldPath: ['test1'],
+                getItems: (_) async {
+                  return List.generate(10000, (e) => e)
+                      .map((e) => BChoiceItem(
+                    value: e,
+                    display: e.toString(),
+                  ))
+                      .toList();
+                },
+                toBoringChoiceItem: (e) {
+                  return BChoiceItem<int>(
+                    value: e,
+                    display: e.toString(),
+                  );
+                },
+              ),
               BoringFilePickerV2(
                 fieldPath: ['file'],
                 decoration:
@@ -66,7 +101,7 @@ class FormExample0 extends StatelessWidget {
                   child: const Text("PRINT")),
               ElevatedButton(onPressed: () {}, child: const Text("VAL FUNCS")),
               BoringSwitchField(
-                fieldPath: ["test"],
+                fieldPath: ["test-bool"],
                 decoration: (_) => BoringFieldDecoration(label: "TESTTEST"),
               ),
               ElevatedButton(
