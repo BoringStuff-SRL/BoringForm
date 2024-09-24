@@ -23,6 +23,7 @@ class BoringTextField extends BoringFormField<String> {
     super.decoration,
     super.readOnly,
     super.onChanged,
+    super.forceHideRequiredFieldLabel,
   }) : super(
             validationFunction: validationFunction == null && allowEmpty
                 ? null
