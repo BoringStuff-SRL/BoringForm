@@ -22,7 +22,7 @@ class BoringDropdownMultiChoiceField<T>
     this.clearable = true,
     this.searchable = true,
     this.callFutureOnStopWriting = true,
-    this.boringDropdownStyle = const BDropdownTheme(),
+    this.boringDropdownStyle,
     this.boringDropdownLoadingMode = BDropdownLoadingMode.onOpen,
     this.debouncingTime = const Duration(milliseconds: 300),
     this.initialItems,
@@ -36,7 +36,7 @@ class BoringDropdownMultiChoiceField<T>
   final FutureOr<List<BChoiceItem<T>>?> Function(String)? onAdd;
   final bool callFutureOnStopWriting;
   final bool searchable;
-  final BDropdownTheme boringDropdownStyle;
+  final BDropdownTheme? boringDropdownStyle;
   final BDropdownLoadingMode boringDropdownLoadingMode;
   final bool clearable;
   final Duration debouncingTime;
@@ -50,8 +50,12 @@ class BoringDropdownMultiChoiceField<T>
       List<T>? fieldValue,
       String? error,
       AsyncSnapshot<List<BChoiceItem<T>>> calculations) {
+    final dropdownStyle =
+        boringDropdownStyle ?? BoringTheme.of(context).bDropdownTheme;
+
     return BDropdownMultiChoice(
-      value: ValueNotifier((fieldValue ?? []).map((e) => toBoringChoiceItem(e)).toList()),
+      value: ValueNotifier(
+          (fieldValue ?? []).map((e) => toBoringChoiceItem(e)).toList()),
       searchItems: getItems,
       onChanged: (values) =>
           setChangedValue(formController, values?.map((e) => e.value).toList()),
@@ -60,7 +64,7 @@ class BoringDropdownMultiChoiceField<T>
       callFutureOnStopWriting: callFutureOnStopWriting,
       boringDropdownLoadingMode: boringDropdownLoadingMode,
       searchable: searchable,
-      boringDropdownStyle: boringDropdownStyle.copyWith(
+      boringDropdownStyle: dropdownStyle.copyWith(
           inputDecoration:
               getInputDecoration(formController, formStyle, error, fieldValue),
           onClearIcon: formStyle.eraseValueWidget,

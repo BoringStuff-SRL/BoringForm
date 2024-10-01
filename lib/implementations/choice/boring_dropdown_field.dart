@@ -21,7 +21,7 @@ class BoringDropdownField<T>
     this.clearable = true,
     this.searchable = true,
     this.callFutureOnStopWriting = true,
-    this.boringDropdownStyle = const BDropdownTheme(),
+    this.boringDropdownStyle,
     this.boringDropdownLoadingMode = BDropdownLoadingMode.onOpen,
     this.debouncingTime = const Duration(milliseconds: 300),
     this.initialItems,
@@ -35,7 +35,7 @@ class BoringDropdownField<T>
   final FutureOr<BChoiceItem<T>?> Function(String)? onAdd;
   final bool callFutureOnStopWriting;
   final bool searchable;
-  final BDropdownTheme boringDropdownStyle;
+  final BDropdownTheme? boringDropdownStyle;
   final BDropdownLoadingMode boringDropdownLoadingMode;
   final bool clearable;
   final Duration debouncingTime;
@@ -50,8 +50,12 @@ class BoringDropdownField<T>
       T? fieldValue,
       String? error,
       AsyncSnapshot<List<BChoiceItem<T>>> calculations) {
+    final dropdownStyle =
+        boringDropdownStyle ?? BoringTheme.of(context).bDropdownTheme;
+
     return BDropdown(
-      value:ValueNotifier(fieldValue != null ? toBoringChoiceItem(fieldValue) : null),
+      value: ValueNotifier(
+          fieldValue != null ? toBoringChoiceItem(fieldValue) : null),
       searchItems: getItems,
       onChanged: (value) => setChangedValue(formController, value?.value),
       readOnly: isReadOnly(formTheme),
@@ -59,11 +63,12 @@ class BoringDropdownField<T>
       callFutureOnStopWriting: callFutureOnStopWriting,
       boringDropdownLoadingMode: boringDropdownLoadingMode,
       searchable: searchable,
-      boringDropdownStyle: boringDropdownStyle.copyWith(
-          inputDecoration:
-              getInputDecoration(formController, formTheme, error, fieldValue),
-          onClearIcon: formTheme.eraseValueWidget,
-          choiceItemDisplayTextStyle: formTheme.textStyle),
+      boringDropdownStyle: dropdownStyle.copyWith(
+        inputDecoration:
+            getInputDecoration(formController, formTheme, error, fieldValue),
+        onClearIcon: formTheme.eraseValueWidget,
+        choiceItemDisplayTextStyle: formTheme.textStyle,
+      ),
       clearable: clearable,
       errorMessage: error,
       debouncingTime: debouncingTime,
