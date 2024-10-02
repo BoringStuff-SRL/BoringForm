@@ -12,6 +12,8 @@ class BoringTextRegExpField extends BoringTextField {
     super.maxLines,
     super.minLines,
     super.allowEmpty,
+    super.forceHideRequiredFieldLabel,
+    super.onChanged,
     required RegExp regExp,
     required String regExpError,
   }) : super(

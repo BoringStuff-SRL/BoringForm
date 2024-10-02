@@ -127,6 +127,7 @@ class BoringNumberField extends BoringFormField<num> {
     super.validationFunction,
     super.decoration,
     super.readOnly,
+    super.forceHideRequiredFieldLabel,
     this.decimalSeparator = defaultDecimalSeparator,
     this.thousandsSeparator = defaultThousandsSeparator,
     this.decimalPlaces = 0,

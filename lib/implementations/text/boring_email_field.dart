@@ -11,6 +11,8 @@ class BoringEmailField extends BoringTextRegExpField {
     super.maxLines,
     super.minLines,
     super.allowEmpty,
+    super.forceHideRequiredFieldLabel,
+    super.onChanged,
     required String invalidEmailMessage,
   }) : super(
           regExp: RegExp(
