@@ -11,6 +11,8 @@ class BoringPhoneNumberField extends BoringTextRegExpField {
     super.maxLines,
     super.minLines,
     super.allowEmpty,
+    super.forceHideRequiredFieldLabel,
+    super.onChanged,
     required String invalidPhoneMessage,
   }) : super(
           regExp: RegExp(
