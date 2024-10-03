@@ -215,13 +215,11 @@ class BoringFormController extends BoringFormControllerValue {
   }
 
   List<List<String>> get fieldsNotValid {
-    List<List<String>> fields = [];
-    _validationFunctions.entries.map((element) {
-      if (element.value?.call(this, getValue(element.key)) == null) {
-        fields.add(element.key);
-      }
-    }).toList();
-    return fields;
+    return _validationFunctions.entries
+        .where((element) =>
+            (element.value?.call(this, getValue(element.key)) != null))
+        .map((e) => e.key)
+        .toList();
   }
 
   void setValidationFunction<T>(
