@@ -220,7 +220,7 @@ class BoringFormController extends BoringFormControllerValue {
       if (element.value?.call(this, getValue(element.key)) == null) {
         fields.add(element.key);
       }
-    });
+    }).toList();
     return fields;
   }
 
