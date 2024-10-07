@@ -14,9 +14,11 @@ class BoringStepper extends StatelessWidget {
       this.onStepCancel,
       this.onStepContinue,
       this.onStepTapped,
+      this.hideControls = false,
       required this.steps})
       : stepperController = stepperController ?? BoringStepperController();
 
+  final bool hideControls;
   final BoringStepperController stepperController;
   final List<BoringStep> steps;
   final BoringStepperStyle stepperStyle;
@@ -40,6 +42,7 @@ class BoringStepper extends StatelessWidget {
           currentStep: stepperController.activeStepIndex,
           elevation: 0.0,
           controlsBuilder: (context, details) {
+            if (hideControls) return Container();
             return Row(
               children: [
                 if (canGoBack)
