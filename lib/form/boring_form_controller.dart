@@ -214,6 +214,14 @@ class BoringFormController extends BoringFormControllerValue {
     //return _errors.values.every((element) => element == false);
   }
 
+  List<List<String>> get fieldsNotValid {
+    return _validationFunctions.entries
+        .where((element) =>
+            (element.value?.call(this, getValue(element.key)) != null))
+        .map((e) => e.key)
+        .toList();
+  }
+
   void setValidationFunction<T>(
       FieldPath fieldPath, ValidationFunction<T>? validationFunction) {
     _validationFunctions[fieldPath] = validationFunction != null
