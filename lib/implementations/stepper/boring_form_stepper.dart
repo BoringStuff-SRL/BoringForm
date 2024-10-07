@@ -12,6 +12,7 @@ class BoringFormStepper extends StatelessWidget {
   BoringFormStepper(
       {required this.forms,
       this.mustBeValidToContinue = true,
+      this.hideControls = false,
       BoringStepperController? stepperController,
       this.stepperStyle = const BoringStepperStyle()})
       : stepperController = stepperController ?? BoringStepperController();
@@ -20,12 +21,14 @@ class BoringFormStepper extends StatelessWidget {
   final bool mustBeValidToContinue;
   final BoringStepperStyle stepperStyle;
   final BoringStepperController stepperController;
+  final bool hideControls;
 
   bool isFormValid(int index) => forms[index].form.formController.isValid;
 
   @override
   Widget build(BuildContext context) {
     return BoringStepper(
+      hideControls: hideControls,
       stepperController: stepperController,
       stepperStyle: stepperStyle,
       onStepContinue: mustBeValidToContinue
