@@ -176,7 +176,7 @@ class _SwitchWithDecoration extends StatelessWidget {
                   style: value
                       ? labelStyle.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: Theme.of(context).primaryColor,
+                          color: Theme.of(context).colorScheme.primary,
                         )
                       : labelStyle,
                 )
