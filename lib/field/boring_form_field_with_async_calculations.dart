@@ -16,6 +16,7 @@ abstract class BoringFormFieldWithAsyncCalculations<T, TT>
     super.validationFunction,
     super.decoration,
     super.readOnly,
+    super.forceHideRequiredFieldLabel,
   });
 
   // @override

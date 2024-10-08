@@ -25,6 +25,7 @@ class BoringDropdownField<T>
     this.boringDropdownLoadingMode = BDropdownLoadingMode.onOpen,
     this.debouncingTime = const Duration(milliseconds: 300),
     this.initialItems,
+    super.forceHideRequiredFieldLabel,
   });
 
   final Future<List<BChoiceItem<T>>> Function(String search) getItems;
