@@ -10,7 +10,9 @@ class FormExample0 extends StatelessWidget {
     initialValue: {
       'num': 123456,
       'info': {'nome': "PIPPO"},
-      'test' : 12, 'test1' : [1,2,3]
+      'test': 12,
+      'test1': [1, 2, 3],
+      'negative': '23'
     },
     validationBehaviour: ValidationBehaviour.onSubmit,
     fieldRequiredLabelBehaviour: FieldRequiredLabelBehaviour.always,
@@ -37,14 +39,20 @@ class FormExample0 extends StatelessWidget {
           formController: c,
           child: Column(
             children: [
+              BoringTextRegExpField(
+                fieldPath: ['negative'],
+                regExp: RegExp(r'^[0-9]+$'),
+                regExpError: 'error',
+                mustMatch: true,
+              ),
               BoringDropdownField<int>(
                 fieldPath: ['test'],
                 getItems: (_) async {
                   return List.generate(10000, (e) => e)
                       .map((e) => BChoiceItem(
-                    value: e,
-                    display: e.toString(),
-                  ))
+                            value: e,
+                            display: e.toString(),
+                          ))
                       .toList();
                 },
                 toBoringChoiceItem: (e) {
@@ -59,9 +67,9 @@ class FormExample0 extends StatelessWidget {
                 getItems: (_) async {
                   return List.generate(10000, (e) => e)
                       .map((e) => BChoiceItem(
-                    value: e,
-                    display: e.toString(),
-                  ))
+                            value: e,
+                            display: e.toString(),
+                          ))
                       .toList();
                 },
                 toBoringChoiceItem: (e) {

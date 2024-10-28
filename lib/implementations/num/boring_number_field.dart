@@ -15,11 +15,13 @@ class MyNumberFormatter extends TextInputFormatter {
   final String decimalSeparator;
   final String thousandsSeparator;
   final int decimalPlaces;
+  final bool allowNegative;
 
   MyNumberFormatter({
     required this.decimalSeparator,
     required this.thousandsSeparator,
     required this.decimalPlaces,
+    this.allowNegative = true,
   });
 
   bool get onlyIntegers => decimalPlaces == 0;
@@ -27,15 +29,26 @@ class MyNumberFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
       TextEditingValue oldValue, TextEditingValue newValue) {
-    // se il testo nuovo e' vuoto allora torno vuoto
     if (newValue.text.isEmpty) {
       return const TextEditingValue();
     }
 
-    // prendo il testo e lo trasformo in un numero parsabile
     String valueText = newValue.text
         .replaceAll(thousandsSeparator, '')
         .replaceAll(decimalSeparator, '.');
+
+    // Verifica se è negativo solo se `allowNegative` è abilitato
+    if (allowNegative && valueText.startsWith('-')) {
+      if (valueText == '-') {
+        return newValue; // Consenti "-" temporaneamente
+      }
+    } else {
+      // Rimuovi il segno negativo se non è permesso
+      valueText = valueText.replaceAll('-', '');
+    }
+
+    // Rimuovi eventuali segni negativi duplicati
+    valueText = valueText.replaceAll(RegExp(r'-+'), '-');
 
     final valueTextDivided = valueText.split('.');
     if (valueTextDivided.length > 1 && decimalPlaces > 0) {
@@ -46,67 +59,48 @@ class MyNumberFormatter extends TextInputFormatter {
       }
     }
 
-    // parso
     final valueNum = num.tryParse(valueText);
 
     if (valueNum == null) {
-      // se fallisco il parsing allora ritorno quello che c'era prima
-
       if (valueText.contains('-') && valueText.length == 1) {
         return newValue;
       }
-
       return oldValue;
     }
 
-    // calcolo il numero di tokens decimali da inserire
     final decimalPlacesFormat =
         List.generate(decimalPlaces, (index) => '#').join('');
 
-    // creo il formatter (bisogna lasciare en_US)
     final myFormat = onlyIntegers
         ? NumberFormat('###,###', 'en_US')
         : NumberFormat('###,###.$decimalPlacesFormat', 'en_US');
 
-    // formatto la stringa
     String result = myFormat
         .format(valueNum)
-        .replaceAll('.', '#')
+        .replaceAll('.', '¤')
         .replaceAll(',', thousandsSeparator)
-        .replaceAll('#', decimalSeparator);
-
-    // controllo il numero dei separatori di migliaia che ho aggiunto in questa battitura
-    final numberOfThousandsSeparatorAdded =
-        (result.split(thousandsSeparator).length) -
-            (oldValue.text.split(thousandsSeparator).length);
+        .replaceAll('¤', decimalSeparator);
 
     int getNewOffset() {
-      final newOffset =
-          newValue.selection.extent.offset + numberOfThousandsSeparatorAdded;
-      if (newOffset > result.length) {
-        return newOffset - 1;
+      int newOffset = newValue.selection.baseOffset;
+      int offsetCorrection = result.length - valueText.length;
+
+      if (newOffset + offsetCorrection > result.length) {
+        newOffset = result.length;
+      } else if (newOffset + offsetCorrection < 0) {
+        newOffset = 0;
+      } else {
+        newOffset += offsetCorrection;
       }
 
       return newOffset;
     }
 
-    // controllo se l'ultimo carattere inserito e' il separatore decimale
-    final lastCharacterIsDecimalSeparator =
+    final lastCharacterIsDecimalSeparator = newValue.text.isNotEmpty &&
         newValue.text[newValue.text.length - 1] == decimalSeparator;
 
-    // se lo e' allora lo appendo al risultato
-    if (lastCharacterIsDecimalSeparator) {
-      //controllo che effettivamente possa mettere dei separatori decimali
-      if (decimalPlaces > 0) {
-        result = '$result$decimalSeparator';
-      } else {
-        return TextEditingValue(
-          text: result,
-          selection: TextSelection.fromPosition(
-            TextPosition(offset: getNewOffset()),
-          ),
-        );
-      }
+    if (lastCharacterIsDecimalSeparator && decimalPlaces > 0) {
+      result = '$result$decimalSeparator';
     }
 
     return TextEditingValue(
@@ -131,10 +125,12 @@ class BoringNumberField extends BoringFormField<num> {
     this.decimalSeparator = defaultDecimalSeparator,
     this.thousandsSeparator = defaultThousandsSeparator,
     this.decimalPlaces = 0,
+    bool allowNegative = true,
   })  : _numberFormatter = MyNumberFormatter(
           decimalPlaces: decimalPlaces,
           decimalSeparator: decimalSeparator,
           thousandsSeparator: thousandsSeparator,
+          allowNegative: allowNegative,
         ),
         assert(decimalSeparator != thousandsSeparator,
             'Decimal and thousands separator can\'t be the same'),
@@ -160,7 +156,7 @@ class BoringNumberField extends BoringFormField<num> {
   bool hasSetInitialValue = false;
 
   @override
-  Widget builder(BuildContext context, BoringFormStyle formTheme,
+  Widget builder(BuildContext context, BoringFormStyle formStyle,
       BoringFormController formController, num? fieldValue, String? error) {
     // for initial value
     if (!hasSetInitialValue && fieldValue != null) {
@@ -181,16 +177,16 @@ class BoringNumberField extends BoringFormField<num> {
     }
 
     return TextField(
-      readOnly: isReadOnly(formTheme),
-      enabled: !isReadOnly(formTheme),
+      readOnly: isReadOnly(formStyle),
+      enabled: !isReadOnly(formStyle),
       controller: _textEditingController,
-      textAlign: formTheme.textAlign,
-      style: formTheme.textStyle,
+      textAlign: formStyle.textAlign,
+      style: formStyle.textStyle,
       keyboardType: TextInputType.numberWithOptions(
           decimal: _onlyIntegers, signed: signed),
       inputFormatters: [_numberFormatter],
       decoration:
-          getInputDecoration(formController, formTheme, error, fieldValue),
+          getInputDecoration(formController, formStyle, error, fieldValue),
       onChanged: (value) {
         String checkString = value
             .replaceAll(thousandsSeparator, "")

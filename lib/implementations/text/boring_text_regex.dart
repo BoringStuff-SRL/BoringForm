@@ -1,5 +1,26 @@
 import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_form/implementations/text/boring_text_field.dart';
+import 'package:flutter/services.dart';
+
+class RegexInputFormatter extends TextInputFormatter {
+  final RegExp regex;
+
+  RegexInputFormatter({required this.regex});
+
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    if (newValue.text.isEmpty) {
+      return newValue;
+    }
+
+    if (regex.hasMatch(newValue.text)) {
+      return newValue;
+    } else {
+      return oldValue;
+    }
+  }
+}
 
 class BoringTextRegExpField extends BoringTextField {
   BoringTextRegExpField({
@@ -16,7 +37,10 @@ class BoringTextRegExpField extends BoringTextField {
     super.onChanged,
     required RegExp regExp,
     required String regExpError,
+    bool mustMatch = false,
   }) : super(
+            inputFormatter:
+                mustMatch ? [RegexInputFormatter(regex: regExp)] : null,
             validationFunction: validationFunction == null && allowEmpty
                 ? null
                 : (BoringFormController formController, String? value) {

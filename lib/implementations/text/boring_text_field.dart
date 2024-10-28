@@ -2,6 +2,7 @@
 import 'package:boring_form/field/boring_form_field.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class BoringTextField extends BoringFormField<String> {
   final _textEditingController = TextEditingController();
@@ -10,12 +11,14 @@ class BoringTextField extends BoringFormField<String> {
   final int minLines;
   final int maxLines;
   final bool allowEmpty;
+  final List<TextInputFormatter>? inputFormatter;
 
   BoringTextField({
     super.key,
     this.minLines = 1,
     this.maxLines = 1,
     this.allowEmpty = false,
+    this.inputFormatter,
     required super.fieldPath,
     super.observedFields,
     ValidationFunction<String>? validationFunction,
@@ -48,6 +51,7 @@ class BoringTextField extends BoringFormField<String> {
       readOnly: isReadOnly(formTheme),
       enabled: !isReadOnly(formTheme),
       controller: _textEditingController,
+      inputFormatters: inputFormatter ,
       minLines: minLines,
       maxLines: maxLines,
       textAlign: formTheme.textAlign,
