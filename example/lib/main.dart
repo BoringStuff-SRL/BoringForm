@@ -1,9 +1,12 @@
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'form_example.dart';
 
 void main() async {
+  await initializeDateFormatting('it');
+
   runApp(const MyApp());
 }
 

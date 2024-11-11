@@ -159,6 +159,7 @@ class BoringDateField extends BoringPickerField<DateTime> {
     required DateTime firstDate,
     required DateTime lastDate,
     bool forceHideRequiredFieldLabel = false,
+    String Function(DateTime? date)? dateToString,
     super.onChanged,
   })  : assert(firstDate <= lastDate, "firstDate must be less than lastDate"),
         super(
@@ -189,7 +190,7 @@ class BoringDateField extends BoringPickerField<DateTime> {
                         child: child!,
                       );
                     }),
-            valueToString: dateTimeToString);
+            valueToString: dateToString ?? dateTimeToString);
   // final DateTime firstDate, lastDate;
   // final DatePickerEntryMode initialEntryMode;
 
