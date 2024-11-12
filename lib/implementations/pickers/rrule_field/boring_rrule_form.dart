@@ -123,9 +123,7 @@ class BoringRRuleFormController extends BoringFormController {
           "interval": rrule.interval,
           "frequency": rrule.frequency,
           "byDays": rrule.byWeekDays,
-          "byYear": rrule.hasByMonthDays && rrule.hasByMonths
-              ? rrule.byMonths
-              : [DateTime.now().month],
+          "byYear": rrule.hasByMonths ? rrule.byMonths : [DateTime.now().month],
           "end_type": rrule.endType,
           "end_date": rrule.until,
           "end_value": rrule.count,
