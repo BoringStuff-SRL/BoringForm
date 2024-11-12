@@ -132,8 +132,8 @@ class BoringRRuleForm extends BoringFormWidget {
                 ],
                 builder: (context, fc) {
                   final interval =
-                      formController.getValue(["interval"]) as int? ?? 1;
-                  final singular = interval == 1;
+                      formController.getValue(["interval"]) as num? ?? 1;
+                  final singular = interval == 1.0;
                   return BoringDropdownField(
                     key: UniqueKey(),
                     fieldPath: ["frequency"],
@@ -159,7 +159,7 @@ class BoringRRuleForm extends BoringFormWidget {
         ],
       );
 
-  Widget _byDays(BuildContext context) => BColumn(
+  Widget _weeklyRecurrence(BuildContext context) => BColumn(
         separator: spacing,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -192,7 +192,7 @@ class BoringRRuleForm extends BoringFormWidget {
         ],
       );
 
-  Widget _byYear(BuildContext context) => BColumn(
+  Widget _yearlyRecurrence(BuildContext context) => BColumn(
         separator: spacing,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -213,7 +213,7 @@ class BoringRRuleForm extends BoringFormWidget {
         ],
       );
 
-  Widget _byMonth(BuildContext context) => BColumn(
+  Widget _monthlyRecurrence(BuildContext context) => BColumn(
         separator: spacing,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -272,7 +272,7 @@ class BoringRRuleForm extends BoringFormWidget {
                           lastDate: DateTime.now()
                               .add(const Duration(days: 365 * 10)),
                           decoration: (formController) => BoringFieldDecoration(
-                            label: "Seleziona data",
+                            hintText: "Seleziona data",
                             prefixIcon: const BIcon(BIcons.calendar),
                           ),
                         ),
@@ -313,10 +313,16 @@ class BoringRRuleForm extends BoringFormWidget {
             final frequency =
                 formController.getValue(["frequency"]) as Frequency?;
 
-            if (frequency == Frequency.weekly) return _byDays(context);
-            if (frequency == Frequency.monthly) return _byMonth(context);
+            if (frequency == Frequency.weekly) {
+              return _weeklyRecurrence(context);
+            }
+            if (frequency == Frequency.monthly) {
+              return _monthlyRecurrence(context);
+            }
 
-            if (frequency == Frequency.yearly) return _byYear(context);
+            if (frequency == Frequency.yearly) {
+              return _yearlyRecurrence(context);
+            }
 
             return Container();
           },

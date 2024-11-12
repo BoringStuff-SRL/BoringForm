@@ -81,7 +81,7 @@ class RruleL10nIt extends RruleL10n {
     if (days.contains("giorni feriali")) {
       return "nei $days";
     }
-    return '${_onVariant(variant)} $days';
+    return 'di $days';
   }
 
   @override

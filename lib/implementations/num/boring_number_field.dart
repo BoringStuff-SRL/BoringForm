@@ -126,7 +126,7 @@ class BoringNumberField extends BoringFormField<num> {
     this.thousandsSeparator = defaultThousandsSeparator,
     this.decimalPlaces = 0,
     bool allowNegative = true,
-    this.showIncrementDecrementButtons = false, // Nuovo flag aggiunto
+    this.showIncrementDecrementButtons = false,
   })  : _numberFormatter = MyNumberFormatter(
           decimalPlaces: decimalPlaces,
           decimalSeparator: decimalSeparator,
@@ -249,14 +249,14 @@ class BoringNumberField extends BoringFormField<num> {
   }
 
   void _incrementValue(BoringFormController formController) {
-    double currentValue = double.tryParse(_textEditingController.text) ?? 0;
+    int currentValue = int.tryParse(_textEditingController.text) ?? 0;
     currentValue++;
     _textEditingController.text = currentValue.toString();
     setChangedValue(formController, currentValue);
   }
 
   void _decrementValue(BoringFormController formController) {
-    double currentValue = double.tryParse(_textEditingController.text) ?? 1;
+    int currentValue = int.tryParse(_textEditingController.text) ?? 1;
     if (currentValue > 1) {
       currentValue--;
       _textEditingController.text = currentValue.toString();
