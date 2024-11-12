@@ -1,5 +1,6 @@
 import 'package:boring_form/implementations/pickers/boring_picker_field.dart';
 import 'package:boring_form/implementations/pickers/rrule_field/boring_rrule_dialog.dart';
+import 'package:boring_form/implementations/pickers/rrule_field/utils/rrule_it_tr.dart';
 import 'package:boring_form/implementations/pickers/rrule_field/utils/rrule_l10n_it.dart';
 import 'package:rrule/rrule.dart';
 
@@ -16,7 +17,11 @@ class BoringRRuleField extends BoringPickerField<RecurrenceRule> {
     super.validationFunction,
   }) : super(
           valueToString: (value) {
-            return value?.toText(l10n: const RruleL10nIt()) ?? "";
+            if (value != null) {
+              return RruleTrIt(rrule: value).translate();
+            }
+            return "";
+            // return value?.toText(l10n: const RruleL10nIt()) ?? "";
           },
           showPicker: (context, formController, fieldValue) async {
             final result =

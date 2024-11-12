@@ -61,6 +61,14 @@ enum BySetPos {
         BySetPos.last => "Ultimo",
       };
 
+  String get trFem => switch (this) {
+        BySetPos.first => "Prima",
+        BySetPos.second => "Seconda",
+        BySetPos.third => "Terza",
+        BySetPos.fourth => "Quarta",
+        BySetPos.last => "Ultima",
+      };
+
   factory BySetPos.fromValue(int value) =>
       values.firstWhere((element) => element.value == value);
 }
