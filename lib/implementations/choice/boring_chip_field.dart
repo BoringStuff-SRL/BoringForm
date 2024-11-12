@@ -7,10 +7,10 @@ import '../../form/boring_form_controller.dart';
 class BoringChipField<T> extends BoringFormField<List<T>> {
   const BoringChipField({
     super.key,
+    required super.fieldPath,
     required this.elements,
     required this.toLabel,
     this.toTooltip,
-    required super.fieldPath,
     super.onChanged,
     super.readOnly,
     this.canRemoveSelection,

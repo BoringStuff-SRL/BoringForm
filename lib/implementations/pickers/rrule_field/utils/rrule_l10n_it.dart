@@ -53,7 +53,12 @@ class RruleL10nIt extends RruleL10n {
   ///////
 
   @override
-  String onInstances(String instances) => 'al $instances istanza';
+  String onInstances(String instances) {
+    if (instances == "ultimo") {
+      return 'all\'ultima istanza';
+    }
+    return 'alla $instances istanza';
+  }
 
   @override
   String inMonths(String months, {InOnVariant variant = InOnVariant.simple}) =>
@@ -78,16 +83,18 @@ class RruleL10nIt extends RruleL10n {
     DaysOfWeekFrequency? frequency = DaysOfWeekFrequency.monthly,
     InOnVariant variant = InOnVariant.simple,
   }) {
-    if (days.contains("giorni feriali")) {
+    if (days.contains(weekdaysString)) {
       return "nei $days";
     }
     return 'di $days';
   }
 
   @override
-  String? get weekdaysString => 'giorni feriali';
+  String get weekdaysString => 'giorni feriali';
+
   @override
   String get everyXDaysOfWeekPrefix => 'ogni ';
+
   @override
   String nthDaysOfWeek(Iterable<int> occurrences, String daysOfWeek) {
     if (occurrences.isEmpty) return daysOfWeek;
@@ -147,11 +154,24 @@ class RruleL10nIt extends RruleL10n {
             const ch = "–";
 
             if (e.contains(ch)) {
-              final split = e.split(ch).map((e) => e.trim()).toList();
-              final startIndex = days.indexOf(split.first);
-              final endIndex = days.indexOf(split.last);
+              final split =
+                  e.split(ch).map((e) => e.trim().replaceAll("°", "")).toList();
 
-              return days.getRange(startIndex, endIndex + 1);
+              final isNumeric = int.tryParse(split.first) != null;
+              if (isNumeric) {
+                final result = <int>[];
+                for (var i = int.parse(split.first);
+                    i <= int.parse(split.last);
+                    i++) {
+                  result.add(i);
+                }
+                return result.map((e) => e.toString());
+              } else {
+                final startIndex = days.indexOf(split.first);
+                final endIndex = days.indexOf(split.last);
+
+                return days.getRange(startIndex, endIndex + 1);
+              }
             }
             return [e];
           },

@@ -3,6 +3,30 @@ import 'package:rrule/rrule.dart';
 import '../boring_rrule_form.dart';
 
 extension RecurrenceRuleExt on RecurrenceRule {
+  MonthlyRecurrenceType get monthlyRecurrenceType {
+    if (hasBySetPositions) {
+      return MonthlyRecurrenceType.dayOfMonth;
+    }
+
+    return MonthlyRecurrenceType.days;
+  }
+
+  BySetPos? get bySetPosMonth {
+    if (hasBySetPositions) {
+      return BySetPos.fromValue(bySetPositions.first);
+    }
+    return null;
+  }
+
+  ByMonthDaysOccurrence? get byMonthDaysOccurrence {
+    if (hasByWeekDays) {
+      return ByMonthDaysOccurrence.fromList(
+          byWeekDays.map((e) => e.day).toList());
+    }
+
+    return null;
+  }
+
   EndType get endType {
     if (count != null) return EndType.after;
     if (until != null) return EndType.date;
