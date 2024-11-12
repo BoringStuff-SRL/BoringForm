@@ -20,8 +20,12 @@ extension RecurrenceRuleExt on RecurrenceRule {
 
   ByMonthDaysOccurrence? get byMonthDaysOccurrence {
     if (hasByWeekDays) {
-      return ByMonthDaysOccurrence.fromList(
-          byWeekDays.map((e) => e.day).toList());
+      try {
+        return ByMonthDaysOccurrence.fromList(
+            byWeekDays.map((e) => e.day).toList());
+      } catch (e) {
+        return null;
+      }
     }
 
     return null;
