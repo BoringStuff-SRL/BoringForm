@@ -1,11 +1,11 @@
 import 'package:rrule/rrule.dart';
 
-import '../boring_rrule_form.dart';
+import 'enums.dart';
 
 extension RecurrenceRuleExt on RecurrenceRule {
   MonthlyRecurrenceType get monthlyRecurrenceType {
     if (hasBySetPositions) {
-      return MonthlyRecurrenceType.dayOfMonth;
+      return MonthlyRecurrenceType.dayOfMonthOccurrence;
     }
 
     return MonthlyRecurrenceType.days;
@@ -18,10 +18,10 @@ extension RecurrenceRuleExt on RecurrenceRule {
     return null;
   }
 
-  ByMonthDaysOccurrence? get byMonthDaysOccurrence {
+  ByMonthDayOccurrence? get byMonthDaysOccurrence {
     if (hasByWeekDays) {
       try {
-        return ByMonthDaysOccurrence.fromList(
+        return ByMonthDayOccurrence.fromList(
             byWeekDays.map((e) => e.day).toList());
       } catch (e) {
         return null;
@@ -31,10 +31,10 @@ extension RecurrenceRuleExt on RecurrenceRule {
     return null;
   }
 
-  EndType get endType {
-    if (count != null) return EndType.after;
-    if (until != null) return EndType.date;
-    return EndType.never;
+  RecurrenceEndType get endType {
+    if (count != null) return RecurrenceEndType.after;
+    if (until != null) return RecurrenceEndType.date;
+    return RecurrenceEndType.never;
   }
 }
 

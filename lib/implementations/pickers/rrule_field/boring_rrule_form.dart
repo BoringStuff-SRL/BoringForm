@@ -1,228 +1,11 @@
+import 'package:boring_form/implementations/pickers/rrule_field/utils/enums.dart';
 import 'package:boring_form/implementations/pickers/rrule_field/utils/rrule_ext.dart';
 import 'package:boring_ui/boring_ui.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:rrule/rrule.dart';
 
-enum ByMonthDaysOccurrence {
-  monday([1]),
-  tuesday([2]),
-  wednesday([3]),
-  thursday([4]),
-  friday([5]),
-  saturday([6]),
-  sunday([7]),
-  day([1, 2, 3, 4, 5, 6, 7]),
-  weekday([1, 2, 3, 4, 5]),
-  weekendDay([6, 7]);
-
-  const ByMonthDaysOccurrence(this.value);
-
-  final List<int> value;
-
-  String get tr => switch (this) {
-        ByMonthDaysOccurrence.monday => "Lunedì",
-        ByMonthDaysOccurrence.tuesday => "Martedì",
-        ByMonthDaysOccurrence.wednesday => "Mercoledì",
-        ByMonthDaysOccurrence.thursday => "Giovedì",
-        ByMonthDaysOccurrence.friday => "Venerdì",
-        ByMonthDaysOccurrence.saturday => "Sabato",
-        ByMonthDaysOccurrence.sunday => "Domenica",
-        ByMonthDaysOccurrence.day => "Giorno",
-        ByMonthDaysOccurrence.weekday => "Giorno feriale",
-        ByMonthDaysOccurrence.weekendDay => "Giorno festivo",
-      };
-
-  factory ByMonthDaysOccurrence.fromList(List<int> list) {
-    list.sort((a, b) => a.compareTo(b));
-    return values.firstWhere(
-      (element) => listEquals(element.value, list),
-    );
-  }
-}
-
-enum BySetPos {
-  first(1),
-  second(2),
-  third(3),
-  fourth(4),
-  last(-1);
-
-  const BySetPos(this.value);
-
-  final int value;
-
-  String get tr => switch (this) {
-        BySetPos.first => "Primo",
-        BySetPos.second => "Secondo",
-        BySetPos.third => "Terzo",
-        BySetPos.fourth => "Quarto",
-        BySetPos.last => "Ultimo",
-      };
-
-  String get trFem => switch (this) {
-        BySetPos.first => "Prima",
-        BySetPos.second => "Seconda",
-        BySetPos.third => "Terza",
-        BySetPos.fourth => "Quarta",
-        BySetPos.last => "Ultima",
-      };
-
-  factory BySetPos.fromValue(int value) =>
-      values.firstWhere((element) => element.value == value);
-}
-
-enum EndType {
-  never,
-  date,
-  after;
-
-  String get tr => switch (this) {
-        EndType.never => "Mai",
-        EndType.date => "Data",
-        EndType.after => "Dopo",
-      };
-}
-
-enum MonthlyRecurrenceType {
-  days,
-  dayOfMonth;
-
-  String get tr => switch (this) {
-        MonthlyRecurrenceType.days => "Giorni nel mese",
-        MonthlyRecurrenceType.dayOfMonth => "Ricorrenza nel mese",
-      };
-}
-
-class BoringRRuleFormController extends BoringFormController {
-  BoringRRuleFormController()
-      : super(initialValue: {
-          "interval": 1,
-          "frequency": Frequency.weekly,
-          "byDays": [ByWeekDayEntry(1)],
-          "byYear": [DateTime.now().month],
-          "end_type": EndType.never,
-          "end_value": 1,
-          "end_date": DateTime.now(),
-          "monthlyRecurrenceType": MonthlyRecurrenceType.days,
-          "byMonthDays": [DateTime.now().day],
-          "monthlyRecurrence": {
-            "bySetPosMonth": BySetPos.first,
-            "byMonthDaysOccurrence": ByMonthDaysOccurrence.day,
-          },
-          "year": {
-            "hasMonthOccurrence": false,
-            "bySetPosMonth": BySetPos.first,
-            "byMonthDaysOccurrence": ByMonthDaysOccurrence.day,
-          },
-        });
-
-  BoringRRuleFormController.fromRRule(RecurrenceRule rrule)
-      : super(initialValue: {
-          "interval": rrule.interval,
-          "frequency": rrule.frequency,
-          "byDays": rrule.byWeekDays,
-          "byYear": rrule.hasByMonths ? rrule.byMonths : [DateTime.now().month],
-          "end_type": rrule.endType,
-          "end_date": rrule.until,
-          "end_value": rrule.count,
-          "byMonthDays":
-              rrule.hasByMonthDays ? rrule.byMonthDays : [DateTime.now().day],
-          "monthlyRecurrenceType": rrule.monthlyRecurrenceType,
-          "monthlyRecurrence": {
-            "bySetPosMonth": rrule.bySetPosMonth ?? BySetPos.first,
-            "byMonthDaysOccurrence":
-                rrule.byMonthDaysOccurrence ?? ByMonthDaysOccurrence.day,
-          },
-          "year": {
-            "hasMonthOccurrence": rrule.hasBySetPositions,
-            "bySetPosMonth": rrule.bySetPosMonth ?? BySetPos.first,
-            "byMonthDaysOccurrence":
-                rrule.byMonthDaysOccurrence ?? ByMonthDaysOccurrence.day,
-          },
-        });
-
-  RecurrenceRule get rrule {
-    final frequency = value["frequency"] as Frequency;
-
-    final interval = value["interval"] as int;
-
-    final byWeekDays = value["byDays"] as List<ByWeekDayEntry>?;
-
-    var rrule = RecurrenceRule(
-      frequency: frequency,
-      interval: interval,
-    );
-
-    if (frequency == Frequency.weekly) {
-      rrule = rrule.copyWith(byWeekDays: byWeekDays ?? []);
-    }
-
-    if (frequency == Frequency.monthly) {
-      final monthlyRecurrenceType =
-          value["monthlyRecurrenceType"] as MonthlyRecurrenceType;
-
-      switch (monthlyRecurrenceType) {
-        case MonthlyRecurrenceType.days:
-          rrule = rrule.copyWith(
-            byMonthDays: value["byMonthDays"],
-          );
-          break;
-        case MonthlyRecurrenceType.dayOfMonth:
-          rrule = rrule.copyWith(
-            bySetPositions: [
-              (value["monthlyRecurrence"]["bySetPosMonth"] as BySetPos).value
-            ],
-            byWeekDays: (value["monthlyRecurrence"]["byMonthDaysOccurrence"]
-                    as ByMonthDaysOccurrence)
-                .value
-                .map((e) => ByWeekDayEntry(e))
-                .toList(),
-          );
-          break;
-      }
-    }
-
-    if (frequency == Frequency.yearly) {
-      final byYear = value["byYear"] as List<int>;
-
-      final hasMonthOccurrence =
-          value["year"]?["hasMonthOccurrence"] as bool? ?? false;
-
-      if (hasMonthOccurrence) {
-        rrule = rrule.copyWith(
-          byMonths: byYear,
-          bySetPositions: [(value["year"]["bySetPosMonth"] as BySetPos).value],
-          byWeekDays:
-              (value["year"]["byMonthDaysOccurrence"] as ByMonthDaysOccurrence)
-                  .value
-                  .map((e) => ByWeekDayEntry(e))
-                  .toList(),
-        );
-      } else {
-        rrule = rrule.copyWith(
-          byMonths: byYear,
-        );
-      }
-    }
-
-    final endType = value["end_type"] as EndType;
-
-    switch (endType) {
-      case EndType.never:
-        break;
-      case EndType.date:
-        rrule = rrule.copyWith(until: (value["end_date"] as DateTime).toUtc());
-        break;
-      case EndType.after:
-        rrule = rrule.copyWith(count: value["end_value"] as int);
-        break;
-    }
-
-    return rrule;
-  }
-}
+import 'boring_rrule_form_controller.dart';
 
 class BoringRRuleForm extends BoringFormWidget {
   BoringRRuleForm({
@@ -369,8 +152,8 @@ class BoringRRuleForm extends BoringFormWidget {
                       );
                     },
                   ),
-                MonthlyRecurrenceType.dayOfMonth =>
-                  _setPos(context, "monthlyRecurrence")
+                MonthlyRecurrenceType.dayOfMonthOccurrence =>
+                  _setPos(context, "month")
               };
             },
           ),
@@ -412,23 +195,23 @@ class BoringRRuleForm extends BoringFormWidget {
             },
           ),
           BoringCheckBoxField(
-            fieldPath: ["year", "hasMonthOccurrence"],
+            fieldPath: ["yearlyRecurrence", "hasMonthOccurrence"],
             decoration: (formController) =>
                 BoringFieldDecoration(label: "Ogni:"),
           ),
           BoringFormChildWidget(
             observedFields: [
-              ["year", "hasMonthOccurrence"]
+              ["yearlyRecurrence", "hasMonthOccurrence"]
             ],
             builder: (context, formController) {
-              final hasMonthOccurrence =
-                  formController.getValue(["year", "hasMonthOccurrence"]) ??
-                      false;
+              final hasMonthOccurrence = formController
+                      .getValue(["yearlyRecurrence", "hasMonthOccurrence"]) ??
+                  false;
 
               return Opacity(
                   opacity: hasMonthOccurrence ? 1 : .5,
-                  child:
-                      _setPos(context, "year", readOnly: !hasMonthOccurrence));
+                  child: _setPos(context, "yearlyRecurrence",
+                      readOnly: !hasMonthOccurrence));
             },
           ),
         ],
@@ -447,7 +230,7 @@ class BoringRRuleForm extends BoringFormWidget {
                 child: BoringDropdownField(
                   fieldPath: ["end_type"],
                   getItems: (search) async {
-                    return EndType.values
+                    return RecurrenceEndType.values
                         .map((e) => BChoiceItem(value: e, display: e.tr))
                         .toList();
                   },
@@ -465,12 +248,12 @@ class BoringRRuleForm extends BoringFormWidget {
                     BuildContext context,
                     BoringFormController formController,
                   ) {
-                    final endType =
-                        formController.getValue(["end_type"]) as EndType?;
+                    final endType = formController.getValue(["end_type"])
+                        as RecurrenceEndType?;
 
                     return switch (endType) {
-                      EndType.never => Container(),
-                      EndType.date => BoringDateField(
+                      RecurrenceEndType.never => Container(),
+                      RecurrenceEndType.date => BoringDateField(
                           fieldPath: ["end_date"],
                           firstDate: DateTime.now(),
                           lastDate: DateTime.now()
@@ -480,7 +263,7 @@ class BoringRRuleForm extends BoringFormWidget {
                             prefixIcon: const BIcon(BIcons.calendar),
                           ),
                         ),
-                      EndType.after => BoringNumberField(
+                      RecurrenceEndType.after => BoringNumberField(
                           fieldPath: ["end_value"],
                           showIncrementDecrementButtons: true,
                           decoration: (formController) {
@@ -508,7 +291,7 @@ class BoringRRuleForm extends BoringFormWidget {
           Expanded(
             child: BoringDropdownField(
               readOnly: readOnly,
-              fieldPath: [path, "bySetPosMonth"],
+              fieldPath: [path, "bySetPos"],
               getItems: (search) async {
                 return BySetPos.values
                     .map(
@@ -527,7 +310,7 @@ class BoringRRuleForm extends BoringFormWidget {
               readOnly: readOnly,
               fieldPath: [path, "byMonthDaysOccurrence"],
               getItems: (search) async {
-                return ByMonthDaysOccurrence.values
+                return ByMonthDayOccurrence.values
                     .map(
                       (e) => BChoiceItem(value: e, display: e.tr),
                     )

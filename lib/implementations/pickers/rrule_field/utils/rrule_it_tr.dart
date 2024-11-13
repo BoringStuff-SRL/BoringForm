@@ -1,7 +1,8 @@
-import 'package:boring_form/implementations/pickers/rrule_field/boring_rrule_form.dart';
 import 'package:boring_form/implementations/pickers/rrule_field/utils/rrule_ext.dart';
 import 'package:intl/intl.dart';
 import 'package:rrule/rrule.dart';
+
+import 'enums.dart';
 
 class RruleTrIt {
   final RecurrenceRule rrule;
@@ -80,7 +81,7 @@ class RruleTrIt {
   String _converterSetPos() {
     String article = "il ";
     String daytr = rrule.bySetPosMonth!.tr;
-    if (rrule.byMonthDaysOccurrence == ByMonthDaysOccurrence.sunday) {
+    if (rrule.byMonthDaysOccurrence == ByMonthDayOccurrence.sunday) {
       daytr = rrule.bySetPosMonth!.trFem;
       article = "la ";
     }
@@ -99,7 +100,7 @@ class RruleTrIt {
           return " il giorno ${monthDays.first}";
         }
         return " i giorni ${monthDays.sublist(0, monthDays.length - 1).join(", ")} e ${monthDays.last}";
-      case MonthlyRecurrenceType.dayOfMonth:
+      case MonthlyRecurrenceType.dayOfMonthOccurrence:
         return _converterSetPos();
     }
   }

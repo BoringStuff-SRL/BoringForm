@@ -5,6 +5,8 @@ import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rrule/rrule.dart';
 
+import 'boring_rrule_form_controller.dart';
+
 class BoringRRuleDialog extends BDialogInfo {
   BoringRRuleDialog({RecurrenceRule? rrule})
       : formController = rrule == null
