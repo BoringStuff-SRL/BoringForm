@@ -39,11 +39,13 @@ class FormExample0 extends StatelessWidget {
           formController: c,
           child: Column(
             children: [
-              BoringTextRegExpField(
-                fieldPath: ['negative'],
-                regExp: RegExp(r'^[0-9]+$'),
-                regExpError: 'error',
-                mustMatch: true,
+              BoringRRuleField(
+                fieldPath: ["rrule"],
+              ),
+              BoringNumberField(
+                fieldPath: ['num'],
+                allowNegative: false,
+                decimalPlaces: 1,
               ),
               BoringDropdownField<int>(
                 fieldPath: ['test'],

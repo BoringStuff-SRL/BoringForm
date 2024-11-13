@@ -126,6 +126,7 @@ class BoringNumberField extends BoringFormField<num> {
     this.thousandsSeparator = defaultThousandsSeparator,
     this.decimalPlaces = 0,
     bool allowNegative = true,
+    this.showIncrementDecrementButtons = false,
   })  : _numberFormatter = MyNumberFormatter(
           decimalPlaces: decimalPlaces,
           decimalSeparator: decimalSeparator,
@@ -145,6 +146,7 @@ class BoringNumberField extends BoringFormField<num> {
   final String thousandsSeparator;
   final int decimalPlaces;
   final MyNumberFormatter _numberFormatter;
+  final bool showIncrementDecrementButtons; // Nuova proprietà aggiunta
 
   bool get _onlyIntegers => decimalPlaces == 0;
 
@@ -158,7 +160,7 @@ class BoringNumberField extends BoringFormField<num> {
   @override
   Widget builder(BuildContext context, BoringFormStyle formStyle,
       BoringFormController formController, num? fieldValue, String? error) {
-    // for initial value
+    // Inizializza il valore iniziale, se necessario
     if (!hasSetInitialValue && fieldValue != null) {
       var cursorPos = _textEditingController.selection.base.offset;
 
@@ -176,29 +178,90 @@ class BoringNumberField extends BoringFormField<num> {
       hasSetInitialValue = true;
     }
 
-    return TextField(
-      readOnly: isReadOnly(formStyle),
-      enabled: !isReadOnly(formStyle),
-      controller: _textEditingController,
-      textAlign: formStyle.textAlign,
-      style: formStyle.textStyle,
-      keyboardType: TextInputType.numberWithOptions(
-          decimal: _onlyIntegers, signed: signed),
-      inputFormatters: [_numberFormatter],
-      decoration:
-          getInputDecoration(formController, formStyle, error, fieldValue),
-      onChanged: (value) {
-        String checkString = value
-            .replaceAll(thousandsSeparator, "")
-            .replaceAll(decimalSeparator, ".");
-
-        try {
-          setChangedValue(formController, num.parse(checkString));
-        } catch (e) {
-          setChangedValue(formController, null);
-        }
-      },
+    const iconConstraints = BoxConstraints(
+      minWidth: 24,
+      minHeight: 24,
     );
+    const iconPadding = EdgeInsets.all(2);
+
+    const iconSize = 16.0;
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Expanded(
+          child: TextField(
+            readOnly: isReadOnly(formStyle),
+            enabled: !isReadOnly(formStyle),
+            controller: _textEditingController,
+            textAlign: formStyle.textAlign,
+            style: formStyle.textStyle,
+            keyboardType: TextInputType.numberWithOptions(
+              decimal: _onlyIntegers,
+              signed: signed,
+            ),
+            inputFormatters: [_numberFormatter],
+            decoration: getInputDecoration(
+              formController,
+              formStyle,
+              error,
+              fieldValue,
+            ),
+            onChanged: (value) {
+              String checkString = value
+                  .replaceAll(thousandsSeparator, "")
+                  .replaceAll(decimalSeparator, ".");
+              try {
+                setChangedValue(formController, num.parse(checkString));
+              } catch (e) {
+                setChangedValue(formController, null);
+              }
+            },
+          ),
+        ),
+        // Mostra i pulsanti solo se il flag è true
+        if (showIncrementDecrementButtons && !isReadOnly(formStyle))
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.arrow_drop_up),
+                onPressed: () {
+                  _incrementValue(formController);
+                },
+                constraints: iconConstraints,
+                padding: iconPadding,
+                iconSize: iconSize,
+              ),
+              IconButton(
+                icon: const Icon(Icons.arrow_drop_down),
+                onPressed: () {
+                  _decrementValue(formController);
+                },
+                constraints: iconConstraints,
+                padding: iconPadding,
+                iconSize: iconSize,
+              ),
+            ],
+          ),
+      ],
+    );
+  }
+
+  void _incrementValue(BoringFormController formController) {
+    int currentValue = int.tryParse(_textEditingController.text) ?? 0;
+    currentValue++;
+    _textEditingController.text = currentValue.toString();
+    setChangedValue(formController, currentValue);
+  }
+
+  void _decrementValue(BoringFormController formController) {
+    int currentValue = int.tryParse(_textEditingController.text) ?? 1;
+    if (currentValue > 1) {
+      currentValue--;
+      _textEditingController.text = currentValue.toString();
+      setChangedValue(formController, currentValue);
+    }
   }
 
   @override

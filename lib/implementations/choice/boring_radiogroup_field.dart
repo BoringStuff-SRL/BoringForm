@@ -46,8 +46,11 @@ class BoringRadioGroupField<T> extends BoringFormField<T> {
               .map((item) => FractionallySizedBox(
                     widthFactor: 1 / itemsPerRow,
                     child: RadioListTile<T?>(
+                        dense: true,
                         activeColor: inputDecoration.focusColor,
-                        contentPadding: inputDecoration.contentPadding,
+                        contentPadding:
+                            inputDecoration.contentPadding ?? EdgeInsets.zero,
+                        visualDensity: VisualDensity.compact,
                         toggleable: allowEmpty,
                         value: item.value,
                         title: Text(item.display),
