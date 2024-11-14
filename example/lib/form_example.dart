@@ -14,7 +14,7 @@ class FormExample0 extends StatelessWidget {
       'test1': [1, 2, 3],
       'negative': '23'
     },
-    validationBehaviour: ValidationBehaviour.onSubmit,
+    validationBehaviour: ValidationBehaviour.always,
     fieldRequiredLabelBehaviour: FieldRequiredLabelBehaviour.always,
   );
 
@@ -29,6 +29,9 @@ class FormExample0 extends StatelessWidget {
 
   final titleStyle = const TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
 
+  final firstDate = DateTime.now();
+  final lastDate = DateTime.now().add(const Duration(days: 365));
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -39,13 +42,18 @@ class FormExample0 extends StatelessWidget {
           formController: c,
           child: Column(
             children: [
+              BoringDateField(
+                fieldPath: ["dateField"],
+                firstDate: firstDate,
+                lastDate: lastDate,
+              ),
+              BoringDateTimeField(
+                fieldPath: ["dateTimeField"],
+                firstDate: firstDate,
+                lastDate: lastDate,
+              ),
               BoringRRuleField(
                 fieldPath: ["rrule"],
-              ),
-              BoringNumberField(
-                fieldPath: ['num'],
-                allowNegative: false,
-                decimalPlaces: 1,
               ),
               BoringDropdownField<int>(
                 fieldPath: ['test'],
