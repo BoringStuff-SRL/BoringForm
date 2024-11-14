@@ -7,6 +7,12 @@ import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 class BoringDateTimeField extends BoringPickerField<DateTime> {
   static const outOfBoundError =
       "initial date must be between firstDate and lastDate"; //TODO make this a parameter [or better: add translations]
+
+  static DateTime midnightTime(DateTime date) {
+    return date.copyWith(
+        hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0);
+  }
+
   BoringDateTimeField({
     super.key,
     required super.fieldPath,
@@ -27,10 +33,12 @@ class BoringDateTimeField extends BoringPickerField<DateTime> {
             validationFunction:
                 (BoringFormController formController, DateTime? value) {
               final error = validationFunction?.call(formController, value);
-              final boundsError =
-                  value == null || (value <= lastDate && value >= firstDate)
-                      ? null
-                      : outOfBoundError;
+
+              final boundsError = value == null ||
+                      (value <= lastDate && value >= midnightTime(firstDate))
+                  ? null
+                  : outOfBoundError;
+
               return error ?? boundsError;
             },
             showPicker: (context, formController, fieldValue) async =>
@@ -105,7 +113,8 @@ class BoringDateRangeField extends BoringPickerField<DateTimeRange> {
 
             final isOutOfBound = value == null
                 ? false
-                : (value.start <= firstDate || value.end >= lastDate);
+                : (value.start <= BoringDateTimeField.midnightTime(firstDate) ||
+                    value.end >= lastDate);
 
             final boundsError =
                 value == null || !isOutOfBound ? null : outOfBoundError;
@@ -169,10 +178,12 @@ class BoringDateField extends BoringPickerField<DateTime> {
             validationFunction:
                 (BoringFormController formController, DateTime? value) {
               final error = validationFunction?.call(formController, value);
-              final boundsError =
-                  value == null || (value <= lastDate && value >= firstDate)
-                      ? null
-                      : outOfBoundError;
+
+              final boundsError = value == null ||
+                      (value <= lastDate &&
+                          value >= BoringDateTimeField.midnightTime(firstDate))
+                  ? null
+                  : outOfBoundError;
               return error ?? boundsError;
             },
             showPicker: (context, formController, fieldValue) async =>
