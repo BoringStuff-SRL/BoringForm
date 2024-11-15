@@ -42,8 +42,8 @@ class FormExample0 extends StatelessWidget {
           formController: c,
           child: Column(
             children: [
-              BoringDateField(
-                fieldPath: ["dateField"],
+              BoringDateTimeField(
+                fieldPath: ["dateTimeField"],
                 firstDate: firstDate,
                 lastDate: lastDate,
               ),

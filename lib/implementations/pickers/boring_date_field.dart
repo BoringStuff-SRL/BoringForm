@@ -43,12 +43,14 @@ class BoringDateTimeField extends BoringPickerField<DateTime> {
             },
             showPicker: (context, formController, fieldValue) async =>
                 await showOmniDateTimePicker(
-                    context: context,
-                    initialDate: fieldValue,
-                    is24HourMode: true,
-                    firstDate: firstDate,
-                    lastDate: lastDate,
-                    isForce2Digits: true),
+                  context: context,
+                  initialDate: fieldValue,
+                  is24HourMode: true,
+                  firstDate: firstDate,
+                  lastDate: lastDate,
+                  isForce2Digits: true,
+                  constraints: const BoxConstraints(maxWidth: 400),
+                ),
             valueToString: (value) => value == null
                 ? ''
                 : "${dateTimeToString(value)}, ${value.hour.toString().padLeft(2, '0')}:${value.minute.toString().padLeft(2, '0')}");
