@@ -58,12 +58,7 @@ class FormExample0 extends StatelessWidget {
               BoringDropdownField<int>(
                 fieldPath: ['test'],
                 getItems: (_) async {
-                  return List.generate(10000, (e) => e)
-                      .map((e) => BChoiceItem(
-                            value: e,
-                            display: e.toString(),
-                          ))
-                      .toList();
+                  return List.generate(10000, (e) => e);
                 },
                 toBoringChoiceItem: (e) {
                   return BChoiceItem<int>(
@@ -75,12 +70,7 @@ class FormExample0 extends StatelessWidget {
               BoringDropdownMultiChoiceField(
                 fieldPath: ['test1'],
                 getItems: (_) async {
-                  return List.generate(10000, (e) => e)
-                      .map((e) => BChoiceItem(
-                            value: e,
-                            display: e.toString(),
-                          ))
-                      .toList();
+                  return List.generate(10000, (e) => e);
                 },
                 toBoringChoiceItem: (e) {
                   return BChoiceItem<int>(

@@ -58,10 +58,7 @@ class BoringRRuleForm extends BoringFormWidget {
                         Frequency.yearly,
                       ];
 
-                      return result
-                          .map((e) => BChoiceItem(
-                              value: e, display: e.trForm(singular: singular)))
-                          .toList();
+                      return result;
                     },
                     toBoringChoiceItem: (e) => BChoiceItem(
                         value: e, display: e.trForm(singular: singular)),
@@ -230,9 +227,7 @@ class BoringRRuleForm extends BoringFormWidget {
                 child: BoringDropdownField(
                   fieldPath: ["end_type"],
                   getItems: (search) async {
-                    return RecurrenceEndType.values
-                        .map((e) => BChoiceItem(value: e, display: e.tr))
-                        .toList();
+                    return RecurrenceEndType.values;
                   },
                   toBoringChoiceItem: (e) =>
                       BChoiceItem(value: e, display: e.tr),
@@ -310,11 +305,7 @@ class BoringRRuleForm extends BoringFormWidget {
               readOnly: readOnly,
               fieldPath: [path, "byMonthDaysOccurrence"],
               getItems: (search) async {
-                return ByMonthDayOccurrence.values
-                    .map(
-                      (e) => BChoiceItem(value: e, display: e.tr),
-                    )
-                    .toList();
+                return ByMonthDayOccurrence.values;
               },
               clearable: false,
               toBoringChoiceItem: (e) => BChoiceItem(value: e, display: e.tr),

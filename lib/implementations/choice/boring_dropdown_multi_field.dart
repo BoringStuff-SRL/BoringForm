@@ -5,8 +5,7 @@ import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
 class BoringDropdownMultiChoiceField<T>
-    extends BoringFormFieldWithAsyncCalculations<List<T>,
-        List<BChoiceItem<T>>> {
+    extends BoringFormFieldWithAsyncCalculations<List<T>, List<T>> {
   const BoringDropdownMultiChoiceField({
     super.key,
     required super.fieldPath,
@@ -28,19 +27,19 @@ class BoringDropdownMultiChoiceField<T>
     this.initialItems,
   });
 
-  final Future<List<BChoiceItem<T>>> Function(String search) getItems;
+  final Future<List<T>> Function(String search) getItems;
   final BChoiceItem<T> Function(T) toBoringChoiceItem;
   final void Function(BoringFormController formController, List<T>? fieldValue)?
       onChanged;
 
-  final FutureOr<List<BChoiceItem<T>>?> Function(String)? onAdd;
+  final FutureOr<List<T>?> Function(String)? onAdd;
   final bool callFutureOnStopWriting;
   final bool searchable;
   final BDropdownTheme? boringDropdownStyle;
   final BDropdownLoadingMode boringDropdownLoadingMode;
   final bool clearable;
   final Duration debouncingTime;
-  final AsyncSnapshot<List<BChoiceItem<T>>>? initialItems;
+  final AsyncSnapshot<List<T>>? initialItems;
   final Widget loadingIndicator;
   @override
   Widget builder(
@@ -49,16 +48,14 @@ class BoringDropdownMultiChoiceField<T>
       BoringFormController formController,
       List<T>? fieldValue,
       String? error,
-      AsyncSnapshot<List<BChoiceItem<T>>> calculations) {
+      AsyncSnapshot<List<T>> calculations) {
     final dropdownStyle =
         boringDropdownStyle ?? BoringTheme.of(context).bDropdownTheme;
 
-    return BDropdownMultiChoice(
-      value: ValueNotifier(
-          (fieldValue ?? []).map((e) => toBoringChoiceItem(e)).toList()),
+    return BDropdownMultiChoice<T>(
+      value: ValueNotifier(fieldValue),
       searchItems: getItems,
-      onChanged: (values) =>
-          setChangedValue(formController, values?.map((e) => e.value).toList()),
+      onChanged: (values) => setChangedValue(formController, values),
       readOnly: isReadOnly(formStyle),
       onAdd: onAdd,
       callFutureOnStopWriting: callFutureOnStopWriting,
@@ -74,12 +71,12 @@ class BoringDropdownMultiChoiceField<T>
       debouncingTime: debouncingTime,
       initialItems: initialItems,
       loadingIndicator: loadingIndicator,
+      toDisplay: (T value) => toBoringChoiceItem(value).display,
     );
   }
 
   @override
-  Future<List<BChoiceItem<T>>> onObservedFieldsChange(
-          BoringFormController formController) =>
+  Future<List<T>> onObservedFieldsChange(BoringFormController formController) =>
       getItems("");
 
   @override
