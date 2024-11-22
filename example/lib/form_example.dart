@@ -32,8 +32,32 @@ class FormExample0 extends StatelessWidget {
   final firstDate = DateTime.now();
   final lastDate = DateTime.now().add(const Duration(days: 365));
 
+  void onChanged() {
+    final num1 = c.getValue(['num1']);
+    final num2 = c.getValue(['num2']);
+    c.setFieldValue(['num3'], num1 + num2);
+  }
+
   @override
   Widget build(BuildContext context) {
+    c.addFieldsListener(
+      key: 'calcoloMoltiplicazione',
+      fields: [
+        ['num1'],
+        ['num2'],
+      ],
+      callback: onChanged,
+    );
+
+    c.addFieldsListener(
+      key: 'calcoloAddizione',
+      fields: [
+        ['num1'],
+        ['num2'],
+      ],
+      callback: onChanged,
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -48,7 +72,11 @@ class FormExample0 extends StatelessWidget {
                 lastDate: lastDate,
               ),
               BoringDateTimeField(
-                fieldPath: ["dateTimeField"],
+                readOnly: c.getValue(['dateTimeField']) == null,
+                observedFields: [
+                  ['dateTimeField']
+                ],
+                fieldPath: ["dateTimeField2"],
                 firstDate: firstDate,
                 lastDate: lastDate,
               ),

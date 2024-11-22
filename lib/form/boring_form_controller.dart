@@ -123,6 +123,7 @@ class BoringFormControllerValue extends ChangeNotifier {
   final Map<String, dynamic> initialValue;
   final ValidationBehaviour validationBehaviour;
   final FieldRequiredLabelBehaviour fieldRequiredLabelBehaviour;
+  final Map<String, Map<FieldPath, void Function()>> _fieldsListener = {};
 
   BoringFormControllerValue({
     Map<String, dynamic>? initialValue,
@@ -137,6 +138,47 @@ class BoringFormControllerValue extends ChangeNotifier {
   List<dynamic> _getMultiValues(List<List<String>> fieldPaths) =>
       fieldPaths.map((keysList) => _value.getValue(keysList)).toList();
 
+  void addFieldsListener({
+    required String key,
+    required List<FieldPath> fields,
+    required void Function() callback,
+  }) {
+    final Map<FieldPath, void Function()> map = {};
+    for (final field in fields) {
+      map[field] = callback;
+    }
+    _fieldsListener[key] = map;
+  }
+
+  void removeFieldsListener(String key) {
+    _fieldsListener.remove(key);
+  }
+
+  List<void Function()> _getFieldListeners(FieldPath path) {
+    return _fieldsListener.values
+        .expand((e) => e.entries)
+        .where(
+          (element) {
+            final fieldPath = element.key;
+            if (fieldPath.length > path.length) return false;
+
+            for (int i = 0; i < fieldPath.length; i++) {
+              if (fieldPath[i] != path[i]) return false;
+            }
+            return true;
+          },
+        )
+        .map((e) => e.value)
+        .toList();
+  }
+
+  void _fieldHasChanged(FieldPath path) {
+    final listeners = _getFieldListeners(path);
+    for (final callback in listeners) {
+      callback.call();
+    }
+  }
+
   void setFieldValue<R>(List<String> fieldPath, R value) {
     dynamic old = _value.getValue(fieldPath);
     if (_equality.equals(old, value)) {
@@ -145,7 +187,7 @@ class BoringFormControllerValue extends ChangeNotifier {
 
     _value.setValue(fieldPath, value);
     // print(_value);
-
+    _fieldHasChanged(fieldPath);
     notifyListeners();
   }
 
@@ -157,6 +199,7 @@ class BoringFormControllerValue extends ChangeNotifier {
     }
     _value.clear();
     _value.addAll(newValue);
+    _fieldHasChanged([]);
     notifyListeners();
   }
 
