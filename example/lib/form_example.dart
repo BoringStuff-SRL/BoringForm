@@ -3,11 +3,33 @@ import 'dart:async';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
+class User {
+  const User({
+    required this.id,
+    required this.name,
+  });
+
+  final int id;
+  final String name;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is User &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          name == other.name;
+
+  @override
+  int get hashCode => id.hashCode ^ name.hashCode;
+}
+
 class FormExample0 extends StatelessWidget {
   FormExample0({super.key});
 
   final c = BoringFormController(
     initialValue: {
+      'dropdown_id': 2,
       'num': 123456,
       'info': {'nome': "PIPPO"},
       'test': 12,
@@ -38,6 +60,13 @@ class FormExample0 extends StatelessWidget {
     c.setFieldValue(['num3'], num1 + num2);
   }
 
+  final users = [
+    User(id: 1, name: 'Uno'),
+    User(id: 2, name: 'Due'),
+    User(id: 3, name: 'Tre'),
+    User(id: 4, name: 'Quattro'),
+  ];
+
   @override
   Widget build(BuildContext context) {
     c.addFieldsListener(
@@ -66,6 +95,16 @@ class FormExample0 extends StatelessWidget {
           formController: c,
           child: Column(
             children: [
+              BoringDropdownFieldID<User, int>(
+                fieldPath: ['dropdown_id'],
+                getItems: (search) async {
+                  print('ASDASD');
+                  await Future.delayed(const Duration(seconds: 2));
+                  return users;
+                },
+                identifier: (element) => element.id,
+                toDisplay: (element) => element.name,
+              ),
               BoringDateTimeField(
                 fieldPath: ["dateTimeField"],
                 firstDate: firstDate,
