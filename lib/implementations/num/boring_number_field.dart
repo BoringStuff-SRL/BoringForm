@@ -160,8 +160,6 @@ class BoringNumberField extends BoringFormField<num> {
   @override
   Widget builder(BuildContext context, BoringFormStyle formStyle,
       BoringFormController formController, num? fieldValue, String? error) {
-    if (fieldPath.first == 'num3') print(fieldValue);
-
     // Inizializza il valore iniziale, se necessario
     if (!hasSetInitialValue && fieldValue != null) {
       var cursorPos = _textEditingController.selection.base.offset;
