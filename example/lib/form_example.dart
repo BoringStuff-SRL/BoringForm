@@ -29,6 +29,8 @@ class FormExample0 extends StatelessWidget {
 
   final c = BoringFormController(
     initialValue: {
+      'num1': 2,
+      'num2': 4,
       'dropdown_id': 2,
       'num': 123456,
       'info': {'nome': "PIPPO"},
@@ -55,8 +57,8 @@ class FormExample0 extends StatelessWidget {
   final lastDate = DateTime.now().add(const Duration(days: 365));
 
   void onChanged() {
-    final num1 = c.getValue(['num1']);
-    final num2 = c.getValue(['num2']);
+    final num1 = c.getValue(['num1']) as num? ?? 0;
+    final num2 = c.getValue(['num2']) as num? ?? 0;
     c.setFieldValue(['num3'], num1 + num2);
   }
 
@@ -95,6 +97,9 @@ class FormExample0 extends StatelessWidget {
           formController: c,
           child: Column(
             children: [
+              BoringNumberField(fieldPath: ['num1']),
+              BoringNumberField(fieldPath: ['num2']),
+              BoringNumberField(fieldPath: ['num3']),
               BoringDropdownFieldID<User, int>(
                 fieldPath: ['dropdown_id'],
                 getItems: (search) async {
