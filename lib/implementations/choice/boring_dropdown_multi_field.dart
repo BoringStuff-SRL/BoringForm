@@ -32,7 +32,7 @@ class BoringDropdownMultiChoiceField<T>
   final void Function(BoringFormController formController, List<T>? fieldValue)?
       onChanged;
 
-  final FutureOr<List<T>?> Function(String)? onAdd;
+  final FutureOr<T?> Function(String)? onAdd;
   final bool callFutureOnStopWriting;
   final bool searchable;
   final BDropdownTheme? boringDropdownStyle;
@@ -81,4 +81,86 @@ class BoringDropdownMultiChoiceField<T>
 
   @override
   void onSelfChange(BoringFormController formController, List<T>? fieldValue) {}
+}
+
+class BoringDropdownMultiChoiceFieldID<T, ID>
+    extends BoringFormFieldWithAsyncCalculations<List<ID>, List<T>> {
+  const BoringDropdownMultiChoiceFieldID({
+    super.key,
+    required super.fieldPath,
+    required this.getItems,
+    super.decoration,
+    super.observedFields,
+    super.readOnly,
+    super.validationFunction,
+    required this.identifier,
+    required this.toDisplay,
+    this.onChanged,
+    this.onAdd,
+    this.loadingIndicator = const CircularProgressIndicator(),
+    this.clearable = true,
+    this.searchable = true,
+    this.callFutureOnStopWriting = true,
+    this.boringDropdownStyle,
+    this.boringDropdownLoadingMode = BDropdownLoadingMode.onOpen,
+    this.debouncingTime = const Duration(milliseconds: 300),
+    this.initialItems,
+  });
+
+  final Future<List<T>> Function(String search) getItems;
+  final String Function(T element) toDisplay;
+  final void Function(
+      BoringFormController formController, List<ID>? fieldValue)? onChanged;
+  final ID Function(T element) identifier;
+  final FutureOr<T?> Function(String search)? onAdd;
+  final bool callFutureOnStopWriting;
+  final bool searchable;
+  final BDropdownTheme? boringDropdownStyle;
+  final BDropdownLoadingMode boringDropdownLoadingMode;
+  final bool clearable;
+  final Duration debouncingTime;
+  final AsyncSnapshot<List<T>>? initialItems;
+  final Widget loadingIndicator;
+  @override
+  Widget builder(
+      BuildContext context,
+      BoringFormStyle formStyle,
+      BoringFormController formController,
+      List<ID>? fieldValue,
+      String? error,
+      AsyncSnapshot<List<T>> calculations) {
+    final dropdownStyle =
+        boringDropdownStyle ?? BoringTheme.of(context).bDropdownTheme;
+
+    return BDropdownMultiChoiceID<T, ID>(
+      value: ValueNotifier(fieldValue),
+      searchItems: getItems,
+      onChanged: (values) => setChangedValue(formController, values),
+      readOnly: isReadOnly(formStyle),
+      onAdd: onAdd,
+      callFutureOnStopWriting: callFutureOnStopWriting,
+      boringDropdownLoadingMode: boringDropdownLoadingMode,
+      searchable: searchable,
+      boringDropdownStyle: dropdownStyle.copyWith(
+          inputDecoration:
+              getInputDecoration(formController, formStyle, error, fieldValue),
+          onClearIcon: formStyle.eraseValueWidget,
+          choiceItemDisplayTextStyle: formStyle.textStyle),
+      clearable: clearable,
+      errorMessage: error,
+      debouncingTime: debouncingTime,
+      initialItems: initialItems,
+      loadingIndicator: loadingIndicator,
+      toDisplay: toDisplay,
+      identifier: identifier,
+    );
+  }
+
+  @override
+  Future<List<T>> onObservedFieldsChange(BoringFormController formController) =>
+      getItems("");
+
+  @override
+  void onSelfChange(
+      BoringFormController formController, List<ID>? fieldValue) {}
 }

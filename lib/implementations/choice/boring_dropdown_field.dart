@@ -117,7 +117,7 @@ class BoringDropdownFieldID<T, ID>
       onChanged;
   final ID Function(T element) identifier;
 
-  final FutureOr<ID?> Function(String search)? onAdd;
+  final FutureOr<T?> Function(String search)? onAdd;
   final bool callFutureOnStopWriting;
   final bool searchable;
   final BDropdownTheme? boringDropdownStyle;
