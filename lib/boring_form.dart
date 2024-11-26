@@ -13,6 +13,7 @@ export 'implementations/choice/boring_duration_field/boring_duration_data_handle
 export 'implementations/choice/boring_duration_field/boring_duration_field.dart';
 export 'implementations/choice/boring_radiogroup_field.dart';
 export 'implementations/choice/boring_switch_field.dart';
+export 'implementations/deferred/boring_deferred_field.dart';
 export 'implementations/num/boring_number_field.dart';
 export 'implementations/pickers/boringFilePickerV2/boring_drop_zone_decoration.dart';
 export 'implementations/pickers/boringFilePickerV2/boring_file_picker_v2.dart';

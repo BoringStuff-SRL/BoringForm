@@ -1,8 +1,38 @@
+import 'package:boring_ui/boring_ui.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:provider/provider.dart';
+
+class DeferredValue<L extends Listenable, T> {
+  DeferredValue({
+    required this.listenable,
+    required this.selector,
+  });
+
+  final L listenable;
+  final AsyncValue<T> Function(L listenable) selector;
+
+  AsyncValue<T> get asyncValue => selector(listenable);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DeferredValue &&
+          runtimeType == other.runtimeType &&
+          listenable == other.listenable &&
+          selector == other.selector;
+
+  @override
+  int get hashCode => listenable.hashCode ^ selector.hashCode;
+}
 
 //enum ChangedEvent { valueChanged, sumbittedForValidation }
-enum ValidationBehaviour { always, onSubmit, never }
+enum ValidationBehaviour {
+  always,
+  onSubmit,
+  never;
+}
 
 enum FieldRequiredLabelBehaviour {
   always,
@@ -116,27 +146,74 @@ extension on Map<String, dynamic> {
 }
 
 class BoringFormControllerValue extends ChangeNotifier {
+  BoringFormControllerValue({
+    Map<FieldPath, DeferredValue>? deferredFields,
+    Map<String, dynamic>? initialValue,
+    this.validationBehaviour = ValidationBehaviour.onSubmit,
+    this.fieldRequiredLabelBehaviour = FieldRequiredLabelBehaviour.always,
+  })  : _value = Map.from(initialValue ?? {}),
+        _deferredFields = deferredFields ?? {},
+        initialValue = Map.from(initialValue ?? {});
+
   static const NESTING_CHAR = '.';
   static const DeepCollectionEquality _equality = DeepCollectionEquality();
 
   final Map<String, dynamic> _value;
   final Map<String, dynamic> initialValue;
-  final ValidationBehaviour validationBehaviour;
-  final FieldRequiredLabelBehaviour fieldRequiredLabelBehaviour;
+  final Map<FieldPath, DeferredValue> _deferredFields;
   final Map<String, Map<FieldPath, void Function()>> _fieldsListener = {};
 
-  BoringFormControllerValue({
-    Map<String, dynamic>? initialValue,
-    this.validationBehaviour = ValidationBehaviour.onSubmit,
-    this.fieldRequiredLabelBehaviour = FieldRequiredLabelBehaviour.always,
-  })  : _value = Map.from(initialValue ?? {}),
-        initialValue = Map.from(initialValue ?? {});
+  final ValidationBehaviour validationBehaviour;
+  final FieldRequiredLabelBehaviour fieldRequiredLabelBehaviour;
+
+  /// GETTERS
+  Map<FieldPath, DeferredValue> get deferredFields => _deferredFields;
+  Map<String, dynamic> get value => _value;
+  bool get hasChanged =>
+      !BoringFormControllerValue._equality.equals(_value, initialValue);
+  Map<String, dynamic> get valuePlain => _value.plain(NESTING_CHAR);
 
   dynamic getValue(List<String> fieldPath, {dynamic defaultValue}) =>
       _value.getValue(fieldPath) ?? defaultValue;
 
-  List<dynamic> _getMultiValues(List<List<String>> fieldPaths) =>
-      fieldPaths.map((keysList) => _value.getValue(keysList)).toList();
+  DeferredValue? getDeferredValue(FieldPath fieldPath) =>
+      _deferredFields.entries
+          .firstWhereOrNull(
+            (element) => listEquals(fieldPath, element.key),
+          )
+          ?.value;
+
+  dynamic getValuePlain(String fieldPath) =>
+      getValue(fieldPath.split(NESTING_CHAR));
+
+  /// SETTERS
+
+  void setFieldValuePlain(String fieldPath, dynamic value) =>
+      setFieldValue(fieldPath.split(NESTING_CHAR), value);
+
+  set value(Map<String, dynamic> newValue) {
+    if (_equality.equals(_value, newValue)) {
+      return;
+    }
+    _value.clear();
+    _value.addAll(newValue);
+    _fieldHasChanged([]);
+    notifyListeners();
+  }
+
+  void setFieldValue<R>(List<String> fieldPath, R value) {
+    dynamic old = _value.getValue(fieldPath);
+    if (_equality.equals(old, value)) {
+      return;
+    }
+
+    _value.setValue(fieldPath, value);
+    // print(_value);
+    _fieldHasChanged(fieldPath);
+    notifyListeners();
+  }
+
+  /// PUBLIC METHODS
 
   void addFieldsListener({
     required String key,
@@ -153,6 +230,24 @@ class BoringFormControllerValue extends ChangeNotifier {
   void removeFieldsListener(String key) {
     _fieldsListener.remove(key);
   }
+
+  // void mergeValue(Map<String, dynamic> map, [bool mergeSubMaps = false]) =>
+  //     _value.mergeValue(map, mergeSubMaps);
+
+  void reset() {
+    value = initialValue;
+  }
+
+  void resetFields(List<List<String>> fieldPaths) {
+    for (var fieldPath in fieldPaths) {
+      setFieldValue(fieldPath, null);
+    }
+  }
+
+  /// PRIVATE METHODS
+
+  List<dynamic> _getMultiValues(List<List<String>> fieldPaths) =>
+      fieldPaths.map((keysList) => _value.getValue(keysList)).toList();
 
   List<void Function()> _getFieldListeners(FieldPath path) {
     return _fieldsListener.values
@@ -179,57 +274,9 @@ class BoringFormControllerValue extends ChangeNotifier {
     }
   }
 
-  void setFieldValue<R>(List<String> fieldPath, R value) {
-    dynamic old = _value.getValue(fieldPath);
-    if (_equality.equals(old, value)) {
-      return;
-    }
-
-    _value.setValue(fieldPath, value);
-    // print(_value);
-    _fieldHasChanged(fieldPath);
-    notifyListeners();
-  }
-
-  Map<String, dynamic> get value => _value;
-
-  set value(Map<String, dynamic> newValue) {
-    if (_equality.equals(_value, newValue)) {
-      return;
-    }
-    _value.clear();
-    _value.addAll(newValue);
-    _fieldHasChanged([]);
-    notifyListeners();
-  }
-
-  // void mergeValue(Map<String, dynamic> map, [bool mergeSubMaps = false]) =>
-  //     _value.mergeValue(map, mergeSubMaps);
-
-  void reset() {
-    value = initialValue;
-  }
-
-  void resetFields(List<List<String>> fieldPaths) {
-    for (var fieldPath in fieldPaths) {
-      setFieldValue(fieldPath, null);
-    }
-  }
-
-  bool get hasChanged =>
-      !BoringFormControllerValue._equality.equals(_value, initialValue);
-
-  //PLAIN VERSIONS OF METHODS
-  dynamic getValuePlain(String fieldPath) =>
-      getValue(fieldPath.split(NESTING_CHAR));
-
   List<dynamic> _getMultiValuesPlain(List<String> fieldPaths) =>
       _getMultiValues(fieldPaths.map((e) => e.split(NESTING_CHAR)).toList());
 
-  void setFieldValuePlain(String fieldPath, dynamic value) =>
-      setFieldValue(fieldPath.split(NESTING_CHAR), value);
-
-  Map<String, dynamic> get valuePlain => _value.plain(NESTING_CHAR);
   //TODO only `set value` and `void mergeValue` don't have a plain version
 }
 
@@ -238,16 +285,24 @@ typedef ValidationFunction<T> = String? Function(
 typedef FieldPath = List<String>;
 
 class BoringFormController extends BoringFormControllerValue {
-  // final Map<FieldPath, bool> _errors = {};
-
-  final Map<FieldPath, ValidationFunction> _validationFunctions = {};
   BoringFormController({
+    super.deferredFields,
     super.initialValue,
     super.validationBehaviour,
     super.fieldRequiredLabelBehaviour,
   });
 
+  static BoringFormController of(BuildContext context) =>
+      context.read<BoringFormController>();
+
+  final Map<FieldPath, ValidationFunction> _validationFunctions = {};
+
   bool get isValid {
+    final deferredLoading = _deferredFields.entries
+        .any((element) => element.value.asyncValue.isLoading);
+
+    if (deferredLoading) return false;
+
     if (!_isSubmitted) {
       _isSubmitted = true;
       notifyListeners();
@@ -278,9 +333,6 @@ class BoringFormController extends BoringFormControllerValue {
           BoringFormControllerValue._equality.equals(key, fieldPath),
     );
   }
-
-  String? _getFieldError(FieldPath fieldPath) =>
-      _validationFunctions[fieldPath]?.call(this, getValue(fieldPath));
 
   String? getFieldError(FieldPath fieldPath) => _shouldShowError
       ? _validationFunctions[fieldPath]?.call(this, getValue(fieldPath))

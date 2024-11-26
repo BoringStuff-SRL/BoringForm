@@ -11,20 +11,16 @@ extension on List<String> {
 
 class BoringForm extends BoringFormWidget {
   BoringForm(
-      {super.key,
-      BoringFormController? formController,
-      super.style,
-      required Widget child})
-      : _child = child,
-        super(formController: formController);
+      {super.key, super.formController, super.style, required Widget child})
+      : _child = child;
 
   BoringForm.responsive({
     super.key,
-    BoringFormController? formController,
+    super.formController,
     required List<Widget> children,
     BResponsiveSize responsiveSize = const BResponsiveSize.defaultSizes(),
     super.style,
-  })  : _child = BResponsiveWrap(
+  }) : _child = BResponsiveWrap(
           bResponsiveTheme: const BResponsiveTheme(spacing: 0),
           children: children
               .map(
@@ -36,8 +32,7 @@ class BoringForm extends BoringFormWidget {
                       ),
               )
               .toList(),
-        ),
-        super(formController: formController);
+        );
 
   final Widget _child;
 
@@ -62,7 +57,7 @@ abstract class BoringResponsiveFormWidget extends BoringFormWidget {
 
   @override
   Widget child(context) => BResponsiveWrap(
-        bResponsiveTheme: BResponsiveTheme(spacing: 0),
+        bResponsiveTheme: const BResponsiveTheme(spacing: 0),
         children: children
             .map(
               (e) => e is BResponsiveChild
@@ -91,12 +86,14 @@ abstract class BoringFormWidget extends StatelessWidget {
     final BoringFormStyle formStyle = styleManipulator(
         style?.call(context) ?? BoringTheme.of(context).boringFormStyle);
 
-    return FocusTraversalGroup(
-      child: BoringFormTheme(
-        style: formStyle,
-        child: ChangeNotifierProvider.value(
-          value: formController,
-          child: child(context),
+    return BShimmer(
+      child: FocusTraversalGroup(
+        child: BoringFormTheme(
+          style: formStyle,
+          child: ChangeNotifierProvider.value(
+            value: formController,
+            child: child(context),
+          ),
         ),
       ),
     );

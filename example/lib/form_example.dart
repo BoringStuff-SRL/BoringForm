@@ -24,19 +24,54 @@ class User {
   int get hashCode => id.hashCode ^ name.hashCode;
 }
 
+final usersRepo = UsersRepo(
+  identifier: (p0) => p0.id,
+  isValidForParam: (p0, p1) => true,
+  mergeUpdate: (p0, p1) => p0,
+  converter: (p0) => p0,
+);
+
+class UsersRepo extends BoringRxRepo<User, User, int, int, int> {
+  UsersRepo(
+      {required super.identifier,
+      required super.isValidForParam,
+      required super.mergeUpdate,
+      required super.converter});
+
+  final _list = [
+    User(id: 1, name: 'Uno'),
+    User(id: 2, name: 'Due'),
+    User(id: 3, name: 'Tre'),
+    User(id: 4, name: 'Quattro'),
+  ];
+
+  @override
+  Future<List<User>> fetchMulti(int param) async {
+    await Future.delayed(const Duration(seconds: 2));
+    return _list;
+  }
+
+  @override
+  Future<User> fetchSingle(int id, int param) async {
+    await Future.delayed(const Duration(seconds: 2));
+
+    return _list.firstWhere((element) => element.id == id);
+  }
+
+  @override
+  Duration get ttl => const Duration(minutes: 2);
+}
+
 class FormExample0 extends StatelessWidget {
   FormExample0({super.key});
 
   final c = BoringFormController(
-    initialValue: {
-      'num1': 2,
-      'num2': 4,
-      'dropdown_id': 2,
-      'num': 123456,
-      'info': {'nome': "PIPPO"},
-      'test': 12,
-      'test1': [1, 2, 3],
-      'negative': '23'
+    initialValue: {},
+    deferredFields: {
+      ['user']: DeferredValue<UsersRepo, User>(
+        listenable: usersRepo,
+        selector: (listenable) => listenable.readSingle(2, 2),
+      ),
     },
     validationBehaviour: ValidationBehaviour.always,
     fieldRequiredLabelBehaviour: FieldRequiredLabelBehaviour.always,
@@ -97,6 +132,19 @@ class FormExample0 extends StatelessWidget {
           formController: c,
           child: Column(
             children: [
+              BoringDeferredField<UsersRepo, User>(
+                fieldPath: ['user'],
+                builder: (fieldPath) => BoringDropdownField<User>(
+                  fieldPath: fieldPath,
+                  getItems: (search) async {
+                    return await usersRepo.readMultiFuture(0);
+                  },
+                  toBoringChoiceItem: (element) {
+                    return BChoiceItem(value: element, display: element.name);
+                  },
+                ),
+              ),
+              const Divider(),
               BoringNumberField(fieldPath: ['num1']),
               BoringNumberField(fieldPath: ['num2']),
               BoringNumberField(fieldPath: ['num3']),
