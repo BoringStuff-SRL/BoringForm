@@ -31,7 +31,7 @@ class BoringPasswordField extends BoringFormField<String> {
       focusNode: _focusNode,
       textEditingController: _textEditingController,
       formTheme: formStyle,
-      readOnly: isReadOnly(formStyle),
+      readOnly: isReadOnly(formController, formStyle),
       fieldPath: fieldPath,
       inputDecoration: inputDecoration,
       startsHidden: true,

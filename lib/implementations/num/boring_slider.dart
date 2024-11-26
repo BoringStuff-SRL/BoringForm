@@ -46,7 +46,7 @@ class BoringSlider extends BoringFormField<double> {
           divisions: divisions,
           value: fieldValue ?? 0,
           label: showValueLabel ? fieldValue?.toStringAsFixed(2) : null,
-          onChanged: isReadOnly(formTheme)
+          onChanged: isReadOnly(formController, formTheme)
               ? null
               : (value) => setChangedValue(formController, value),
         ),

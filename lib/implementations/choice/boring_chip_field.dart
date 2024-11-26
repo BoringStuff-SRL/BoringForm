@@ -40,7 +40,7 @@ class BoringChipField<T> extends BoringFormField<List<T>> {
             label: toLabel(e),
             showCheckmark: false,
             onPressed: () {
-              if (isReadOnly(formStyle)) return;
+              if (isReadOnly(formController, formStyle)) return;
               if (isSelected) {
                 final canRemove =
                     canRemoveSelection?.call(formController, e) ?? true;

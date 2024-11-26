@@ -39,44 +39,52 @@ abstract class BoringFormFieldWithCalculations<T, TT>
     final style = BoringFormTheme.of(context).style;
     final fieldDecoration = getFieldDecoration(formController);
     formController.setValidationFunction(fieldPath, validationFunction);
-    return Selector<BoringFormController, List<dynamic>>(
-      selector: (_, formController) =>
-          formController.selectPaths(observedFields, includeError: true),
-      builder: (context, _, __) {
-        final calculations = onObservedFieldsChange(formController);
-        return Selector<
-            BoringFormController, // T?>(
-            ({T? fieldValue, String? error})>(
-          selector: (_, formController) => (
-            fieldValue: formController.getValue(fieldPath) as T?,
-            error: formController.getFieldError(fieldPath)
-          ),
-          builder: (context, value, child) {
-            onSelfChange(formController, value.fieldValue);
-            return Padding(
-              padding: style.fieldsPadding,
-              child: Column(
-                children: [
-                  if (style.labelOverField && fieldDecoration?.label != null)
-                    labelOverField(
-                      fieldDecoration!,
-                      formController,
-                      style,
+    return Selector<BoringFormController, bool>(
+        selector: (p0, p1) => p1.isFieldReadOnly(fieldPath),
+        shouldRebuild: (previous, next) {
+          return previous != next;
+        },
+        builder: (context, _, __) {
+          return Selector<BoringFormController, List<dynamic>>(
+            selector: (_, formController) =>
+                formController.selectPaths(observedFields, includeError: true),
+            builder: (context, _, __) {
+              final calculations = onObservedFieldsChange(formController);
+              return Selector<
+                  BoringFormController, // T?>(
+                  ({T? fieldValue, String? error})>(
+                selector: (_, formController) => (
+                  fieldValue: formController.getValue(fieldPath) as T?,
+                  error: formController.getFieldError(fieldPath)
+                ),
+                builder: (context, value, child) {
+                  onSelfChange(formController, value.fieldValue);
+                  return Padding(
+                    padding: style.fieldsPadding,
+                    child: Column(
+                      children: [
+                        if (style.labelOverField &&
+                            fieldDecoration?.label != null)
+                          labelOverField(
+                            fieldDecoration!,
+                            formController,
+                            style,
+                          ),
+                        builder(
+                          context,
+                          style,
+                          formController,
+                          value.fieldValue,
+                          value.error,
+                          calculations,
+                        ),
+                      ],
                     ),
-                  builder(
-                    context,
-                    style,
-                    formController,
-                    value.fieldValue,
-                    value.error,
-                    calculations,
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
+                  );
+                },
+              );
+            },
+          );
+        });
   }
 }

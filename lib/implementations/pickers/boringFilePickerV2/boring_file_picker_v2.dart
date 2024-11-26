@@ -25,7 +25,7 @@ class BoringFilePickerV2 extends BoringFormField<List<PlatformFile>> {
     List<PlatformFile>? fieldValue,
     String? error,
   ) {
-    final bool readOnly = isReadOnly(formTheme);
+    final bool readOnly = isReadOnly(formController, formTheme);
     return BoringFilePickerSettings(
       readOnly: readOnly,
       decoration: decoration,

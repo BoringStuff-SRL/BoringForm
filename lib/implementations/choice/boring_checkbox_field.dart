@@ -35,7 +35,7 @@ class BoringCheckBoxField extends BoringFormField<bool> {
     return Column(
       children: [
         GestureDetector(
-          onTap: isReadOnly(formTheme)
+          onTap: isReadOnly(formController, formTheme)
               ? null
               : () => setChangedValue(formController,
                   !(formController.getValue(fieldPath) ?? false)),

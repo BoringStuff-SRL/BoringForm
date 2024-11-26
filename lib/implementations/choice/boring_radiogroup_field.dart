@@ -55,7 +55,7 @@ class BoringRadioGroupField<T> extends BoringFormField<T> {
                         value: item.value,
                         title: Text(item.display),
                         groupValue: formController.getValue(fieldPath),
-                        onChanged: isReadOnly(formTheme)
+                        onChanged: isReadOnly(formController, formTheme)
                             ? null
                             : (value) =>
                                 setChangedValue(formController, value)),

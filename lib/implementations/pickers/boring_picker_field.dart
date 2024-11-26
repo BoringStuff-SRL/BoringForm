@@ -34,7 +34,7 @@ class BoringPickerField<T> extends BoringFormField<T> {
       children: [
         Expanded(
           child: TextField(
-            enabled: !isReadOnly(formTheme),
+            enabled: !isReadOnly(formController, formTheme),
             readOnly: true,
             controller: _textEditingController,
             textAlign: formTheme.textAlign,
@@ -42,7 +42,7 @@ class BoringPickerField<T> extends BoringFormField<T> {
             decoration: getInputDecoration(
                 formController, formTheme, error, fieldValue),
             onTap: () async {
-              if (isReadOnly(formTheme)) {
+              if (isReadOnly(formController, formTheme)) {
                 return;
               }
 

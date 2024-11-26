@@ -144,31 +144,20 @@ class FormExample0 extends StatelessWidget {
                   },
                 ),
               ),
+              ElevatedButton(
+                onPressed: () {
+                  final readOnlyStatus = c.isFieldReadOnly(['user']);
+
+                  c.setFieldReadOnlyStatus(['user'], readOnly: !readOnlyStatus);
+                },
+                child: const Text('Set readonly'),
+              ),
               const Divider(),
               BoringNumberField(fieldPath: ['num1']),
               BoringNumberField(fieldPath: ['num2']),
               BoringNumberField(fieldPath: ['num3']),
-              BoringDropdownFieldID<User, int>(
-                fieldPath: ['dropdown_id'],
-                getItems: (search) async {
-                  print('ASDASD');
-                  await Future.delayed(const Duration(seconds: 2));
-                  return users;
-                },
-                identifier: (element) => element.id,
-                toDisplay: (element) => element.name,
-              ),
               BoringDateTimeField(
                 fieldPath: ["dateTimeField"],
-                firstDate: firstDate,
-                lastDate: lastDate,
-              ),
-              BoringDateTimeField(
-                readOnly: c.getValue(['dateTimeField']) == null,
-                observedFields: [
-                  ['dateTimeField']
-                ],
-                fieldPath: ["dateTimeField2"],
                 firstDate: firstDate,
                 lastDate: lastDate,
               ),

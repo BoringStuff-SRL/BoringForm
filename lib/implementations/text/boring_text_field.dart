@@ -48,10 +48,10 @@ class BoringTextField extends BoringFormField<String> {
       BoringFormController formController, String? fieldValue, String? errror) {
     return TextField(
       focusNode: _focusNode,
-      readOnly: isReadOnly(formTheme),
-      enabled: !isReadOnly(formTheme),
+      readOnly: isReadOnly(formController, formTheme),
+      enabled: !isReadOnly(formController, formTheme),
       controller: _textEditingController,
-      inputFormatters: inputFormatter ,
+      inputFormatters: inputFormatter,
       minLines: minLines,
       maxLines: maxLines,
       textAlign: formTheme.textAlign,

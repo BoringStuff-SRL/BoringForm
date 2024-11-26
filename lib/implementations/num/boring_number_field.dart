@@ -193,8 +193,8 @@ class BoringNumberField extends BoringFormField<num> {
       children: [
         Expanded(
           child: TextField(
-            readOnly: isReadOnly(formStyle),
-            enabled: !isReadOnly(formStyle),
+            readOnly: isReadOnly(formController, formStyle),
+            enabled: !isReadOnly(formController, formStyle),
             controller: _textEditingController,
             textAlign: formStyle.textAlign,
             style: formStyle.textStyle,
@@ -222,7 +222,8 @@ class BoringNumberField extends BoringFormField<num> {
           ),
         ),
         // Mostra i pulsanti solo se il flag è true
-        if (showIncrementDecrementButtons && !isReadOnly(formStyle))
+        if (showIncrementDecrementButtons &&
+            !isReadOnly(formController, formStyle))
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [

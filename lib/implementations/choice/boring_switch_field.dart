@@ -122,7 +122,7 @@ class BoringSwitchField extends BoringFormField<bool> {
   Widget builder(BuildContext context, BoringFormStyle formStyle,
       BoringFormController formController, bool? fieldValue, String? error) {
     return _SwitchWithDecoration(
-      readOnly: isReadOnly(formStyle),
+      readOnly: isReadOnly(formController, formStyle),
       value: formController.getValue(fieldPath) ?? false,
       onChanged: (value) {
         setChangedValue(formController, (value ?? false));

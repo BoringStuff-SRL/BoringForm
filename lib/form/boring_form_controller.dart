@@ -149,11 +149,13 @@ class BoringFormControllerValue extends ChangeNotifier {
   BoringFormControllerValue({
     Map<FieldPath, DeferredValue>? deferredFields,
     Map<String, dynamic>? initialValue,
+    Set<FieldPath>? readOnlyFields,
     this.validationBehaviour = ValidationBehaviour.onSubmit,
     this.fieldRequiredLabelBehaviour = FieldRequiredLabelBehaviour.always,
   })  : _value = Map.from(initialValue ?? {}),
         _deferredFields = deferredFields ?? {},
-        initialValue = Map.from(initialValue ?? {});
+        initialValue = Map.from(initialValue ?? {}),
+        _readOnlyFields = readOnlyFields ?? {};
 
   static const NESTING_CHAR = '.';
   static const DeepCollectionEquality _equality = DeepCollectionEquality();
@@ -161,6 +163,7 @@ class BoringFormControllerValue extends ChangeNotifier {
   final Map<String, dynamic> _value;
   final Map<String, dynamic> initialValue;
   final Map<FieldPath, DeferredValue> _deferredFields;
+  final Set<FieldPath> _readOnlyFields;
   final Map<String, Map<FieldPath, void Function()>> _fieldsListener = {};
 
   final ValidationBehaviour validationBehaviour;
@@ -178,9 +181,7 @@ class BoringFormControllerValue extends ChangeNotifier {
 
   DeferredValue? getDeferredValue(FieldPath fieldPath) =>
       _deferredFields.entries
-          .firstWhereOrNull(
-            (element) => listEquals(fieldPath, element.key),
-          )
+          .firstWhereOrNull((element) => listEquals(fieldPath, element.key))
           ?.value;
 
   dynamic getValuePlain(String fieldPath) =>
@@ -201,7 +202,11 @@ class BoringFormControllerValue extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setFieldValue<R>(List<String> fieldPath, R value) {
+  void setFieldValue<R>(
+    List<String> fieldPath,
+    R value, {
+    bool notify = true,
+  }) {
     dynamic old = _value.getValue(fieldPath);
     if (_equality.equals(old, value)) {
       return;
@@ -210,10 +215,29 @@ class BoringFormControllerValue extends ChangeNotifier {
     _value.setValue(fieldPath, value);
     // print(_value);
     _fieldHasChanged(fieldPath);
-    notifyListeners();
+    if (notify) notifyListeners();
   }
 
   /// PUBLIC METHODS
+
+  void setFieldReadOnlyStatus(
+    FieldPath path, {
+    required bool readOnly,
+    bool notify = true,
+  }) {
+    if (readOnly) {
+      _readOnlyFields.add(path);
+    } else {
+      _readOnlyFields.removeWhere((element) => listEquals(element, path));
+    }
+    if (notify) {
+      notifyListeners();
+    }
+  }
+
+  bool isFieldReadOnly(FieldPath fieldPath) => _readOnlyFields
+      .where((element) => listEquals(element, fieldPath))
+      .isNotEmpty;
 
   void addFieldsListener({
     required String key,
