@@ -154,8 +154,28 @@ class FormExample0 extends StatelessWidget {
               ),
               const Divider(),
               BoringNumberField(fieldPath: ['num1']),
-              BoringNumberField(fieldPath: ['num2']),
-              BoringNumberField(fieldPath: ['num3']),
+              BoringFormChildWidget(
+                observedFields: [
+                  ['num1']
+                ],
+                builder: (context, fc) {
+                  final num1 = fc.getValue(['num1']);
+                  return BoringNumberField(
+                    //readOnly: num1 == null,
+                    fieldPath: ['num2'],
+                  );
+                },
+              ),
+              BoringNumberField(
+                fieldPath: ['num3'],
+                onChanged: (formController, fieldValue) {
+                  if (fieldValue == 111) {
+                    print('setting read onyl!');
+                    formController
+                        .setFieldReadOnlyStatus(['num1'], readOnly: true);
+                  }
+                },
+              ),
               BoringDateTimeField(
                 fieldPath: ["dateTimeField"],
                 firstDate: firstDate,

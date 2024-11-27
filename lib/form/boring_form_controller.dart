@@ -220,6 +220,7 @@ class BoringFormControllerValue extends ChangeNotifier {
 
   /// PUBLIC METHODS
 
+  /// Note that this function won't work if the field has the readOnly param given
   void setFieldReadOnlyStatus(
     FieldPath path, {
     required bool readOnly,

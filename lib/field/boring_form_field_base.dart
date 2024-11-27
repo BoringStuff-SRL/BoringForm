@@ -30,13 +30,17 @@ abstract class BoringFormFieldBase<T, TT> extends StatelessWidget {
         _decorationBuilder = decoration;
 
   bool isReadOnly(BoringFormController formController, BoringFormStyle style) {
-    final firstState = _readOnly ?? style.readOnly;
-    if (firstState) {
-      formController.setFieldReadOnlyStatus(fieldPath,
-          readOnly: firstState, notify: false);
+    if (style.readOnly) return true;
+    final firstState = _readOnly;
+    if (firstState != null) {
+      formController.setFieldReadOnlyStatus(
+        fieldPath,
+        readOnly: firstState,
+        notify: false,
+      );
+
       return firstState;
     }
-
     return formController.isFieldReadOnly(fieldPath);
   }
 
