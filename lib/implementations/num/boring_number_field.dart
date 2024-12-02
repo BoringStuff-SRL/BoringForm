@@ -275,9 +275,15 @@ class BoringNumberField extends BoringFormField<num> {
     final text = _numberFormatter
         .formatEditUpdate(
           TextEditingValue(text: _textEditingController.text),
-          TextEditingValue(text: "${fieldValue ?? ''}"),
+          TextEditingValue(
+            text: "${fieldValue ?? ''}",
+          ),
         )
         .text;
-    _textEditingController.text = text;
+    _textEditingController.value = TextEditingValue(
+      text: text,
+      selection:
+          TextSelection(baseOffset: text.length, extentOffset: text.length),
+    );
   }
 }
