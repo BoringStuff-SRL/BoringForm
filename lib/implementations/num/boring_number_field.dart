@@ -215,7 +215,7 @@ class BoringNumberField extends BoringField<num> {
     final formatter = NumberFormatter2(
         decimalPlaces: decimalPlaces,
         decimalSeparator: onlyIntegers ? '_null_' : dSeparator,
-        thousandsSeparator: tSeparator);
+        thousandsSeparator: tSeparator ?? ',');
 
     return BoringField.boringFieldBuilder(
       style,
