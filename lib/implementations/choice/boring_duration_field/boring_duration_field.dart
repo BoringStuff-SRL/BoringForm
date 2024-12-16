@@ -47,6 +47,7 @@ class BoringDurationField extends BoringFormField<Duration> {
       decoration:
           getInputDecoration(formController, formStyle, error, fieldValue),
       onTap: () {
+        if (isReadOnly(formController, formStyle)) return;
         _BoringDurationFieldDialog(
           dataHandler: dataHandler,
           durationFieldTheme: durationTheme,
