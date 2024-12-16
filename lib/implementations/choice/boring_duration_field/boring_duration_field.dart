@@ -16,6 +16,7 @@ class BoringDurationField extends BoringFormField<Duration> {
     super.onChanged,
     super.readOnly,
     super.validationFunction,
+    super.forceHideRequiredFieldLabel,
     this.durationFieldTheme,
   });
 
