@@ -45,20 +45,19 @@ class BoringDurationField extends BoringFormField<Duration> {
 
     return TextField(
       readOnly: true,
+      enabled: !readOnly,
       controller: textEditingController,
       decoration:
           getInputDecoration(formController, formStyle, error, fieldValue),
-      onTap: readOnly
-          ? null
-          : () {
-              _BoringDurationFieldDialog(
-                dataHandler: dataHandler,
-                durationFieldTheme: durationTheme,
-                onSet: (duration) {
-                  formController.setFieldValue(fieldPath, duration);
-                },
-              ).show(context);
-            },
+      onTap: () {
+        _BoringDurationFieldDialog(
+          dataHandler: dataHandler,
+          durationFieldTheme: durationTheme,
+          onSet: (duration) {
+            formController.setFieldValue(fieldPath, duration);
+          },
+        ).show(context);
+      },
     );
   }
 
