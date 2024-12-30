@@ -40,7 +40,12 @@ class BoringDeferredField<L extends Listenable, T> extends StatelessWidget {
           );
         }
 
-        formController.setFieldValue(fieldPath, selected.data, notify: false);
+        WidgetsBinding.instance.addPostFrameCallback(
+          (timeStamp) {
+            formController.setFieldValue(fieldPath, selected.data,
+                notify: true);
+          },
+        );
 
         return child!;
       },
