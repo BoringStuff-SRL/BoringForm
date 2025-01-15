@@ -1,16 +1,18 @@
 part of 'boring_duration_field.dart';
 
 class _BoringDurationFieldDialog extends BDialogInfo {
-  _BoringDurationFieldDialog({
-    required this.durationFieldTheme,
-    required this.onSet,
-    BoringDurationDataHandler? dataHandler,
-  }) : formController =
+  _BoringDurationFieldDialog(
+      {required this.durationFieldTheme,
+      required this.onSet,
+      BoringDurationDataHandler? dataHandler,
+      required this.fieldsToShow})
+      : formController =
             _BoringDurationDialogFormController(dataHandler: dataHandler);
 
   final BDurationFieldTheme durationFieldTheme;
   final _BoringDurationDialogFormController formController;
   final Function(Duration duration) onSet;
+  final List<DurationField>? fieldsToShow;
 
   @override
   String get title => durationFieldTheme.insertDurationString;
@@ -25,6 +27,7 @@ class _BoringDurationFieldDialog extends BDialogInfo {
   Widget get content => _BoringDurationDialogForm(
         formController: formController,
         durationFieldTheme: durationFieldTheme,
+        fieldsToShow: fieldsToShow,
       );
 
   @override

@@ -1,0 +1,4 @@
+enum DurationField {
+  timeFields,
+  dateFields;
+}

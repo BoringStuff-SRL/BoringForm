@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:boring_form/field/boring_form_field.dart';
+import 'package:boring_form/implementations/choice/boring_duration_field/duration_fields.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
@@ -18,9 +19,11 @@ class BoringDurationField extends BoringFormField<Duration> {
     super.validationFunction,
     super.forceHideRequiredFieldLabel,
     this.durationFieldTheme,
+    this.fieldsToShow,
   });
 
   final BDurationFieldTheme? durationFieldTheme;
+  final List<DurationField>? fieldsToShow;
 
   BDurationFieldTheme durationFieldThemeOf(BuildContext context) =>
       durationFieldTheme ?? BoringTheme.of(context).durationFieldTheme;
@@ -56,6 +59,7 @@ class BoringDurationField extends BoringFormField<Duration> {
           onSet: (duration) {
             formController.setFieldValue(fieldPath, duration);
           },
+          fieldsToShow: fieldsToShow,
         ).show(context);
       },
     );
