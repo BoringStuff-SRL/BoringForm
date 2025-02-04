@@ -105,12 +105,10 @@ class BoringRRuleForm extends BoringFormWidget {
         separator: spacing,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          BoringDropdownField(
+          BoringDropdownField<MonthlyRecurrenceType>(
             fieldPath: ["monthlyRecurrenceType"],
             getItems: (search) async {
-              return MonthlyRecurrenceType.values
-                  .map((e) => BChoiceItem(value: e, display: e.tr))
-                  .toList();
+              return MonthlyRecurrenceType.values.toList();
             },
             clearable: false,
             decoration: (formController) =>
