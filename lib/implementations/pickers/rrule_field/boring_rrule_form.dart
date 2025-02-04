@@ -282,15 +282,11 @@ class BoringRRuleForm extends BoringFormWidget {
       BRow(
         children: [
           Expanded(
-            child: BoringDropdownField(
+            child: BoringDropdownField<BySetPos>(
               readOnly: readOnly,
               fieldPath: [path, "bySetPos"],
               getItems: (search) async {
-                return BySetPos.values
-                    .map(
-                      (e) => BChoiceItem(value: e, display: e.tr),
-                    )
-                    .toList();
+                return BySetPos.values.toList();
               },
               clearable: false,
               decoration: (formController) =>
@@ -299,7 +295,7 @@ class BoringRRuleForm extends BoringFormWidget {
             ),
           ),
           Expanded(
-            child: BoringDropdownField(
+            child: BoringDropdownField<ByMonthDayOccurrence>(
               readOnly: readOnly,
               fieldPath: [path, "byMonthDaysOccurrence"],
               getItems: (search) async {
