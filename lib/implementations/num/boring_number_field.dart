@@ -1,5 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
+import 'dart:math';
+
 import 'package:boring_form/field/boring_form_field.dart';
 import 'package:boring_ui/boring_ui.dart';
 // import 'package:boring_form/field/boring_field.dart';
@@ -160,26 +162,6 @@ class BoringNumberField extends BoringFormField<num> {
   @override
   Widget builder(BuildContext context, BoringFormStyle formStyle,
       BoringFormController formController, num? fieldValue, String? error) {
-    // Inizializza il valore iniziale, se necessario
-    if (!hasSetInitialValue && fieldValue != null) {
-      var cursorPos = _textEditingController.selection.base.offset;
-
-      final formatter =
-          NumberFormat('###,###.###', decimalSeparator == '.' ? 'en' : 'it');
-
-      _textEditingController.text = _numberFormatter
-          .formatEditUpdate(
-            TextEditingValue.empty,
-            TextEditingValue(text: formatter.format(fieldValue)),
-          )
-          .text;
-
-      _textEditingController.selection =
-          TextSelection.collapsed(offset: cursorPos);
-
-      hasSetInitialValue = true;
-    }
-
     const iconConstraints = BoxConstraints(
       minWidth: 24,
       minHeight: 24,
@@ -272,18 +254,30 @@ class BoringNumberField extends BoringFormField<num> {
 
   @override
   void onSelfChange(BoringFormController formController, num? fieldValue) {
-    final text = _numberFormatter
+    if (fieldValue == null) {
+      _textEditingController.text = '';
+      return;
+    }
+
+    var cursorPos = _textEditingController.selection.base.offset;
+
+    final formatter =
+        NumberFormat('###,###.###', decimalSeparator == '.' ? 'en' : 'it');
+
+    _textEditingController.text = _numberFormatter
         .formatEditUpdate(
-          TextEditingValue(text: _textEditingController.text),
+          TextEditingValue.empty,
           TextEditingValue(
-            text: "${fieldValue ?? ''}",
+            text: formatter.format(fieldValue),
           ),
         )
         .text;
-    _textEditingController.value = TextEditingValue(
-      text: text,
-      selection:
-          TextSelection(baseOffset: text.length, extentOffset: text.length),
+
+    _textEditingController.selection = TextSelection.collapsed(
+      offset: min(
+        cursorPos,
+        _textEditingController.text.length,
+      ),
     );
   }
 }

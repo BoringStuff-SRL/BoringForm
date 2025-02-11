@@ -66,7 +66,7 @@ class FormExample0 extends StatelessWidget {
   FormExample0({super.key});
 
   final c = BoringFormController(
-    initialValue: {},
+    initialValue: {'mammt' : 123456.78},
     deferredFields: {
       ['user']: DeferredValue<UsersRepo, User>(
         listenable: usersRepo,
@@ -132,6 +132,19 @@ class FormExample0 extends StatelessWidget {
           formController: c,
           child: Column(
             children: [
+              BoringNumberField(
+                fieldPath: ['mammt'],
+                decimalSeparator: ',',
+                thousandsSeparator: '.',
+                decimalPlaces: 3,
+              ),
+
+              BButton(onPressed: () {
+
+                c.setFieldValue(['mammt'], 33.33);
+
+              }, text: 'set',),
+
               BoringDeferredField<UsersRepo, User>(
                 fieldPath: ['user'],
                 builder: (fieldPath) => BoringDropdownField<User>(
