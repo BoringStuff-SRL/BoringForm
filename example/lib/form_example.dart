@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:boring_form/implementations/choice/boring_text_drop_down_field.dart';
 
 class User {
   const User({
@@ -66,7 +67,7 @@ class FormExample0 extends StatelessWidget {
   FormExample0({super.key});
 
   final c = BoringFormController(
-    initialValue: {'mammt' : 123456.78},
+    initialValue: {'mammt': 123456.78},
     deferredFields: {
       ['user']: DeferredValue<UsersRepo, User>(
         listenable: usersRepo,
@@ -138,13 +139,17 @@ class FormExample0 extends StatelessWidget {
                 thousandsSeparator: '.',
                 decimalPlaces: 3,
               ),
-
-              BButton(onPressed: () {
-
-                c.setFieldValue(['mammt'], 33.33);
-
-              }, text: 'set',),
-
+              BButton(
+                onPressed: () {
+                  c.setFieldValue(['mammt'], 33.33);
+                },
+                text: 'set',
+              ),
+              BoringWindowField<String>(
+                label: 'boring windowwww',
+                future: Future.value(['Uno', 'Due', 'Tre', 'Quattro']),
+                fieldPath: ['ngul'],
+              ),
               BoringDeferredField<UsersRepo, User>(
                 fieldPath: ['user'],
                 builder: (fieldPath) => BoringDropdownField<User>(
