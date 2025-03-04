@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:boring_form/field/boring_form_field.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class BoringTextDropDownField extends BoringFormField<String> {
   BoringTextDropDownField({
@@ -13,10 +14,27 @@ class BoringTextDropDownField extends BoringFormField<String> {
     super.forceHideRequiredFieldLabel,
     super.onChanged,
     super.readOnly,
-    super.validationFunction,
-  }) : fieldController = BoringTextDropDownFieldController(
+    this.minLines = 1,
+    this.maxLines = 1,
+    this.inputFormatter,
+    this.allowEmpty = false,
+    ValidationFunction<String>? validationFunction,
+    String errorMessage = "Value cannot be empty",
+  })  : fieldController = BoringTextDropDownFieldController(
           getItems: future,
-        );
+        ),
+        super(
+            validationFunction: validationFunction == null && allowEmpty
+                ? null
+                : (BoringFormController formController, String? value) {
+                    final error =
+                        validationFunction?.call(formController, value);
+                    final emptyError =
+                        !allowEmpty && (value == null || value.isEmpty)
+                            ? errorMessage
+                            : null;
+                    return error ?? emptyError;
+                  });
 
   final OverlayPortalController portalController = OverlayPortalController();
   final LayerLink _layerLink = LayerLink();
@@ -25,6 +43,10 @@ class BoringTextDropDownField extends BoringFormField<String> {
   final GlobalKey _fieldKey = GlobalKey();
   final BoringTextDropDownFieldController fieldController;
   final FocusNode focusNode = FocusNode();
+  final int minLines;
+  final int maxLines;
+  final bool allowEmpty;
+  final List<TextInputFormatter>? inputFormatter;
 
   @override
   Widget builder(BuildContext context, BoringFormStyle formStyle,
@@ -43,12 +65,22 @@ class BoringTextDropDownField extends BoringFormField<String> {
         child: TextField(
           key: _fieldKey,
           controller: _textController,
+          readOnly: isReadOnly(formController, formStyle),
+          enabled: !isReadOnly(formController, formStyle),
+          inputFormatters: inputFormatter,
+          minLines: minLines,
+          maxLines: maxLines,
+          textAlign: formStyle.textAlign,
+          style: formStyle.textStyle,
+          decoration:
+              getInputDecoration(formController, formStyle, error, fieldValue),
           onChanged: (value) {
             fieldController.setFilter(value);
             formController.setFieldValue(fieldPath, value);
             if (!portalController.isShowing) {
               portalController.show();
             }
+            setChangedValue(formController, value);
           },
           focusNode: focusNode,
         ),
