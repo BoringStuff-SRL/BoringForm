@@ -117,7 +117,10 @@ class BoringTextDropDownField extends BoringFormField<String> {
                     final items = fieldController.items;
 
                     if (items.isEmpty) {
-                      return Container();
+                      return _buildDropdownContainer(
+                        child:
+                            const Center(child: Text('Nessun elemento')),
+                      );
                     }
 
                     return _buildDropdownContainer(
