@@ -8,7 +8,12 @@ class BoringTextDropDownField extends BoringFormField<String> {
     super.key,
     required super.fieldPath,
     required this.future,
-    required this.label,
+    super.decoration,
+    super.observedFields,
+    super.forceHideRequiredFieldLabel,
+    super.onChanged,
+    super.readOnly,
+    super.validationFunction,
   }) : fieldController = BoringTextDropDownFieldController(
           getItems: future,
         );
@@ -16,7 +21,6 @@ class BoringTextDropDownField extends BoringFormField<String> {
   final OverlayPortalController portalController = OverlayPortalController();
   final LayerLink _layerLink = LayerLink();
   final Future<List<String>> Function() future;
-  final String label;
   final TextEditingController _textController = TextEditingController();
   final GlobalKey _fieldKey = GlobalKey();
   final BoringTextDropDownFieldController fieldController;
@@ -39,10 +43,6 @@ class BoringTextDropDownField extends BoringFormField<String> {
         child: TextField(
           key: _fieldKey,
           controller: _textController,
-          decoration: InputDecoration(
-            labelText: label,
-            errorText: error,
-          ),
           onChanged: (value) {
             fieldController.setFilter(value);
             formController.setFieldValue(fieldPath, value);
