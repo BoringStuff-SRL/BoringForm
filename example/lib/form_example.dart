@@ -133,34 +133,53 @@ class FormExample0 extends StatelessWidget {
           formController: c,
           child: Column(
             children: [
-              BoringNumberField(
-                fieldPath: ['mammt'],
-                decimalSeparator: ',',
-                thousandsSeparator: '.',
-                decimalPlaces: 3,
-              ),
               BButton(
                 onPressed: () {
                   c.setFieldValue(['mammt'], 33.33);
                 },
                 text: 'set',
               ),
-              BoringWindowField<String>(
-                label: 'boring windowwww',
-                future: Future.value(['Uno', 'Due', 'Tre', 'Quattro']),
-                fieldPath: ['ngul'],
+              Row(
+                children: [
+                  Expanded(
+                    child: BoringTextDropDownField(
+                      label: 'boring windowwww',
+                      future: () => Future.delayed(
+                        const Duration(seconds: 2),
+                        () => ['Uno', 'Due', 'Tre', 'Quattro'],
+                      ),
+                      fieldPath: ['ngul'],
+                    ),
+                  ),
+                  Expanded(
+                    child: BoringNumberField(
+                      fieldPath: ['mammt'],
+                      decimalSeparator: ',',
+                      thousandsSeparator: '.',
+                      decimalPlaces: 3,
+                    ),
+                  ),
+                ],
               ),
-              BoringDeferredField<UsersRepo, User>(
-                fieldPath: ['user'],
-                builder: (fieldPath) => BoringDropdownField<User>(
-                  fieldPath: fieldPath,
-                  getItems: (search) async {
-                    return await usersRepo.readMultiFuture(0);
-                  },
-                  toBoringChoiceItem: (element) {
-                    return BChoiceItem(value: element, display: element.name);
-                  },
-                ),
+              Row(
+                children: [
+                  Expanded(
+                    child: BoringDeferredField<UsersRepo, User>(
+                      fieldPath: ['user'],
+                      builder: (fieldPath) => BoringDropdownField<User>(
+                        fieldPath: fieldPath,
+                        getItems: (search) async {
+                          return await usersRepo.readMultiFuture(0);
+                        },
+                        toBoringChoiceItem: (element) {
+                          return BChoiceItem(
+                              value: element, display: element.name);
+                        },
+                      ),
+                    ),
+                  ),
+                  Expanded(child: BoringNumberField(fieldPath: ['num1'])),
+                ],
               ),
               ElevatedButton(
                 onPressed: () {
@@ -171,7 +190,6 @@ class FormExample0 extends StatelessWidget {
                 child: const Text('Set readonly'),
               ),
               const Divider(),
-              BoringNumberField(fieldPath: ['num1']),
               BoringFormChildWidget(
                 observedFields: [
                   ['num1']
