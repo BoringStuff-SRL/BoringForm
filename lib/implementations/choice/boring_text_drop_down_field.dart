@@ -16,6 +16,7 @@ class BoringTextDropDownField extends BoringFormField<String> {
     super.readOnly,
     this.minLines = 1,
     this.maxLines = 1,
+    this.boringStyle,
     this.inputFormatter,
     this.allowEmpty = false,
     ValidationFunction<String>? validationFunction,
@@ -35,7 +36,7 @@ class BoringTextDropDownField extends BoringFormField<String> {
                             : null;
                     return error ?? emptyError;
                   });
-
+  final BDropdownTheme? boringStyle;
   final OverlayPortalController portalController = OverlayPortalController();
   final LayerLink _layerLink = LayerLink();
   final Future<List<String>> Function() future;
@@ -43,6 +44,7 @@ class BoringTextDropDownField extends BoringFormField<String> {
   final GlobalKey _fieldKey = GlobalKey();
   final BoringTextDropDownFieldController fieldController;
   final FocusNode focusNode = FocusNode();
+  final FocusScopeNode focusScopeNode = FocusScopeNode();
   final int minLines;
   final int maxLines;
   final bool allowEmpty;
@@ -55,13 +57,79 @@ class BoringTextDropDownField extends BoringFormField<String> {
       if (focusNode.hasFocus) {
         portalController.show();
       } else {
-        portalController.hide();
+        Future.delayed(const Duration(milliseconds: 200), () {
+          portalController.hide();
+        });
       }
     });
     return CompositedTransformTarget(
       link: _layerLink,
       child: OverlayPortal.targetsRootOverlay(
         controller: portalController,
+        overlayChildBuilder: (context) {
+          final renderBox =
+              (_fieldKey.currentContext?.findRenderObject() as RenderBox);
+
+          return ListenableBuilder(
+              listenable: fieldController,
+              builder: (context, child) {
+                return Stack(
+                  children: [
+                    BDropdownWindow(
+                      layerLink: _layerLink,
+                      buildOver: false,
+                      dropdownWindowMaxHeight: 200,
+                      parentRenderBox: renderBox,
+                      child: ListenableBuilder(
+                        listenable: fieldController,
+                        builder: (context, child) {
+                          if (fieldController.isLoading) {
+                            return _buildDropdownContainer(
+                              child: const Center(
+                                  child: CircularProgressIndicator()),
+                            );
+                          }
+
+                          if (fieldController.hasError) {
+                            return _buildDropdownContainer(
+                              child: const Center(
+                                  child: Text('Errore nel caricamento')),
+                            );
+                          }
+
+                          final items = fieldController.items;
+
+                          if (items.isEmpty) {
+                            return _buildDropdownContainer(
+                              child:
+                                  const Center(child: Text('Nessun elemento')),
+                            );
+                          }
+
+                          return _buildDropdownContainer(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: items.length,
+                              itemBuilder: (context, index) {
+                                final item = items[index];
+                                return ListTile(
+                                  title: Text(item),
+                                  onTap: () {
+                                    formController.setFieldValue(
+                                        fieldPath, item);
+                                    portalController.hide();
+                                  },
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              });
+        },
         child: TextField(
           key: _fieldKey,
           controller: _textController,
@@ -84,70 +152,12 @@ class BoringTextDropDownField extends BoringFormField<String> {
           },
           focusNode: focusNode,
         ),
-        overlayChildBuilder: (context) {
-          final renderBox =
-              (_fieldKey.currentContext?.findRenderObject() as RenderBox);
-
-          return Stack(
-            children: [
-              GestureDetector(
-                onTap: portalController.hide,
-              ),
-              BDropdownWindow(
-                layerLink: _layerLink,
-                buildOver: false,
-                dropdownWindowMaxHeight: 200,
-                parentRenderBox: renderBox,
-                child: ListenableBuilder(
-                  listenable: fieldController,
-                  builder: (context, child) {
-                    if (fieldController.isLoading) {
-                      return _buildDropdownContainer(
-                        child: const Center(child: CircularProgressIndicator()),
-                      );
-                    }
-
-                    if (fieldController.hasError) {
-                      return _buildDropdownContainer(
-                        child:
-                            const Center(child: Text('Errore nel caricamento')),
-                      );
-                    }
-
-                    final items = fieldController.items;
-
-                    if (items.isEmpty) {
-                      return _buildDropdownContainer(
-                        child:
-                            const Center(child: Text('Nessun elemento')),
-                      );
-                    }
-
-                    return _buildDropdownContainer(
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: items.length,
-                        itemBuilder: (context, index) {
-                          final item = items[index];
-                          return ListTile(
-                            title: Text(item.toString()),
-                            onTap: () {
-                              formController.setFieldValue(fieldPath, item);
-                              portalController.hide();
-                            },
-                          );
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          );
-        },
       ),
     );
   }
+
+  BDropdownTheme bDropdownTheme(BuildContext context) =>
+      boringStyle ?? BoringTheme.of(context).bDropdownTheme;
 
   Widget _buildDropdownContainer({required Widget child}) {
     return ConstrainedBox(
@@ -183,6 +193,7 @@ class BoringTextDropDownFieldController extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
   bool get hasError => _error != null;
+  bool get isEmpty => _items.isEmpty;
 
   Future<void> loadItems() async {
     _isLoading = true;

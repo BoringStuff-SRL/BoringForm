@@ -143,6 +143,7 @@ class FormExample0 extends StatelessWidget {
                 children: [
                   Expanded(
                     child: BoringTextDropDownField(
+                      allowEmpty: true,
                       future: () => Future.delayed(
                         const Duration(seconds: 2),
                         () => ['Uno', 'Due', 'Tre', 'Quattro'],
