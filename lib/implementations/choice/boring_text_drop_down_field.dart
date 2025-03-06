@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:ffi';
+import 'dart:math';
 import 'package:boring_form/field/boring_form_field.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +51,7 @@ class BoringTextDropDownField extends BoringFormField<String> {
   final int maxLines;
   final bool allowEmpty;
   final List<TextInputFormatter>? inputFormatter;
+  bool _isSelecting = false;
 
   @override
   Widget builder(BuildContext context, BoringFormStyle formStyle,
@@ -56,10 +59,8 @@ class BoringTextDropDownField extends BoringFormField<String> {
     focusNode.addListener(() {
       if (focusNode.hasFocus) {
         portalController.show();
-      } else {
-        Future.delayed(const Duration(milliseconds: 200), () {
-          portalController.hide();
-        });
+      } else if (!_isSelecting) {
+        portalController.hide();
       }
     });
     return CompositedTransformTarget(
@@ -69,7 +70,6 @@ class BoringTextDropDownField extends BoringFormField<String> {
         overlayChildBuilder: (context) {
           final renderBox =
               (_fieldKey.currentContext?.findRenderObject() as RenderBox);
-
           return ListenableBuilder(
               listenable: fieldController,
               builder: (context, child) {
@@ -105,22 +105,32 @@ class BoringTextDropDownField extends BoringFormField<String> {
                                   const Center(child: Text('Nessun elemento')),
                             );
                           }
-
                           return _buildDropdownContainer(
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: items.length,
-                              itemBuilder: (context, index) {
-                                final item = items[index];
-                                return ListTile(
-                                  title: Text(item),
-                                  onTap: () {
-                                    formController.setFieldValue(
-                                        fieldPath, item);
-                                    portalController.hide();
-                                  },
-                                );
+                            child: MouseRegion(
+                              onEnter: (_) {
+                                _isSelecting = true;
                               },
+                              onExit: (_) {
+                                _isSelecting = false;
+                                if (!focusNode.hasFocus) {
+                                  portalController.hide();
+                                }
+                              },
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: items.length,
+                                itemBuilder: (context, index) {
+                                  final item = items[index];
+                                  return ListTile(
+                                    title: Text(item),
+                                    onTap: () {
+                                      formController.setFieldValue(
+                                          fieldPath, item);
+                                      portalController.hide();
+                                    },
+                                  );
+                                },
+                              ),
                             ),
                           );
                         },
@@ -168,7 +178,9 @@ class BoringTextDropDownField extends BoringFormField<String> {
 
   @override
   void onSelfChange(BoringFormController formController, String? fieldValue) {
-    var cursorPos = _textController.selection.base.offset;
+    var cursorPos =
+        min(_textController.selection.base.offset, fieldValue?.length ?? 0);
+
     _textController.text = (fieldValue ?? "");
     if (fieldValue != null) {
       _textController.selection = TextSelection.collapsed(offset: cursorPos);
