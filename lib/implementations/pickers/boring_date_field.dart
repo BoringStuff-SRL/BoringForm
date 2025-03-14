@@ -1,3 +1,4 @@
+import 'package:boring_form/form/bform_controller.dart';
 import 'package:boring_form/implementations/pickers/boring_picker_field.dart';
 import 'package:boring_form/utils/datetime_extnesions.dart';
 import 'package:boring_ui/boring_ui.dart';
@@ -31,7 +32,7 @@ class BoringDateTimeField extends BoringPickerField<DateTime> {
                 ? validationFunction == null
                 : forceHideRequiredFieldLabel,
             validationFunction:
-                (BoringFormController formController, DateTime? value) {
+                (BFormController formController, DateTime? value) {
               final error = validationFunction?.call(formController, value);
 
               final boundsError = value == null ||
@@ -110,7 +111,7 @@ class BoringDateRangeField extends BoringPickerField<DateTimeRange> {
               ? validationFunction == null
               : forceHideRequiredFieldLabel,
           validationFunction:
-              (BoringFormController formController, DateTimeRange? value) {
+              (BFormController formController, DateTimeRange? value) {
             final error = validationFunction?.call(formController, value);
 
             final isOutOfBound = value == null
@@ -178,7 +179,7 @@ class BoringDateField extends BoringPickerField<DateTime> {
                 ? validationFunction == null
                 : forceHideRequiredFieldLabel,
             validationFunction:
-                (BoringFormController formController, DateTime? value) {
+                (BFormController formController, DateTime? value) {
               final error = validationFunction?.call(formController, value);
 
               final boundsError = value == null ||
@@ -236,7 +237,7 @@ class BoringTimeField extends BoringPickerField<TimeOfDay> {
                 ? validationFunction == null
                 : forceHideRequiredFieldLabel,
             validationFunction:
-                (BoringFormController formController, TimeOfDay? value) {
+                (BFormController formController, TimeOfDay? value) {
               final error = validationFunction?.call(formController, value);
 
               return error;
