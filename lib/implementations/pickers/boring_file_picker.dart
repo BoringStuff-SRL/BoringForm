@@ -57,7 +57,7 @@ class BoringFilePicker extends BFormField<List<PlatformFile>> {
             ),
       );
   void _handlePick(
-    BFormController formController,
+    BoringFormController formController,
     FilePickerResult? pickerResult,
   ) {
     if (pickerResult == null) {
@@ -71,7 +71,7 @@ class BoringFilePicker extends BFormField<List<PlatformFile>> {
   Widget fieldBuilder(
       BuildContext context,
       BoringFormStyle formStyle,
-      BFormController formController,
+      BoringFormController formController,
       List<PlatformFile>? fieldValue,
       FieldValidation fieldValidation,
       void computedValue,

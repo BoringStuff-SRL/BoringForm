@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
-
 import 'package:boring_form/field/bform_field.dart';
 import 'package:boring_form/form/bform_controller.dart';
 import 'package:boring_ui/boring_ui.dart';
@@ -162,7 +161,7 @@ class BoringNumberField extends BFormField<num> {
   Widget fieldBuilder(
       BuildContext context,
       BoringFormStyle formStyle,
-      BFormController formController,
+      BoringFormController formController,
       num? fieldValue,
       FieldValidation fieldValidation,
       void computedValue,
@@ -237,14 +236,14 @@ class BoringNumberField extends BFormField<num> {
     );
   }
 
-  void _incrementValue(BFormController formController) {
+  void _incrementValue(BoringFormController formController) {
     int currentValue = int.tryParse(_textEditingController.text) ?? 0;
     currentValue++;
     _textEditingController.text = currentValue.toString();
     setChangedValue(formController, currentValue);
   }
 
-  void _decrementValue(BFormController formController) {
+  void _decrementValue(BoringFormController formController) {
     int currentValue = int.tryParse(_textEditingController.text) ?? 1;
     if (currentValue > 1) {
       currentValue--;

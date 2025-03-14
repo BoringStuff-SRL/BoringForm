@@ -28,7 +28,7 @@ class BoringPasswordField extends BoringTextField {
   Widget get _visibilityOffIcon => const Icon(Icons.visibility_off);
 
   @override
-  InputDecoration getInputDecoration(BFormController formController,
+  InputDecoration getInputDecoration(BoringFormController formController,
       BoringFormStyle style, String? value, FieldValidation fieldValidation) {
     return super
         .getInputDecoration(formController, style, value, fieldValidation)
@@ -49,7 +49,7 @@ class BoringPasswordField extends BoringTextField {
   Widget fieldBuilder(
       BuildContext context,
       BoringFormStyle formStyle,
-      BFormController formController,
+      BoringFormController formController,
       String? fieldValue,
       FieldValidation fieldValidation,
       void computedValue,

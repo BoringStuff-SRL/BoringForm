@@ -24,7 +24,7 @@ class _DropDataHandler {
   final List<_DropData> _data = [];
   final int itemsToDrop;
   final BoringFilePickerSettings settings;
-  final BFormController formController;
+  final BoringFormController formController;
   final List<String> fieldPath;
 
   _DropDataHandler({
@@ -75,7 +75,7 @@ class _DropDataHandler {
 }
 
 class BoringDropZone extends StatelessWidget {
-  final BFormController formController;
+  final BoringFormController formController;
   final List<String> fieldPath;
   late final ValueNotifier<Color> color;
 

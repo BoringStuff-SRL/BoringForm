@@ -26,7 +26,7 @@ class BoringCheckBoxField extends BFormField<bool> {
   Widget fieldBuilder(
       BuildContext context,
       BoringFormStyle formStyle,
-      BFormController formController,
+      BoringFormController formController,
       bool? fieldValue,
       FieldValidation fieldValidation,
       void computedValue,

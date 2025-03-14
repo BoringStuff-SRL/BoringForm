@@ -31,7 +31,7 @@ class BoringDurationField extends BFormField<Duration> {
   Widget fieldBuilder(
       BuildContext context,
       BoringFormStyle formStyle,
-      BFormController formController,
+      BoringFormController formController,
       Duration? fieldValue,
       FieldValidation fieldValidation,
       void computedValue,

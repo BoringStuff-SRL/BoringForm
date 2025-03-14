@@ -45,7 +45,7 @@ class BoringDropdownMultiChoiceField<T>
   Widget fieldBuilder(
       BuildContext context,
       BoringFormStyle formStyle,
-      BFormController formController,
+      BoringFormController formController,
       List<T>? fieldValue,
       FieldValidation fieldValidation,
       List<T>? computedValue,

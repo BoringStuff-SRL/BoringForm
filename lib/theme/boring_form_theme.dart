@@ -18,12 +18,12 @@ class BoringFormTheme extends InheritedWidget {
 }
 
 class BFormControllerProvider extends InheritedWidget {
-  final BFormController formController;
+  final BoringFormController formController;
 
   const BFormControllerProvider(
       {super.key, required super.child, required this.formController});
 
-  static BFormController controllerOf(BuildContext context) {
+  static BoringFormController controllerOf(BuildContext context) {
     final inheritedWidget =
         context.getInheritedWidgetOfExactType<BFormControllerProvider>();
     assert(inheritedWidget != null,

@@ -1,6 +1,6 @@
 part of 'boring_duration_field.dart';
 
-class _BoringDurationDialogFormController extends BFormController {
+class _BoringDurationDialogFormController extends BoringFormController {
   _BoringDurationDialogFormController({BoringDurationDataHandler? dataHandler})
       : super(initialValue: dataHandler?.toMap());
 

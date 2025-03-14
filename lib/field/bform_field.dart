@@ -6,7 +6,7 @@ import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
 typedef DecorationBuilder<T> = BoringFieldDecoration<T>? Function(
-    BFormController formController);
+    BoringFormController formController);
 
 String? requiredValidationFunction<T>(
   T? value, {
@@ -46,7 +46,7 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
   final ValidationFunction<T> validationFunction;
   final bool required;
   final bool? readOnly;
-  final Function(BFormController formController, T? fieldValue)? onChanged;
+  final Function(BoringFormController formController, T? fieldValue)? onChanged;
 
   //CAN BE REMOVED??
   final DecorationBuilder<T>? _decorationBuilder;
@@ -72,7 +72,7 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
   //[START] DECORATIONS
   Widget _label(
     BoringFieldDecoration fieldDecoration,
-    BFormController formController,
+    BoringFormController formController,
     BoringFormStyle style,
     FieldValidation fieldValidation,
   ) =>
@@ -89,11 +89,11 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
       );
 
   BoringFieldDecoration<T>? getFieldDecoration(
-          BFormController formController) =>
+          BoringFormController formController) =>
       _decorationBuilder?.call(formController);
 
   InputDecoration getInputDecoration(
-    BFormController formController,
+    BoringFormController formController,
     BoringFormStyle style,
     T? value,
     FieldValidation fieldValidation,
@@ -125,7 +125,7 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
   Future<TT?> asyncComputations(Map<FieldPath, dynamic> observedValues);
 
   Future<TT?> _performAsyncComputations(Map<FieldPath, dynamic> observedValues,
-      BFormController formController) async {
+      BoringFormController formController) async {
     formController.setLoadingField(fieldPath);
     try {
       final result = await asyncComputations(observedValues);
@@ -137,15 +137,15 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
     }
   }
 
-  void setChangedValue(BFormController formController, T? newValue) {
+  void setChangedValue(BoringFormController formController, T? newValue) {
     formController.setFieldValue<T?>(fieldPath, newValue);
     onChanged?.call(formController, newValue);
   }
 
-  void onSelfChange(BFormController formController, String? fieldValue) {}
+  void onSelfChange(BoringFormController formController, String? fieldValue) {}
 
   @override
-  Widget builder(BuildContext context, BFormController formController,
+  Widget builder(BuildContext context, BoringFormController formController,
       Map<FieldPath, dynamic> observedValues) {
     formController.setValidationFunction(fieldPath, validationFunction);
     return BFutureBuilder<TT?>(
@@ -182,7 +182,7 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
   Widget fieldBuilder(
     BuildContext context,
     BoringFormStyle formStyle,
-    BFormController formController,
+    BoringFormController formController,
     T? fieldValue,
     FieldValidation fieldValidation,
     TT? computedValue,
@@ -219,13 +219,15 @@ abstract class BFormObserver extends StatelessWidget {
 
   Widget builder(
     BuildContext context,
-    BFormController formController,
+    BoringFormController formController,
     Map<FieldPath, dynamic> observedValues,
   );
 }
 
-typedef BFormObserverBuilder = Widget Function(BuildContext context,
-    BFormController formController, Map<FieldPath, dynamic> observedValues);
+typedef BFormObserverBuilder = Widget Function(
+    BuildContext context,
+    BoringFormController formController,
+    Map<FieldPath, dynamic> observedValues);
 
 class BFormObserverWidget extends BFormObserver {
   final BFormObserverBuilder _builder;
@@ -243,7 +245,7 @@ class BFormObserverWidget extends BFormObserver {
         _onObservedLoading = onObservedLoading;
 
   @override
-  Widget builder(BuildContext context, BFormController formController,
+  Widget builder(BuildContext context, BoringFormController formController,
           Map<FieldPath, dynamic> observedValues) =>
       _builder(context, formController, observedValues);
 

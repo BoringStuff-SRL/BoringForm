@@ -80,9 +80,9 @@ extension SetExtension<T> on Set<T> {
   bool containsAny(List<T> elements) => elements.any(contains);
 }
 
-class BFormController extends ChangeNotifier {
+class BoringFormController extends ChangeNotifier {
   static const DeepCollectionEquality _equality = DeepCollectionEquality();
-  static BFormController of(BuildContext context) =>
+  static BoringFormController of(BuildContext context) =>
       BFormControllerProvider.controllerOf(context);
 
   final Map<String, dynamic> _value;
@@ -93,7 +93,7 @@ class BFormController extends ChangeNotifier {
   final ValidationBehaviour validationBehaviour;
   final FieldRequiredLabelBehaviour fieldRequiredLabelBehaviour;
 
-  BFormController({
+  BoringFormController({
     Map<String, dynamic>? initialValue,
     Set<FieldPath>? readOnlyFields,
     this.validationBehaviour = ValidationBehaviour.onSubmit,
@@ -180,7 +180,7 @@ class BFormController extends ChangeNotifier {
   /// GETTERS
   Map<String, dynamic> get value => _value;
   bool get hasChanged =>
-      !BFormController._equality.equals(_value, _initialValue);
+      !BoringFormController._equality.equals(_value, _initialValue);
 
   bool get isValid {
     //final deferredLoading = _deferredFields.entries
@@ -344,7 +344,7 @@ class BFormController extends ChangeNotifier {
 
   void removeValidationFunction(FieldPath fieldPath) {
     _validationFunctions.removeWhere(
-      (key, value) => BFormController._equality.equals(key, fieldPath),
+      (key, value) => BoringFormController._equality.equals(key, fieldPath),
     );
   }
 }

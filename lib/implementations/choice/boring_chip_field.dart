@@ -18,14 +18,14 @@ class BoringChipField<T> extends BFormField<List<T>> {
   final List<T> elements;
   final Widget Function(T element) toLabel;
   final String Function(T element)? toTooltip;
-  final bool Function(BFormController formController, T element)?
+  final bool Function(BoringFormController formController, T element)?
       canRemoveSelection;
 
   @override
   Widget fieldBuilder(
       BuildContext context,
       BoringFormStyle formStyle,
-      BFormController formController,
+      BoringFormController formController,
       List<T>? fieldValue,
       FieldValidation fieldValidation,
       void computedValue,

@@ -302,7 +302,7 @@ class MapKeyListException implements Exception {
 // }
 
 typedef ValidationFunction<T> = String? Function(
-    BFormController formController, T? value)?;
+    BoringFormController formController, T? value)?;
 typedef FieldPath = List<String>;
 
 // class BoringFormController extends BoringFormControllerValue {

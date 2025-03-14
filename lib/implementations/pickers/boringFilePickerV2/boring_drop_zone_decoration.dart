@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, prefer_const_constructors
 
-import 'package:boring_form/boring_form.dart';
 import 'package:boring_form/form/bform_controller.dart';
 import 'package:flutter/material.dart';
 
@@ -21,11 +20,11 @@ class BoringFilePickerDecoration {
   final Function(BuildContext context, BoringFilePickerErrorType errorType)?
       onError;
   final Widget Function(
-          BuildContext context, BFormController formController)?
+          BuildContext context, BoringFormController formController)?
       listTileBuilder;
 
   final Widget Function(
-          BuildContext context, BFormController formController)?
+          BuildContext context, BoringFormController formController)?
       dropzoneBuilder;
   final BoringFilePickerBehaviour boringFilePickerBehaviour;
 

@@ -35,7 +35,7 @@ class BoringTextField extends BFormField<String> {
   Widget fieldBuilder(
     BuildContext context,
     BoringFormStyle formStyle,
-    BFormController formController,
+    BoringFormController formController,
     String? fieldValue,
     FieldValidation fieldValidation,
     void computedValue,

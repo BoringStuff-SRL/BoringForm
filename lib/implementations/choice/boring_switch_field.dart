@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
 import 'package:boring_form/field/bform_field.dart';
-import 'package:boring_form/field/boring_form_field.dart';
 import 'package:boring_form/form/bform_controller.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/gestures.dart';
@@ -79,7 +78,7 @@ class BoringSwitchField extends BFormField<bool> {
   Widget fieldBuilder(
       BuildContext context,
       BoringFormStyle formStyle,
-      BFormController formController,
+      BoringFormController formController,
       bool? fieldValue,
       FieldValidation fieldValidation,
       void computedValue,
@@ -92,8 +91,8 @@ class BoringSwitchField extends BFormField<bool> {
       },
       switchDecoration: switchDecoration,
       decoration: getFieldDecoration(formController),
-      inputDecoration:getInputDecoration(formController, formStyle, fieldValue, fieldValidation)
-          ,
+      inputDecoration: getInputDecoration(
+          formController, formStyle, fieldValue, fieldValidation),
     );
   }
 }
