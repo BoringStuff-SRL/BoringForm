@@ -142,6 +142,8 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
     onChanged?.call(formController, newValue);
   }
 
+  void onSelfChange(BFormController formController, String? fieldValue) {}
+
   @override
   Widget builder(BuildContext context, BFormController formController,
       Map<FieldPath, dynamic> observedValues) {

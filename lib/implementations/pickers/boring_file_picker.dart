@@ -1,12 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:boring_form/field/boring_form_field.dart';
+import 'package:boring_form/field/bform_field.dart';
+import 'package:boring_form/form/bform_controller.dart';
 import 'package:boring_ui/boring_ui.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 enum FilePickerFeedbackPosition { top, left, right, bottom }
 
-class BoringFilePicker extends BoringFormField<List<PlatformFile>> {
+class BoringFilePicker extends BFormField<List<PlatformFile>> {
   final double? textSpacingFromIcon;
   final double? buttonWidth;
   final double? verticalAlignment;
@@ -24,7 +24,7 @@ class BoringFilePicker extends BoringFormField<List<PlatformFile>> {
   final Border? border;
   // final String? label;
 
-  const BoringFilePicker({
+  BoringFilePicker({
     super.key,
     required super.fieldPath,
     super.observedFields,
@@ -57,7 +57,7 @@ class BoringFilePicker extends BoringFormField<List<PlatformFile>> {
             ),
       );
   void _handlePick(
-    BoringFormController formController,
+    BFormController formController,
     FilePickerResult? pickerResult,
   ) {
     if (pickerResult == null) {
@@ -68,16 +68,16 @@ class BoringFilePicker extends BoringFormField<List<PlatformFile>> {
   }
 
   @override
-  Widget builder(
+  Widget fieldBuilder(
       BuildContext context,
-      BoringFormStyle formTheme,
-      BoringFormController formController,
+      BoringFormStyle formStyle,
+      BFormController formController,
       List<PlatformFile>? fieldValue,
-      String? error) {
-    final style = formTheme;
-    final decoration =
-        getInputDecoration(formController, formTheme, error, fieldValue);
-    final readOnly = style.readOnly;
+      FieldValidation fieldValidation,
+      void computedValue,
+      bool readOnly) {
+    final decoration = getInputDecoration(
+        formController, formStyle, fieldValue, fieldValidation);
 
     return Align(
       heightFactor: verticalAlignment ?? 1,
@@ -159,8 +159,9 @@ class BoringFilePicker extends BoringFormField<List<PlatformFile>> {
                     _feedback(fieldValue),
                   ],
                 ),
-              if (error != null)
-                Text(error, style: TextStyle(color: Colors.red))
+              if (fieldValue != null)
+                Text(fieldValidation.error ?? '',
+                    style: const TextStyle(color: Colors.red))
             ],
           ),
           const SizedBox(
@@ -172,11 +173,4 @@ class BoringFilePicker extends BoringFormField<List<PlatformFile>> {
       ),
     );
   }
-
-  @override
-  void onObservedFieldsChange(BoringFormController formController) {}
-
-  @override
-  void onSelfChange(
-      BoringFormController formController, List<PlatformFile>? fieldValue) {}
 }

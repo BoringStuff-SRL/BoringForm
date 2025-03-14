@@ -1,8 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
-import 'dart:math';
 
-import 'package:boring_form/field/boring_form_field.dart';
+import 'package:boring_form/field/bform_field.dart';
+import 'package:boring_form/form/bform_controller.dart';
 import 'package:boring_ui/boring_ui.dart';
 // import 'package:boring_form/field/boring_field.dart';
 // import 'package:boring_form/field/boring_field_controller.dart';
@@ -114,7 +114,7 @@ class MyNumberFormatter extends TextInputFormatter {
   }
 }
 
-class BoringNumberField extends BoringFormField<num> {
+class BoringNumberField extends BFormField<num> {
   BoringNumberField({
     super.key,
     super.onChanged,
@@ -123,7 +123,6 @@ class BoringNumberField extends BoringFormField<num> {
     super.validationFunction,
     super.decoration,
     super.readOnly,
-    super.forceHideRequiredFieldLabel,
     this.decimalSeparator = defaultDecimalSeparator,
     this.thousandsSeparator = defaultThousandsSeparator,
     this.decimalPlaces = 0,
@@ -160,8 +159,14 @@ class BoringNumberField extends BoringFormField<num> {
   bool hasSetInitialValue = false;
 
   @override
-  Widget builder(BuildContext context, BoringFormStyle formStyle,
-      BoringFormController formController, num? fieldValue, String? error) {
+  Widget fieldBuilder(
+      BuildContext context,
+      BoringFormStyle formStyle,
+      BFormController formController,
+      num? fieldValue,
+      FieldValidation fieldValidation,
+      void computedValue,
+      bool readOnly) {
     const iconConstraints = BoxConstraints(
       minWidth: 24,
       minHeight: 24,
@@ -175,8 +180,8 @@ class BoringNumberField extends BoringFormField<num> {
       children: [
         Expanded(
           child: TextField(
-            readOnly: isReadOnly(formController, formStyle),
-            enabled: !isReadOnly(formController, formStyle),
+            readOnly: readOnly,
+            enabled: readOnly,
             controller: _textEditingController,
             textAlign: formStyle.textAlign,
             style: formStyle.textStyle,
@@ -188,8 +193,8 @@ class BoringNumberField extends BoringFormField<num> {
             decoration: getInputDecoration(
               formController,
               formStyle,
-              error,
               fieldValue,
+              fieldValidation,
             ),
             onChanged: (value) {
               String checkString = value
@@ -204,8 +209,7 @@ class BoringNumberField extends BoringFormField<num> {
           ),
         ),
         // Mostra i pulsanti solo se il flag è true
-        if (showIncrementDecrementButtons &&
-            !isReadOnly(formController, formStyle))
+        if (showIncrementDecrementButtons && readOnly)
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -233,51 +237,19 @@ class BoringNumberField extends BoringFormField<num> {
     );
   }
 
-  void _incrementValue(BoringFormController formController) {
+  void _incrementValue(BFormController formController) {
     int currentValue = int.tryParse(_textEditingController.text) ?? 0;
     currentValue++;
     _textEditingController.text = currentValue.toString();
     setChangedValue(formController, currentValue);
   }
 
-  void _decrementValue(BoringFormController formController) {
+  void _decrementValue(BFormController formController) {
     int currentValue = int.tryParse(_textEditingController.text) ?? 1;
     if (currentValue > 1) {
       currentValue--;
       _textEditingController.text = currentValue.toString();
       setChangedValue(formController, currentValue);
     }
-  }
-
-  @override
-  void onObservedFieldsChange(BoringFormController formController) {}
-
-  @override
-  void onSelfChange(BoringFormController formController, num? fieldValue) {
-    if (fieldValue == null) {
-      _textEditingController.text = '';
-      return;
-    }
-
-    var cursorPos = _textEditingController.selection.base.offset;
-
-    final formatter =
-        NumberFormat('###,###.###', decimalSeparator == '.' ? 'en' : 'it');
-
-    _textEditingController.text = _numberFormatter
-        .formatEditUpdate(
-          TextEditingValue.empty,
-          TextEditingValue(
-            text: formatter.format(fieldValue),
-          ),
-        )
-        .text;
-
-    _textEditingController.selection = TextSelection.collapsed(
-      offset: min(
-        cursorPos,
-        _textEditingController.text.length,
-      ),
-    );
   }
 }

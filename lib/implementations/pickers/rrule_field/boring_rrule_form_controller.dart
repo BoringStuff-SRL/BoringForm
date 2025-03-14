@@ -1,9 +1,9 @@
+import 'package:boring_form/form/bform_controller.dart';
 import 'package:boring_form/implementations/pickers/rrule_field/utils/enums.dart';
 import 'package:boring_form/implementations/pickers/rrule_field/utils/rrule_ext.dart';
-import 'package:boring_ui/boring_ui.dart';
 import 'package:rrule/rrule.dart';
 
-class BoringRRuleFormController extends BoringFormController {
+class BoringRRuleFormController extends BFormController {
   BoringRRuleFormController()
       : super(initialValue: {
           "interval": 1,

@@ -1,15 +1,16 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, prefer_const_constructors
-import 'package:boring_form/field/boring_form_field.dart';
+import 'package:boring_form/field/bform_field.dart';
+import 'package:boring_form/form/bform_controller.dart';
 import 'package:boring_form/implementations/pickers/boringFilePickerV2/boring_drop_zone.dart';
 import 'package:boring_form/implementations/pickers/boringFilePickerV2/boring_file_list_tile.dart';
 import 'package:boring_form/implementations/pickers/boringFilePickerV2/boring_file_picker_settings.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
-class BoringFilePickerV2 extends BoringFormField<List<PlatformFile>> {
+class BoringFilePickerV2 extends BFormField<List<PlatformFile>> {
   final BoringFilePickerDecoration decoration;
 
-  const BoringFilePickerV2(
+  BoringFilePickerV2(
       {super.key,
       required super.fieldPath,
       super.observedFields,
@@ -18,14 +19,14 @@ class BoringFilePickerV2 extends BoringFormField<List<PlatformFile>> {
       this.decoration = const BoringFilePickerDecoration()});
 
   @override
-  Widget builder(
-    BuildContext context,
-    BoringFormStyle formTheme,
-    BoringFormController formController,
-    List<PlatformFile>? fieldValue,
-    String? error,
-  ) {
-    final bool readOnly = isReadOnly(formController, formTheme);
+  Widget fieldBuilder(
+      BuildContext context,
+      BoringFormStyle formStyle,
+      BFormController formController,
+      List<PlatformFile>? fieldValue,
+      FieldValidation fieldValidation,
+      void computedValue,
+      bool readOnly) {
     return BoringFilePickerSettings(
       readOnly: readOnly,
       decoration: decoration,
@@ -55,11 +56,4 @@ class BoringFilePickerV2 extends BoringFormField<List<PlatformFile>> {
       ),
     );
   }
-
-  @override
-  void onObservedFieldsChange(BoringFormController formController) {}
-
-  @override
-  void onSelfChange(
-      BoringFormController formController, List<PlatformFile>? fieldValue) {}
 }

@@ -1,7 +1,6 @@
 import 'package:boring_form/implementations/pickers/boring_picker_field.dart';
 import 'package:boring_form/implementations/pickers/rrule_field/boring_rrule_dialog.dart';
 import 'package:boring_form/implementations/pickers/rrule_field/utils/rrule_it_tr.dart';
-import 'package:boring_form/implementations/pickers/rrule_field/utils/rrule_l10n_it.dart';
 import 'package:rrule/rrule.dart';
 
 class BoringRRuleField extends BoringPickerField<RecurrenceRule> {
@@ -9,7 +8,6 @@ class BoringRRuleField extends BoringPickerField<RecurrenceRule> {
     super.key,
     required super.fieldPath,
     super.decoration,
-    super.forceHideRequiredFieldLabel,
     super.observedFields,
     super.onChanged,
     super.readOnly,
