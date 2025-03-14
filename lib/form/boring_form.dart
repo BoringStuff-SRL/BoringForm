@@ -1,5 +1,4 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, overridden_fields, must_be_immutable
-import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_form/theme/boring_form_theme.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
@@ -99,6 +98,3 @@ abstract class BoringFormWidget extends StatelessWidget {
     );
   }
 }
-
-typedef DecorationBuilder<T> = BoringFieldDecoration<T>? Function(
-    BoringFormController formController);

@@ -1,5 +1,6 @@
 library boring_form;
 
+export 'field/bform_field.dart';
 // export 'package:file_picker/file_picker.dart';
 // export 'package:provider/provider.dart';
 
