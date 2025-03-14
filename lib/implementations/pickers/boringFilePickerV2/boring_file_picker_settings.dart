@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, prefer_const_constructors
 
-import 'package:boring_form/form/bform_controller.dart';
+import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_form/implementations/pickers/boringFilePickerV2/boring_drop_zone_decoration.dart';
 import 'package:flutter/material.dart';
 

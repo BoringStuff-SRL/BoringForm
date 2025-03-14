@@ -1,4 +1,4 @@
-import 'package:boring_form/form/bform_controller.dart';
+import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_form/implementations/pickers/rrule_field/utils/enums.dart';
 import 'package:boring_form/implementations/pickers/rrule_field/utils/rrule_ext.dart';
 import 'package:rrule/rrule.dart';

@@ -4,7 +4,7 @@ library boring_form;
 // export 'package:provider/provider.dart';
 
 export 'form/boring_form.dart';
-export 'form/boring_form_controller.dart';
+export 'form/boring_form_controller_OLD.dart';
 export 'implementations/choice/boring_checkbox_field.dart';
 export 'implementations/choice/boring_chip_field.dart';
 export 'implementations/choice/boring_dropdown_field.dart';
