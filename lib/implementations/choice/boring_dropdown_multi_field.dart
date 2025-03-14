@@ -1,12 +1,13 @@
 import 'dart:async';
 
-import 'package:boring_form/field/boring_form_field_with_async_calculations.dart';
+import 'package:boring_form/field/bform_field.dart';
+import 'package:boring_form/form/bform_controller.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
 class BoringDropdownMultiChoiceField<T>
-    extends BoringFormFieldWithAsyncCalculations<List<T>, List<T>> {
-  const BoringDropdownMultiChoiceField({
+    extends BFormFieldAsync<List<T>, List<T>> {
+  BoringDropdownMultiChoiceField({
     super.key,
     required super.fieldPath,
     required this.getItems,
@@ -15,7 +16,7 @@ class BoringDropdownMultiChoiceField<T>
     super.readOnly,
     super.validationFunction,
     required this.toBoringChoiceItem,
-    this.onChanged,
+    super.onChanged,
     this.onAdd,
     this.loadingIndicator = const CircularProgressIndicator(),
     this.clearable = true,
@@ -25,13 +26,11 @@ class BoringDropdownMultiChoiceField<T>
     this.boringDropdownLoadingMode = BDropdownLoadingMode.onOpen,
     this.debouncingTime = const Duration(milliseconds: 300),
     this.initialItems,
+    super.required,
   });
 
   final Future<List<T>> Function(String search) getItems;
   final BChoiceItem<T> Function(T) toBoringChoiceItem;
-  final void Function(BoringFormController formController, List<T>? fieldValue)?
-      onChanged;
-
   final FutureOr<T?> Function(String)? onAdd;
   final bool callFutureOnStopWriting;
   final bool searchable;
@@ -41,33 +40,37 @@ class BoringDropdownMultiChoiceField<T>
   final Duration debouncingTime;
   final AsyncSnapshot<List<T>>? initialItems;
   final Widget loadingIndicator;
+
   @override
-  Widget builder(
+  Widget fieldBuilder(
       BuildContext context,
       BoringFormStyle formStyle,
-      BoringFormController formController,
+      BFormController formController,
       List<T>? fieldValue,
-      String? error,
-      AsyncSnapshot<List<T>> calculations) {
+      FieldValidation fieldValidation,
+      List<T>? computedValue,
+      bool readOnly) {
     final dropdownStyle =
         boringDropdownStyle ?? BoringTheme.of(context).bDropdownTheme;
 
     return BDropdownMultiChoice<T>(
       value: ValueNotifier(fieldValue),
-      searchItems: getItems,
+      searchItems: (searchedValue) async {
+        return computedValue ?? <T>[];
+      },
       onChanged: (values) => setChangedValue(formController, values),
-      readOnly: isReadOnly(formController, formStyle),
+      readOnly: readOnly,
       onAdd: onAdd,
       callFutureOnStopWriting: callFutureOnStopWriting,
       boringDropdownLoadingMode: boringDropdownLoadingMode,
       searchable: searchable,
       boringDropdownStyle: dropdownStyle.copyWith(
-          inputDecoration:
-              getInputDecoration(formController, formStyle, error, fieldValue),
+          inputDecoration: getInputDecoration(
+              formController, formStyle, fieldValue, fieldValidation),
           onClearIcon: formStyle.eraseValueWidget,
           choiceItemDisplayTextStyle: formStyle.textStyle),
       clearable: clearable,
-      errorMessage: error,
+      errorMessage: fieldValidation.error,
       debouncingTime: debouncingTime,
       initialItems: initialItems,
       loadingIndicator: loadingIndicator,
@@ -76,91 +79,17 @@ class BoringDropdownMultiChoiceField<T>
   }
 
   @override
-  Future<List<T>> onObservedFieldsChange(BoringFormController formController) =>
-      getItems("");
-
-  @override
-  void onSelfChange(BoringFormController formController, List<T>? fieldValue) {}
-}
-
-class BoringDropdownMultiChoiceFieldID<T, ID>
-    extends BoringFormFieldWithAsyncCalculations<List<ID>, List<T>> {
-  const BoringDropdownMultiChoiceFieldID({
-    super.key,
-    required super.fieldPath,
-    required this.getItems,
-    super.decoration,
-    super.observedFields,
-    super.readOnly,
-    super.validationFunction,
-    required this.identifier,
-    required this.toDisplay,
-    this.onChanged,
-    this.onAdd,
-    this.loadingIndicator = const CircularProgressIndicator(),
-    this.clearable = true,
-    this.searchable = true,
-    this.callFutureOnStopWriting = true,
-    this.boringDropdownStyle,
-    this.boringDropdownLoadingMode = BDropdownLoadingMode.onOpen,
-    this.debouncingTime = const Duration(milliseconds: 300),
-    this.initialItems,
-  });
-
-  final Future<List<T>> Function(String search) getItems;
-  final String Function(T element) toDisplay;
-  final void Function(
-      BoringFormController formController, List<ID>? fieldValue)? onChanged;
-  final ID Function(T element) identifier;
-  final FutureOr<T?> Function(String search)? onAdd;
-  final bool callFutureOnStopWriting;
-  final bool searchable;
-  final BDropdownTheme? boringDropdownStyle;
-  final BDropdownLoadingMode boringDropdownLoadingMode;
-  final bool clearable;
-  final Duration debouncingTime;
-  final AsyncSnapshot<List<T>>? initialItems;
-  final Widget loadingIndicator;
-  @override
-  Widget builder(
-      BuildContext context,
-      BoringFormStyle formStyle,
-      BoringFormController formController,
-      List<ID>? fieldValue,
-      String? error,
-      AsyncSnapshot<List<T>> calculations) {
-    final dropdownStyle =
-        boringDropdownStyle ?? BoringTheme.of(context).bDropdownTheme;
-
-    return BDropdownMultiChoiceID<T, ID>(
-      value: ValueNotifier(fieldValue),
-      searchItems: getItems,
-      onChanged: (values) => setChangedValue(formController, values),
-      readOnly: isReadOnly(formController, formStyle),
-      onAdd: onAdd,
-      callFutureOnStopWriting: callFutureOnStopWriting,
-      boringDropdownLoadingMode: boringDropdownLoadingMode,
-      searchable: searchable,
-      boringDropdownStyle: dropdownStyle.copyWith(
-          inputDecoration:
-              getInputDecoration(formController, formStyle, error, fieldValue),
-          onClearIcon: formStyle.eraseValueWidget,
-          choiceItemDisplayTextStyle: formStyle.textStyle),
-      clearable: clearable,
-      errorMessage: error,
-      debouncingTime: debouncingTime,
-      initialItems: initialItems,
-      loadingIndicator: loadingIndicator,
-      toDisplay: toDisplay,
-      identifier: identifier,
-    );
+  Future<List<T>?> asyncComputations(Map<FieldPath, dynamic> observedValues) {
+    return getItems("");
   }
 
   @override
-  Future<List<T>> onObservedFieldsChange(BoringFormController formController) =>
-      getItems("");
+  Widget onError(BuildContext context) {
+    return const Text("ERRORE!");
+  }
 
   @override
-  void onSelfChange(
-      BoringFormController formController, List<ID>? fieldValue) {}
+  Widget onLoading(BuildContext context) {
+    return const Text("CARICAMENTO");
+  }
 }

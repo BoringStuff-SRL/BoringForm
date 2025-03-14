@@ -1,3 +1,5 @@
+/*
+import 'package:boring_form/form/bform_controller.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -16,7 +18,7 @@ class BoringDeferredField<L extends Listenable, T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final formController = BoringFormController.of(context);
+    final formController = BFormController.of(context);
 
     final deferredValue =
         formController.getDeferredValue(fieldPath) as DeferredValue<L, T>?;
@@ -33,7 +35,7 @@ class BoringDeferredField<L extends Listenable, T> extends StatelessWidget {
         if (selected.isLoading) {
           return BSkeleton.custom(
             child: BoringTextField(
-              allowEmpty: true,
+              required: false,
               fieldPath: [deferredLoaderPath],
               readOnly: true,
             ),
@@ -52,3 +54,4 @@ class BoringDeferredField<L extends Listenable, T> extends StatelessWidget {
     );
   }
 }
+*/

@@ -1,14 +1,15 @@
 import 'dart:async';
 
-import 'package:boring_form/field/boring_form_field.dart';
+import 'package:boring_form/field/bform_field.dart';
+import 'package:boring_form/form/bform_controller.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
 part 'boring_duration_dialog_form.dart';
 part 'boring_duration_field_dialog.dart';
 
-class BoringDurationField extends BoringFormField<Duration> {
-  const BoringDurationField({
+class BoringDurationField extends BFormField<Duration> {
+  BoringDurationField({
     super.key,
     required super.fieldPath,
     super.decoration,
@@ -16,7 +17,6 @@ class BoringDurationField extends BoringFormField<Duration> {
     super.onChanged,
     super.readOnly,
     super.validationFunction,
-    super.forceHideRequiredFieldLabel,
     this.durationFieldTheme,
     this.fieldsToShow,
   });
@@ -28,13 +28,14 @@ class BoringDurationField extends BoringFormField<Duration> {
       durationFieldTheme ?? BoringTheme.of(context).durationFieldTheme;
 
   @override
-  Widget builder(
-    BuildContext context,
-    BoringFormStyle formStyle,
-    BoringFormController formController,
-    Duration? fieldValue,
-    String? error,
-  ) {
+  Widget fieldBuilder(
+      BuildContext context,
+      BoringFormStyle formStyle,
+      BFormController formController,
+      Duration? fieldValue,
+      FieldValidation fieldValidation,
+      void computedValue,
+      bool readOnly) {
     final durationTheme = durationFieldThemeOf(context);
 
     final BoringDurationDataHandler? dataHandler = fieldValue != null
@@ -43,14 +44,12 @@ class BoringDurationField extends BoringFormField<Duration> {
     final textEditingController = TextEditingController(
         text: dataHandler?.readableString(durationTheme) ?? '');
 
-    final readOnly = isReadOnly(formController, formStyle);
-
     return TextField(
       readOnly: true,
       enabled: !readOnly,
       controller: textEditingController,
-      decoration:
-          getInputDecoration(formController, formStyle, error, fieldValue),
+      decoration: getInputDecoration(
+          formController, formStyle, fieldValue, fieldValidation),
       onTap: () {
         _BoringDurationFieldDialog(
           dataHandler: dataHandler,
@@ -63,10 +62,6 @@ class BoringDurationField extends BoringFormField<Duration> {
       },
     );
   }
-
-  @override
-  void onSelfChange(
-      BoringFormController formController, Duration? fieldValue) {}
 }
 
 enum DurationField {
