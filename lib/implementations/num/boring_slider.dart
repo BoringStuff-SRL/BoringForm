@@ -1,16 +1,19 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:boring_form/field/boring_form_field.dart';
+import 'package:boring_form/field/bform_field.dart';
+import 'package:boring_form/form/bform_controller.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
-class BoringSlider extends BoringFormField<double> {
-  const BoringSlider({
+class BoringSlider extends BFormField<double> {
+  BoringSlider({
     super.key,
     required super.fieldPath,
+    super.observedFields,
     super.decoration,
-    //super.observedFields,
+    super.validationFunction,
+    super.required = true,
     super.readOnly,
-    //super.validationFunction,
+    super.onChanged,
     this.min = 0,
     this.max = 1,
     this.showValueLabel = true,
@@ -22,13 +25,16 @@ class BoringSlider extends BoringFormField<double> {
   final bool showValueLabel;
 
   @override
-  onObservedFieldsChange(BoringFormController formController) {}
-
-  @override
-  Widget builder(BuildContext context, BoringFormStyle formTheme,
-      BoringFormController formController, double? fieldValue, String? error) {
-    final inputDecoration =
-        getInputDecoration(formController, formTheme, error, fieldValue);
+  Widget fieldBuilder(
+      BuildContext context,
+      BoringFormStyle formStyle,
+      BFormController formController,
+      double? fieldValue,
+      FieldValidation fieldValidation,
+      void computedValue,
+      bool readOnly) {
+    final inputDecoration = getInputDecoration(
+        formController, formStyle, fieldValue, fieldValidation);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -46,55 +52,25 @@ class BoringSlider extends BoringFormField<double> {
           divisions: divisions,
           value: fieldValue ?? 0,
           label: showValueLabel ? fieldValue?.toStringAsFixed(2) : null,
-          onChanged: isReadOnly(formController, formTheme)
+          onChanged: readOnly
               ? null
               : (value) => setChangedValue(formController, value),
         ),
       ],
     );
   }
-
-  @override
-  void onSelfChange(BoringFormController formController, double? fieldValue) {}
-
-  // @override
-  // void onValueChanged(double? newValue) {}
-
-  // @override
-  // BoringField copyWith({
-  //   BoringFieldController<double>? fieldController,
-  //   void Function(double? p1)? onChanged,
-  //   BoringFieldDecoration? decoration,
-  //   BoringResponsiveSize? boringResponsiveSize,
-  //   String? jsonKey,
-  //   bool Function(Map<String, dynamic> p1)? displayCondition,
-  //   double? min,
-  //   double? max,
-  //   bool? showValueLabel,
-  //   int? divisions,
-  // }) {
-  //   return BoringSlider(
-  //     boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
-  //     jsonKey: jsonKey ?? this.jsonKey,
-  //     decoration: decoration ?? this.decoration,
-  //     onChanged: onChanged ?? this.onChanged,
-  //     displayCondition: displayCondition ?? this.displayCondition,
-  //     fieldController: fieldController ?? this.fieldController,
-  //     max: max ?? this.min,
-  //     min: min ?? this.min,
-  //     showValueLabel: showValueLabel ?? this.showValueLabel,
-  //     divisions: divisions ?? this.divisions,
-  //   );
-  // }
 }
 
-class BoringRangeSlider extends BoringFormField<RangeValues> {
-  const BoringRangeSlider({
+class BoringRangeSlider extends BFormField<RangeValues> {
+  BoringRangeSlider({
     super.key,
     required super.fieldPath,
-    // required super.fieldController,
+    super.observedFields,
     super.decoration,
-    // super.boringResponsiveSize,
+    super.validationFunction,
+    super.required = true,
+    super.readOnly,
+    super.onChanged,
     this.min = 0,
     this.max = 1,
     this.showValueLabel = true,
@@ -108,10 +84,16 @@ class BoringRangeSlider extends BoringFormField<RangeValues> {
   final int? divisions;
 
   @override
-  Widget builder(BuildContext context, BoringFormStyle formTheme,
-      BoringFormController formController, fieldValue, String? errror) {
-    final inputDecoration =
-        getInputDecoration(formController, formTheme, errror, fieldValue);
+  Widget fieldBuilder(
+      BuildContext context,
+      BoringFormStyle formStyle,
+      BFormController formController,
+      RangeValues? fieldValue,
+      FieldValidation fieldValidation,
+      void computedValue,
+      bool readOnly) {
+    final inputDecoration = getInputDecoration(
+        formController, formStyle, fieldValue, fieldValidation);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -139,39 +121,4 @@ class BoringRangeSlider extends BoringFormField<RangeValues> {
       ],
     );
   }
-
-  @override
-  void onSelfChange(
-      BoringFormController formController, RangeValues? fieldValue) {
-    // TODO: implement onSelfChange
-  }
-
-  // @override
-  // void onValueChanged(RangeValues? newValue) {}
-
-  // @override
-  // BoringRangeSlider copyWith({
-  //   BoringFieldController<RangeValues>? fieldController,
-  //   void Function(RangeValues? p1)? onChanged,
-  //   BoringFieldDecoration? decoration,
-  //   BoringResponsiveSize? boringResponsiveSize,
-  //   String? jsonKey,
-  //   bool Function(Map<String, dynamic> p1)? displayCondition,
-  //   double? min,
-  //   double? max,
-  //   bool? showValueLabel,
-  //   int? divisions,
-  // }) {
-  //   return BoringRangeSlider(
-  //     boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
-  //     jsonKey: jsonKey ?? this.jsonKey,
-  //     decoration: decoration ?? this.decoration,
-  //     onChanged: onChanged ?? this.onChanged,
-  //     fieldController: fieldController ?? this.fieldController,
-  //     max: max ?? this.min,
-  //     min: min ?? this.min,
-  //     showValueLabel: showValueLabel ?? this.showValueLabel,
-  //     divisions: divisions ?? this.divisions,
-  //   );
-  // }
 }

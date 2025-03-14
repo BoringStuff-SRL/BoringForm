@@ -5,7 +5,7 @@ import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class BoringTextField extends BFormField<String, void> {
+class BoringTextField extends BFormField<String> {
   final _textEditingController = TextEditingController();
   final _focusNode = FocusNode();
 
@@ -59,10 +59,4 @@ class BoringTextField extends BFormField<String, void> {
       },
     );
   }
-
-  @override
-  Widget onError(BuildContext context) => throw UnimplementedError();
-
-  @override
-  Widget onLoading(BuildContext context) => throw UnimplementedError();
 }

@@ -18,7 +18,30 @@ String? requiredValidationFunction<T>(
   return null;
 }
 
-abstract class BFormField<T, TT> extends BFormObserver {
+abstract class BFormField<T> extends BFormFieldAsync<T, void> {
+  BFormField({
+    super.key,
+    required super.fieldPath,
+    super.observedFields,
+    super.decoration,
+    super.validationFunction,
+    super.required = true,
+    super.readOnly,
+    super.onChanged,
+  });
+
+  @override
+  Future<void> asyncComputations(
+      Map<FieldPath, dynamic> observedValues) async {}
+
+  @override
+  Widget onError(BuildContext context) => throw UnimplementedError();
+
+  @override
+  Widget onLoading(BuildContext context) => throw UnimplementedError();
+}
+
+abstract class BFormFieldAsync<T, TT> extends BFormObserver {
   final FieldPath fieldPath;
   final ValidationFunction<T> validationFunction;
   final bool required;
@@ -28,7 +51,7 @@ abstract class BFormField<T, TT> extends BFormObserver {
   //CAN BE REMOVED??
   final DecorationBuilder<T>? _decorationBuilder;
 
-  BFormField({
+  BFormFieldAsync({
     super.key,
     required this.fieldPath,
     super.observedFields,
@@ -99,9 +122,7 @@ abstract class BFormField<T, TT> extends BFormObserver {
   }
   //[END] DECORATIONS
 
-  Future<TT?> asyncComputations(Map<FieldPath, dynamic> observedValues) async {
-    return null;
-  }
+  Future<TT?> asyncComputations(Map<FieldPath, dynamic> observedValues);
 
   Future<TT?> _performAsyncComputations(Map<FieldPath, dynamic> observedValues,
       BFormController formController) async {
