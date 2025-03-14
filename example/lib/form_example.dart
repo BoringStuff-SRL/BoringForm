@@ -68,5 +68,15 @@ class FormExample0 extends BoringResponsiveFormWidget {
   @override
   List<Widget> get children => [
         BoringTextField(fieldPath: ["testo"]),
+        BoringDropdownField(
+          fieldPath: ["dropdown"],
+          getItems: (search) {
+            return usersRepo.readMultiFuture(1);
+          },
+          toBoringChoiceItem: (element) => BChoiceItem(
+            value: element,
+            display: element.name,
+          ),
+        )
       ];
 }

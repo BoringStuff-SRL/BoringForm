@@ -127,6 +127,7 @@ class BoringNumberField extends BFormField<num> {
     this.decimalPlaces = 0,
     bool allowNegative = true,
     this.showIncrementDecrementButtons = false,
+    super.required,
   })  : _numberFormatter = MyNumberFormatter(
           decimalPlaces: decimalPlaces,
           decimalSeparator: decimalSeparator,

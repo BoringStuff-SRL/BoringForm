@@ -31,6 +31,7 @@ class BoringFilePicker extends BFormField<List<PlatformFile>> {
     super.validationFunction,
     super.decoration,
     super.readOnly,
+    super.required,
     this.textSpacingFromIcon,
     this.borderRadius,
     this.buttonWidth,
@@ -46,6 +47,7 @@ class BoringFilePicker extends BFormField<List<PlatformFile>> {
     this.feedbackTextBuilder,
     this.mainAxisAlignment = MainAxisAlignment.start,
     this.border,
+
     // this.label,
   });
 

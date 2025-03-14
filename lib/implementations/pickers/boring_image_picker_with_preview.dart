@@ -47,6 +47,7 @@ class BoringImagePickerWithPreview extends BFormField<Uint8List> {
       super.key,
       super.readOnly,
       super.validationFunction,
+      super.required,
       BoringImagePickerWithPreviewDecoration? imagePickerWithPreviewDecoration})
       : imagePickerWithPreviewDecoration = imagePickerWithPreviewDecoration ??
             BoringImagePickerWithPreviewDecoration(),

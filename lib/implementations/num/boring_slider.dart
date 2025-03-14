@@ -11,7 +11,7 @@ class BoringSlider extends BFormField<double> {
     super.observedFields,
     super.decoration,
     super.validationFunction,
-    super.required = true,
+    super.required,
     super.readOnly,
     super.onChanged,
     this.min = 0,

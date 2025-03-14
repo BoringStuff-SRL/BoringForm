@@ -16,6 +16,8 @@ class BoringFilePickerV2 extends BFormField<List<PlatformFile>> {
       super.observedFields,
       super.validationFunction,
       super.readOnly,
+      super.required,
+      super.onChanged,
       this.decoration = const BoringFilePickerDecoration()});
 
   @override
