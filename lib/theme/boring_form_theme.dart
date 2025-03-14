@@ -1,3 +1,4 @@
+import 'package:boring_form/form/bform_controller.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +12,24 @@ class BoringFormTheme extends InheritedWidget {
 
   static BoringFormTheme of(BuildContext context) =>
       maybeOf(context) as BoringFormTheme;
+
+  @override
+  bool updateShouldNotify(covariant BoringFormTheme oldWidget) => false;
+}
+
+class BFormControllerProvider extends InheritedWidget {
+  final BFormController formController;
+
+  const BFormControllerProvider(
+      {super.key, required super.child, required this.formController});
+
+  static BFormController controllerOf(BuildContext context) {
+    final inheritedWidget =
+        context.getInheritedWidgetOfExactType<BFormControllerProvider>();
+    assert(inheritedWidget != null,
+        "BFormControllerProvider not found in context");
+    return inheritedWidget!.formController;
+  }
 
   @override
   bool updateShouldNotify(covariant BoringFormTheme oldWidget) => false;

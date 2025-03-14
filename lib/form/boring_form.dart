@@ -1,8 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, overridden_fields, must_be_immutable
+import 'package:boring_form/form/bform_controller.dart';
 import 'package:boring_form/theme/boring_form_theme.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 extension on List<String> {
   List<List<String>> nest(String splitter) =>
@@ -43,43 +43,42 @@ class BoringForm extends BoringFormWidget {
   BoringFormStyle styleManipulator(BoringFormStyle style) => style;
 }
 
-abstract class BoringResponsiveFormWidget extends BoringFormWidget {
-  BoringResponsiveFormWidget({
-    super.key,
-    super.formController,
-    super.style,
-    BResponsiveSize responsiveSize = const BResponsiveSize.defaultSizes(),
-  }) : _responsiveSize = responsiveSize;
+// abstract class BoringResponsiveFormWidget extends BoringFormWidget {
+//   BoringResponsiveFormWidget({
+//     super.key,
+//     super.formController,
+//     super.style,
+//     BResponsiveSize responsiveSize = const BResponsiveSize.defaultSizes(),
+//   }) : _responsiveSize = responsiveSize;
 
-  final BResponsiveSize _responsiveSize;
+//   final BResponsiveSize _responsiveSize;
 
-  List<Widget> get children;
+//   List<Widget> get children;
 
-  @override
-  Widget child(context) => BResponsiveWrap(
-        bResponsiveTheme: const BResponsiveTheme(spacing: 0),
-        children: children
-            .map(
-              (e) => e is BResponsiveChild
-                  ? e
-                  : BResponsiveChild.size(
-                      responsiveSize: _responsiveSize,
-                      child: e,
-                    ),
-            )
-            .toList(),
-      );
-}
+//   @override
+//   Widget child(context) => BResponsiveWrap(
+//         bResponsiveTheme: const BResponsiveTheme(spacing: 0),
+//         children: children
+//             .map(
+//               (e) => e is BResponsiveChild
+//                   ? e
+//                   : BResponsiveChild.size(
+//                       responsiveSize: _responsiveSize,
+//                       child: e,
+//                     ),
+//             )
+//             .toList(),
+//       );
+// }
 
 abstract class BoringFormWidget extends StatelessWidget {
-  final BoringFormController formController;
+  final BFormController formController;
   Widget child(BuildContext context);
   final BoringFormStyle Function(BuildContext context)? style;
   BoringFormStyle styleManipulator(BoringFormStyle style) => style;
 
-  BoringFormWidget(
-      {super.key, BoringFormController? formController, this.style})
-      : formController = formController ?? BoringFormController();
+  BoringFormWidget({super.key, BFormController? formController, this.style})
+      : formController = formController ?? BFormController();
 
   @override
   Widget build(BuildContext context) {
@@ -90,8 +89,8 @@ abstract class BoringFormWidget extends StatelessWidget {
       child: FocusTraversalGroup(
         child: BoringFormTheme(
           style: formStyle,
-          child: ChangeNotifierProvider.value(
-            value: formController,
+          child: BFormControllerProvider(
+            formController: formController,
             child: child(context),
           ),
         ),
@@ -100,74 +99,74 @@ abstract class BoringFormWidget extends StatelessWidget {
   }
 }
 
-class BoringFormChildWidget extends StatelessWidget {
-  final List<List<String>> observedFields;
-  final bool observeAllFields;
-  final Widget Function(BuildContext context,
-          BoringFormController formController /*TODO expose changed fields*/)?
-      _builder;
+// class BoringFormChildWidget extends StatelessWidget {
+//   final List<List<String>> observedFields;
+//   final bool observeAllFields;
+//   final Widget Function(BuildContext context,
+//           BoringFormController formController /*TODO expose changed fields*/)?
+//       _builder;
 
-  final FieldPath? childFieldPath;
-  final Widget Function(
-      BuildContext context,
-      BoringFormController formController,
-      FieldPath childFieldPath)? _withChildFieldPathBuilder;
+//   final FieldPath? childFieldPath;
+//   final Widget Function(
+//       BuildContext context,
+//       BoringFormController formController,
+//       FieldPath childFieldPath)? _withChildFieldPathBuilder;
 
-  const BoringFormChildWidget(
-      {super.key,
-      this.observedFields = const [],
-      required Widget Function(
-        BuildContext context,
-        BoringFormController formController,
-      ) builder,
-      this.observeAllFields = false})
-      : childFieldPath = null,
-        _withChildFieldPathBuilder = null,
-        _builder = builder;
+//   const BoringFormChildWidget(
+//       {super.key,
+//       this.observedFields = const [],
+//       required Widget Function(
+//         BuildContext context,
+//         BoringFormController formController,
+//       ) builder,
+//       this.observeAllFields = false})
+//       : childFieldPath = null,
+//         _withChildFieldPathBuilder = null,
+//         _builder = builder;
 
-  const BoringFormChildWidget.withChildFieldPath(
-      {super.key,
-      this.observedFields = const [],
-      required Widget Function(
-        BuildContext context,
-        BoringFormController formController,
-        FieldPath childFieldPath,
-      ) builder,
-      required this.childFieldPath,
-      this.observeAllFields = false})
-      : _withChildFieldPathBuilder = builder,
-        _builder = null;
-  // BoringFormChildWidget.plain(
-  //     {super.key,
-  //     List<String> observedFields = const [],
-  //     required this.builder})
-  //     : observedFields = observedFields.nest(NESTING_CHAR);
+//   const BoringFormChildWidget.withChildFieldPath(
+//       {super.key,
+//       this.observedFields = const [],
+//       required Widget Function(
+//         BuildContext context,
+//         BoringFormController formController,
+//         FieldPath childFieldPath,
+//       ) builder,
+//       required this.childFieldPath,
+//       this.observeAllFields = false})
+//       : _withChildFieldPathBuilder = builder,
+//         _builder = null;
+//   // BoringFormChildWidget.plain(
+//   //     {super.key,
+//   //     List<String> observedFields = const [],
+//   //     required this.builder})
+//   //     : observedFields = observedFields.nest(NESTING_CHAR);
 
-  @override
-  Widget build(BuildContext context) {
-    return Selector<BoringFormController, List<dynamic>>(
-        selector: (_, formController) {
-      return observeAllFields
-          ? [
-              false,
-              ...formController.valuePlain.entries.map((e) => e.value).toList()
-            ]
-          : formController.selectPaths(observedFields, includeError: false);
-    }, builder: (context, _, __) {
-      final formController =
-          Provider.of<BoringFormController>(context, listen: false);
+//   @override
+//   Widget build(BuildContext context) {
+//     return Selector<BoringFormController, List<dynamic>>(
+//         selector: (_, formController) {
+//       return observeAllFields
+//           ? [
+//               false,
+//               ...formController.valuePlain.entries.map((e) => e.value).toList()
+//             ]
+//           : formController.selectPaths(observedFields, includeError: false);
+//     }, builder: (context, _, __) {
+//       final formController =
+//           Provider.of<BoringFormController>(context, listen: false);
 
-      if (_withChildFieldPathBuilder != null) {
-        formController.setFieldValue(childFieldPath!, null);
-        formController.removeValidationFunction(childFieldPath!);
-        return _withChildFieldPathBuilder(
-            context, formController, childFieldPath!);
-      }
+//       if (_withChildFieldPathBuilder != null) {
+//         formController.setFieldValue(childFieldPath!, null);
+//         formController.removeValidationFunction(childFieldPath!);
+//         return _withChildFieldPathBuilder(
+//             context, formController, childFieldPath!);
+//       }
 
-      return _builder!.call(context, formController);
-    });
-  }
-}
+//       return _builder!.call(context, formController);
+//     });
+//   }
+// }
 
 typedef DecorationBuilder<T> = BoringFieldDecoration<T>? Function(
-    BoringFormController formController);
+    BFormController formController);

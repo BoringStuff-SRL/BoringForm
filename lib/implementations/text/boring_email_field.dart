@@ -3,16 +3,16 @@ import 'package:boring_form/implementations/text/boring_text_regex.dart';
 class BoringEmailField extends BoringTextRegExpField {
   BoringEmailField({
     super.key,
+    super.minLines = 1,
+    super.maxLines = 1,
+    super.required,
     required super.fieldPath,
     super.observedFields,
-    super.validationFunction,
     super.decoration,
-    super.readOnly,
-    super.maxLines,
-    super.minLines,
-    super.allowEmpty,
-    super.forceHideRequiredFieldLabel,
     super.onChanged,
+    super.readOnly,
+    super.validationFunction,
+    super.mustMatch,
     required String invalidEmailMessage,
   }) : super(
           regExp: RegExp(

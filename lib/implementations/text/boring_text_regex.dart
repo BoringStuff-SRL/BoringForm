@@ -1,3 +1,4 @@
+import 'package:boring_form/form/bform_controller.dart';
 import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_form/implementations/text/boring_text_field.dart';
 import 'package:flutter/services.dart';
@@ -25,69 +26,37 @@ class RegexInputFormatter extends TextInputFormatter {
 class BoringTextRegExpField extends BoringTextField {
   BoringTextRegExpField({
     super.key,
+    super.minLines = 1,
+    super.maxLines = 1,
+    super.required,
     required super.fieldPath,
     super.observedFields,
-    ValidationFunction<String>? validationFunction,
+    String errorMessage = "Value cannot be empty",
     super.decoration,
-    super.readOnly,
-    super.maxLines,
-    super.minLines,
-    super.allowEmpty,
-    super.forceHideRequiredFieldLabel,
     super.onChanged,
+    super.readOnly,
+    ValidationFunction<String>? validationFunction,
+    //
     required RegExp regExp,
     required String regExpError,
     bool mustMatch = false,
   }) : super(
             inputFormatter:
                 mustMatch ? [RegexInputFormatter(regex: regExp)] : null,
-            validationFunction: validationFunction == null && allowEmpty
+            validationFunction: validationFunction == null && !required
                 ? null
-                : (BoringFormController formController, String? value) {
+                : (BFormController formController, String? value) {
                     final error =
                         validationFunction?.call(formController, value);
                     if (error != null) {
                       return error;
                     }
                     if (!regExp.hasMatch(value ?? '')) {
-                      if (allowEmpty && (value ?? '').isEmpty) {
+                      if (!required && (value ?? '').isEmpty) {
                         return null;
                       }
                       return regExpError;
                     }
                     return null;
                   });
-  // BoringTextRegExpField(
-  //     {super.key,
-  //     BoringFieldController<String>? fieldController,
-  //     super.onChanged,
-  //     required super.jsonKey,
-  //     this.canEmpty = false,
-  //     super.readOnly,
-  //     super.boringResponsiveSize,
-  //     required String regExpError,
-  //     super.displayCondition,
-  //     required RegExp regExp,
-  //     super.decoration})
-  //     : super(
-  //           fieldController:
-  //               (fieldController ?? BoringFieldController<String>()).copyWith(
-  //         validationFunction: (value) {
-  //           if (!canEmpty) {
-  //             if (value == null || value.isEmpty || !regExp.hasMatch(value)) {
-  //               return regExpError;
-  //             }
-  //           } else {
-  //             if (value != null && value.isNotEmpty) {
-  //               if (!regExp.hasMatch(value)) {
-  //                 return regExpError;
-  //               }
-  //             }
-  //           }
-
-  //           return fieldController?.validationFunction?.call(value);
-  //         },
-  //       ));
-
-  // final bool canEmpty;
 }

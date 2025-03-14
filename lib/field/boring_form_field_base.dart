@@ -1,143 +1,143 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first, overridden_fields, must_be_immutable
+// // ignore_for_file: public_member_api_docs, sort_constructors_first, overridden_fields, must_be_immutable
 
-import 'package:boring_ui/boring_ui.dart';
-import 'package:flutter/material.dart';
+// import 'package:boring_ui/boring_ui.dart';
+// import 'package:flutter/material.dart';
 
-abstract class BoringFormFieldBase<T, TT> extends StatelessWidget {
-  final FieldPath fieldPath;
-  final List<FieldPath> observedFields;
-  final ValidationFunction<T> validationFunction;
-  final DecorationBuilder<T>? _decorationBuilder;
+// abstract class BoringFormFieldBase<T, TT> extends StatelessWidget {
+//   final FieldPath fieldPath;
+//   final List<FieldPath> observedFields;
+//   final ValidationFunction<T> validationFunction;
+//   final DecorationBuilder<T>? _decorationBuilder;
 
-  /// se true, viene forzatamente nascosta la * del required
-  /// se false, non fa niente
-  final bool forceHideRequiredFieldLabel;
-  // null viene skippato e preso quello del tema
-  final bool? _readOnly;
-  final Function(BoringFormController formController, T? fieldValue)? onChanged;
+//   /// se true, viene forzatamente nascosta la * del required
+//   /// se false, non fa niente
+//   final bool forceHideRequiredFieldLabel;
+//   // null viene skippato e preso quello del tema
+//   final bool? _readOnly;
+//   final Function(BoringFormController formController, T? fieldValue)? onChanged;
 
-  const BoringFormFieldBase({
-    super.key,
-    required this.fieldPath,
-    this.observedFields = const [],
-    this.onChanged,
-    // required this.builder,
-    this.validationFunction,
-    DecorationBuilder<T>? decoration,
-    bool? readOnly,
-    this.forceHideRequiredFieldLabel = false,
-  })  : _readOnly = readOnly,
-        _decorationBuilder = decoration;
+//   const BoringFormFieldBase({
+//     super.key,
+//     required this.fieldPath,
+//     this.observedFields = const [],
+//     this.onChanged,
+//     // required this.builder,
+//     this.validationFunction,
+//     DecorationBuilder<T>? decoration,
+//     bool? readOnly,
+//     this.forceHideRequiredFieldLabel = false,
+//   })  : _readOnly = readOnly,
+//         _decorationBuilder = decoration;
 
-  bool isReadOnly(BoringFormController formController, BoringFormStyle style) {
-    if (style.readOnly) return true;
-    final firstState = _readOnly;
-    if (firstState != null) {
-      formController.setFieldReadOnlyStatus(
-        fieldPath,
-        readOnly: firstState,
-        notify: false,
-      );
+//   bool isReadOnly(BoringFormController formController, BoringFormStyle style) {
+//     if (style.readOnly) return true;
+//     final firstState = _readOnly;
+//     if (firstState != null) {
+//       formController.setFieldReadOnlyStatus(
+//         fieldPath,
+//         readOnly: firstState,
+//         notify: false,
+//       );
 
-      return firstState;
-    }
-    return formController.isFieldReadOnly(fieldPath);
-  }
+//       return firstState;
+//     }
+//     return formController.isFieldReadOnly(fieldPath);
+//   }
 
-  void setChangedValue(BoringFormController formController, T? newValue) {
-    formController.setFieldValue<T?>(fieldPath, newValue);
-    onChanged?.call(formController, newValue);
-  }
+//   void setChangedValue(BoringFormController formController, T? newValue) {
+//     formController.setFieldValue<T?>(fieldPath, newValue);
+//     onChanged?.call(formController, newValue);
+//   }
 
-  TT onObservedFieldsChange(BoringFormController formController);
+//   TT onObservedFieldsChange(BoringFormController formController);
 
-  void onSelfChange(BoringFormController formController, T? fieldValue);
+//   void onSelfChange(BoringFormController formController, T? fieldValue);
 
-  Widget labelOverField(
-    BoringFieldDecoration fieldDecoration,
-    BoringFormController formController,
-    BoringFormStyle style,
-  ) {
-    return Padding(
-      padding: style.labelOverFieldPadding ?? const EdgeInsets.only(bottom: 4),
-      child: Align(
-        alignment: style.labelOverFieldAlignment,
-        child: _label(fieldDecoration, formController, style),
-      ),
-    );
-  }
+//   Widget labelOverField(
+//     BoringFieldDecoration fieldDecoration,
+//     BoringFormController formController,
+//     BoringFormStyle style,
+//   ) {
+//     return Padding(
+//       padding: style.labelOverFieldPadding ?? const EdgeInsets.only(bottom: 4),
+//       child: Align(
+//         alignment: style.labelOverFieldAlignment,
+//         child: _label(fieldDecoration, formController, style),
+//       ),
+//     );
+//   }
 
-  Widget _label(
-    BoringFieldDecoration fieldDecoration,
-    BoringFormController formController,
-    BoringFormStyle style,
-  ) =>
-      Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Flexible(
-            child: Text(
-              fieldDecoration.label!,
-              style: style.inputDecoration.labelStyle,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          if (!forceHideRequiredFieldLabel)
-            _buildRequiredFieldLabelOverField(style, formController),
-        ],
-      );
+//   Widget _label(
+//     BoringFieldDecoration fieldDecoration,
+//     BoringFormController formController,
+//     BoringFormStyle style,
+//   ) =>
+//       Row(
+//         mainAxisSize: MainAxisSize.min,
+//         children: [
+//           Flexible(
+//             child: Text(
+//               fieldDecoration.label!,
+//               style: style.inputDecoration.labelStyle,
+//               overflow: TextOverflow.ellipsis,
+//             ),
+//           ),
+//           if (!forceHideRequiredFieldLabel)
+//             _buildRequiredFieldLabelOverField(style, formController),
+//         ],
+//       );
 
-  Widget _buildRequiredFieldLabelOverField(
-      BoringFormStyle formStyle, BoringFormController formController) {
-    if (validationFunction == null) return Container();
+//   Widget _buildRequiredFieldLabelOverField(
+//       BoringFormStyle formStyle, BoringFormController formController) {
+//     if (validationFunction == null) return Container();
 
-    final label = formStyle.fieldRequiredLabelWidget ??
-        const Text(' *', style: TextStyle(color: Colors.red));
+//     final label = formStyle.fieldRequiredLabelWidget ??
+//         const Text(' *', style: TextStyle(color: Colors.red));
 
-    switch (formController.fieldRequiredLabelBehaviour) {
-      case FieldRequiredLabelBehaviour.always:
-        return label;
-      case FieldRequiredLabelBehaviour.hiddenWhenValid:
-        final valFunValue = validationFunction?.call(
-            formController, formController.getValue(fieldPath));
-        if (valFunValue == null) {
-          return Container();
-        }
-        return label;
-      case FieldRequiredLabelBehaviour.never:
-        return Container();
-    }
-  }
+//     switch (formController.fieldRequiredLabelBehaviour) {
+//       case FieldRequiredLabelBehaviour.always:
+//         return label;
+//       case FieldRequiredLabelBehaviour.hiddenWhenValid:
+//         final valFunValue = validationFunction?.call(
+//             formController, formController.getValue(fieldPath));
+//         if (valFunValue == null) {
+//           return Container();
+//         }
+//         return label;
+//       case FieldRequiredLabelBehaviour.never:
+//         return Container();
+//     }
+//   }
 
-  @override
-  Widget build(BuildContext context);
+//   @override
+//   Widget build(BuildContext context);
 
-  BoringFieldDecoration<T>? getFieldDecoration(
-          BoringFormController formController) =>
-      _decorationBuilder?.call(formController);
+//   BoringFieldDecoration<T>? getFieldDecoration(
+//           BoringFormController formController) =>
+//       _decorationBuilder?.call(formController);
 
-  InputDecoration getInputDecoration(BoringFormController formController,
-      BoringFormStyle style, String? errorMessage, T? value) {
-    final formStyle = style;
+//   InputDecoration getInputDecoration(BoringFormController formController,
+//       BoringFormStyle style, String? errorMessage, T? value) {
+//     final formStyle = style;
 
-    final decoration = getFieldDecoration(formController);
+//     final decoration = getFieldDecoration(formController);
 
-    return formStyle.inputDecoration.copyWith(
-        label: (formStyle.labelOverField ||
-                decoration == null ||
-                decoration.label == null)
-            ? null
-            : _label(decoration, formController, formStyle),
-        icon: decoration?.icon,
-        errorText: errorMessage,
-        helperText: decoration?.helperText,
-        hintText: decoration?.hintText,
-        prefix: decoration?.prefix,
-        prefixIcon: decoration?.prefixIcon,
-        prefixText: decoration?.prefixText,
-        suffix: decoration?.suffix,
-        suffixIcon: decoration?.suffixIcon,
-        suffixText: decoration?.suffixText,
-        counter: decoration?.counter?.call(value));
-  }
-}
+//     return formStyle.inputDecoration.copyWith(
+//         label: (formStyle.labelOverField ||
+//                 decoration == null ||
+//                 decoration.label == null)
+//             ? null
+//             : _label(decoration, formController, formStyle),
+//         icon: decoration?.icon,
+//         errorText: errorMessage,
+//         helperText: decoration?.helperText,
+//         hintText: decoration?.hintText,
+//         prefix: decoration?.prefix,
+//         prefixIcon: decoration?.prefixIcon,
+//         prefixText: decoration?.prefixText,
+//         suffix: decoration?.suffix,
+//         suffixIcon: decoration?.suffixIcon,
+//         suffixText: decoration?.suffixText,
+//         counter: decoration?.counter?.call(value));
+//   }
+// }

@@ -1,122 +1,182 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:boring_form/field/boring_form_field.dart';
-import 'package:boring_ui/boring_ui.dart';
+// // ignore_for_file: public_member_api_docs, sort_constructors_first
+// import 'package:boring_form/field/boring_form_field.dart';
+// import 'package:boring_ui/boring_ui.dart';
+// import 'package:flutter/material.dart';
+
+import 'package:boring_form/boring_form.dart';
+import 'package:boring_form/form/bform_controller.dart';
+import 'package:boring_ui/bui/theme/components_themes/form/boring_form_style.dart';
 import 'package:flutter/material.dart';
 
-class BoringPasswordField extends BoringFormField<String> {
-  final _textEditingController = TextEditingController();
-  final _focusNode = FocusNode();
+class BoringPasswordField extends BoringTextField {
+  final hidden = ValueNotifier(true);
 
-  BoringPasswordField(
-      {super.key,
-      required super.fieldPath,
-      super.observedFields,
-      required super.validationFunction,
-      super.decoration,
-      this.visibilityOnIcon,
-      this.visibilityOffIcon,
-      super.readOnly});
+  BoringPasswordField({
+    super.key,
+    required super.fieldPath,
+    super.required,
+    // super.inputFormatter,
+    super.observedFields,
+    super.validationFunction,
+    super.errorMessage,
+    super.decoration,
+    super.onChanged,
+    super.readOnly,
+  });
 
-  final Widget? visibilityOnIcon;
-  final Widget? visibilityOffIcon;
+  Widget get _visibilityOnIcon => const Icon(Icons.visibility);
+  Widget get _visibilityOffIcon => const Icon(Icons.visibility_off);
 
   @override
-  Widget builder(BuildContext context, BoringFormStyle formStyle,
-      BoringFormController formController, String? fieldValue, String? error) {
-    final inputDecoration =
-        getInputDecoration(formController, formStyle, error, fieldValue);
-    assert(inputDecoration.suffixIcon == null,
-        "You can't specify suffixIcon on BoringPasswordField!");
-    return BoringPasswordTextField(
-      focusNode: _focusNode,
-      textEditingController: _textEditingController,
-      formTheme: formStyle,
-      readOnly: isReadOnly(formController, formStyle),
-      fieldPath: fieldPath,
-      inputDecoration: inputDecoration,
-      startsHidden: true,
-      visibilityOnIcon: visibilityOnIcon,
-      visibilityOffIcon: visibilityOffIcon,
-      onChanged: (value) {
-        setChangedValue(formController, value);
+  InputDecoration getInputDecoration(BFormController formController,
+      BoringFormStyle style, String? value, FieldValidation fieldValidation) {
+    return super
+        .getInputDecoration(formController, style, value, fieldValidation)
+        .copyWith(
+          suffixIcon: IconButton(
+            onPressed: () {
+              hidden.value = !hidden.value;
+            },
+            icon: hidden.value ? _visibilityOffIcon : _visibilityOnIcon,
+          ),
+        );
+  }
+
+  @override
+  bool get obscuredText => hidden.value;
+
+  @override
+  Widget fieldBuilder(
+      BuildContext context,
+      BoringFormStyle formStyle,
+      BFormController formController,
+      String? fieldValue,
+      FieldValidation fieldValidation,
+      void computedValue,
+      bool readOnly) {
+    return ValueListenableBuilder(
+      valueListenable: hidden,
+      builder: (context, value, child) {
+        return super.fieldBuilder(context, formStyle, formController,
+            fieldValue, fieldValidation, computedValue, readOnly);
       },
     );
   }
-
-  @override
-  void onObservedFieldsChange(BoringFormController formController) {}
-
-  @override
-  void onSelfChange(BoringFormController formController, String? fieldValue) {
-    if (!_focusNode.hasFocus) {
-      _textEditingController.text = (fieldValue ?? "").trim();
-    }
-  }
 }
+// class BoringPasswordField extends BoringFormField<String> {
+//   final _textEditingController = TextEditingController();
+//   final _focusNode = FocusNode();
 
-class BoringPasswordTextField extends StatefulWidget {
-  const BoringPasswordTextField(
-      {super.key,
-      required this.focusNode,
-      required this.textEditingController,
-      required this.formTheme,
-      required this.readOnly,
-      required this.fieldPath,
-      required this.inputDecoration,
-      required this.onChanged,
-      this.visibilityOnIcon,
-      this.visibilityOffIcon,
-      required this.startsHidden});
+//   BoringPasswordField(
+//       {super.key,
+//       required super.fieldPath,
+//       super.observedFields,
+//       required super.validationFunction,
+//       super.decoration,
+//       this.visibilityOnIcon,
+//       this.visibilityOffIcon,
+//       super.readOnly});
 
-  final FocusNode focusNode;
-  final TextEditingController textEditingController;
-  final BoringFormStyle formTheme;
+//   final Widget? visibilityOnIcon;
+//   final Widget? visibilityOffIcon;
 
-  final bool readOnly;
-  final FieldPath fieldPath;
-  final InputDecoration inputDecoration;
-  final Widget? visibilityOnIcon;
-  final Widget? visibilityOffIcon;
-  final bool startsHidden;
-  final Function(String value) onChanged;
+//   @override
+//   Widget builder(BuildContext context, BoringFormStyle formStyle,
+//       BoringFormController formController, String? fieldValue, String? error) {
+//     final inputDecoration =
+//         getInputDecoration(formController, formStyle, error, fieldValue);
+//     assert(inputDecoration.suffixIcon == null,
+//         "You can't specify suffixIcon on BoringPasswordField!");
+//     return BoringPasswordTextField(
+//       focusNode: _focusNode,
+//       textEditingController: _textEditingController,
+//       formTheme: formStyle,
+//       readOnly: isReadOnly(formController, formStyle),
+//       fieldPath: fieldPath,
+//       inputDecoration: inputDecoration,
+//       startsHidden: true,
+//       visibilityOnIcon: visibilityOnIcon,
+//       visibilityOffIcon: visibilityOffIcon,
+//       onChanged: (value) {
+//         setChangedValue(formController, value);
+//       },
+//     );
+//   }
 
-  @override
-  State<BoringPasswordTextField> createState() =>
-      _BoringPasswordTextFieldState();
-}
+//   @override
+//   void onObservedFieldsChange(BoringFormController formController) {}
 
-class _BoringPasswordTextFieldState extends State<BoringPasswordTextField> {
-  bool hidden = true;
+//   @override
+//   void onSelfChange(BoringFormController formController, String? fieldValue) {
+//     if (!_focusNode.hasFocus) {
+//       _textEditingController.text = (fieldValue ?? "").trim();
+//     }
+//   }
+// }
 
-  @override
-  void initState() {
-    hidden = widget.startsHidden;
-    super.initState();
-  }
+// class BoringPasswordTextField extends StatefulWidget {
+//   const BoringPasswordTextField(
+//       {super.key,
+//       required this.focusNode,
+//       required this.textEditingController,
+//       required this.formTheme,
+//       required this.readOnly,
+//       required this.fieldPath,
+//       required this.inputDecoration,
+//       required this.onChanged,
+//       this.visibilityOnIcon,
+//       this.visibilityOffIcon,
+//       required this.startsHidden});
 
-  Widget get _visibilityOnIcon =>
-      widget.visibilityOnIcon ?? const Icon(Icons.visibility);
-  Widget get _visibilityOffIcon =>
-      widget.visibilityOffIcon ?? const Icon(Icons.visibility_off);
+//   final FocusNode focusNode;
+//   final TextEditingController textEditingController;
+//   final BoringFormStyle formTheme;
 
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      controller: widget.textEditingController,
-      obscureText: hidden,
-      enableSuggestions: false,
-      focusNode: widget.focusNode,
-      readOnly: widget.readOnly,
-      enabled: !widget.readOnly,
-      textAlign: widget.formTheme.textAlign,
-      style: widget.formTheme.textStyle,
-      decoration: widget.inputDecoration.copyWith(
-          suffixIcon: IconButton(
-              onPressed: () => setState(() {
-                    hidden = !hidden;
-                  }),
-              icon: hidden ? _visibilityOffIcon : _visibilityOnIcon)),
-      onChanged: widget.onChanged,
-    );
-  }
-}
+//   final bool readOnly;
+//   final FieldPath fieldPath;
+//   final InputDecoration inputDecoration;
+//   final Widget? visibilityOnIcon;
+//   final Widget? visibilityOffIcon;
+//   final bool startsHidden;
+//   final Function(String value) onChanged;
+
+//   @override
+//   State<BoringPasswordTextField> createState() =>
+//       _BoringPasswordTextFieldState();
+// }
+
+// class _BoringPasswordTextFieldState extends State<BoringPasswordTextField> {
+//   bool hidden = true;
+
+//   @override
+//   void initState() {
+//     hidden = widget.startsHidden;
+//     super.initState();
+//   }
+
+//   Widget get _visibilityOnIcon =>
+//       widget.visibilityOnIcon ?? const Icon(Icons.visibility);
+//   Widget get _visibilityOffIcon =>
+//       widget.visibilityOffIcon ?? const Icon(Icons.visibility_off);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return TextField(
+//       controller: widget.textEditingController,
+//       obscureText: hidden,
+//       enableSuggestions: false,
+//       focusNode: widget.focusNode,
+//       readOnly: widget.readOnly,
+//       enabled: !widget.readOnly,
+//       textAlign: widget.formTheme.textAlign,
+//       style: widget.formTheme.textStyle,
+//       decoration: widget.inputDecoration.copyWith(
+//           suffixIcon: IconButton(
+//               onPressed: () => setState(() {
+//                     hidden = !hidden;
+//                   }),
+//               icon: hidden ? _visibilityOffIcon : _visibilityOnIcon)),
+//       onChanged: widget.onChanged,
+//     );
+//   }
+// }
