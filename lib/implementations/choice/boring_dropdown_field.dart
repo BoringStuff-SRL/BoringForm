@@ -90,6 +90,6 @@ class BoringDropdownField<T> extends BFormFieldAsync<T, List<T>> {
 
   @override
   Widget onLoading(BuildContext context) {
-    return const Text("LOADING!");
+    return const BSkeleton.custom(child: TextField(readOnly: true));
   }
 }

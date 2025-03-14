@@ -28,7 +28,7 @@ abstract class BFormField<T> extends BFormFieldAsync<T, void> {
     super.required = true,
     super.readOnly,
     super.onChanged,
-  });
+  }) : super();
 
   @override
   Future<void> asyncComputations(
@@ -38,7 +38,7 @@ abstract class BFormField<T> extends BFormFieldAsync<T, void> {
   Widget onError(BuildContext context) => throw UnimplementedError();
 
   @override
-  Widget onLoading(BuildContext context) => throw UnimplementedError();
+  Widget onLoading(BuildContext context) => Container();
 }
 
 abstract class BFormFieldAsync<T, TT> extends BFormObserver {
@@ -148,14 +148,8 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
   Widget builder(BuildContext context, BoringFormController formController,
       Map<FieldPath, dynamic> observedValues) {
     formController.setValidationFunction(fieldPath, validationFunction);
-    return BFutureBuilder<TT?>(
-      future: () async =>
-          _performAsyncComputations(observedValues, formController),
-      onError: (error, stackTrace) => onError(context),
-      loader: onLoading(context),
-      builder: (context, snapshot) {
-        final computedData = snapshot.data;
-        return BoringRxWatcher(
+
+    Widget child(TT? computedData) => BoringRxWatcher(
           listenable: formController,
           selector: (controller) => controller.selectField<T?>(fieldPath),
           builder: (context, child, value) {
@@ -167,6 +161,16 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
                 value.validation, computedData, isReadOnly);
           },
         );
+
+    return BFutureBuilder<TT?>(
+      future: () async =>
+          _performAsyncComputations(observedValues, formController),
+      onError: (error, stackTrace) => onError(context),
+      loader: onLoading(context),
+      onEmptyDataFunction: () => child(null),
+      builder: (context, snapshot) {
+        final computedData = snapshot.data;
+        return child(computedData);
       },
     );
   }

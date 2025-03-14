@@ -90,6 +90,6 @@ class BoringDropdownMultiChoiceField<T>
 
   @override
   Widget onLoading(BuildContext context) {
-    return const Text("CARICAMENTO");
+    return BShimmer(child: BSkeleton.custom(child: Text("loading")));
   }
 }

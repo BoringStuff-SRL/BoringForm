@@ -32,5 +32,5 @@ class BFormControllerProvider extends InheritedWidget {
   }
 
   @override
-  bool updateShouldNotify(covariant BoringFormTheme oldWidget) => false;
+  bool updateShouldNotify(covariant BFormControllerProvider oldWidget) => false;
 }

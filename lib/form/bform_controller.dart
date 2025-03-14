@@ -88,6 +88,8 @@ class BoringFormController extends ChangeNotifier {
   final Map<String, dynamic> _value;
   final Map<String, dynamic> _initialValue;
   final Set<FieldPath> _readOnlyFields;
+  final Map<FieldPath, DeferredValue> _deferredFields;
+
   final Map<FieldPath, ValidationFunction> _validationFunctions = {};
 
   final ValidationBehaviour validationBehaviour;
@@ -96,11 +98,13 @@ class BoringFormController extends ChangeNotifier {
   BoringFormController({
     Map<String, dynamic>? initialValue,
     Set<FieldPath>? readOnlyFields,
+    Map<FieldPath, DeferredValue>? deferredFields,
     this.validationBehaviour = ValidationBehaviour.onSubmit,
     this.fieldRequiredLabelBehaviour = FieldRequiredLabelBehaviour.always,
   })  : _value = Map.from(initialValue ?? {}),
         _initialValue = Map.from(initialValue ?? {}),
-        _readOnlyFields = readOnlyFields ?? {};
+        _readOnlyFields = readOnlyFields ?? {},
+        _deferredFields = deferredFields ?? {};
 
   //[START] ASYNC LOGIC
   final Set<FieldPath> _loadingFields = {};
@@ -178,23 +182,34 @@ class BoringFormController extends ChangeNotifier {
   final Map<String, Map<FieldPath, void Function()>> _fieldsListener = {};
 
   /// GETTERS
+  Map<FieldPath, DeferredValue> get deferredFields => _deferredFields;
   Map<String, dynamic> get value => _value;
   bool get hasChanged =>
       !BoringFormController._equality.equals(_value, _initialValue);
 
-  bool get isValid {
-    //final deferredLoading = _deferredFields.entries
-    //  .any((element) => element.value.asyncValue.isLoading);
+  DeferredValue? getDeferredValue(FieldPath fieldPath) =>
+      _deferredFields.entries
+          .firstWhereOrNull((element) => listEquals(fieldPath, element.key))
+          ?.value;
 
-    //if (deferredLoading) return false;
+  bool get isValid {
+    final deferredLoading = _deferredFields.entries
+        .any((element) => element.value.asyncValue.isLoading);
+
+    if (deferredLoading) return false;
 
     if (!submitted) {
       submitted = true;
       notifyListeners();
     }
+
+    final paths = allPaths();
+    for (final path in paths) {
+      if (_loadingFields.contains(path)) return false;
+    }
+
     return _validationFunctions.entries.every(
         (element) => element.value?.call(this, getValue(element.key)) == null);
-    //return _errors.values.every((element) => element == false);
   }
 
   dynamic getValue(List<String> fieldPath, {dynamic defaultValue}) =>

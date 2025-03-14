@@ -1,7 +1,29 @@
-/*
 import 'package:boring_form/form/bform_controller.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/cupertino.dart';
+
+class DeferredValue<L extends Listenable, T> {
+  DeferredValue({
+    required this.listenable,
+    required this.selector,
+  });
+
+  final L listenable;
+  final AsyncValue<T> Function(L listenable) selector;
+
+  AsyncValue<T> get asyncValue => selector(listenable);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DeferredValue &&
+          runtimeType == other.runtimeType &&
+          listenable == other.listenable &&
+          selector == other.selector;
+
+  @override
+  int get hashCode => listenable.hashCode ^ selector.hashCode;
+}
 
 class BoringDeferredField<L extends Listenable, T> extends StatelessWidget {
   const BoringDeferredField({
@@ -18,7 +40,7 @@ class BoringDeferredField<L extends Listenable, T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final formController = BFormController.of(context);
+    final formController = BoringFormController.of(context);
 
     final deferredValue =
         formController.getDeferredValue(fieldPath) as DeferredValue<L, T>?;
@@ -54,4 +76,3 @@ class BoringDeferredField<L extends Listenable, T> extends StatelessWidget {
     );
   }
 }
-*/

@@ -25,7 +25,7 @@ dependencies:
   boring_ui:
     git:
       url: git@github.com:BoringStuff-SRL/BoringUI.git
-      ref: develop-x-diretto
+      ref: refactoring_form
   rrule: ^0.2.16
 
 dev_dependencies:

@@ -14,7 +14,8 @@ dependencies:
   boring_ui:
     git:
       url: git@github.com:BoringStuff-SRL/BoringUI.git
-      ref: develop-x-diretto
+#      ref: develop-x-diretto
+      ref: refactoring_form
 
   easy_stepper: ^0.6.0
 
