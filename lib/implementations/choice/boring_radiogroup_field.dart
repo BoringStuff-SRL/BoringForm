@@ -1,26 +1,21 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:boring_form/field/boring_form_field.dart';
+import 'package:boring_form/form/bform_controller.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
-class BoringRadioGroupField<T> extends BoringFormField<T> {
-  const BoringRadioGroupField({
+import '../../field/bform_field.dart';
+
+class BoringRadioGroupField<T> extends BFormField<T> {
+  BoringRadioGroupField({
     super.key,
     required super.fieldPath,
     super.observedFields,
     super.validationFunction,
     super.decoration,
     super.readOnly,
-
-    ///
-    // required super.jsonKey,
     required this.items,
-    // super.fieldController,
-    // super.decoration,
     this.itemsPerRow = 1,
     this.allowEmpty = false,
-    // super.displayCondition,
-    // super.boringResponsiveSize,
     super.onChanged,
   });
 
@@ -29,11 +24,18 @@ class BoringRadioGroupField<T> extends BoringFormField<T> {
   final bool allowEmpty;
 
   @override
-  Widget builder(BuildContext context, BoringFormStyle formTheme,
-      BoringFormController formController, T? fieldValue, String? errror) {
+  Widget fieldBuilder(
+      BuildContext context,
+      BoringFormStyle formStyle,
+      BFormController formController,
+      T? fieldValue,
+      FieldValidation fieldValidation,
+      void computedValue,
+      bool readOnly) {
     final dec = getFieldDecoration(formController);
-    final inputDecoration =
-        getInputDecoration(formController, formTheme, errror, fieldValue);
+    final inputDecoration = getInputDecoration(
+        formController, formStyle, fieldValue, fieldValidation);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -55,7 +57,7 @@ class BoringRadioGroupField<T> extends BoringFormField<T> {
                         value: item.value,
                         title: Text(item.display),
                         groupValue: formController.getValue(fieldPath),
-                        onChanged: isReadOnly(formController, formTheme)
+                        onChanged: readOnly
                             ? null
                             : (value) =>
                                 setChangedValue(formController, value)),
@@ -70,45 +72,4 @@ class BoringRadioGroupField<T> extends BoringFormField<T> {
       ],
     );
   }
-
-  @override
-  void onObservedFieldsChange(BoringFormController formController) {}
-
-  @override
-  void onSelfChange(BoringFormController formController, T? fieldValue) {}
-
-  // @override
-  // Widget builder(context, controller, child) {
-  //   final style = BoringFormTheme.of(context).style;
-
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       Padding(
-  //         padding: const EdgeInsets.only(left: 8.0),
-  //         child: Text(decoration?.label ?? ""),
-  //       ),
-  //       Wrap(
-  //         children: items
-  //             .map((item) => FractionallySizedBox(
-  //                   widthFactor: 1 / itemsPerRow,
-  //                   child: RadioListTile<T?>(
-  //                       activeColor: style.inputDecoration.focusColor,
-  //                       contentPadding: style.inputDecoration.contentPadding,
-  //                       value: item.value,
-  //                       title: Text(item.display),
-  //                       groupValue: fieldController.value,
-  //                       onChanged: style.readOnly
-  //                           ? null
-  //                           : (value) => fieldController.value = value),
-  //                 ))
-  //             .toList(),
-  //       ),
-  //       Padding(
-  //         padding: const EdgeInsets.only(left: 8.0),
-  //         child: Text(decoration?.helperText ?? ""),
-  //       ),
-  //     ],
-  //   );
-  // }
 }

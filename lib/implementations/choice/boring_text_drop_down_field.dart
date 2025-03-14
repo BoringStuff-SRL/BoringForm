@@ -1,42 +1,30 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:boring_form/field/boring_form_field.dart';
+
+import 'package:boring_form/field/bform_field.dart';
+import 'package:boring_form/form/bform_controller.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class BoringTextDropDownField extends BoringFormField<String> {
+class BoringTextDropDownField extends BFormField<String> {
   BoringTextDropDownField({
     super.key,
     required super.fieldPath,
     required this.future,
     super.decoration,
     super.observedFields,
-    super.forceHideRequiredFieldLabel,
     super.onChanged,
     super.readOnly,
+    super.required,
+    super.validationFunction,
     this.minLines = 1,
     this.maxLines = 1,
     this.boringStyle,
     this.inputFormatter,
-    this.allowEmpty = false,
-    ValidationFunction<String>? validationFunction,
-    String errorMessage = "Value cannot be empty",
-  })  : fieldController = BoringTextDropDownFieldController(
+  }) : fieldController = BoringTextDropDownFieldController(
           getItems: future,
-        ),
-        super(
-            validationFunction: validationFunction == null && allowEmpty
-                ? null
-                : (BoringFormController formController, String? value) {
-                    final error =
-                        validationFunction?.call(formController, value);
-                    final emptyError =
-                        !allowEmpty && (value == null || value.isEmpty)
-                            ? errorMessage
-                            : null;
-                    return error ?? emptyError;
-                  });
+        );
   final BDropdownTheme? boringStyle;
   final OverlayPortalController portalController = OverlayPortalController();
   final LayerLink _layerLink = LayerLink();
@@ -48,13 +36,41 @@ class BoringTextDropDownField extends BoringFormField<String> {
   final FocusScopeNode focusScopeNode = FocusScopeNode();
   final int minLines;
   final int maxLines;
-  final bool allowEmpty;
+
   final List<TextInputFormatter>? inputFormatter;
   bool _isSelecting = false;
 
+  BDropdownTheme bDropdownTheme(BuildContext context) =>
+      boringStyle ?? BoringTheme.of(context).bDropdownTheme;
+
+  Widget _buildDropdownContainer({required Widget child}) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxHeight: 200),
+      child: child,
+    );
+  }
+
   @override
-  Widget builder(BuildContext context, BoringFormStyle formStyle,
-      BoringFormController formController, String? fieldValue, String? error) {
+  void onSelfChange(BFormController formController, String? fieldValue) {
+    var cursorPos =
+        min(_textController.selection.base.offset, fieldValue?.length ?? 0);
+
+    _textController.text = (fieldValue ?? "");
+    if (fieldValue != null) {
+      _textController.selection = TextSelection.collapsed(offset: cursorPos);
+    }
+  }
+
+  @override
+  Widget fieldBuilder(
+    BuildContext context,
+    BoringFormStyle formStyle,
+    BFormController formController,
+    String? fieldValue,
+    FieldValidation fieldValidation,
+    void computedValue,
+    bool readOnly,
+  ) {
     focusNode.addListener(() {
       if (focusNode.hasFocus) {
         portalController.show();
@@ -142,15 +158,15 @@ class BoringTextDropDownField extends BoringFormField<String> {
         child: TextField(
           key: _fieldKey,
           controller: _textController,
-          readOnly: isReadOnly(formController, formStyle),
-          enabled: !isReadOnly(formController, formStyle),
+          readOnly: readOnly,
+          enabled: readOnly,
           inputFormatters: inputFormatter,
           minLines: minLines,
           maxLines: maxLines,
           textAlign: formStyle.textAlign,
           style: formStyle.textStyle,
-          decoration:
-              getInputDecoration(formController, formStyle, error, fieldValue),
+          decoration: getInputDecoration(
+              formController, formStyle, fieldValue, fieldValidation),
           onChanged: (value) {
             fieldController.setFilter(value);
             formController.setFieldValue(fieldPath, value);
@@ -163,27 +179,6 @@ class BoringTextDropDownField extends BoringFormField<String> {
         ),
       ),
     );
-  }
-
-  BDropdownTheme bDropdownTheme(BuildContext context) =>
-      boringStyle ?? BoringTheme.of(context).bDropdownTheme;
-
-  Widget _buildDropdownContainer({required Widget child}) {
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxHeight: 200),
-      child: child,
-    );
-  }
-
-  @override
-  void onSelfChange(BoringFormController formController, String? fieldValue) {
-    var cursorPos =
-        min(_textController.selection.base.offset, fieldValue?.length ?? 0);
-
-    _textController.text = (fieldValue ?? "");
-    if (fieldValue != null) {
-      _textController.selection = TextSelection.collapsed(offset: cursorPos);
-    }
   }
 }
 

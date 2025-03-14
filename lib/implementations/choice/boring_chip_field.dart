@@ -1,11 +1,10 @@
-import 'package:boring_form/field/boring_form_field.dart';
+import 'package:boring_form/field/bform_field.dart';
+import 'package:boring_form/form/bform_controller.dart';
 import 'package:boring_ui/bui/theme/components_themes/form/boring_form_style.dart';
 import 'package:flutter/material.dart';
 
-import '../../form/boring_form_controller.dart';
-
-class BoringChipField<T> extends BoringFormField<List<T>> {
-  const BoringChipField({
+class BoringChipField<T> extends BFormField<List<T>> {
+  BoringChipField({
     super.key,
     required super.fieldPath,
     required this.elements,
@@ -19,12 +18,18 @@ class BoringChipField<T> extends BoringFormField<List<T>> {
   final List<T> elements;
   final Widget Function(T element) toLabel;
   final String Function(T element)? toTooltip;
-  final bool Function(BoringFormController formController, T element)?
+  final bool Function(BFormController formController, T element)?
       canRemoveSelection;
 
   @override
-  Widget builder(BuildContext context, BoringFormStyle formStyle,
-      BoringFormController formController, List<T>? fieldValue, String? error) {
+  Widget fieldBuilder(
+      BuildContext context,
+      BoringFormStyle formStyle,
+      BFormController formController,
+      List<T>? fieldValue,
+      FieldValidation fieldValidation,
+      void computedValue,
+      bool readOnly) {
     const spacing = 5.0;
     return Wrap(
       spacing: spacing,
@@ -40,7 +45,7 @@ class BoringChipField<T> extends BoringFormField<List<T>> {
             label: toLabel(e),
             showCheckmark: false,
             onPressed: () {
-              if (isReadOnly(formController, formStyle)) return;
+              if (readOnly) return;
               if (isSelected) {
                 final canRemove =
                     canRemoveSelection?.call(formController, e) ?? true;
@@ -56,7 +61,4 @@ class BoringChipField<T> extends BoringFormField<List<T>> {
       ).toList(),
     );
   }
-
-  @override
-  void onSelfChange(BoringFormController formController, List<T>? fieldValue) {}
 }

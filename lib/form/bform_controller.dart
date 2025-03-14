@@ -182,6 +182,21 @@ class BFormController extends ChangeNotifier {
   bool get hasChanged =>
       !BFormController._equality.equals(_value, _initialValue);
 
+  bool get isValid {
+    //final deferredLoading = _deferredFields.entries
+    //  .any((element) => element.value.asyncValue.isLoading);
+
+    //if (deferredLoading) return false;
+
+    if (!submitted) {
+      submitted = true;
+      notifyListeners();
+    }
+    return _validationFunctions.entries.every(
+        (element) => element.value?.call(this, getValue(element.key)) == null);
+    //return _errors.values.every((element) => element == false);
+  }
+
   dynamic getValue(List<String> fieldPath, {dynamic defaultValue}) =>
       _value.getValue(fieldPath) ?? defaultValue;
 
@@ -202,7 +217,7 @@ class BFormController extends ChangeNotifier {
 
   void setFieldValue<R>(
     List<String> fieldPath,
-    R value, {
+    R? value, {
     bool notify = true,
   }) {
     dynamic old = _value.getValue(fieldPath);

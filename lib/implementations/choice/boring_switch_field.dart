@@ -1,56 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
+import 'package:boring_form/field/bform_field.dart';
 import 'package:boring_form/field/boring_form_field.dart';
+import 'package:boring_form/form/bform_controller.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 enum BoringSwitchLabelPosition { left, right, top }
-
-// class BoringSwitchDecoration {
-//   final BorderRadius borderRadius;
-//   final double widthWhenActive;
-//   final double widthWhenNotActive;
-//   final Duration animationDuration;
-//   final Text? textWhenActive;
-//   final Text? textWhenNotActive;
-//   final Color? colorWhenActive;
-//   final Color? colorWhenNotActive;
-//   final double switchScale;
-//   final double heightFactor;
-//   final BoringSwitchLabelPosition labelPosition;
-//   final TextStyle? labelTextStlye;
-//   final double labelAndSwitchSpacing;
-//   final AlignmentGeometry alignment;
-
-//   BoringSwitchDecoration({
-//     this.borderRadius = const BorderRadius.all(
-//       Radius.circular(20),
-//     ),
-//     this.widthWhenActive = 105,
-//     this.widthWhenNotActive = 130,
-//     this.textWhenActive,
-//     this.textWhenNotActive,
-//     this.animationDuration = const Duration(milliseconds: 250),
-//     this.colorWhenActive,
-//     this.colorWhenNotActive,
-//     this.labelTextStlye,
-//     this.switchScale = 1,
-//     this.heightFactor = 1.7,
-//     this.alignment = Alignment.centerLeft,
-//     this.labelAndSwitchSpacing = 7,
-//     this.labelPosition = BoringSwitchLabelPosition.top,
-//   }) {
-//     if (textWhenActive != null) {
-//       assert(textWhenNotActive != null,
-//           "You need to provide both text when active and not active");
-//     }
-//     if (textWhenNotActive != null) {
-//       assert(textWhenActive != null,
-//           "You need to provide both text when active and not active");
-//     }
-//   }
-// }
 
 class BoringSwitchDecoration {
   final Axis direction;
@@ -105,8 +62,8 @@ class BoringSwitchDecoration {
   // bool autofocus = false,
 }
 
-class BoringSwitchField extends BoringFormField<bool> {
-  const BoringSwitchField({
+class BoringSwitchField extends BFormField<bool> {
+  BoringSwitchField({
     super.key,
     required super.fieldPath,
     super.observedFields,
@@ -119,26 +76,26 @@ class BoringSwitchField extends BoringFormField<bool> {
   final BoringSwitchDecoration switchDecoration;
 
   @override
-  Widget builder(BuildContext context, BoringFormStyle formStyle,
-      BoringFormController formController, bool? fieldValue, String? error) {
+  Widget fieldBuilder(
+      BuildContext context,
+      BoringFormStyle formStyle,
+      BFormController formController,
+      bool? fieldValue,
+      FieldValidation fieldValidation,
+      void computedValue,
+      bool readOnly) {
     return _SwitchWithDecoration(
-      readOnly: isReadOnly(formController, formStyle),
+      readOnly: readOnly,
       value: formController.getValue(fieldPath) ?? false,
       onChanged: (value) {
         setChangedValue(formController, (value ?? false));
       },
       switchDecoration: switchDecoration,
       decoration: getFieldDecoration(formController),
-      inputDecoration:
-          getInputDecoration(formController, formStyle, error, fieldValue),
+      inputDecoration:getInputDecoration(formController, formStyle, fieldValue, fieldValidation)
+          ,
     );
   }
-
-  @override
-  void onObservedFieldsChange(BoringFormController formController) {}
-
-  @override
-  void onSelfChange(BoringFormController formController, bool? fieldValue) {}
 }
 
 class _SwitchWithDecoration extends StatelessWidget {
