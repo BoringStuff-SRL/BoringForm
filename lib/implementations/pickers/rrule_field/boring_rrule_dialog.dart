@@ -26,7 +26,7 @@ class BoringRRuleDialog extends BDialogInfo {
 
   @override
   FutureOr<void> onConfirm(BuildContext context) {
-    if (formController.) {
+    if (formController.isValid) {
       BDialog.pop(context, result: formController.rrule);
     }
   }

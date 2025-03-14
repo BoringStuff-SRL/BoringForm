@@ -1,9 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:boring_form/field/bform_field.dart';
-import 'package:boring_form/field/boring_form_field.dart';
 import 'package:boring_form/form/bform_controller.dart';
 import 'package:boring_ui/boring_ui.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 enum FilePickerFeedbackPosition { top, left, right, bottom }
@@ -26,7 +24,7 @@ class BoringFilePicker extends BFormField<List<PlatformFile>> {
   final Border? border;
   // final String? label;
 
-  const BoringFilePicker({
+  BoringFilePicker({
     super.key,
     required super.fieldPath,
     super.observedFields,
@@ -78,10 +76,8 @@ class BoringFilePicker extends BFormField<List<PlatformFile>> {
       FieldValidation fieldValidation,
       void computedValue,
       bool readOnly) {
-    final style = formTheme;
-    final decoration =
-        getInputDecoration(formController, formTheme, error, fieldValue);
-    final readOnly = style.readOnly;
+    final decoration = getInputDecoration(
+        formController, formStyle, fieldValue, fieldValidation);
 
     return Align(
       heightFactor: verticalAlignment ?? 1,

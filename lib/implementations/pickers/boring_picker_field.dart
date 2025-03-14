@@ -1,16 +1,18 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:boring_form/field/boring_form_field.dart';
+import 'package:boring_form/field/bform_field.dart';
+import 'package:boring_form/form/bform_controller.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
-class BoringPickerField<T> extends BoringFormField<T> {
+class BoringPickerField<T> extends BFormField<T> {
   final _textEditingController = TextEditingController();
   final bool updateValueOnDismiss;
   final String Function(T? value) valueToString;
   final bool showEraseValueButton;
 
-  final Future<T?> Function(BuildContext context,
-      BoringFormController formController, T? fieldValue) showPicker;
+  final Future<T?> Function(
+          BuildContext context, BFormController formController, T? fieldValue)
+      showPicker;
 
   BoringPickerField({
     super.key,
@@ -24,25 +26,30 @@ class BoringPickerField<T> extends BoringFormField<T> {
     this.updateValueOnDismiss = false,
     this.showEraseValueButton = false,
     super.onChanged,
-    super.forceHideRequiredFieldLabel,
   });
 
   @override
-  Widget builder(BuildContext context, BoringFormStyle formTheme,
-      BoringFormController formController, T? fieldValue, String? error) {
+  Widget fieldBuilder(
+      BuildContext context,
+      BoringFormStyle formStyle,
+      BFormController formController,
+      T? fieldValue,
+      FieldValidation fieldValidation,
+      void computedValue,
+      bool readOnly) {
     return Row(
       children: [
         Expanded(
           child: TextField(
-            enabled: !isReadOnly(formController, formTheme),
+            enabled: readOnly,
             readOnly: true,
             controller: _textEditingController,
-            textAlign: formTheme.textAlign,
-            style: formTheme.textStyle,
+            textAlign: formStyle.textAlign,
+            style: formStyle.textStyle,
             decoration: getInputDecoration(
-                formController, formTheme, error, fieldValue),
+                formController, formStyle, fieldValue, fieldValidation),
             onTap: () async {
-              if (isReadOnly(formController, formTheme)) {
+              if (readOnly) {
                 return;
               }
 
@@ -63,20 +70,12 @@ class BoringPickerField<T> extends BoringFormField<T> {
                 setChangedValue(formController, null);
                 _textEditingController.text = "";
               },
-              child: formTheme.eraseValueWidget,
+              child: formStyle.eraseValueWidget,
             ),
           ),
         ]
       ],
     );
-  }
-
-  @override
-  void onObservedFieldsChange(BoringFormController formController) {}
-
-  @override
-  void onSelfChange(BoringFormController formController, T? fieldValue) {
-    _textEditingController.text = valueToString(fieldValue);
   }
 
   // void onValueChanged(T? newValue) {}

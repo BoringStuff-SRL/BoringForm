@@ -1,4 +1,6 @@
+import 'package:boring_form/field/bform_field.dart';
 import 'package:boring_form/field/boring_form_field.dart';
+import 'package:boring_form/form/bform_controller.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -19,8 +21,8 @@ class BoringImagePickerWithPreviewDecoration {
   final Widget Function(BuildContext context, Widget child) _selectImageWrapper;
   final Widget Function(BuildContext context, Widget child)
       _previewImageWrapper;
-  final Widget Function(
-      BuildContext context, BoringFormController formController)? actionBuilder;
+  final Widget Function(BuildContext context, BFormController formController)?
+      actionBuilder;
   BoringImagePickerWithPreviewDecoration({
     this.editText,
     this.clearText,
@@ -38,7 +40,7 @@ class BoringImagePickerWithPreviewDecoration {
             previewImageWrapper ?? ((context, child) => child);
 }
 
-class BoringImagePickerWithPreview extends BoringFormField<Uint8List> {
+class BoringImagePickerWithPreview extends BFormField<Uint8List> {
   BoringImagePickerWithPreview(
       {required super.fieldPath,
       super.onChanged,
@@ -58,12 +60,14 @@ class BoringImagePickerWithPreview extends BoringFormField<Uint8List> {
   final _BoringImagePickerWithPreviewBuilders _imagePickerWithPreviewBuilders;
 
   @override
-  Widget builder(
+  Widget fieldBuilder(
       BuildContext context,
-      BoringFormStyle formTheme,
-      BoringFormController formController,
+      BoringFormStyle formStyle,
+      BFormController formController,
       Uint8List? fieldValue,
-      String? error) {
+      FieldValidation fieldValidation,
+      void computedValue,
+      bool readOnly) {
     final hasValue = fieldValue != null;
 
     final boxDecoration =
@@ -82,7 +86,7 @@ class BoringImagePickerWithPreview extends BoringFormField<Uint8List> {
   }
 
   Widget _emptyValueWidget(
-      BuildContext context, BoringFormController formController) {
+      BuildContext context, BFormController formController) {
     final child = _clickToPickWidget(
       formController: formController,
       child: _imagePickerWithPreviewBuilders.buildSelectImagesWidget(context),
@@ -93,7 +97,7 @@ class BoringImagePickerWithPreview extends BoringFormField<Uint8List> {
   }
 
   Widget _imagePreviewWidget(
-      BuildContext context, BoringFormController formController) {
+      BuildContext context, BFormController formController) {
     final image = Image.memory(
       formController.getValue(fieldPath) as Uint8List,
       fit: BoxFit.contain,
@@ -167,9 +171,12 @@ class BoringImagePickerWithPreview extends BoringFormField<Uint8List> {
         context, child);
   }
 
+  Future<void> _handleClearImage(BFormController formController) async {
+    formController.setFieldValue(fieldPath, null);
+  }
+
   Widget _clickToPickWidget(
-          {required BoringFormController formController,
-          required Widget child}) =>
+          {required BFormController formController, required Widget child}) =>
       Builder(builder: (context) {
         return MouseRegion(
           cursor: SystemMouseCursors.click,
@@ -182,7 +189,7 @@ class BoringImagePickerWithPreview extends BoringFormField<Uint8List> {
         );
       });
 
-  Future<void> _handleSelectImage(BoringFormController formController) async {
+  Future<void> _handleSelectImage(BFormController formController) async {
     final selectedFileResult = await FilePicker.platform.pickFiles(
       allowMultiple: false,
       withData: true,
@@ -194,14 +201,6 @@ class BoringImagePickerWithPreview extends BoringFormField<Uint8List> {
           fieldPath, selectedFileResult.files.first.bytes!);
     }
   }
-
-  Future<void> _handleClearImage(BoringFormController formController) async {
-    formController.setFieldValue(fieldPath, null);
-  }
-
-  @override
-  void onSelfChange(
-      BoringFormController formController, Uint8List? fieldValue) {}
 }
 
 class _BoringImagePickerWithPreviewBuilders {

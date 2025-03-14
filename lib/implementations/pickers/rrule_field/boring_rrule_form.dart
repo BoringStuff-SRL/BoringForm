@@ -1,3 +1,5 @@
+import 'package:boring_form/field/bform_field.dart';
+import 'package:boring_form/form/bform_controller.dart';
 import 'package:boring_form/implementations/pickers/rrule_field/utils/enums.dart';
 import 'package:boring_form/implementations/pickers/rrule_field/utils/rrule_ext.dart';
 import 'package:boring_ui/boring_ui.dart';
@@ -38,11 +40,11 @@ class BoringRRuleForm extends BoringFormWidget {
             ),
           ),
           Expanded(
-            child: BoringFormChildWidget(
+            child: BFormObserverWidget(
                 observedFields: [
                   ["interval"]
                 ],
-                builder: (context, fc) {
+                builder: (context, fc, map) {
                   final interval =
                       formController.getValue(["interval"]) as num? ?? 1;
                   final singular = interval == 1.0;
@@ -115,11 +117,11 @@ class BoringRRuleForm extends BoringFormWidget {
                 BoringFieldDecoration(label: "Tipo di ricorrenza mensile"),
             toBoringChoiceItem: (e) => BChoiceItem(value: e, display: e.tr),
           ),
-          BoringFormChildWidget(
+          BFormObserverWidget(
             observedFields: [
               ["monthlyRecurrenceType"]
             ],
-            builder: (context, formController) {
+            builder: (context, formController, map) {
               final monthlyRecurrenceType =
                   formController.getValue(["monthlyRecurrenceType"])
                       as MonthlyRecurrenceType?;
@@ -194,11 +196,11 @@ class BoringRRuleForm extends BoringFormWidget {
             decoration: (formController) =>
                 BoringFieldDecoration(label: "Ogni:"),
           ),
-          BoringFormChildWidget(
+          BFormObserverWidget(
             observedFields: [
               ["yearlyRecurrence", "hasMonthOccurrence"]
             ],
-            builder: (context, formController) {
+            builder: (context, formController, map) {
               final hasMonthOccurrence = formController
                       .getValue(["yearlyRecurrence", "hasMonthOccurrence"]) ??
                   false;
@@ -233,14 +235,12 @@ class BoringRRuleForm extends BoringFormWidget {
                 ),
               ),
               Expanded(
-                child: BoringFormChildWidget(
+                child: BFormObserverWidget(
                   observedFields: [
                     ["end_type"]
                   ],
-                  builder: (
-                    BuildContext context,
-                    BoringFormController formController,
-                  ) {
+                  builder: (BuildContext context,
+                      BFormController formController, map) {
                     final endType = formController.getValue(["end_type"])
                         as RecurrenceEndType?;
 
@@ -315,11 +315,11 @@ class BoringRRuleForm extends BoringFormWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _frequencyWidget(context),
-        BoringFormChildWidget(
+        BFormObserverWidget(
           observedFields: [
             ["frequency"]
           ],
-          builder: (context, formController) {
+          builder: (context, formController, map) {
             final frequency =
                 formController.getValue(["frequency"]) as Frequency?;
 

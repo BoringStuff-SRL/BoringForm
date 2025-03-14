@@ -28,9 +28,6 @@ class BoringDateTimeField extends BoringPickerField<DateTime> {
     bool forceHideRequiredFieldLabel = false,
     super.onChanged,
   }) : super(
-            forceHideRequiredFieldLabel: !forceHideRequiredFieldLabel
-                ? validationFunction == null
-                : forceHideRequiredFieldLabel,
             validationFunction:
                 (BFormController formController, DateTime? value) {
               final error = validationFunction?.call(formController, value);
@@ -107,9 +104,6 @@ class BoringDateRangeField extends BoringPickerField<DateTimeRange> {
     super.onChanged,
   })  : assert(firstDate <= lastDate, "firstDate must be less than lastDate"),
         super(
-          forceHideRequiredFieldLabel: !forceHideRequiredFieldLabel
-              ? validationFunction == null
-              : forceHideRequiredFieldLabel,
           validationFunction:
               (BFormController formController, DateTimeRange? value) {
             final error = validationFunction?.call(formController, value);
@@ -175,9 +169,6 @@ class BoringDateField extends BoringPickerField<DateTime> {
     super.onChanged,
   })  : assert(firstDate <= lastDate, "firstDate must be less than lastDate"),
         super(
-            forceHideRequiredFieldLabel: !forceHideRequiredFieldLabel
-                ? validationFunction == null
-                : forceHideRequiredFieldLabel,
             validationFunction:
                 (BFormController formController, DateTime? value) {
               final error = validationFunction?.call(formController, value);
@@ -233,9 +224,6 @@ class BoringTimeField extends BoringPickerField<TimeOfDay> {
     // required DateTime firstDate,
     // required DateTime lastDate,
   }) : super(
-            forceHideRequiredFieldLabel: !forceHideRequiredFieldLabel
-                ? validationFunction == null
-                : forceHideRequiredFieldLabel,
             validationFunction:
                 (BFormController formController, TimeOfDay? value) {
               final error = validationFunction?.call(formController, value);
