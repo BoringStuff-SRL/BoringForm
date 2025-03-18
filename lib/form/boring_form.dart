@@ -3,10 +3,10 @@ import 'package:boring_form/theme/boring_form_theme.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
-extension on List<String> {
-  List<List<String>> nest(String splitter) =>
-      map((e) => e.split(splitter)).toList();
-}
+// extension on List<String> {
+//   List<List<String>> nest(String splitter) =>
+//       map((e) => e.split(splitter)).toList();
+// }
 
 class BoringForm extends BoringFormWidget {
   BoringForm(

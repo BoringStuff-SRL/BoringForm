@@ -1,6 +1,4 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:boring_form/field/bform_field.dart';
-import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
@@ -30,18 +28,18 @@ class BoringPickerField<T> extends BFormField<T> {
 
   @override
   Widget fieldBuilder(
-      BuildContext context,
-      BoringFormStyle formStyle,
-      BoringFormController formController,
-      T? fieldValue,
-      FieldValidation fieldValidation,
-      void computedValue,
-      bool readOnly) {
+    BuildContext context,
+    BoringFormStyle formStyle,
+    BoringFormController formController,
+    T? fieldValue,
+    FieldValidation fieldValidation,
+    void computedValue,
+  ) {
     return Row(
       children: [
         Expanded(
           child: TextField(
-            enabled: readOnly,
+            enabled: fieldValidation.isReadOnly,
             readOnly: true,
             controller: _textEditingController,
             textAlign: formStyle.textAlign,
@@ -49,7 +47,7 @@ class BoringPickerField<T> extends BFormField<T> {
             decoration: getInputDecoration(
                 formController, formStyle, fieldValue, fieldValidation),
             onTap: () async {
-              if (readOnly) {
+              if (fieldValidation.isReadOnly) {
                 return;
               }
 

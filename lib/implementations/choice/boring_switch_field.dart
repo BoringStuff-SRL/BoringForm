@@ -1,7 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
-import 'package:boring_form/field/bform_field.dart';
-import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -18,17 +16,17 @@ class BoringSwitchDecoration {
   final void Function(Object, StackTrace?)? onActiveThumbImageError;
   final ImageProvider<Object>? inactiveThumbImage;
   final void Function(Object, StackTrace?)? onInactiveThumbImageError;
-  final MaterialStateProperty<Color?>? thumbColor;
-  final MaterialStateProperty<Color?>? trackColor;
-  final MaterialStateProperty<Color?>? trackOutlineColor;
-  final MaterialStateProperty<double?>? trackOutlineWidth;
-  final MaterialStateProperty<Icon?>? thumbIcon;
+  final WidgetStateProperty<Color?>? thumbColor;
+  final WidgetStateProperty<Color?>? trackColor;
+  final WidgetStateProperty<Color?>? trackOutlineColor;
+  final WidgetStateProperty<double?>? trackOutlineWidth;
+  final WidgetStateProperty<Icon?>? thumbIcon;
   final MaterialTapTargetSize? materialTapTargetSize;
   final DragStartBehavior dragStartBehavior;
   final MouseCursor? mouseCursor;
   final Color? focusColor;
   final Color? hoverColor;
-  final MaterialStateProperty<Color?>? overlayColor;
+  final WidgetStateProperty<Color?>? overlayColor;
   final double? splashRadius;
   final WrapCrossAlignment switchAlignment;
 
@@ -76,15 +74,16 @@ class BoringSwitchField extends BFormField<bool> {
 
   @override
   Widget fieldBuilder(
-      BuildContext context,
-      BoringFormStyle formStyle,
-      BoringFormController formController,
-      bool? fieldValue,
-      FieldValidation fieldValidation,
-      void computedValue,
-      bool readOnly) {
+    BuildContext context,
+    BoringFormStyle formStyle,
+    BoringFormController formController,
+    bool? fieldValue,
+    FieldValidation fieldValidation,
+    void computedValue,
+  ) {
     return _SwitchWithDecoration(
-      readOnly: readOnly,
+      key: key,
+      readOnly: fieldValidation.isReadOnly,
       value: formController.getValue(fieldPath) ?? false,
       onChanged: (value) {
         setChangedValue(formController, (value ?? false));
@@ -106,14 +105,14 @@ class _SwitchWithDecoration extends StatelessWidget {
   final InputDecoration? inputDecoration;
 
   const _SwitchWithDecoration({
-    Key? key,
+    super.key,
     required this.onChanged,
     required this.value,
     required this.readOnly,
     required this.decoration,
     this.inputDecoration,
     this.switchDecoration = const BoringSwitchDecoration(),
-  }) : super(key: key);
+  });
 
   String? get label => decoration?.label;
   TextStyle get labelStyle => inputDecoration?.labelStyle ?? const TextStyle();

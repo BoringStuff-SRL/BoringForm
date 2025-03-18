@@ -4,6 +4,16 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+extension<T> on Iterable<T> {
+  bool startsWith(Iterable<T> other) {
+    if (length < other.length) return false;
+    for (int i = 0; i < other.length; i++) {
+      if (elementAt(i) != other.elementAt(i)) return false;
+    }
+    return true;
+  }
+}
+
 extension BFormFieldValueExt on Map<String, dynamic> {
   bool pathExists(FieldPath path) {
     return true;
@@ -59,25 +69,18 @@ extension BFormFieldValueExt on Map<String, dynamic> {
     }
   }
 
-  void mergeValue(Map<String, dynamic> map, [bool mergeSubMaps = false]) {
-    if (!mergeSubMaps) {
-      addAll(map);
-    }
-    //TODO
-    throw UnimplementedError();
-  }
-
   void addEntry(MapEntry<String, dynamic> entry) => addEntries([entry]);
 }
 
 typedef FieldValidation = ({
   String? error,
   bool showError,
-  bool showRequiredLabel
+  bool showRequiredLabel,
+  bool isReadOnly,
 });
 
 extension SetExtension<T> on Set<T> {
-  bool containsAny(List<T> elements) => elements.any(contains);
+  bool containsAny(Iterable<T> elements) => elements.any(contains);
 }
 
 class BoringFormController extends ChangeNotifier {
@@ -110,6 +113,7 @@ class BoringFormController extends ChangeNotifier {
   final Set<FieldPath> _loadingFields = {};
   final Set<FieldPath> _errorFields = {};
 
+  @protected
   void setLoadingField(FieldPath fieldPath) {
     var notify = false;
     notify = _loadingFields.add(fieldPath) || notify;
@@ -119,6 +123,7 @@ class BoringFormController extends ChangeNotifier {
     }
   }
 
+  @protected
   void setErrorField(FieldPath fieldPath) {
     var notify = false;
     notify = _errorFields.add(fieldPath) || notify;
@@ -128,6 +133,7 @@ class BoringFormController extends ChangeNotifier {
     }
   }
 
+  @protected
   void setDoneField(FieldPath fieldPath) {
     var notify = false;
     notify = _errorFields.remove(fieldPath) || notify;
@@ -137,9 +143,10 @@ class BoringFormController extends ChangeNotifier {
     }
   }
 
+  @protected
   AsyncValue<Map<FieldPath, dynamic>> observed(
       List<FieldPath>? pathsToObserve) {
-    final observedPaths = pathsToObserve ?? allPaths();
+    final observedPaths = pathsToObserve ?? allPaths(_value);
     if (observedPaths.isEmpty) {
       return const AsyncValueDone({});
     }
@@ -159,8 +166,8 @@ class BoringFormController extends ChangeNotifier {
     );
   }
 
-  List<FieldPath> allPaths() {
-    List<FieldPath> result = [];
+  static Set<FieldPath> allPaths(Map<String, dynamic> value) {
+    Set<FieldPath> result = {};
     // ignore: no_leading_underscores_for_local_identifiers
     void _collectPaths(Map<String, dynamic> map, FieldPath currentPath) {
       for (var entry in map.entries) {
@@ -173,7 +180,7 @@ class BoringFormController extends ChangeNotifier {
       }
     }
 
-    _collectPaths(_value, []);
+    _collectPaths(value, []);
     return result;
   }
 
@@ -203,7 +210,7 @@ class BoringFormController extends ChangeNotifier {
       notifyListeners();
     }
 
-    final paths = allPaths();
+    final paths = allPaths(_value);
     for (final path in paths) {
       if (_loadingFields.contains(path)) return false;
     }
@@ -224,98 +231,108 @@ class BoringFormController extends ChangeNotifier {
     if (_equality.equals(_value, newValue)) {
       return;
     }
-    _value.clear();
-    _value.addAll(newValue);
-    _fieldHasChanged([]);
-    notifyListeners();
+    final newPaths = allPaths(newValue);
+    final oldPaths = allPaths(_value);
+    final pathsToSetNull = oldPaths.difference(newPaths);
+    var shouldNotify = false;
+    for (final path in pathsToSetNull) {
+      shouldNotify = setFieldValue(path, null, notify: false) || shouldNotify;
+    }
+    for (final path in newPaths) {
+      final val = newValue.getValue(path);
+      shouldNotify = setFieldValue(path, val, notify: false) || shouldNotify;
+    }
+    if (shouldNotify) {
+      notifyListeners();
+    }
   }
 
-  void setFieldValue<R>(
+  bool setFieldValue<R>(
     List<String> fieldPath,
     R? value, {
     bool notify = true,
   }) {
     dynamic old = _value.getValue(fieldPath);
     if (_equality.equals(old, value)) {
-      return;
+      return false;
     }
-
     _value.setValue(fieldPath, value);
     // print(_value);
-    _fieldHasChanged(fieldPath);
+    // _fieldHasChanged(fieldPath);
     if (notify) notifyListeners();
+    return true;
   }
 
   /// PUBLIC METHODS
 
   /// Note that this function won't work if the field has the readOnly param given
-  void setFieldReadOnlyStatus(
-    FieldPath path, {
-    required bool readOnly,
-    bool notify = true,
-  }) {
-    if (readOnly) {
-      _readOnlyFields.add(path);
-    } else {
-      _readOnlyFields.removeWhere((element) => listEquals(element, path));
-    }
-    if (notify) {
-      notifyListeners();
-    }
-  }
+  // void setFieldReadOnlyStatus(
+  //   FieldPath path, {
+  //   required bool readOnly,
+  //   bool notify = true,
+  // }) {
+  //   if (readOnly) {
+  //     _readOnlyFields.add(path);
+  //   } else {
+  //     _readOnlyFields.removeWhere((element) => listEquals(element, path));
+  //   }
+  //   if (notify) {
+  //     notifyListeners();
+  //   }
+  // }
 
-  bool isFieldReadOnly(FieldPath fieldPath) => _readOnlyFields
-      .where((element) => listEquals(element, fieldPath))
-      .isNotEmpty;
+  // bool isFieldReadOnly(FieldPath fieldPath) => _readOnlyFields
+  //     .where((element) => listEquals(element, fieldPath))
+  //     .isNotEmpty;
 
-  void addFieldsListener({
-    required String key,
-    required List<FieldPath> fields,
-    required void Function() callback,
-  }) {
-    final Map<FieldPath, void Function()> map = {};
-    for (final field in fields) {
-      map[field] = callback;
-    }
-    _fieldsListener[key] = map;
-  }
+  // void addFieldsListener({
+  //   required String key,
+  //   required List<FieldPath> fields,
+  //   required void Function() callback,
+  // }) {
+  //   final Map<FieldPath, void Function()> map = {};
+  //   for (final field in fields) {
+  //     map[field] = callback;
+  //   }
+  //   _fieldsListener[key] = map;
+  // }
 
-  void removeFieldsListener(String key) {
-    _fieldsListener.remove(key);
-  }
+  // void removeFieldsListener(String key) {
+  //   _fieldsListener.remove(key);
+  // }
 
-  void reset() {
-    value = _initialValue;
-  }
+  // void reset() {
+  //   value = _initialValue;
+  // }
 
-  void resetFields(List<List<String>> fieldPaths) {
-    for (var fieldPath in fieldPaths) {
-      setFieldValue(fieldPath, null);
-    }
-  }
+  // void resetFields(List<List<String>> fieldPaths) {
+  //   for (var fieldPath in fieldPaths) {
+  //     setFieldValue(fieldPath, null);
+  //   }
+  // }
 
   /// PRIVATE METHODS
 
   // List<dynamic> _getMultiValues(List<List<String>> fieldPaths) =>
   //     fieldPaths.map((keysList) => _value.getValue(keysList)).toList();
 
-  void _fieldHasChanged(FieldPath path) {
-    _fieldsListener.values
-        .expand((e) => e.entries)
-        .where(
-          (element) {
-            final fieldPath = element.key;
-            if (fieldPath.length > path.length) return false;
+  // void _fieldHasChanged(FieldPath path) {
+  //   _fieldsListener.values
+  //       .expand((e) => e.entries)
+  //       .where(
+  //         (element) {
+  //           final fieldPath = element.key;
+  //           if (fieldPath.length > path.length) return false;
 
-            for (int i = 0; i < fieldPath.length; i++) {
-              if (fieldPath[i] != path[i]) return false;
-            }
-            return true;
-          },
-        )
-        .map((e) => e.value)
-        .forEach((callback) => callback());
-  }
+  //           for (int i = 0; i < fieldPath.length; i++) {
+  //             if (fieldPath[i] != path[i]) return false;
+  //           }
+  //           return true;
+  //         },
+  //       )
+  //       .map((e) => e.value)
+  //       .forEach((callback) => callback());
+  // }
 
   //CONTROLLER LOGIC
   bool submitted = false;
@@ -327,14 +344,17 @@ class BoringFormController extends ChangeNotifier {
         : null;
   }
 
-  String? validateField(FieldPath fieldPath) {
+  String? _fieldValidation(FieldPath fieldPath) {
     final validationFunction = _validationFunctions[fieldPath];
-    if (validationFunction == null) return null;
-    final value = getValue(fieldPath);
-    return validationFunction(this, value);
+    if (isFieldRemoved(fieldPath)) return null;
+    return validationFunction?.call(this, getValue(fieldPath));
   }
 
-  FieldValidation selectFieldValidation(FieldPath fieldPath) {
+  String? validateField(FieldPath fieldPath) =>
+      _fieldValidation(fieldPath) ?? _fieldValidationExtension(fieldPath);
+
+  FieldValidation selectFieldValidation(FieldPath fieldPath,
+      {required bool fieldMarkedReadonly}) {
     final errror = validateField(fieldPath);
     final showError = errror != null &&
         validationBehaviour != ValidationBehaviour.never &&
@@ -344,22 +364,90 @@ class BoringFormController extends ChangeNotifier {
             (fieldRequiredLabelBehaviour ==
                     FieldRequiredLabelBehaviour.hiddenWhenValid &&
                 errror != null);
+    final isReadOnly = fieldMarkedReadonly || isFieldReadOnly(fieldPath);
+
     return (
       error: errror,
       showError: showError,
-      showRequiredLabel: showRequiredLabel
+      showRequiredLabel: showRequiredLabel,
+      isReadOnly: isReadOnly
     );
   }
 
-  ({T value, FieldValidation validation}) selectField<T>(FieldPath fieldPath) {
+  ({T value, FieldValidation validation}) selectField<T>(FieldPath fieldPath,
+      {required bool fieldMarkedReadonly}) {
     final value = getValue(fieldPath);
-    final validation = selectFieldValidation(fieldPath);
+    final validation = selectFieldValidation(fieldPath,
+        fieldMarkedReadonly: fieldMarkedReadonly);
     return (value: value, validation: validation);
   }
 
-  void removeValidationFunction(FieldPath fieldPath) {
-    _validationFunctions.removeWhere(
-      (key, value) => BoringFormController._equality.equals(key, fieldPath),
-    );
+  //EXTENSIONS
+  final List<BFormExtension> _extensions = [];
+
+  bool isFieldReadOnly(FieldPath fieldPath) =>
+      _extensions.any((e) => switch (e) {
+            BComputedField() =>
+              e.fieldPath == fieldPath && !e.allowFieldChanges,
+            BRemovedField() => e.fieldPath == fieldPath ||
+                (e.includeSubFields && fieldPath.startsWith(e.fieldPath)),
+            _ => false,
+          });
+  String? _fieldValidationExtension(FieldPath fieldPath) {
+    final validation = _extensions
+        .whereType<BValidation>()
+        .firstWhereOrNull((e) => e.attachedPaths.contains(fieldPath));
+    return validation?.validationFunction?.call(this, getValue(fieldPath));
   }
+
+  bool isFieldRemoved(FieldPath fieldPath) =>
+      _extensions.any((e) => switch (e) {
+            BRemovedField() => e.fieldPath == fieldPath ||
+                (e.includeSubFields && fieldPath.startsWith(e.fieldPath)),
+            _ => false,
+          });
+
+  void addExtension(BFormExtension extension) {
+    _extensions.add(extension);
+    notifyListeners();
+  }
+
+  void removeExtension(BFormExtension extension) {
+    _extensions.remove(extension);
+    notifyListeners();
+  }
+
+  List<BFormExtension> get extensions => _extensions;
+}
+
+sealed class BFormExtension {}
+
+class BComputedField<T> extends BFormExtension {
+  final FieldPath fieldPath;
+  final T Function(BoringFormController formController) compute;
+  final bool allowFieldChanges;
+  BComputedField({
+    required this.fieldPath,
+    required this.compute,
+    this.allowFieldChanges = false,
+  });
+}
+
+class BRemovedField extends BFormExtension {
+  final FieldPath fieldPath;
+  final bool hideField;
+  final bool includeSubFields;
+  BRemovedField(
+      {required this.fieldPath,
+      this.hideField = true,
+      this.includeSubFields = true});
+}
+
+class BValidation extends BFormExtension {
+  final ValidationFunction validationFunction;
+  final List<FieldPath> attachedPaths;
+  BValidation({
+    this.attachedPaths = const [],
+    required this.validationFunction,
+  });
 }

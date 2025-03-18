@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:boring_form/field/bform_field.dart';
-import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
@@ -29,13 +27,13 @@ class BoringDurationField extends BFormField<Duration> {
 
   @override
   Widget fieldBuilder(
-      BuildContext context,
-      BoringFormStyle formStyle,
-      BoringFormController formController,
-      Duration? fieldValue,
-      FieldValidation fieldValidation,
-      void computedValue,
-      bool readOnly) {
+    BuildContext context,
+    BoringFormStyle formStyle,
+    BoringFormController formController,
+    Duration? fieldValue,
+    FieldValidation fieldValidation,
+    void computedValue,
+  ) {
     final durationTheme = durationFieldThemeOf(context);
 
     final BoringDurationDataHandler? dataHandler = fieldValue != null
@@ -46,7 +44,7 @@ class BoringDurationField extends BFormField<Duration> {
 
     return TextField(
       readOnly: true,
-      enabled: !readOnly,
+      enabled: !fieldValidation.isReadOnly,
       controller: textEditingController,
       decoration: getInputDecoration(
           formController, formStyle, fieldValue, fieldValidation),

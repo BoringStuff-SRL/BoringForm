@@ -1,5 +1,3 @@
-import 'package:boring_form/field/bform_field.dart';
-import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_form/implementations/pickers/rrule_field/utils/enums.dart';
 import 'package:boring_form/implementations/pickers/rrule_field/utils/rrule_ext.dart';
 import 'package:boring_ui/boring_ui.dart';
@@ -31,17 +29,18 @@ class BoringRRuleForm extends BoringFormWidget {
           SizedBox(
             width: 80,
             child: BoringNumberField(
-              fieldPath: ["interval"],
+              fieldPath: const ["interval"],
               showIncrementDecrementButtons: true,
               validationFunction: (formController, value) {
                 if (value == null) return "Campo richiesto";
                 if (value < 1) return "Valore minimo 1";
+                return null;
               },
             ),
           ),
           Expanded(
             child: BFormObserverWidget(
-                observedFields: [
+                observedFields: const [
                   ["interval"]
                 ],
                 builder: (context, fc, map) {
@@ -50,7 +49,7 @@ class BoringRRuleForm extends BoringFormWidget {
                   final singular = interval == 1.0;
                   return BoringDropdownField(
                     key: UniqueKey(),
-                    fieldPath: ["frequency"],
+                    fieldPath: const ["frequency"],
                     clearable: false,
                     getItems: (search) async {
                       final result = [
@@ -76,7 +75,7 @@ class BoringRRuleForm extends BoringFormWidget {
         children: [
           const BText("Si ripete il"),
           BoringChipField(
-            fieldPath: ["byDays"],
+            fieldPath: const ["byDays"],
             elements: [
               DateTime.monday,
               DateTime.tuesday,
@@ -108,7 +107,7 @@ class BoringRRuleForm extends BoringFormWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           BoringDropdownField<MonthlyRecurrenceType>(
-            fieldPath: ["monthlyRecurrenceType"],
+            fieldPath: const ["monthlyRecurrenceType"],
             getItems: (search) async {
               return MonthlyRecurrenceType.values.toList();
             },
@@ -118,7 +117,7 @@ class BoringRRuleForm extends BoringFormWidget {
             toBoringChoiceItem: (e) => BChoiceItem(value: e, display: e.tr),
           ),
           BFormObserverWidget(
-            observedFields: [
+            observedFields: const [
               ["monthlyRecurrenceType"]
             ],
             builder: (context, formController, map) {
@@ -128,7 +127,7 @@ class BoringRRuleForm extends BoringFormWidget {
               return switch (monthlyRecurrenceType) {
                 null => Container(),
                 MonthlyRecurrenceType.days => BoringChipField(
-                    fieldPath: ["byMonthDays"],
+                    fieldPath: const ["byMonthDays"],
                     elements: List.generate(31, (index) => index + 1),
                     canRemoveSelection: (formController, element) {
                       final value = formController.getValue(["byMonthDays"])
@@ -163,7 +162,7 @@ class BoringRRuleForm extends BoringFormWidget {
         children: [
           const BText("Si ripete il"),
           BoringChipField(
-            fieldPath: ["byYear"],
+            fieldPath: const ["byYear"],
             elements: List.generate(12, (index) => index + 1),
             canRemoveSelection: (formController, element) {
               final value =
@@ -192,12 +191,12 @@ class BoringRRuleForm extends BoringFormWidget {
             },
           ),
           BoringCheckBoxField(
-            fieldPath: ["yearlyRecurrence", "hasMonthOccurrence"],
+            fieldPath: const ["yearlyRecurrence", "hasMonthOccurrence"],
             decoration: (formController) =>
                 BoringFieldDecoration(label: "Ogni:"),
           ),
           BFormObserverWidget(
-            observedFields: [
+            observedFields: const [
               ["yearlyRecurrence", "hasMonthOccurrence"]
             ],
             builder: (context, formController, map) {
@@ -225,7 +224,7 @@ class BoringRRuleForm extends BoringFormWidget {
             children: [
               Expanded(
                 child: BoringDropdownField(
-                  fieldPath: ["end_type"],
+                  fieldPath: const ["end_type"],
                   getItems: (search) async {
                     return RecurrenceEndType.values;
                   },
@@ -236,7 +235,7 @@ class BoringRRuleForm extends BoringFormWidget {
               ),
               Expanded(
                 child: BFormObserverWidget(
-                  observedFields: [
+                  observedFields: const [
                     ["end_type"]
                   ],
                   builder: (BuildContext context,
@@ -247,7 +246,7 @@ class BoringRRuleForm extends BoringFormWidget {
                     return switch (endType) {
                       RecurrenceEndType.never => Container(),
                       RecurrenceEndType.date => BoringDateField(
-                          fieldPath: ["end_date"],
+                          fieldPath: const ["end_date"],
                           firstDate: DateTime.now(),
                           lastDate: DateTime.now()
                               .add(const Duration(days: 365 * 10)),
@@ -257,7 +256,7 @@ class BoringRRuleForm extends BoringFormWidget {
                           ),
                         ),
                       RecurrenceEndType.after => BoringNumberField(
-                          fieldPath: ["end_value"],
+                          fieldPath: const ["end_value"],
                           showIncrementDecrementButtons: true,
                           decoration: (formController) {
                             final value =
@@ -316,7 +315,7 @@ class BoringRRuleForm extends BoringFormWidget {
       children: [
         _frequencyWidget(context),
         BFormObserverWidget(
-          observedFields: [
+          observedFields: const [
             ["frequency"]
           ],
           builder: (context, formController, map) {

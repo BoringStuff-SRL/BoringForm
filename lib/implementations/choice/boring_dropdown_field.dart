@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:boring_form/field/bform_field.dart';
-import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
@@ -54,7 +52,6 @@ class BoringDropdownField<T> extends BFormFieldAsync<T, List<T>> {
     T? fieldValue,
     FieldValidation fieldValidation,
     List<T>? computedValue,
-    bool readOnly,
   ) {
     final dropdownStyle =
         boringDropdownStyle ?? BoringTheme.of(context).bDropdownTheme;
@@ -64,7 +61,7 @@ class BoringDropdownField<T> extends BFormFieldAsync<T, List<T>> {
       searchItems: getItems,
       toDisplay: (v) => toBoringChoiceItem(v).display,
       onChanged: (value) => setChangedValue(formController, value),
-      readOnly: readOnly,
+      readOnly: fieldValidation.isReadOnly,
       onAdd: onAdd,
       callFutureOnStopWriting: callFutureOnStopWriting,
       boringDropdownLoadingMode: boringDropdownLoadingMode,

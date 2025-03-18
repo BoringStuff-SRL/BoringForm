@@ -9,13 +9,14 @@ class BoringFormWithTitle {
 }
 
 class BoringFormStepper extends StatelessWidget {
-  BoringFormStepper(
-      {required this.forms,
-      this.mustBeValidToContinue = true,
-      this.hideControls = false,
-      BoringStepperController? stepperController,
-      this.stepperStyle = const BoringStepperStyle()})
-      : stepperController = stepperController ?? BoringStepperController();
+  BoringFormStepper({
+    super.key,
+    required this.forms,
+    this.mustBeValidToContinue = true,
+    this.hideControls = false,
+    BoringStepperController? stepperController,
+    this.stepperStyle = const BoringStepperStyle(),
+  }) : stepperController = stepperController ?? BoringStepperController();
 
   final List<BoringFormWithTitle> forms;
   final bool mustBeValidToContinue;

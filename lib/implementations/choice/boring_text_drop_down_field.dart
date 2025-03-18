@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:boring_form/field/bform_field.dart';
-import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -69,7 +67,6 @@ class BoringTextDropDownField extends BFormField<String> {
     String? fieldValue,
     FieldValidation fieldValidation,
     void computedValue,
-    bool readOnly,
   ) {
     focusNode.addListener(() {
       if (focusNode.hasFocus) {
@@ -158,8 +155,8 @@ class BoringTextDropDownField extends BFormField<String> {
         child: TextField(
           key: _fieldKey,
           controller: _textController,
-          readOnly: readOnly,
-          enabled: readOnly,
+          readOnly: fieldValidation.isReadOnly,
+          enabled: fieldValidation.isReadOnly,
           inputFormatters: inputFormatter,
           minLines: minLines,
           maxLines: maxLines,

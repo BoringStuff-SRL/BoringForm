@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:boring_form/field/bform_field.dart';
-import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
@@ -43,13 +41,13 @@ class BoringDropdownMultiChoiceField<T>
 
   @override
   Widget fieldBuilder(
-      BuildContext context,
-      BoringFormStyle formStyle,
-      BoringFormController formController,
-      List<T>? fieldValue,
-      FieldValidation fieldValidation,
-      List<T>? computedValue,
-      bool readOnly) {
+    BuildContext context,
+    BoringFormStyle formStyle,
+    BoringFormController formController,
+    List<T>? fieldValue,
+    FieldValidation fieldValidation,
+    List<T>? computedValue,
+  ) {
     final dropdownStyle =
         boringDropdownStyle ?? BoringTheme.of(context).bDropdownTheme;
 
@@ -59,7 +57,7 @@ class BoringDropdownMultiChoiceField<T>
         return computedValue ?? <T>[];
       },
       onChanged: (values) => setChangedValue(formController, values),
-      readOnly: readOnly,
+      readOnly: fieldValidation.isReadOnly,
       onAdd: onAdd,
       callFutureOnStopWriting: callFutureOnStopWriting,
       boringDropdownLoadingMode: boringDropdownLoadingMode,
@@ -90,6 +88,6 @@ class BoringDropdownMultiChoiceField<T>
 
   @override
   Widget onLoading(BuildContext context) {
-    return BShimmer(child: BSkeleton.custom(child: Text("loading")));
+    return const BShimmer(child: BSkeleton.custom(child: Text("loading")));
   }
 }

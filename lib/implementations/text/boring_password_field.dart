@@ -4,7 +4,6 @@
 // import 'package:flutter/material.dart';
 
 import 'package:boring_form/boring_form.dart';
-import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_ui/bui/theme/components_themes/form/boring_form_style.dart';
 import 'package:flutter/material.dart';
 
@@ -47,18 +46,19 @@ class BoringPasswordField extends BoringTextField {
 
   @override
   Widget fieldBuilder(
-      BuildContext context,
-      BoringFormStyle formStyle,
-      BoringFormController formController,
-      String? fieldValue,
-      FieldValidation fieldValidation,
-      void computedValue,
-      bool readOnly) {
+    BuildContext context,
+    BoringFormStyle formStyle,
+    BoringFormController formController,
+    String? fieldValue,
+    FieldValidation fieldValidation,
+    void computedValue,
+    // bool readOnly,
+  ) {
     return ValueListenableBuilder(
       valueListenable: hidden,
       builder: (context, value, child) {
         return super.fieldBuilder(context, formStyle, formController,
-            fieldValue, fieldValidation, computedValue, readOnly);
+            fieldValue, fieldValidation, computedValue);
       },
     );
   }

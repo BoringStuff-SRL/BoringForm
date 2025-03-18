@@ -1,7 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
-import 'package:boring_form/field/bform_field.dart';
-import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_ui/boring_ui.dart';
 // import 'package:boring_form/field/boring_field.dart';
 // import 'package:boring_form/field/boring_field_controller.dart';
@@ -160,13 +158,13 @@ class BoringNumberField extends BFormField<num> {
 
   @override
   Widget fieldBuilder(
-      BuildContext context,
-      BoringFormStyle formStyle,
-      BoringFormController formController,
-      num? fieldValue,
-      FieldValidation fieldValidation,
-      void computedValue,
-      bool readOnly) {
+    BuildContext context,
+    BoringFormStyle formStyle,
+    BoringFormController formController,
+    num? fieldValue,
+    FieldValidation fieldValidation,
+    void computedValue,
+  ) {
     const iconConstraints = BoxConstraints(
       minWidth: 24,
       minHeight: 24,
@@ -180,8 +178,8 @@ class BoringNumberField extends BFormField<num> {
       children: [
         Expanded(
           child: TextField(
-            readOnly: readOnly,
-            enabled: readOnly,
+            readOnly: fieldValidation.isReadOnly,
+            enabled: fieldValidation.isReadOnly,
             controller: _textEditingController,
             textAlign: formStyle.textAlign,
             style: formStyle.textStyle,

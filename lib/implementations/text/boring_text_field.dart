@@ -1,6 +1,4 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:boring_form/field/bform_field.dart';
-import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -39,12 +37,11 @@ class BoringTextField extends BFormField<String> {
     String? fieldValue,
     FieldValidation fieldValidation,
     void computedValue,
-    bool readOnly,
   ) {
     return TextField(
       focusNode: _focusNode,
-      readOnly: readOnly,
-      enabled: !readOnly,
+      readOnly: fieldValidation.isReadOnly,
+      enabled: !fieldValidation.isReadOnly,
       controller: _textEditingController,
       inputFormatters: inputFormatter,
       minLines: minLines,

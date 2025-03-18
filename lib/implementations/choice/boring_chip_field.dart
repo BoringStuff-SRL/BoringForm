@@ -23,13 +23,13 @@ class BoringChipField<T> extends BFormField<List<T>> {
 
   @override
   Widget fieldBuilder(
-      BuildContext context,
-      BoringFormStyle formStyle,
-      BoringFormController formController,
-      List<T>? fieldValue,
-      FieldValidation fieldValidation,
-      void computedValue,
-      bool readOnly) {
+    BuildContext context,
+    BoringFormStyle formStyle,
+    BoringFormController formController,
+    List<T>? fieldValue,
+    FieldValidation fieldValidation,
+    void computedValue,
+  ) {
     const spacing = 5.0;
     return Wrap(
       spacing: spacing,
@@ -45,7 +45,7 @@ class BoringChipField<T> extends BFormField<List<T>> {
             label: toLabel(e),
             showCheckmark: false,
             onPressed: () {
-              if (readOnly) return;
+              if (fieldValidation.isReadOnly) return;
               if (isSelected) {
                 final canRemove =
                     canRemoveSelection?.call(formController, e) ?? true;

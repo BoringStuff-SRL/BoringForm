@@ -1,5 +1,3 @@
-import 'package:boring_form/field/bform_field.dart';
-import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -60,13 +58,13 @@ class BoringImagePickerWithPreview extends BFormField<Uint8List> {
 
   @override
   Widget fieldBuilder(
-      BuildContext context,
-      BoringFormStyle formStyle,
-      BoringFormController formController,
-      Uint8List? fieldValue,
-      FieldValidation fieldValidation,
-      void computedValue,
-      bool readOnly) {
+    BuildContext context,
+    BoringFormStyle formStyle,
+    BoringFormController formController,
+    Uint8List? fieldValue,
+    FieldValidation fieldValidation,
+    void computedValue,
+  ) {
     final hasValue = fieldValue != null;
 
     final boxDecoration =

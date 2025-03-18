@@ -1,9 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
-
-import '../../field/bform_field.dart';
 
 class BoringRadioGroupField<T> extends BFormField<T> {
   BoringRadioGroupField({
@@ -25,13 +22,13 @@ class BoringRadioGroupField<T> extends BFormField<T> {
 
   @override
   Widget fieldBuilder(
-      BuildContext context,
-      BoringFormStyle formStyle,
-      BoringFormController formController,
-      T? fieldValue,
-      FieldValidation fieldValidation,
-      void computedValue,
-      bool readOnly) {
+    BuildContext context,
+    BoringFormStyle formStyle,
+    BoringFormController formController,
+    T? fieldValue,
+    FieldValidation fieldValidation,
+    void computedValue,
+  ) {
     final dec = getFieldDecoration(formController);
     final inputDecoration = getInputDecoration(
         formController, formStyle, fieldValue, fieldValidation);
@@ -57,7 +54,7 @@ class BoringRadioGroupField<T> extends BFormField<T> {
                         value: item.value,
                         title: Text(item.display),
                         groupValue: formController.getValue(fieldPath),
-                        onChanged: readOnly
+                        onChanged: fieldValidation.isReadOnly
                             ? null
                             : (value) =>
                                 setChangedValue(formController, value)),

@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_form/theme/boring_form_theme.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
+//TODO inactive paths -> nel controller ignora il 'required' e la funzione di validazione (potrebbe anche renderlo invisible)
 typedef DecorationBuilder<T> = BoringFieldDecoration<T>? Function(
     BoringFormController formController);
 
@@ -28,7 +28,7 @@ abstract class BFormField<T> extends BFormFieldAsync<T, void> {
     super.required = true,
     super.readOnly,
     super.onChanged,
-  }) : super();
+  });
 
   @override
   Future<void> asyncComputations(
@@ -45,7 +45,7 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
   final FieldPath fieldPath;
   final ValidationFunction<T> validationFunction;
   final bool required;
-  final bool? readOnly;
+  final bool readOnly;
   final Function(BoringFormController formController, T? fieldValue)? onChanged;
 
   //CAN BE REMOVED??
@@ -58,7 +58,7 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
     DecorationBuilder<T>? decoration,
     ValidationFunction<T>? validationFunction,
     this.required = true,
-    this.readOnly,
+    this.readOnly = false,
     this.onChanged,
   })  : _decorationBuilder = decoration,
         validationFunction = ((controller, value) {
@@ -149,16 +149,14 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
       Map<FieldPath, dynamic> observedValues) {
     formController.setValidationFunction(fieldPath, validationFunction);
 
+    final style = BoringFormTheme.of(context).style;
     Widget child(TT? computedData) => BoringRxWatcher(
           listenable: formController,
-          selector: (controller) => controller.selectField<T?>(fieldPath),
+          selector: (controller) => controller.selectField<T?>(fieldPath,
+              fieldMarkedReadonly: readOnly || style.readOnly),
           builder: (context, child, value) {
-            final style = BoringFormTheme.of(context).style;
-            final isReadOnly = (readOnly ?? false) ||
-                formController.isFieldReadOnly(fieldPath) ||
-                style.readOnly;
             return fieldBuilder(context, style, formController, value.value,
-                value.validation, computedData, isReadOnly);
+                value.validation, computedData);
           },
         );
 
@@ -190,16 +188,16 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
     T? fieldValue,
     FieldValidation fieldValidation,
     TT? computedValue,
-    bool readOnly,
   );
 }
 
 abstract class BFormObserver extends StatelessWidget {
   final List<List<String>>? observedFields;
-
+  final bool Function()? isShown;
   const BFormObserver({
     super.key,
     this.observedFields = const [],
+    this.isShown,
   });
 
   @override
@@ -209,11 +207,14 @@ abstract class BFormObserver extends StatelessWidget {
       listenable: formController,
       selector: (controller) => controller.observed(observedFields),
       builder: (context, child, value) {
-        return switch (value) {
-          AsyncValueLoading() => onObservedLoading(context),
-          AsyncValueError() => onObservedError(context),
-          AsyncValueDone() => builder(context, formController, value.data),
-        };
+        return Visibility(
+          visible: isShown?.call() ?? true,
+          child: switch (value) {
+            AsyncValueLoading() => onObservedLoading(context),
+            AsyncValueError() => onObservedError(context),
+            AsyncValueDone() => builder(context, formController, value.data),
+          },
+        );
       },
     );
   }
