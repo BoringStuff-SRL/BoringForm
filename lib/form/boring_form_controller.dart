@@ -227,6 +227,10 @@ class BoringFormController extends ChangeNotifier {
 
   /// SETTERS
 
+  void reset() {
+    value = _initialValue;
+  }
+
   set value(Map<String, dynamic> newValue) {
     if (_equality.equals(_value, newValue)) {
       return;
@@ -299,10 +303,6 @@ class BoringFormController extends ChangeNotifier {
 
   // void removeFieldsListener(String key) {
   //   _fieldsListener.remove(key);
-  // }
-
-  // void reset() {
-  //   value = _initialValue;
   // }
 
   // void resetFields(List<List<String>> fieldPaths) {
