@@ -155,8 +155,11 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
           selector: (controller) => controller.selectField<T?>(fieldPath,
               fieldMarkedReadonly: readOnly || style.readOnly),
           builder: (context, child, value) {
-            return fieldBuilder(context, style, formController, value.value,
-                value.validation, computedData);
+            return Padding(
+              padding: style.fieldsPadding,
+              child: fieldBuilder(context, style, formController, value.value,
+                  value.validation, computedData),
+            );
           },
         );
 
