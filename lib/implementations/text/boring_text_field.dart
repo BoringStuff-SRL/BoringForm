@@ -38,6 +38,7 @@ class BoringTextField extends BFormField<String> {
     FieldValidation fieldValidation,
     void computedValue,
   ) {
+    _textEditingController.text = fieldValue ?? "";
     return TextField(
       focusNode: _focusNode,
       readOnly: fieldValidation.isReadOnly,
