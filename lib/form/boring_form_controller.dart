@@ -388,11 +388,12 @@ class BoringFormController extends ChangeNotifier {
   bool isFieldReadOnly(FieldPath fieldPath) =>
       _extensions.any((e) => switch (e) {
             BComputedField() =>
-              e.fieldPath == fieldPath && !e.allowFieldChanges,
-            BRemovedField() => e.fieldPath == fieldPath ||
+              listEquals(e.fieldPath, fieldPath) && !e.allowFieldChanges,
+            BRemovedField() => listEquals(e.fieldPath, fieldPath) ||
                 (e.includeSubFields && fieldPath.startsWith(e.fieldPath)),
             _ => false,
           });
+
   String? _fieldValidationExtension(FieldPath fieldPath) {
     final validation = _extensions
         .whereType<BValidation>()
@@ -402,7 +403,7 @@ class BoringFormController extends ChangeNotifier {
 
   bool isFieldRemoved(FieldPath fieldPath) =>
       _extensions.any((e) => switch (e) {
-            BRemovedField() => e.fieldPath == fieldPath ||
+            BRemovedField() => listEquals(e.fieldPath, fieldPath) ||
                 (e.includeSubFields && fieldPath.startsWith(e.fieldPath)),
             _ => false,
           });
@@ -437,10 +438,11 @@ class BRemovedField extends BFormExtension {
   final FieldPath fieldPath;
   final bool hideField;
   final bool includeSubFields;
-  BRemovedField(
-      {required this.fieldPath,
-      this.hideField = true,
-      this.includeSubFields = true});
+  BRemovedField({
+    required this.fieldPath,
+    this.hideField = true,
+    this.includeSubFields = true,
+  });
 }
 
 class BValidation extends BFormExtension {

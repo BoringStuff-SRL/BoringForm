@@ -38,7 +38,6 @@ class BoringTextField extends BFormField<String> {
     FieldValidation fieldValidation,
     void computedValue,
   ) {
-    _textEditingController.text = fieldValue ?? "";
     return TextField(
       focusNode: _focusNode,
       readOnly: fieldValidation.isReadOnly,
@@ -56,5 +55,15 @@ class BoringTextField extends BFormField<String> {
         setChangedValue(formController, value);
       },
     );
+  }
+
+  @override
+  void onSelfChange(BoringFormController formController, String? fieldValue) {
+    var cursorPos = _textEditingController.selection.base.offset;
+    _textEditingController.text = (fieldValue ?? "");
+    if (fieldValue != null) {
+      _textEditingController.selection =
+          TextSelection.collapsed(offset: cursorPos);
+    }
   }
 }

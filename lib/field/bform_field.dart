@@ -142,7 +142,7 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
     onChanged?.call(formController, newValue);
   }
 
-  void onSelfChange(BoringFormController formController, String? fieldValue) {}
+  void onSelfChange(BoringFormController formController, T? fieldValue) {}
 
   @override
   Widget builder(BuildContext context, BoringFormController formController,
@@ -155,6 +155,8 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
           selector: (controller) => controller.selectField<T?>(fieldPath,
               fieldMarkedReadonly: readOnly || style.readOnly),
           builder: (context, child, value) {
+            onSelfChange(formController, value.value);
+
             return Padding(
               padding: style.fieldsPadding,
               child: fieldBuilder(context, style, formController, value.value,

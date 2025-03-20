@@ -63,7 +63,14 @@ class UsersRepo extends BoringRxRepo<User, User, int, int, int> {
 }
 
 class FormExample0 extends BoringResponsiveFormWidget {
-  FormExample0({super.key});
+  FormExample0({super.key})
+      : super(
+          formController: BoringFormController(
+            initialValue: {
+              'testo': 'ciao',
+            },
+          ),
+        );
 
   @override
   List<Widget> get children => [
