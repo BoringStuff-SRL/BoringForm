@@ -428,8 +428,9 @@ class BoringFormController extends ChangeNotifier {
   }
 
   void setIgnoreField(BIgnoreField extension) {
-    _computedFieldsExtensions
+    _ignoreFieldsExtensions
         .removeWhere((e) => listEquals(e.fieldPath, extension.fieldPath));
+    _ignoreFieldsExtensions.add(extension);
     notifyListeners();
   }
 
