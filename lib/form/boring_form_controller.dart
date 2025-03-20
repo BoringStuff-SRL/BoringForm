@@ -414,6 +414,9 @@ class BoringFormController extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool hasValidationExtension(String key) =>
+      _validationExtensions.containsKey(key);
+
   void setComputedField(BComputedField extension) {
     _computedFieldsExtensions
         .removeWhere((e) => listEquals(e.fieldPath, extension.fieldPath));
@@ -427,6 +430,9 @@ class BoringFormController extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool hasComputedFieldExtension(FieldPath fieldPath) =>
+      _computedFieldsExtensions.any((e) => listEquals(e.fieldPath, fieldPath));
+
   void setIgnoreField(BIgnoreField extension) {
     _ignoreFieldsExtensions
         .removeWhere((e) => listEquals(e.fieldPath, extension.fieldPath));
@@ -439,6 +445,9 @@ class BoringFormController extends ChangeNotifier {
         .removeWhere((e) => listEquals(e.fieldPath, extension.fieldPath));
     notifyListeners();
   }
+
+  bool hasIgnoreFieldExtension(FieldPath fieldPath) =>
+      _ignoreFieldsExtensions.any((e) => listEquals(e.fieldPath, fieldPath));
 
   List<BFormExtension> get extensions => [
         ..._computedFieldsExtensions,
