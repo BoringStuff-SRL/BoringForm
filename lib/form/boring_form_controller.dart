@@ -354,16 +354,19 @@ class BoringFormController extends ChangeNotifier {
       _fieldValidation(fieldPath) ?? _fieldValidationExtension(fieldPath);
 
   FieldValidation selectFieldValidation(FieldPath fieldPath,
-      {required bool fieldMarkedReadonly}) {
+      {required bool fieldMarkedReadonly, required bool fieldRequired}) {
     final errror = validateField(fieldPath);
     final showError = errror != null &&
         validationBehaviour != ValidationBehaviour.never &&
         (submitted || validationBehaviour == ValidationBehaviour.always);
-    final showRequiredLabel = !isFieldRemoved(fieldPath) &&
-            fieldRequiredLabelBehaviour == FieldRequiredLabelBehaviour.always ||
-        (fieldRequiredLabelBehaviour ==
-                FieldRequiredLabelBehaviour.hiddenWhenValid &&
-            errror != null);
+
+    final shouldShowRequiredLabel = switch (fieldRequiredLabelBehaviour) {
+      FieldRequiredLabelBehaviour.always => fieldRequired,
+      FieldRequiredLabelBehaviour.hiddenWhenValid => errror != null,
+      FieldRequiredLabelBehaviour.never => false,
+    };
+    final showRequiredLabel =
+        !isFieldRemoved(fieldPath) && shouldShowRequiredLabel;
     final isReadOnly = fieldMarkedReadonly || isFieldReadOnly(fieldPath);
 
     return (
@@ -375,10 +378,10 @@ class BoringFormController extends ChangeNotifier {
   }
 
   ({T value, FieldValidation validation}) selectField<T>(FieldPath fieldPath,
-      {required bool fieldMarkedReadonly}) {
+      {required bool fieldMarkedReadonly, required bool fieldRequired}) {
     final value = getValue(fieldPath);
     final validation = selectFieldValidation(fieldPath,
-        fieldMarkedReadonly: fieldMarkedReadonly);
+        fieldMarkedReadonly: fieldMarkedReadonly, fieldRequired: fieldRequired);
     return (value: value, validation: validation);
   }
 
