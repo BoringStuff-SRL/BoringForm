@@ -356,7 +356,8 @@ class BoringFormController extends ChangeNotifier {
   FieldValidation selectFieldValidation(FieldPath fieldPath,
       {required bool fieldMarkedReadonly}) {
     final errror = validateField(fieldPath);
-    final showError = errror != null &&
+    final showError = !isFieldRemoved(fieldPath) &&
+        errror != null &&
         validationBehaviour != ValidationBehaviour.never &&
         (submitted || validationBehaviour == ValidationBehaviour.always);
     final showRequiredLabel =
