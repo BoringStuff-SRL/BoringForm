@@ -383,42 +383,63 @@ class BoringFormController extends ChangeNotifier {
   }
 
   //EXTENSIONS
-  final List<BFormExtension> _extensions = [];
+  final List<BIgnoreField> _ignoreFieldsExtensions = [];
+  final List<BComputedField> _computedFieldsExtensions = [];
+  final Map<String, BValidation> _validationExtensions = {};
 
   bool isFieldReadOnly(FieldPath fieldPath) =>
-      _extensions.any((e) => switch (e) {
-            BComputedField() =>
-              listEquals(e.fieldPath, fieldPath) && !e.allowFieldChanges,
-            BRemovedField() => listEquals(e.fieldPath, fieldPath) ||
-                (e.includeSubFields && fieldPath.startsWith(e.fieldPath)),
-            _ => false,
-          });
+      isFieldRemoved(fieldPath) ||
+      _computedFieldsExtensions.any(
+          (e) => listEquals(e.fieldPath, fieldPath) && !e.allowFieldChanges);
 
   String? _fieldValidationExtension(FieldPath fieldPath) {
-    final validation = _extensions
-        .whereType<BValidation>()
+    final validation = _validationExtensions.values
         .firstWhereOrNull((e) => e.attachedPaths.contains(fieldPath));
     return validation?.validationFunction?.call(this, getValue(fieldPath));
   }
 
-  bool isFieldRemoved(FieldPath fieldPath) =>
-      _extensions.any((e) => switch (e) {
-            BRemovedField() => listEquals(e.fieldPath, fieldPath) ||
-                (e.includeSubFields && fieldPath.startsWith(e.fieldPath)),
-            _ => false,
-          });
+  bool isFieldRemoved(FieldPath fieldPath) => _ignoreFieldsExtensions.any(
+        (e) =>
+            listEquals(e.fieldPath, fieldPath) ||
+            (e.includeSubFields && fieldPath.startsWith(e.fieldPath)),
+      );
 
-  void addExtension(BFormExtension extension) {
-    _extensions.add(extension);
+  void setValidationExtension(BValidation extension, String key) {
+    _validationExtensions[key] = extension;
     notifyListeners();
   }
 
-  void removeExtension(BFormExtension extension) {
-    _extensions.remove(extension);
+  void removeValidationExtension(String key) {
+    _validationExtensions.remove(key);
     notifyListeners();
   }
 
-  List<BFormExtension> get extensions => _extensions;
+  void setComputedField(BComputedField extension) {
+    _computedFieldsExtensions
+        .removeWhere((e) => listEquals(e.fieldPath, extension.fieldPath));
+    _computedFieldsExtensions.add(extension);
+    notifyListeners();
+  }
+
+  void removeComputedField(BComputedField extension) {
+    _computedFieldsExtensions
+        .removeWhere((e) => listEquals(e.fieldPath, extension.fieldPath));
+    notifyListeners();
+  }
+
+  void setIgnoreField(BIgnoreField extension) {
+    _computedFieldsExtensions
+        .removeWhere((e) => listEquals(e.fieldPath, extension.fieldPath));
+    notifyListeners();
+  }
+
+  void removeIgnoreField(BIgnoreField extension) {
+    _ignoreFieldsExtensions
+        .removeWhere((e) => listEquals(e.fieldPath, extension.fieldPath));
+    notifyListeners();
+  }
+
+  // List<BFormExtension> get extensions => _extensions;
 }
 
 sealed class BFormExtension {}
@@ -434,11 +455,11 @@ class BComputedField<T> extends BFormExtension {
   });
 }
 
-class BRemovedField extends BFormExtension {
+class BIgnoreField extends BFormExtension {
   final FieldPath fieldPath;
   final bool hideField;
   final bool includeSubFields;
-  BRemovedField({
+  BIgnoreField({
     required this.fieldPath,
     this.hideField = true,
     this.includeSubFields = true,
