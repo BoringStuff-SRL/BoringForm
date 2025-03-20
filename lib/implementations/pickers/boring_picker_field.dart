@@ -76,29 +76,8 @@ class BoringPickerField<T> extends BFormField<T> {
     );
   }
 
-  // void onValueChanged(T? newValue) {}
-
-  // @override
-  // BoringPickerField<T> copyWith(
-  //     {BoringFieldController<T>? fieldController,
-  //     void Function(T? value)? onChanged,
-  //     BoringFieldDecoration? decoration,
-  //     BoringResponsiveSize? boringResponsiveSize,
-  //     String? jsonKey,
-  //     bool Function(Map<String, dynamic> p1)? displayCondition,
-  //     String Function(T?)? valueToString,
-  //     Future<T> Function(BuildContext)? showPicker,
-  //     bool? updateValueOnDismiss}) {
-  //   return BoringPickerField(
-  //     fieldController: fieldController ?? this.fieldController,
-  //     onChanged: onChanged ?? this.onChanged,
-  //     decoration: decoration ?? this.decoration,
-  //     boringResponsiveSize: boringResponsiveSize ?? this.boringResponsiveSize,
-  //     jsonKey: jsonKey ?? this.jsonKey,
-  //     displayCondition: displayCondition ?? this.displayCondition,
-  //     valueToString: valueToString ?? this.valueToString,
-  //     showPicker: showPicker ?? this.showPicker,
-  //     updateValueOnDismiss: updateValueOnDismiss ?? this.updateValueOnDismiss,
-  //   );
-  // }
+  @override
+  void onSelfChange(BoringFormController formController, T? fieldValue) {
+    _textEditingController.text = valueToString(fieldValue);
+  }
 }

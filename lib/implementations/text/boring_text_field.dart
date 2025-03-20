@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class BoringTextField extends BFormField<String> {
-  final _textEditingController = TextEditingController();
-  final _focusNode = FocusNode();
+  final textEditingController = TextEditingController();
+  final focusNode = FocusNode();
 
   final int minLines;
   final int maxLines;
@@ -39,10 +39,10 @@ class BoringTextField extends BFormField<String> {
     void computedValue,
   ) {
     return TextField(
-      focusNode: _focusNode,
+      focusNode: focusNode,
       readOnly: fieldValidation.isReadOnly,
       enabled: !fieldValidation.isReadOnly,
-      controller: _textEditingController,
+      controller: textEditingController,
       inputFormatters: inputFormatter,
       minLines: minLines,
       maxLines: maxLines,
@@ -59,10 +59,10 @@ class BoringTextField extends BFormField<String> {
 
   @override
   void onSelfChange(BoringFormController formController, String? fieldValue) {
-    var cursorPos = _textEditingController.selection.base.offset;
-    _textEditingController.text = (fieldValue ?? "");
+    var cursorPos = textEditingController.selection.base.offset;
+    textEditingController.text = (fieldValue ?? "");
     if (fieldValue != null) {
-      _textEditingController.selection =
+      textEditingController.selection =
           TextSelection.collapsed(offset: cursorPos);
     }
   }

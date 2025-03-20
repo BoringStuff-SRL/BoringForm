@@ -1,5 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
+import 'dart:math';
+
 import 'package:boring_ui/boring_ui.dart';
 // import 'package:boring_form/field/boring_field.dart';
 // import 'package:boring_form/field/boring_field_controller.dart';
@@ -145,7 +147,7 @@ class BoringNumberField extends BFormField<num> {
   final String thousandsSeparator;
   final int decimalPlaces;
   final MyNumberFormatter _numberFormatter;
-  final bool showIncrementDecrementButtons; // Nuova proprietà aggiunta
+  final bool showIncrementDecrementButtons;
 
   bool get _onlyIntegers => decimalPlaces == 0;
 
@@ -155,6 +157,22 @@ class BoringNumberField extends BFormField<num> {
   final signed = false;
 
   bool hasSetInitialValue = false;
+
+  void _incrementValue(BoringFormController formController) {
+    int currentValue = int.tryParse(_textEditingController.text) ?? 0;
+    currentValue++;
+    _textEditingController.text = currentValue.toString();
+    setChangedValue(formController, currentValue);
+  }
+
+  void _decrementValue(BoringFormController formController) {
+    int currentValue = int.tryParse(_textEditingController.text) ?? 1;
+    if (currentValue > 1) {
+      currentValue--;
+      _textEditingController.text = currentValue.toString();
+      setChangedValue(formController, currentValue);
+    }
+  }
 
   @override
   Widget fieldBuilder(
@@ -235,19 +253,32 @@ class BoringNumberField extends BFormField<num> {
     );
   }
 
-  void _incrementValue(BoringFormController formController) {
-    int currentValue = int.tryParse(_textEditingController.text) ?? 0;
-    currentValue++;
-    _textEditingController.text = currentValue.toString();
-    setChangedValue(formController, currentValue);
-  }
-
-  void _decrementValue(BoringFormController formController) {
-    int currentValue = int.tryParse(_textEditingController.text) ?? 1;
-    if (currentValue > 1) {
-      currentValue--;
-      _textEditingController.text = currentValue.toString();
-      setChangedValue(formController, currentValue);
+  @override
+  void onSelfChange(BoringFormController formController, num? fieldValue) {
+    if (fieldValue == null) {
+      _textEditingController.text = '';
+      return;
     }
+
+    var cursorPos = _textEditingController.selection.base.offset;
+
+    final formatter =
+        NumberFormat('###,###.###', decimalSeparator == '.' ? 'en' : 'it');
+
+    _textEditingController.text = _numberFormatter
+        .formatEditUpdate(
+          TextEditingValue.empty,
+          TextEditingValue(
+            text: formatter.format(fieldValue),
+          ),
+        )
+        .text;
+
+    _textEditingController.selection = TextSelection.collapsed(
+      offset: min(
+        cursorPos,
+        _textEditingController.text.length,
+      ),
+    );
   }
 }

@@ -27,6 +27,14 @@ class BoringPasswordField extends BoringTextField {
   Widget get _visibilityOffIcon => const Icon(Icons.visibility_off);
 
   @override
+  void onSelfChange(BoringFormController formController, String? fieldValue) {
+    super.onSelfChange(formController, fieldValue);
+    if (!focusNode.hasFocus) {
+      textEditingController.text = (fieldValue ?? "").trim();
+    }
+  }
+
+  @override
   InputDecoration getInputDecoration(BoringFormController formController,
       BoringFormStyle style, String? value, FieldValidation fieldValidation) {
     return super
