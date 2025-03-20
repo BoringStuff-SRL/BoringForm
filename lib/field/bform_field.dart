@@ -153,7 +153,8 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
     Widget child(TT? computedData) => BoringRxWatcher(
           listenable: formController,
           selector: (controller) => controller.selectField<T?>(fieldPath,
-              fieldMarkedReadonly: readOnly || style.readOnly),
+              fieldMarkedReadonly: readOnly || style.readOnly,
+              fieldRequired: required),
           builder: (context, child, value) {
             onSelfChange(formController, value.value);
 
