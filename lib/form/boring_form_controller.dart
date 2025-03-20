@@ -439,7 +439,11 @@ class BoringFormController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // List<BFormExtension> get extensions => _extensions;
+  List<BFormExtension> get extensions => [
+        ..._computedFieldsExtensions,
+        ..._ignoreFieldsExtensions,
+        ..._validationExtensions.values
+      ];
 }
 
 sealed class BFormExtension {}
