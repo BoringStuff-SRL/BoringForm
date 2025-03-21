@@ -436,10 +436,13 @@ class BoringFormController extends ChangeNotifier {
   bool hasComputedFieldExtension(FieldPath fieldPath) =>
       _computedFieldsExtensions.any((e) => listEquals(e.fieldPath, fieldPath));
 
-  void setIgnoreField(BIgnoreField extension) {
+  void setIgnoreField(BIgnoreField extension, {bool setFieldToNull = false}) {
     _ignoreFieldsExtensions
         .removeWhere((e) => listEquals(e.fieldPath, extension.fieldPath));
     _ignoreFieldsExtensions.add(extension);
+    if (setFieldToNull) {
+      setFieldValue(extension.fieldPath, null, notify: false);
+    }
     notifyListeners();
   }
 
