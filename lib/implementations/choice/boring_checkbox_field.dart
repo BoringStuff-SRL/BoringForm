@@ -14,7 +14,7 @@ class BoringCheckBoxField extends BFormField<bool> {
     this.mainAxisAlignment,
     this.unCheckColor,
     super.onChanged,
-    super.required,
+    super.required = false,
   });
 
   final Color? unCheckColor;

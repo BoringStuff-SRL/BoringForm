@@ -4,7 +4,6 @@ import 'package:boring_form/theme/boring_form_theme.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
-//TODO inactive paths -> nel controller ignora il 'required' e la funzione di validazione (potrebbe anche renderlo invisible)
 typedef DecorationBuilder<T> = BoringFieldDecoration<T>? Function(
     BoringFormController formController);
 
@@ -15,6 +14,7 @@ String? requiredValidationFunction<T>(
   if (value == null) return errorMessage;
   if (value is String && value.isEmpty) return errorMessage;
   if (value is List && value.isEmpty) return errorMessage;
+  if (value is bool && !value) return errorMessage;
   return null;
 }
 
@@ -126,12 +126,15 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
 
   Future<TT?> _performAsyncComputations(Map<FieldPath, dynamic> observedValues,
       BoringFormController formController) async {
+    // ignore: invalid_use_of_protected_member
     formController.setLoadingField(fieldPath);
     try {
       final result = await asyncComputations(observedValues);
+      // ignore: invalid_use_of_protected_member
       formController.setDoneField(fieldPath);
       return result;
     } catch (e) {
+      // ignore: invalid_use_of_protected_member
       formController.setErrorField(fieldPath);
       rethrow;
     }
