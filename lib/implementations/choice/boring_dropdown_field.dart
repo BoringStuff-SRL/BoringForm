@@ -21,7 +21,6 @@ class BoringDropdownField<T> extends BFormFieldAsync<T, List<T>> {
     this.boringDropdownStyle,
     this.boringDropdownLoadingMode = BDropdownLoadingMode.onOpen,
     this.debouncingTime = const Duration(milliseconds: 300),
-    this.initialItems,
     super.onChanged,
     super.required,
   });
@@ -36,13 +35,11 @@ class BoringDropdownField<T> extends BFormFieldAsync<T, List<T>> {
   final BDropdownLoadingMode boringDropdownLoadingMode;
   final bool clearable;
   final Duration debouncingTime;
-  final AsyncSnapshot<List<T>>? initialItems;
   final Widget loadingIndicator;
 
   @override
-  Future<List<T>?> asyncComputations(Map<FieldPath, dynamic> observedValues) {
-    return getItems("");
-  }
+  Future<List<T>?> asyncComputations(Map<FieldPath, dynamic> observedValues) =>
+      getItems("");
 
   @override
   Widget fieldBuilder(
@@ -73,9 +70,10 @@ class BoringDropdownField<T> extends BFormFieldAsync<T, List<T>> {
         choiceItemDisplayTextStyle: formStyle.textStyle,
       ),
       clearable: clearable,
-      errorMessage: fieldValidation.error,
+      errorMessage: fieldValidation.showError ? fieldValidation.error : null,
       debouncingTime: debouncingTime,
-      initialItems: initialItems,
+      initialItems:
+          AsyncSnapshot.withData(ConnectionState.done, computedValue ?? []),
       loadingIndicator: loadingIndicator,
     );
   }
