@@ -1,11 +1,10 @@
-import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_form/implementations/pickers/boring_picker_field.dart';
 import 'package:boring_form/utils/datetime_extnesions.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 
-class BoringDateTimeField extends BoringPickerField<DateTime> {
+class BoringDateTimeFieldBase extends BoringPickerField<DateTime> {
   static const outOfBoundError =
       "initial date must be between firstDate and lastDate"; //TODO make this a parameter [or better: add translations]
 
@@ -14,7 +13,7 @@ class BoringDateTimeField extends BoringPickerField<DateTime> {
         hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0);
   }
 
-  BoringDateTimeField({
+  BoringDateTimeFieldBase({
     super.key,
     required super.fieldPath,
     super.observedFields,
@@ -28,18 +27,40 @@ class BoringDateTimeField extends BoringPickerField<DateTime> {
     bool forceHideRequiredFieldLabel = false,
     super.onChanged,
     super.required,
+    required super.showPicker,
+    required super.valueToString,
+  })  : assert(firstDate <= lastDate, "firstDate must be less than lastDate"),
+        super(
+          validationFunction:
+              (BoringFormController formController, DateTime? value) {
+            final error = validationFunction?.call(formController, value);
+
+            final boundsError = value == null ||
+                    (value <= lastDate && value >= midnightTime(firstDate))
+                ? null
+                : outOfBoundError;
+
+            return error ?? boundsError;
+          },
+        );
+}
+
+class BoringDateTimeField extends BoringDateTimeFieldBase {
+  BoringDateTimeField({
+    super.key,
+    required super.fieldPath,
+    super.observedFields,
+    ValidationFunction<DateTime>? validationFunction,
+    super.decoration,
+    super.readOnly,
+    super.updateValueOnDismiss,
+    super.showEraseValueButton,
+    required super.firstDate,
+    required super.lastDate,
+    bool forceHideRequiredFieldLabel = false,
+    super.onChanged,
+    super.required,
   }) : super(
-            validationFunction:
-                (BoringFormController formController, DateTime? value) {
-              final error = validationFunction?.call(formController, value);
-
-              final boundsError = value == null ||
-                      (value <= lastDate && value >= midnightTime(firstDate))
-                  ? null
-                  : outOfBoundError;
-
-              return error ?? boundsError;
-            },
             showPicker: (context, formController, fieldValue) async =>
                 await showOmniDateTimePicker(
                   context: context,
@@ -87,7 +108,7 @@ DateTime middle(DateTime dt1, DateTime dt2, DateTime dt3) {
 }
 
 class BoringDateRangeField extends BoringPickerField<DateTimeRange> {
-  static const outOfBoundError = BoringDateTimeField
+  static const outOfBoundError = BoringDateTimeFieldBase
       .outOfBoundError; //TODO make this a parameter [or better: add translations]
   BoringDateRangeField({
     super.key,
@@ -112,7 +133,8 @@ class BoringDateRangeField extends BoringPickerField<DateTimeRange> {
 
             final isOutOfBound = value == null
                 ? false
-                : (value.start <= BoringDateTimeField.midnightTime(firstDate) ||
+                : (value.start <=
+                        BoringDateTimeFieldBase.midnightTime(firstDate) ||
                     value.end >= lastDate);
 
             final boundsError =
@@ -151,38 +173,24 @@ class BoringDateRangeField extends BoringPickerField<DateTimeRange> {
         );
 }
 
-class BoringDateField extends BoringPickerField<DateTime> {
-  static const outOfBoundError = BoringDateTimeField
-      .outOfBoundError; //TODO make this a parameter [or better: add translations]
+class BoringDateField extends BoringDateTimeFieldBase {
   BoringDateField({
     super.key,
     required super.fieldPath,
     super.observedFields,
-    ValidationFunction<DateTime>? validationFunction,
+    super.validationFunction,
     super.decoration,
     super.readOnly,
     super.updateValueOnDismiss,
     super.showEraseValueButton,
-    DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar,
-    required DateTime firstDate,
-    required DateTime lastDate,
-    bool forceHideRequiredFieldLabel = false,
-    String Function(DateTime? date)? dateToString,
+    required super.firstDate,
+    required super.lastDate,
+    super.forceHideRequiredFieldLabel,
     super.onChanged,
     super.required,
-  })  : assert(firstDate <= lastDate, "firstDate must be less than lastDate"),
-        super(
-            validationFunction:
-                (BoringFormController formController, DateTime? value) {
-              final error = validationFunction?.call(formController, value);
-
-              final boundsError = value == null ||
-                      (value <= lastDate &&
-                          value >= BoringDateTimeField.midnightTime(firstDate))
-                  ? null
-                  : outOfBoundError;
-              return error ?? boundsError;
-            },
+    DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar,
+    String Function(DateTime? date)? dateToString,
+  }) : super(
             showPicker: (context, formController, fieldValue) async =>
                 await showDatePicker(
                     context: context,
@@ -199,15 +207,6 @@ class BoringDateField extends BoringPickerField<DateTime> {
                       );
                     }),
             valueToString: dateToString ?? dateTimeToString);
-  // final DateTime firstDate, lastDate;
-  // final DatePickerEntryMode initialEntryMode;
-
-  // void initialDateAssertion(DateTime? initialDate) {
-  //   assert(
-  //       initialDate == null ||
-  //           (initialDate < lastDate && initialDate > firstDate),
-  //       "initial date must be between firstDate and lastDate");
-  // }
 }
 
 class BoringTimeField extends BoringPickerField<TimeOfDay> {

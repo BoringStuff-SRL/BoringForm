@@ -39,7 +39,7 @@ class BoringPickerField<T> extends BFormField<T> {
       children: [
         Expanded(
           child: TextField(
-            enabled: fieldValidation.isReadOnly,
+            enabled: !fieldValidation.isReadOnly,
             readOnly: true,
             controller: _textEditingController,
             textAlign: formStyle.textAlign,
