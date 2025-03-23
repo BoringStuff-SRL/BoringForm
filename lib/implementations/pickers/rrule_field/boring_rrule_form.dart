@@ -48,6 +48,7 @@ class BoringRRuleForm extends BoringFormWidget {
                       formController.getValue(["interval"]) as num? ?? 1;
                   final singular = interval == 1.0;
                   return BoringDropdownField(
+                    elemToValue: (elem) => elem,
                     key: UniqueKey(),
                     fieldPath: const ["frequency"],
                     clearable: false,
@@ -106,7 +107,8 @@ class BoringRRuleForm extends BoringFormWidget {
         separator: spacing,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          BoringDropdownField<MonthlyRecurrenceType>(
+          BoringDropdownField<MonthlyRecurrenceType, MonthlyRecurrenceType>(
+            elemToValue: (elem) => elem,
             fieldPath: const ["monthlyRecurrenceType"],
             getItems: (search) async {
               return MonthlyRecurrenceType.values.toList();
@@ -224,6 +226,7 @@ class BoringRRuleForm extends BoringFormWidget {
             children: [
               Expanded(
                 child: BoringDropdownField(
+                  elemToValue: (elem) => elem,
                   fieldPath: const ["end_type"],
                   getItems: (search) async {
                     return RecurrenceEndType.values;
@@ -281,7 +284,7 @@ class BoringRRuleForm extends BoringFormWidget {
       BRow(
         children: [
           Expanded(
-            child: BoringDropdownField<BySetPos>(
+            child: BoringDropdownField<BySetPos, BySetPos>(
               readOnly: readOnly,
               fieldPath: [path, "bySetPos"],
               getItems: (search) async {
@@ -291,10 +294,12 @@ class BoringRRuleForm extends BoringFormWidget {
               decoration: (formController) =>
                   BoringFieldDecoration(label: "Ogni"),
               toBoringChoiceItem: (e) => BChoiceItem(value: e, display: e.tr),
+              elemToValue: (e) => e,
             ),
           ),
           Expanded(
-            child: BoringDropdownField<ByMonthDayOccurrence>(
+            child:
+                BoringDropdownField<ByMonthDayOccurrence, ByMonthDayOccurrence>(
               readOnly: readOnly,
               fieldPath: [path, "byMonthDaysOccurrence"],
               getItems: (search) async {
@@ -302,6 +307,7 @@ class BoringRRuleForm extends BoringFormWidget {
               },
               clearable: false,
               toBoringChoiceItem: (e) => BChoiceItem(value: e, display: e.tr),
+              elemToValue: (e) => e,
             ),
           ),
         ],

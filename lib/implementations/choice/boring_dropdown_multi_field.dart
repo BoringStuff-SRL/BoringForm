@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
-class BoringDropdownMultiChoiceField<T>
-    extends BFormFieldAsync<List<T>, List<T>> {
+class BoringDropdownMultiChoiceField<V, T>
+    extends BFormFieldAsync<List<V>, List<T>> {
   BoringDropdownMultiChoiceField({
     super.key,
     required super.fieldPath,
@@ -25,6 +25,7 @@ class BoringDropdownMultiChoiceField<T>
     this.debouncingTime = const Duration(milliseconds: 300),
     this.initialItems,
     super.required,
+    required this.elemToValue,
   });
 
   final Future<List<T>> Function(String search) getItems;
@@ -38,21 +39,23 @@ class BoringDropdownMultiChoiceField<T>
   final Duration debouncingTime;
   final AsyncSnapshot<List<T>>? initialItems;
   final Widget loadingIndicator;
+  final V Function(T elem) elemToValue;
 
   @override
   Widget fieldBuilder(
     BuildContext context,
     BoringFormStyle formStyle,
     BoringFormController formController,
-    List<T>? fieldValue,
+    List<V>? fieldValue,
     FieldValidation fieldValidation,
     List<T>? computedValue,
   ) {
     final dropdownStyle =
         boringDropdownStyle ?? BoringTheme.of(context).bDropdownTheme;
 
-    return BDropdownMultiChoice<T>(
-      value: ValueNotifier(fieldValue),
+    return BDropdownMultiChoice<V, T>(
+      value: fieldValue ?? [],
+      valueNotifier: ValueNotifier([]),
       searchItems: (searchedValue) async {
         return computedValue ?? <T>[];
       },
@@ -73,6 +76,7 @@ class BoringDropdownMultiChoiceField<T>
       initialItems: initialItems,
       loadingIndicator: loadingIndicator,
       toDisplay: (T value) => toBoringChoiceItem(value).display,
+      elemToValue: elemToValue,
     );
   }
 

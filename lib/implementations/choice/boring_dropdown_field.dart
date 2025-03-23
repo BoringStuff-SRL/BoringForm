@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
-class BoringDropdownField<T> extends BFormFieldAsync<T, List<T>> {
+class BoringDropdownField<V, T> extends BFormFieldAsync<V, List<T>> {
   BoringDropdownField({
     super.key,
     required super.fieldPath,
@@ -23,6 +23,7 @@ class BoringDropdownField<T> extends BFormFieldAsync<T, List<T>> {
     this.debouncingTime = const Duration(milliseconds: 300),
     super.onChanged,
     super.required,
+    required this.elemToValue,
   });
 
   final Future<List<T>> Function(String search) getItems;
@@ -36,6 +37,7 @@ class BoringDropdownField<T> extends BFormFieldAsync<T, List<T>> {
   final bool clearable;
   final Duration debouncingTime;
   final Widget loadingIndicator;
+  final V Function(T elem) elemToValue;
 
   @override
   Future<List<T>?> asyncComputations(Map<FieldPath, dynamic> observedValues) =>
@@ -46,18 +48,19 @@ class BoringDropdownField<T> extends BFormFieldAsync<T, List<T>> {
     BuildContext context,
     BoringFormStyle formStyle,
     BoringFormController formController,
-    T? fieldValue,
+    V? fieldValue,
     FieldValidation fieldValidation,
     List<T>? computedValue,
   ) {
     final dropdownStyle =
         boringDropdownStyle ?? BoringTheme.of(context).bDropdownTheme;
 
-    return BDropdown<T>(
-      value: ValueNotifier(fieldValue),
+    return BDropdown<V, T>(
+      value: fieldValue != null ? [fieldValue] : [],
+      valueNotifier: ValueNotifier([]),
       searchItems: getItems,
       toDisplay: (v) => toBoringChoiceItem(v).display,
-      onChanged: (value) => setChangedValue(formController, value),
+      onChanged: (value) => setChangedValue(formController, value.firstOrNull),
       readOnly: fieldValidation.isReadOnly,
       onAdd: onAdd,
       callFutureOnStopWriting: callFutureOnStopWriting,
@@ -75,6 +78,7 @@ class BoringDropdownField<T> extends BFormFieldAsync<T, List<T>> {
       initialItems:
           AsyncSnapshot.withData(ConnectionState.done, computedValue ?? []),
       loadingIndicator: loadingIndicator,
+      elemToValue: elemToValue,
     );
   }
 
