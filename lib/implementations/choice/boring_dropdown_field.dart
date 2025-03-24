@@ -23,11 +23,10 @@ class BoringDropdownField<V, T> extends BFormFieldAsync<V, List<T>> {
     this.debouncingTime = const Duration(milliseconds: 300),
     super.onChanged,
     super.required,
-    required this.elemToValue,
   });
 
   final Future<List<T>> Function(String search) getItems;
-  final BChoiceItem<T> Function(T element) toBoringChoiceItem;
+  final BChoiceItem<V> Function(T element) toBoringChoiceItem;
 
   final FutureOr<T?> Function(String)? onAdd;
   final bool callFutureOnStopWriting;
@@ -37,7 +36,6 @@ class BoringDropdownField<V, T> extends BFormFieldAsync<V, List<T>> {
   final bool clearable;
   final Duration debouncingTime;
   final Widget loadingIndicator;
-  final V Function(T elem) elemToValue;
 
   @override
   Future<List<T>?> asyncComputations(Map<FieldPath, dynamic> observedValues) =>
@@ -78,7 +76,7 @@ class BoringDropdownField<V, T> extends BFormFieldAsync<V, List<T>> {
       initialItems:
           AsyncSnapshot.withData(ConnectionState.done, computedValue ?? []),
       loadingIndicator: loadingIndicator,
-      elemToValue: elemToValue,
+      elemToValue: (elem) => toBoringChoiceItem(elem).value,
     );
   }
 

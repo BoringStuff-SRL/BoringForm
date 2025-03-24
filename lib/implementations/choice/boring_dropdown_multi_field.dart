@@ -25,11 +25,10 @@ class BoringDropdownMultiChoiceField<V, T>
     this.debouncingTime = const Duration(milliseconds: 300),
     this.initialItems,
     super.required,
-    required this.elemToValue,
   });
 
   final Future<List<T>> Function(String search) getItems;
-  final BChoiceItem<T> Function(T) toBoringChoiceItem;
+  final BChoiceItem<V> Function(T) toBoringChoiceItem;
   final FutureOr<T?> Function(String)? onAdd;
   final bool callFutureOnStopWriting;
   final bool searchable;
@@ -39,7 +38,6 @@ class BoringDropdownMultiChoiceField<V, T>
   final Duration debouncingTime;
   final AsyncSnapshot<List<T>>? initialItems;
   final Widget loadingIndicator;
-  final V Function(T elem) elemToValue;
 
   @override
   Widget fieldBuilder(
@@ -76,7 +74,7 @@ class BoringDropdownMultiChoiceField<V, T>
       initialItems: initialItems,
       loadingIndicator: loadingIndicator,
       toDisplay: (T value) => toBoringChoiceItem(value).display,
-      elemToValue: elemToValue,
+      elemToValue: (T elem) => toBoringChoiceItem(elem).value,
     );
   }
 
