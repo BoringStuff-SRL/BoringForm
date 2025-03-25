@@ -489,10 +489,19 @@ class BoringFormController extends ChangeNotifier {
       _ignoreFieldsExtensions.any((e) => listEquals(e.fieldPath, fieldPath));
 
   List<BFormExtension> get extensions => [
-        ..._computedFieldsExtensions,
+        ..._getComputedFieldsExtensions,
         ..._getIgnoreFieldsExtensions,
         ..._getValidationExtensions
       ];
+
+  @override
+  void notifyListeners() {
+    for (var cf in _getComputedFieldsExtensions) {
+      final value = cf.compute(this);
+      setFieldValue(cf.fieldPath, value, notify: false);
+    }
+    super.notifyListeners();
+  }
 }
 
 sealed class BFormExtension {}
