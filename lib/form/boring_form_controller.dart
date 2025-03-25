@@ -83,6 +83,9 @@ extension SetExtension<T> on Set<T> {
   bool containsAny(Iterable<T> elements) => elements.any(contains);
 }
 
+typedef DynamicExtensionsFunction = List<BFormExtension> Function(
+    Map<String, dynamic> value);
+
 class BoringFormController extends ChangeNotifier {
   static const DeepCollectionEquality _equality = DeepCollectionEquality();
   static BoringFormController of(BuildContext context) =>
@@ -90,7 +93,7 @@ class BoringFormController extends ChangeNotifier {
 
   final Map<String, dynamic> _value;
   final Map<String, dynamic> _initialValue;
-  final Set<FieldPath> _readOnlyFields;
+  // final Set<FieldPath> _readOnlyFields;
   final Map<FieldPath, DeferredValue> _deferredFields;
 
   final Map<FieldPath, ValidationFunction> _validationFunctions = {};
@@ -98,15 +101,19 @@ class BoringFormController extends ChangeNotifier {
   final ValidationBehaviour validationBehaviour;
   final FieldRequiredLabelBehaviour fieldRequiredLabelBehaviour;
 
+  final DynamicExtensionsFunction _dynamicExtensions;
+
   BoringFormController({
     Map<String, dynamic>? initialValue,
     Set<FieldPath>? readOnlyFields,
     Map<FieldPath, DeferredValue>? deferredFields,
     this.validationBehaviour = ValidationBehaviour.onSubmit,
     this.fieldRequiredLabelBehaviour = FieldRequiredLabelBehaviour.always,
-  })  : _value = Map.from(initialValue ?? {}),
+    DynamicExtensionsFunction? extensions,
+  })  : _dynamicExtensions = extensions ?? ((_) => []),
+        _value = Map.from(initialValue ?? {}),
         _initialValue = Map.from(initialValue ?? {}),
-        _readOnlyFields = readOnlyFields ?? {},
+        // _readOnlyFields = readOnlyFields ?? {},
         _deferredFields = deferredFields ?? {};
 
   //[START] ASYNC LOGIC
@@ -386,22 +393,47 @@ class BoringFormController extends ChangeNotifier {
   }
 
   //EXTENSIONS
+  List<BFormExtension> get _getDynamicExtensions => _dynamicExtensions(_value);
+
   final List<BIgnoreField> _ignoreFieldsExtensions = [];
   final List<BComputedField> _computedFieldsExtensions = [];
   final Map<String, BValidation> _validationExtensions = {};
 
+  List<BIgnoreField> get _getIgnoreFieldsExtensions {
+    final dynamicExts =
+        _getDynamicExtensions.whereType<BIgnoreField>().toList();
+    final Set<FieldPath> fixedExts =
+        _ignoreFieldsExtensions.map((e) => e.fieldPath).toSet();
+    dynamicExts.removeWhere((e) => fixedExts.contains(e.fieldPath));
+    return [..._ignoreFieldsExtensions, ...dynamicExts];
+  }
+
+  List<BComputedField> get _getComputedFieldsExtensions {
+    final dynamicExts =
+        _getDynamicExtensions.whereType<BComputedField>().toList();
+    final Set<FieldPath> fixedExts =
+        _computedFieldsExtensions.map((e) => e.fieldPath).toSet();
+    dynamicExts.removeWhere((e) => fixedExts.contains(e.fieldPath));
+    return [..._computedFieldsExtensions, ...dynamicExts];
+  }
+
+  List<BValidation> get _getValidationExtensions {
+    final dynamicExts = _getDynamicExtensions.whereType<BValidation>().toList();
+    return [..._validationExtensions.values, ...dynamicExts];
+  }
+
   bool isFieldReadOnly(FieldPath fieldPath) =>
       isFieldRemoved(fieldPath) ||
-      _computedFieldsExtensions.any(
+      _getComputedFieldsExtensions.any(
           (e) => listEquals(e.fieldPath, fieldPath) && !e.allowFieldChanges);
 
   String? _fieldValidationExtension(FieldPath fieldPath) {
-    final validation = _validationExtensions.values
+    final validation = _getValidationExtensions
         .firstWhereOrNull((e) => e.attachedPaths.contains(fieldPath));
     return validation?.validationFunction?.call(this, getValue(fieldPath));
   }
 
-  bool isFieldRemoved(FieldPath fieldPath) => _ignoreFieldsExtensions.any(
+  bool isFieldRemoved(FieldPath fieldPath) => _getIgnoreFieldsExtensions.any(
         (e) =>
             listEquals(e.fieldPath, fieldPath) ||
             (e.includeSubFields && fieldPath.startsWith(e.fieldPath)),
@@ -457,8 +489,8 @@ class BoringFormController extends ChangeNotifier {
 
   List<BFormExtension> get extensions => [
         ..._computedFieldsExtensions,
-        ..._ignoreFieldsExtensions,
-        ..._validationExtensions.values
+        ..._getIgnoreFieldsExtensions,
+        ..._getValidationExtensions
       ];
 }
 
