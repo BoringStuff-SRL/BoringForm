@@ -84,7 +84,7 @@ extension SetExtension<T> on Set<T> {
 }
 
 typedef DynamicExtensionsFunction = List<BFormExtension> Function(
-    Map<String, dynamic> value);
+    BoringFormController controller, Map<String, dynamic> value);
 
 class BoringFormController extends ChangeNotifier {
   static const DeepCollectionEquality _equality = DeepCollectionEquality();
@@ -110,7 +110,7 @@ class BoringFormController extends ChangeNotifier {
     this.validationBehaviour = ValidationBehaviour.onSubmit,
     this.fieldRequiredLabelBehaviour = FieldRequiredLabelBehaviour.always,
     DynamicExtensionsFunction? extensions,
-  })  : _dynamicExtensions = extensions ?? ((_) => []),
+  })  : _dynamicExtensions = extensions ?? ((_, __) => []),
         _value = Map.from(initialValue ?? {}),
         _initialValue = Map.from(initialValue ?? {}),
         // _readOnlyFields = readOnlyFields ?? {},
@@ -393,7 +393,8 @@ class BoringFormController extends ChangeNotifier {
   }
 
   //EXTENSIONS
-  List<BFormExtension> get _getDynamicExtensions => _dynamicExtensions(_value);
+  List<BFormExtension> get _getDynamicExtensions =>
+      _dynamicExtensions(this, _value);
 
   final List<BIgnoreField> _ignoreFieldsExtensions = [];
   final List<BComputedField> _computedFieldsExtensions = [];
