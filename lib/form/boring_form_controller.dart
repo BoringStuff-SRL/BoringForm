@@ -384,12 +384,15 @@ class BoringFormController extends ChangeNotifier {
     );
   }
 
-  ({T value, FieldValidation validation}) selectField<T>(FieldPath fieldPath,
-      {required bool fieldMarkedReadonly, required bool fieldRequired}) {
+  ({T value, FieldValidation validation, bool isHidden}) selectField<T>(
+      FieldPath fieldPath,
+      {required bool fieldMarkedReadonly,
+      required bool fieldRequired}) {
     final value = getValue(fieldPath);
+    final hidden = isFieldHidden(fieldPath);
     final validation = selectFieldValidation(fieldPath,
         fieldMarkedReadonly: fieldMarkedReadonly, fieldRequired: fieldRequired);
-    return (value: value, validation: validation);
+    return (value: value, validation: validation, isHidden: hidden);
   }
 
   //EXTENSIONS
@@ -438,6 +441,12 @@ class BoringFormController extends ChangeNotifier {
         (e) =>
             listEquals(e.fieldPath, fieldPath) ||
             (e.includeSubFields && fieldPath.startsWith(e.fieldPath)),
+      );
+  bool isFieldHidden(FieldPath fieldPath) => _getIgnoreFieldsExtensions.any(
+        (e) =>
+            (listEquals(e.fieldPath, fieldPath) ||
+                (e.includeSubFields && fieldPath.startsWith(e.fieldPath))) &&
+            e.hideField,
       );
 
   void setValidationExtension(BValidation extension, String key) {

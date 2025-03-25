@@ -160,7 +160,9 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
               fieldRequired: required),
           builder: (context, child, value) {
             onSelfChange(formController, value.value);
-
+            if (value.isHidden) {
+              return Container();
+            }
             return Padding(
               padding: style.fieldsPadding,
               child: fieldBuilder(context, style, formController, value.value,
