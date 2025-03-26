@@ -24,6 +24,7 @@ class BoringPickerField<T> extends BFormField<T> {
     this.showEraseValueButton = false,
     super.onChanged,
     super.required,
+    super.responsiveSize,
   });
 
   @override

@@ -14,6 +14,7 @@ class BoringPasswordField extends BoringTextField {
     super.key,
     required super.fieldPath,
     super.required,
+    super.responsiveSize,
     // super.inputFormatter,
     super.observedFields,
     super.validationFunction,

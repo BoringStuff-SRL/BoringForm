@@ -29,6 +29,7 @@ class BoringTextRegExpField extends BoringTextField {
     super.minLines = 1,
     super.maxLines = 1,
     super.required,
+    super.responsiveSize,
     required super.fieldPath,
     super.observedFields,
     String errorMessage = "Value cannot be empty",

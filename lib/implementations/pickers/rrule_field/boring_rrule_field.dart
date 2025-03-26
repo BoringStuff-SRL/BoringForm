@@ -14,6 +14,7 @@ class BoringRRuleField extends BoringPickerField<RecurrenceRule> {
     super.showEraseValueButton,
     super.validationFunction,
     super.required,
+    super.responsiveSize,
     super.updateValueOnDismiss,
   }) : super(
           valueToString: (value) {

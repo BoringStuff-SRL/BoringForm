@@ -25,6 +25,7 @@ class BoringDropdownMultiChoiceField<V, T>
     this.debouncingTime = const Duration(milliseconds: 300),
     this.initialItems,
     super.required,
+    super.responsiveSize,
   });
 
   final Future<List<T>> Function(String search) getItems;

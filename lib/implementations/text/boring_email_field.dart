@@ -6,6 +6,7 @@ class BoringEmailField extends BoringTextRegExpField {
     super.minLines = 1,
     super.maxLines = 1,
     super.required,
+    super.responsiveSize,
     required super.fieldPath,
     super.observedFields,
     super.decoration,

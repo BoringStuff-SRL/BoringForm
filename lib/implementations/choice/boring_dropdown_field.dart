@@ -23,6 +23,7 @@ class BoringDropdownField<V, T> extends BFormFieldAsync<V, List<T>> {
     this.debouncingTime = const Duration(milliseconds: 300),
     super.onChanged,
     super.required,
+    super.responsiveSize,
   });
 
   final Future<List<T>> Function(String search) getItems;

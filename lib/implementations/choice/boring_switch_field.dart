@@ -68,6 +68,7 @@ class BoringSwitchField extends BFormField<bool> {
     super.readOnly,
     super.decoration,
     this.switchDecoration = const BoringSwitchDecoration(),
+    super.responsiveSize,
   });
 
   final BoringSwitchDecoration switchDecoration;

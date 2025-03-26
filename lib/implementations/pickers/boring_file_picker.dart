@@ -30,6 +30,7 @@ class BoringFilePicker extends BFormField<List<PlatformFile>> {
     super.decoration,
     super.readOnly,
     super.required,
+    super.responsiveSize,
     this.textSpacingFromIcon,
     this.borderRadius,
     this.buttonWidth,

@@ -15,6 +15,7 @@ class BoringTextDropDownField extends BFormField<String> {
     super.onChanged,
     super.readOnly,
     super.required,
+    super.responsiveSize,
     super.validationFunction,
     this.minLines = 1,
     this.maxLines = 1,

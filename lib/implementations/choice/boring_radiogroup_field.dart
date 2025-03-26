@@ -14,6 +14,7 @@ class BoringRadioGroupField<T> extends BFormField<T> {
     this.itemsPerRow = 1,
     this.allowEmpty = false,
     super.onChanged,
+    super.responsiveSize,
   });
 
   final List<BChoiceItem<T>> items;

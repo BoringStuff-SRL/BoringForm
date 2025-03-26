@@ -13,6 +13,7 @@ class BoringChipField<T> extends BFormField<List<T>> {
     super.onChanged,
     super.readOnly,
     this.canRemoveSelection,
+    super.responsiveSize,
   });
 
   final List<T> elements;

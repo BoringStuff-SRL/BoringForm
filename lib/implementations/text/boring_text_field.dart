@@ -16,6 +16,7 @@ class BoringTextField extends BFormField<String> {
     this.minLines = 1,
     this.maxLines = 1,
     super.required,
+    super.responsiveSize,
     this.inputFormatter,
     required super.fieldPath,
     super.observedFields,

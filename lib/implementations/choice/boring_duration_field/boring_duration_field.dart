@@ -17,6 +17,7 @@ class BoringDurationField extends BFormField<Duration> {
     super.validationFunction,
     this.durationFieldTheme,
     this.fieldsToShow,
+    super.responsiveSize,
   });
 
   final BDurationFieldTheme? durationFieldTheme;

@@ -27,6 +27,7 @@ class BoringDateTimeFieldBase extends BoringPickerField<DateTime> {
     bool forceHideRequiredFieldLabel = false,
     super.onChanged,
     super.required,
+    super.responsiveSize,
     required super.showPicker,
     required super.valueToString,
   })  : assert(firstDate <= lastDate, "firstDate must be less than lastDate"),
@@ -60,6 +61,7 @@ class BoringDateTimeField extends BoringDateTimeFieldBase {
     bool forceHideRequiredFieldLabel = false,
     super.onChanged,
     super.required,
+    super.responsiveSize,
   }) : super(
             showPicker: (context, formController, fieldValue) async =>
                 await showOmniDateTimePicker(
@@ -125,6 +127,7 @@ class BoringDateRangeField extends BoringPickerField<DateTimeRange> {
     bool forceHideRequiredFieldLabel = false,
     super.onChanged,
     super.required,
+    super.responsiveSize,
   })  : assert(firstDate <= lastDate, "firstDate must be less than lastDate"),
         super(
           validationFunction:
@@ -188,6 +191,7 @@ class BoringDateField extends BoringDateTimeFieldBase {
     super.forceHideRequiredFieldLabel,
     super.onChanged,
     super.required,
+    super.responsiveSize,
     DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar,
     String Function(DateTime? date)? dateToString,
   }) : super(
@@ -223,6 +227,7 @@ class BoringTimeField extends BoringPickerField<TimeOfDay> {
     super.onChanged,
     bool forceHideRequiredFieldLabel = false,
     super.required,
+    super.responsiveSize,
     // required DateTime firstDate,
     // required DateTime lastDate,
   }) : super(
@@ -261,6 +266,7 @@ class BoringYearPicker extends BoringPickerField<DateTime> {
     DateTime? selected,
     super.showEraseValueButton = true,
     super.required,
+    super.responsiveSize,
   }) : super(
           showPicker: (context, formController, fieldValue) async {
             ValueNotifier<DateTime> notifier = ValueNotifier<DateTime>(
