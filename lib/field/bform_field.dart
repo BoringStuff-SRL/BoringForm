@@ -28,6 +28,7 @@ abstract class BFormField<T> extends BFormFieldAsync<T, void> {
     super.required = true,
     super.readOnly,
     super.onChanged,
+    super.responsiveSize,
   });
 
   @override
@@ -51,6 +52,8 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
   //CAN BE REMOVED??
   final DecorationBuilder<T>? _decorationBuilder;
 
+  final BResponsiveSize? responsiveSize;
+
   BFormFieldAsync({
     super.key,
     required this.fieldPath,
@@ -60,6 +63,7 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
     this.required = true,
     this.readOnly = false,
     this.onChanged,
+    this.responsiveSize,
   })  : _decorationBuilder = decoration,
         validationFunction = ((controller, value) {
           if (required) {
@@ -163,10 +167,13 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
             if (value.isHidden) {
               return Container();
             }
-            return Padding(
-              padding: style.fieldsPadding,
-              child: fieldBuilder(context, style, formController, value.value,
-                  value.validation, computedData),
+            return BResponsiveChild.size(
+              responsiveSize: responsiveSize ?? style.responsiveSize,
+              child: Padding(
+                padding: style.fieldsPadding,
+                child: fieldBuilder(context, style, formController, value.value,
+                    value.validation, computedData),
+              ),
             );
           },
         );
@@ -218,14 +225,12 @@ abstract class BFormObserver extends StatelessWidget {
       listenable: formController,
       selector: (controller) => controller.observed(observedFields),
       builder: (context, child, value) {
-        return Visibility(
-          visible: isShown?.call() ?? true,
-          child: switch (value) {
-            AsyncValueLoading() => onObservedLoading(context),
-            AsyncValueError() => onObservedError(context),
-            AsyncValueDone() => builder(context, formController, value.data),
-          },
-        );
+        if (!(isShown?.call() ?? true)) return Container();
+        return switch (value) {
+          AsyncValueLoading() => onObservedLoading(context),
+          AsyncValueError() => onObservedError(context),
+          AsyncValueDone() => builder(context, formController, value.data),
+        };
       },
     );
   }
