@@ -40,7 +40,7 @@ class _BoringDurationDialogForm extends BoringFormWidget {
                 bCardTheme: overriddenTheme,
                 content: BResponsiveWrap.automatic(
                   bResponsiveTheme: const BResponsiveTheme(spacing: 0),
-                  responsiveSize: const BResponsiveSize(xs: 4),
+                  defaultSize: const BResponsiveSize(xs: 4),
                   children: [
                     BoringNumberField(
                       fieldPath: const ['years'],
@@ -66,7 +66,7 @@ class _BoringDurationDialogForm extends BoringFormWidget {
                 bCardTheme: overriddenTheme,
                 content: BResponsiveWrap.automatic(
                   bResponsiveTheme: const BResponsiveTheme(spacing: 0),
-                  responsiveSize: const BResponsiveSize(xs: 6),
+                  defaultSize: const BResponsiveSize(xs: 6),
                   children: [
                     BoringNumberField(
                       fieldPath: const ['hours'],
