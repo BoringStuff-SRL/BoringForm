@@ -69,6 +69,31 @@ extension BFormFieldValueExt on Map<String, dynamic> {
     }
   }
 
+  void removeKey(
+    FieldPath keysList,
+  ) {
+    if (keysList.isEmpty) {
+      return;
+    }
+    final key = keysList.first;
+    if (keysList.length == 1) {
+      remove(key);
+      return;
+    }
+    final element = this[key];
+    if (element is Map) {
+      try {
+        (element as Map<String, dynamic>)
+            .removeKey(keysList.getRange(1, keysList.length).toList());
+      } on MapKeyListException catch (e) {
+        e.pushFieldLeft(key);
+        rethrow;
+      }
+    } else {
+      throw MapKeyListException(keysList);
+    }
+  }
+
   void addEntry(MapEntry<String, dynamic> entry) => addEntries([entry]);
 }
 
@@ -197,8 +222,16 @@ class BoringFormController extends ChangeNotifier {
 
   /// GETTERS
   // Map<FieldPath, DeferredValue> get deferredFields => _deferredFields;
-  Map<String, dynamic> get value =>
-      _value; //TODO remove all the hidden fields from the value
+  Map<String, dynamic> get value {
+    final val = {..._value};
+    for (final ext in _getIgnoreFieldsExtensions) {
+      if (ext.hideField) {
+        val.removeKey(ext.fieldPath);
+      }
+    }
+    return _value;
+  } //TODO remove all the hidden fields from the value
+
   bool get hasChanged =>
       !BoringFormController._equality.equals(value, _initialValue);
 
@@ -441,15 +474,10 @@ class BoringFormController extends ChangeNotifier {
   }
 
   bool isFieldRemoved(FieldPath fieldPath) => _getIgnoreFieldsExtensions.any(
-        (e) =>
-            listEquals(e.fieldPath, fieldPath) ||
-            (e.includeSubFields && fieldPath.startsWith(e.fieldPath)),
+        (e) => fieldPath.startsWith(e.fieldPath),
       );
   bool isFieldHidden(FieldPath fieldPath) => _getIgnoreFieldsExtensions.any(
-        (e) =>
-            (listEquals(e.fieldPath, fieldPath) ||
-                (e.includeSubFields && fieldPath.startsWith(e.fieldPath))) &&
-            e.hideField,
+        (e) => fieldPath.startsWith(e.fieldPath) && e.hideField,
       );
 
   void setValidationExtension(BValidation extension, String key) {
@@ -532,11 +560,10 @@ class BComputedField<T> extends BFormExtension {
 class BIgnoreField extends BFormExtension {
   final FieldPath fieldPath;
   final bool hideField;
-  final bool includeSubFields;
+
   BIgnoreField({
     required this.fieldPath,
     this.hideField = true,
-    this.includeSubFields = true,
   });
 }
 
