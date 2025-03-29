@@ -153,7 +153,7 @@ class BoringFormController extends ChangeNotifier {
   @protected
   AsyncValue<Map<FieldPath, dynamic>> observed(
       List<FieldPath>? pathsToObserve) {
-    final observedPaths = pathsToObserve ?? allPaths(_value);
+    final observedPaths = pathsToObserve ?? allPaths(value);
     if (observedPaths.isEmpty) {
       return const AsyncValueDone({});
     }
@@ -167,7 +167,7 @@ class BoringFormController extends ChangeNotifier {
     return AsyncValueDone(
       Map.fromEntries(
         observedPaths.map(
-          (path) => MapEntry(path, _value.getValue(path)),
+          (path) => MapEntry(path, value.getValue(path)),
         ),
       ),
     );
@@ -200,7 +200,7 @@ class BoringFormController extends ChangeNotifier {
   Map<String, dynamic> get value =>
       _value; //TODO remove all the hidden fields from the value
   bool get hasChanged =>
-      !BoringFormController._equality.equals(_value, _initialValue);
+      !BoringFormController._equality.equals(value, _initialValue);
 
   // DeferredValue? getDeferredValue(FieldPath fieldPath) =>
   //     _deferredFields.entries
@@ -230,11 +230,10 @@ class BoringFormController extends ChangeNotifier {
         (element) => element.value?.call(this, getValue(element.key)) == null);
   }
 
-  dynamic getValue(List<String> fieldPath, {dynamic defaultValue}) =>
-      _value.getValue(fieldPath) ?? defaultValue;
+  dynamic getValue(List<String> fieldPath) => value.getValue(fieldPath);
 
   List<dynamic> getValues(List<List<String>> fieldPaths) =>
-      fieldPaths.map((keysList) => _value.getValue(keysList)).toList();
+      fieldPaths.map((fieldPath) => getValue(fieldPath)).toList();
 
   /// SETTERS
 
