@@ -72,16 +72,16 @@ extension BFormFieldValueExt on Map<String, dynamic> {
   void addEntry(MapEntry<String, dynamic> entry) => addEntries([entry]);
 }
 
+extension SetExtension<T> on Set<T> {
+  bool containsAny(Iterable<T> elements) => elements.any(contains);
+}
+
 typedef FieldValidation = ({
   String? error,
   bool showError,
   bool showRequiredLabel,
   bool isReadOnly,
 });
-
-extension SetExtension<T> on Set<T> {
-  bool containsAny(Iterable<T> elements) => elements.any(contains);
-}
 
 typedef DynamicExtensionsFunction = List<BFormExtension> Function(
     BoringFormController controller, Map<String, dynamic> value);
@@ -94,7 +94,7 @@ class BoringFormController extends ChangeNotifier {
   final Map<String, dynamic> _value;
   final Map<String, dynamic> _initialValue;
   // final Set<FieldPath> _readOnlyFields;
-  final Map<FieldPath, DeferredValue> _deferredFields;
+  // final Map<FieldPath, DeferredValue> _deferredFields;
 
   final Map<FieldPath, ValidationFunction> _validationFunctions = {};
 
@@ -112,9 +112,9 @@ class BoringFormController extends ChangeNotifier {
     DynamicExtensionsFunction? extensions,
   })  : _dynamicExtensions = extensions ?? ((_, __) => []),
         _value = Map.from(initialValue ?? {}),
-        _initialValue = Map.from(initialValue ?? {}),
-        // _readOnlyFields = readOnlyFields ?? {},
-        _deferredFields = deferredFields ?? {};
+        _initialValue = Map.from(initialValue ?? {}) //,
+  // _readOnlyFields = readOnlyFields ?? {},
+  /* _deferredFields = deferredFields ?? {} */;
 
   //[START] ASYNC LOGIC
   final Set<FieldPath> _loadingFields = {};
@@ -196,26 +196,30 @@ class BoringFormController extends ChangeNotifier {
   final Map<String, Map<FieldPath, void Function()>> _fieldsListener = {};
 
   /// GETTERS
-  Map<FieldPath, DeferredValue> get deferredFields => _deferredFields;
-  Map<String, dynamic> get value => _value;
+  // Map<FieldPath, DeferredValue> get deferredFields => _deferredFields;
+  Map<String, dynamic> get value =>
+      _value; //TODO remove all the hidden fields from the value
   bool get hasChanged =>
       !BoringFormController._equality.equals(_value, _initialValue);
 
-  DeferredValue? getDeferredValue(FieldPath fieldPath) =>
-      _deferredFields.entries
-          .firstWhereOrNull((element) => listEquals(fieldPath, element.key))
-          ?.value;
+  // DeferredValue? getDeferredValue(FieldPath fieldPath) =>
+  //     _deferredFields.entries
+  //         .firstWhereOrNull((element) => listEquals(fieldPath, element.key))
+  //         ?.value;
 
-  bool get isValid {
-    final deferredLoading = _deferredFields.entries
-        .any((element) => element.value.asyncValue.isLoading);
-
-    if (deferredLoading) return false;
-
-    if (!submitted) {
-      submitted = true;
+  Map<String, dynamic>? submit() {
+    if (!_submitted) {
+      _submitted = true;
       notifyListeners();
     }
+    return isValid ? value : null;
+  }
+
+  bool get isValid {
+    // final deferredLoading = _deferredFields.entries
+    //     .any((element) => element.value.asyncValue.isLoading);
+
+    // if (deferredLoading) return false;
 
     final paths = allPaths(_value);
     for (final path in paths) {
@@ -342,7 +346,7 @@ class BoringFormController extends ChangeNotifier {
   // }
 
   //CONTROLLER LOGIC
-  bool submitted = false;
+  bool _submitted = false;
 
   void setValidationFunction<T>(
       FieldPath fieldPath, ValidationFunction<T>? validationFunction) {
@@ -365,7 +369,7 @@ class BoringFormController extends ChangeNotifier {
     final errror = validateField(fieldPath);
     final showError = errror != null &&
         validationBehaviour != ValidationBehaviour.never &&
-        (submitted || validationBehaviour == ValidationBehaviour.always);
+        (_submitted || validationBehaviour == ValidationBehaviour.always);
 
     final shouldShowRequiredLabel = switch (fieldRequiredLabelBehaviour) {
       FieldRequiredLabelBehaviour.always => fieldRequired,
