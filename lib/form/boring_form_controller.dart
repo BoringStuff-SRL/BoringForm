@@ -1,105 +1,9 @@
+import 'package:boring_form/form/form_value_extensions.dart';
 import 'package:boring_form/theme/boring_form_theme.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
-extension<T> on Iterable<T> {
-  bool startsWith(Iterable<T> other) {
-    if (length < other.length) return false;
-    for (int i = 0; i < other.length; i++) {
-      if (elementAt(i) != other.elementAt(i)) return false;
-    }
-    return true;
-  }
-}
-
-extension BFormFieldValueExt on Map<String, dynamic> {
-  bool pathExists(FieldPath path) {
-    return true;
-  }
-
-  dynamic getValue(FieldPath fieldPath) {
-    if (fieldPath.isEmpty) {
-      return null;
-    }
-    final key = fieldPath.first;
-    if (!containsKey(key)) {
-      return null;
-    }
-    final element = this[key];
-    if (fieldPath.length == 1 || element == null) {
-      return element;
-    }
-    if (element is Map) {
-      try {
-        return (element as Map<String, dynamic>)
-            .getValue(fieldPath.skip(1).toList());
-      } on MapKeyListException catch (e) {
-        e.pushFieldLeft(key);
-        rethrow;
-      }
-    }
-    throw MapKeyListException(fieldPath);
-  }
-
-  void setValue(List<String> keysList, dynamic value) {
-    if (keysList.isEmpty) {
-      return;
-    }
-    final key = keysList.first;
-    if (keysList.length == 1) {
-      this[key] = value;
-      return;
-    }
-    if (!containsKey(key) || this[key] == null) {
-      this[key] = <String, dynamic>{};
-    }
-    final element = this[key];
-    if (element is Map) {
-      try {
-        (element as Map<String, dynamic>)
-            .setValue(keysList.getRange(1, keysList.length).toList(), value);
-      } on MapKeyListException catch (e) {
-        e.pushFieldLeft(key);
-        rethrow;
-      }
-    } else {
-      throw MapKeyListException(keysList);
-    }
-  }
-
-  void removeKey(
-    FieldPath keysList,
-  ) {
-    if (keysList.isEmpty) {
-      return;
-    }
-    final key = keysList.first;
-    if (keysList.length == 1) {
-      remove(key);
-      return;
-    }
-    final element = this[key];
-    if (element is Map) {
-      try {
-        (element as Map<String, dynamic>)
-            .removeKey(keysList.getRange(1, keysList.length).toList());
-      } on MapKeyListException catch (e) {
-        e.pushFieldLeft(key);
-        rethrow;
-      }
-    } else {
-      throw MapKeyListException(keysList);
-    }
-  }
-
-  void addEntry(MapEntry<String, dynamic> entry) => addEntries([entry]);
-}
-
-extension SetExtension<T> on Set<T> {
-  bool containsAny(Iterable<T> elements) => elements.any(contains);
-}
 
 typedef FieldValidation = ({
   String? error,
@@ -108,38 +12,32 @@ typedef FieldValidation = ({
   bool isReadOnly,
 });
 
-typedef DynamicExtensionsFunction = List<BFormExtension> Function(
-    BoringFormController controller, Map<String, dynamic> value);
-
-class BoringFormController extends ChangeNotifier {
+class BFormController extends ChangeNotifier {
   static const DeepCollectionEquality _equality = DeepCollectionEquality();
-  static BoringFormController of(BuildContext context) =>
+  static BFormController of(BuildContext context) =>
       BFormControllerProvider.controllerOf(context);
 
   final Map<String, dynamic> _value;
   final Map<String, dynamic> _initialValue;
-  // final Set<FieldPath> _readOnlyFields;
-  // final Map<FieldPath, DeferredValue> _deferredFields;
 
   final Map<FieldPath, ValidationFunction> _validationFunctions = {};
 
   final ValidationBehaviour validationBehaviour;
   final FieldRequiredLabelBehaviour fieldRequiredLabelBehaviour;
 
-  final DynamicExtensionsFunction _dynamicExtensions;
+  final DynamicExtensionsFunction? _extensions;
 
-  BoringFormController({
+  BFormController({
     Map<String, dynamic>? initialValue,
     Set<FieldPath>? readOnlyFields,
-    Map<FieldPath, DeferredValue>? deferredFields,
     this.validationBehaviour = ValidationBehaviour.onSubmit,
     this.fieldRequiredLabelBehaviour = FieldRequiredLabelBehaviour.always,
     DynamicExtensionsFunction? extensions,
-  })  : _dynamicExtensions = extensions ?? ((_, __) => []),
-        _value = Map.from(initialValue ?? {}),
-        _initialValue = Map.from(initialValue ?? {}) //,
-  // _readOnlyFields = readOnlyFields ?? {},
-  /* _deferredFields = deferredFields ?? {} */;
+  })  : _value = Map.from(initialValue ?? {}),
+        _initialValue = Map.from(initialValue ?? {}),
+        _extensions = extensions {
+    _computedExtensions = _extensions?.call(this, _value);
+  }
 
   //[START] ASYNC LOGIC
   final Set<FieldPath> _loadingFields = {};
@@ -151,7 +49,7 @@ class BoringFormController extends ChangeNotifier {
     notify = _loadingFields.add(fieldPath) || notify;
     notify = _errorFields.remove(fieldPath) || notify;
     if (notify) {
-      notifyListeners();
+      asyncNotifyListeners();
     }
   }
 
@@ -177,68 +75,90 @@ class BoringFormController extends ChangeNotifier {
 
   @protected
   AsyncValue<Map<FieldPath, dynamic>> observed(
-      List<FieldPath>? pathsToObserve) {
-    final observedPaths = pathsToObserve ?? allPaths(value);
-    if (observedPaths.isEmpty) {
+    List<FieldPath>? pathsToObserve,
+  ) {
+    final observedPaths = pathsToObserve;
+    if (observedPaths != null && observedPaths.isEmpty) {
       return const AsyncValueDone({});
     }
-    if (_loadingFields.containsAny(observedPaths)) {
-      return const AsyncValueLoading();
-    }
-    if (_errorFields.containsAny(observedPaths)) {
+    final loading = observedPaths != null
+        ? observedPaths.any(_isPathLoading)
+        : _loadingFields.isNotEmpty;
+    if (loading) return const AsyncValueLoading();
+    final error = observedPaths != null
+        ? observedPaths.any(_isPathAsyncError)
+        : _errorFields.isNotEmpty;
+    if (error) {
       return const AsyncValueError(Object());
     }
-
     return AsyncValueDone(
       Map.fromEntries(
-        observedPaths.map(
+        (observedPaths ?? []).map(
           (path) => MapEntry(path, value.getValue(path)),
         ),
       ),
     );
   }
 
-  static Set<FieldPath> allPaths(Map<String, dynamic> value) {
-    Set<FieldPath> result = {};
-    // ignore: no_leading_underscores_for_local_identifiers
-    void _collectPaths(Map<String, dynamic> map, FieldPath currentPath) {
-      for (var entry in map.entries) {
-        final path = [...currentPath, entry.key];
-        if (entry.value is Map<String, dynamic>) {
-          _collectPaths(entry.value as Map<String, dynamic>, path);
-        } else {
-          result.add(path);
-        }
-      }
-    }
+  bool _isPathLoading(FieldPath fieldPath) =>
+      _loadingFields.any((path) => path.startsWith(fieldPath));
 
-    _collectPaths(value, []);
-    return result;
-  }
+  bool _isPathAsyncError(FieldPath fieldPath) =>
+      _errorFields.any((path) => path.startsWith(fieldPath));
+
+  // static Set<FieldPath> allPaths(Map<String, dynamic> value) {
+  //   Set<FieldPath> result = {};
+  //   // ignore: no_leading_underscores_for_local_identifiers
+  //   void _collectPaths(Map<String, dynamic> map, FieldPath currentPath) {
+  //     for (var entry in map.entries) {
+  //       final path = [...currentPath, entry.key];
+  //       if (entry.value is Map<String, dynamic>) {
+  //         _collectPaths(entry.value as Map<String, dynamic>, path);
+  //       } else {
+  //         result.add(path);
+  //       }
+  //     }
+  //   }
+  //   _collectPaths(value, []);
+  //   return result;
+  // }
 
   //[END] ASYNC LOGIC
 
   final Map<String, Map<FieldPath, void Function()>> _fieldsListener = {};
 
   /// GETTERS
-  // Map<FieldPath, DeferredValue> get deferredFields => _deferredFields;
-  Map<String, dynamic> get value {
-    final val = {..._value};
+
+  List<BFormExtension>? _computedExtensions;
+
+  ///
+  /// Returns the current value of the form.
+  Map<String, dynamic> get value => getFormValue();
+
+  // /// Returns the current value of the form.
+  // ///
+  // /// When [removeHidden] is true (default), fields marked with [BIgnoreField] will be removed.
+  // ///
+  // /// WARNING: If you're implementing the [DynamicExtensionsFunction] parameter of the constructor,
+  // /// you MUST set [removeHidden] to false or use the [value] getter instead to avoid infinite loops.
+  Map<String, dynamic> getFormValue({bool removeHidden = true}) {
+    final val = Map<String, dynamic>.from(_value);
+    if (!removeHidden) return val;
     for (final ext in _getIgnoreFieldsExtensions) {
       if (ext.hideField) {
         val.removeKey(ext.fieldPath);
       }
     }
-    return _value;
-  } //TODO remove all the hidden fields from the value
+    return val;
+  }
+
+  dynamic getValue(List<String> fieldPath) => value.getValue(fieldPath);
+
+  List<dynamic> getValues(List<List<String>> fieldPaths) =>
+      fieldPaths.map(getValue).toList();
 
   bool get hasChanged =>
-      !BoringFormController._equality.equals(value, _initialValue);
-
-  // DeferredValue? getDeferredValue(FieldPath fieldPath) =>
-  //     _deferredFields.entries
-  //         .firstWhereOrNull((element) => listEquals(fieldPath, element.key))
-  //         ?.value;
+      !BFormController._equality.equals(value, _initialValue);
 
   Map<String, dynamic>? submit() {
     if (!_submitted) {
@@ -248,25 +168,60 @@ class BoringFormController extends ChangeNotifier {
     return isValid ? value : null;
   }
 
-  bool get isValid {
-    // final deferredLoading = _deferredFields.entries
-    //     .any((element) => element.value.asyncValue.isLoading);
-
-    // if (deferredLoading) return false;
-
-    final paths = allPaths(_value);
-    for (final path in paths) {
-      if (_loadingFields.contains(path)) return false;
-    }
-
-    return _validationFunctions.entries.every(
-        (element) => element.value?.call(this, getValue(element.key)) == null);
+  Iterable<({FieldPath fieldPath, String error})> _getFieldValidationErrors(
+      [List<FieldPath>? paths]) {
+    return _validationFunctions.entries
+        .where((e) => paths?.any((path) => e.key.startsWith(path)) ?? true)
+        .map((e) => (fieldPath: e.key, error: validateField(e.key)))
+        .where((element) => element.error != null)
+        .where((element) => !isFieldRemoved(element.fieldPath))
+        .map(
+            (element) => (fieldPath: element.fieldPath, error: element.error!));
   }
 
-  dynamic getValue(List<String> fieldPath) => value.getValue(fieldPath);
+  Iterable<({FieldPath fieldPath, String error})> _getExtensionsErrors(
+      [List<FieldPath>? paths]) {
+    return _getValidationExtensions
+        .map<Iterable<MapEntry<FieldPath, ValidationFunction<dynamic>?>>>(
+            (ext) {
+          if (ext.attachedPaths.isEmpty) {
+            return [MapEntry([], ext.validationFunction)];
+          }
+          return ext.attachedPaths
+              .map((path) => MapEntry(path, ext.validationFunction));
+        })
+        .expand((e) => e)
+        .where((e) {
+          if (paths == null) return true;
+          return paths.any((path) => e.key.startsWith(path));
+        })
+        .map((e) => (fieldPath: e.key, error: validateField(e.key)))
+        .where((element) => element.error != null)
+        .where((element) => !isFieldRemoved(element.fieldPath))
+        .map(
+            (element) => (fieldPath: element.fieldPath, error: element.error!));
+  }
 
-  List<dynamic> getValues(List<List<String>> fieldPaths) =>
-      fieldPaths.map((fieldPath) => getValue(fieldPath)).toList();
+  Iterable<({FieldPath fieldPath, String error})> errors(
+      [List<FieldPath>? paths]) {
+    return _getFieldValidationErrors(paths)
+        .followedBy(_getExtensionsErrors(paths));
+  }
+
+  // Iterable<({FieldPath fieldPath, String error})> get errors =>
+  //     _validationFunctions.entries
+  //         .map((e) => (fieldPath: e.key, error: validateField(e.key)))
+  //         .where((element) => element.error != null)
+  //         .map((element) =>
+  //             (fieldPath: element.fieldPath, error: element.error!));
+
+  bool get isValid {
+    // final paths = allPaths(_value);
+    if (_loadingFields.isNotEmpty || _errorFields.isNotEmpty) {
+      return false;
+    }
+    return errors().isEmpty;
+  }
 
   /// SETTERS
 
@@ -278,20 +233,9 @@ class BoringFormController extends ChangeNotifier {
     if (_equality.equals(_value, newValue)) {
       return;
     }
-    final newPaths = allPaths(newValue);
-    final oldPaths = allPaths(_value);
-    final pathsToSetNull = oldPaths.difference(newPaths);
-    var shouldNotify = false;
-    for (final path in pathsToSetNull) {
-      shouldNotify = setFieldValue(path, null, notify: false) || shouldNotify;
-    }
-    for (final path in newPaths) {
-      final val = newValue.getValue(path);
-      shouldNotify = setFieldValue(path, val, notify: false) || shouldNotify;
-    }
-    if (shouldNotify) {
-      notifyListeners();
-    }
+    _value.clear();
+    _value.addAll(newValue);
+    notifyListeners();
   }
 
   bool setFieldValue<R>(
@@ -304,82 +248,20 @@ class BoringFormController extends ChangeNotifier {
       return false;
     }
     _value.setValue(fieldPath, value);
-    // print(_value);
     // _fieldHasChanged(fieldPath);
-    if (notify) notifyListeners();
+    if (notify) {
+      notifyListeners();
+    }
     return true;
   }
-
-  /// PUBLIC METHODS
-
-  /// Note that this function won't work if the field has the readOnly param given
-  // void setFieldReadOnlyStatus(
-  //   FieldPath path, {
-  //   required bool readOnly,
-  //   bool notify = true,
-  // }) {
-  //   if (readOnly) {
-  //     _readOnlyFields.add(path);
-  //   } else {
-  //     _readOnlyFields.removeWhere((element) => listEquals(element, path));
-  //   }
-  //   if (notify) {
-  //     notifyListeners();
-  //   }
-  // }
-
-  // bool isFieldReadOnly(FieldPath fieldPath) => _readOnlyFields
-  //     .where((element) => listEquals(element, fieldPath))
-  //     .isNotEmpty;
-
-  // void addFieldsListener({
-  //   required String key,
-  //   required List<FieldPath> fields,
-  //   required void Function() callback,
-  // }) {
-  //   final Map<FieldPath, void Function()> map = {};
-  //   for (final field in fields) {
-  //     map[field] = callback;
-  //   }
-  //   _fieldsListener[key] = map;
-  // }
-
-  // void removeFieldsListener(String key) {
-  //   _fieldsListener.remove(key);
-  // }
-
-  // void resetFields(List<List<String>> fieldPaths) {
-  //   for (var fieldPath in fieldPaths) {
-  //     setFieldValue(fieldPath, null);
-  //   }
-  // }
-
-  /// PRIVATE METHODS
-
-  // List<dynamic> _getMultiValues(List<List<String>> fieldPaths) =>
-  //     fieldPaths.map((keysList) => _value.getValue(keysList)).toList();
-
-  // void _fieldHasChanged(FieldPath path) {
-  //   _fieldsListener.values
-  //       .expand((e) => e.entries)
-  //       .where(
-  //         (element) {
-  //           final fieldPath = element.key;
-  //           if (fieldPath.length > path.length) return false;
-
-  //           for (int i = 0; i < fieldPath.length; i++) {
-  //             if (fieldPath[i] != path[i]) return false;
-  //           }
-  //           return true;
-  //         },
-  //       )
-  //       .map((e) => e.value)
-  //       .forEach((callback) => callback());
-  // }
 
   //CONTROLLER LOGIC
   bool _submitted = false;
 
+  String? validateField(FieldPath fieldPath) =>
+      errors([fieldPath]).firstOrNull?.error;
+
+  @protected
   void setValidationFunction<T>(
       FieldPath fieldPath, ValidationFunction<T>? validationFunction) {
     _validationFunctions[fieldPath] = validationFunction != null
@@ -387,15 +269,7 @@ class BoringFormController extends ChangeNotifier {
         : null;
   }
 
-  String? _fieldValidation(FieldPath fieldPath) {
-    final validationFunction = _validationFunctions[fieldPath];
-    if (isFieldRemoved(fieldPath)) return null;
-    return validationFunction?.call(this, getValue(fieldPath));
-  }
-
-  String? validateField(FieldPath fieldPath) =>
-      _fieldValidation(fieldPath) ?? _fieldValidationExtension(fieldPath);
-
+  @protected
   FieldValidation selectFieldValidation(FieldPath fieldPath,
       {required bool fieldMarkedReadonly, required bool fieldRequired}) {
     final errror = validateField(fieldPath);
@@ -432,25 +306,26 @@ class BoringFormController extends ChangeNotifier {
   }
 
   //EXTENSIONS
-  List<BFormExtension> get _getDynamicExtensions =>
-      _dynamicExtensions(this, _value);
 
   final List<BIgnoreField> _ignoreFieldsExtensions = [];
   final List<BComputedField> _computedFieldsExtensions = [];
   final Map<String, BValidation> _validationExtensions = {};
 
   List<BIgnoreField> get _getIgnoreFieldsExtensions {
-    final dynamicExts =
-        _getDynamicExtensions.whereType<BIgnoreField>().toList();
-    final Set<FieldPath> fixedExts =
-        _ignoreFieldsExtensions.map((e) => e.fieldPath).toSet();
-    dynamicExts.removeWhere((e) => fixedExts.contains(e.fieldPath));
-    return [..._ignoreFieldsExtensions, ...dynamicExts];
+    return (_computedExtensions ?? [])
+        .whereType<BIgnoreField>()
+        .where(
+          (extension) => _ignoreFieldsExtensions.any(
+            (fixedExt) => extension.fieldPath.startsWith(fixedExt.fieldPath),
+          ),
+        )
+        .followedBy(_ignoreFieldsExtensions)
+        .toList();
   }
 
   List<BComputedField> get _getComputedFieldsExtensions {
     final dynamicExts =
-        _getDynamicExtensions.whereType<BComputedField>().toList();
+        (_computedExtensions ?? []).whereType<BComputedField>().toList();
     final Set<FieldPath> fixedExts =
         _computedFieldsExtensions.map((e) => e.fieldPath).toSet();
     dynamicExts.removeWhere((e) => fixedExts.contains(e.fieldPath));
@@ -458,20 +333,16 @@ class BoringFormController extends ChangeNotifier {
   }
 
   List<BValidation> get _getValidationExtensions {
-    final dynamicExts = _getDynamicExtensions.whereType<BValidation>().toList();
-    return [..._validationExtensions.values, ...dynamicExts];
+    return (_computedExtensions ?? [])
+        .whereType<BValidation>()
+        .followedBy(_validationExtensions.values)
+        .toList();
   }
 
   bool isFieldReadOnly(FieldPath fieldPath) =>
       isFieldRemoved(fieldPath) ||
       _getComputedFieldsExtensions.any(
           (e) => listEquals(e.fieldPath, fieldPath) && !e.allowFieldChanges);
-
-  String? _fieldValidationExtension(FieldPath fieldPath) {
-    final validation = _getValidationExtensions
-        .firstWhereOrNull((e) => e.attachedPaths.contains(fieldPath));
-    return validation?.validationFunction?.call(this, getValue(fieldPath));
-  }
 
   bool isFieldRemoved(FieldPath fieldPath) => _getIgnoreFieldsExtensions.any(
         (e) => fieldPath.startsWith(e.fieldPath),
@@ -528,12 +399,6 @@ class BoringFormController extends ChangeNotifier {
   bool hasIgnoreFieldExtension(FieldPath fieldPath) =>
       _ignoreFieldsExtensions.any((e) => listEquals(e.fieldPath, fieldPath));
 
-  List<BFormExtension> get extensions => [
-        ..._getComputedFieldsExtensions,
-        ..._getIgnoreFieldsExtensions,
-        ..._getValidationExtensions
-      ];
-
   @override
   void notifyListeners() {
     for (var cf in _getComputedFieldsExtensions) {
@@ -542,13 +407,19 @@ class BoringFormController extends ChangeNotifier {
     }
     super.notifyListeners();
   }
+
+  void asyncNotifyListeners() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
+  }
 }
 
 sealed class BFormExtension {}
 
 class BComputedField<T> extends BFormExtension {
   final FieldPath fieldPath;
-  final T Function(BoringFormController formController) compute;
+  final T Function(BFormController formController) compute;
   final bool allowFieldChanges;
   BComputedField({
     required this.fieldPath,

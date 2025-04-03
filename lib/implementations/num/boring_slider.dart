@@ -27,7 +27,7 @@ class BoringSlider extends BFormField<double> {
   Widget fieldBuilder(
     BuildContext context,
     BoringFormStyle formStyle,
-    BoringFormController formController,
+    BFormController formController,
     double? fieldValue,
     FieldValidation fieldValidation,
     void computedValue,
@@ -87,7 +87,7 @@ class BoringRangeSlider extends BFormField<RangeValues> {
   Widget fieldBuilder(
     BuildContext context,
     BoringFormStyle formStyle,
-    BoringFormController formController,
+    BFormController formController,
     RangeValues? fieldValue,
     FieldValidation fieldValidation,
     void computedValue,

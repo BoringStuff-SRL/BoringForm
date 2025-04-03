@@ -50,7 +50,7 @@ class BoringTextDropDownField extends BFormField<String> {
   }
 
   @override
-  void onSelfChange(BoringFormController formController, String? fieldValue) {
+  void onSelfChange(BFormController formController, String? fieldValue) {
     var cursorPos =
         min(_textController.selection.base.offset, fieldValue?.length ?? 0);
 
@@ -64,7 +64,7 @@ class BoringTextDropDownField extends BFormField<String> {
   Widget fieldBuilder(
     BuildContext context,
     BoringFormStyle formStyle,
-    BoringFormController formController,
+    BFormController formController,
     String? fieldValue,
     FieldValidation fieldValidation,
     void computedValue,

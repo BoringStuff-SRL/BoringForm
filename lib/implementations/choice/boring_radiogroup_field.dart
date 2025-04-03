@@ -25,7 +25,7 @@ class BoringRadioGroupField<T> extends BFormField<T> {
   Widget fieldBuilder(
     BuildContext context,
     BoringFormStyle formStyle,
-    BoringFormController formController,
+    BFormController formController,
     T? fieldValue,
     FieldValidation fieldValidation,
     void computedValue,

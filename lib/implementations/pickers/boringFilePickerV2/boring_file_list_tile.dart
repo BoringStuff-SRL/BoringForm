@@ -9,7 +9,7 @@ import 'package:flutter_svg/svg.dart';
 class BoringFileListTile extends StatelessWidget {
   final PlatformFile file;
 
-  const BoringFileListTile({Key? key, required this.file}) : super(key: key);
+  const BoringFileListTile({super.key, required this.file});
 
   SvgPicture fromExtensionToIcon(String extension) {
     switch (extension) {

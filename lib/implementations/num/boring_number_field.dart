@@ -159,14 +159,14 @@ class BoringNumberField extends BFormField<num> {
 
   bool hasSetInitialValue = false;
 
-  void _incrementValue(BoringFormController formController) {
+  void _incrementValue(BFormController formController) {
     int currentValue = int.tryParse(_textEditingController.text) ?? 0;
     currentValue++;
     _textEditingController.text = currentValue.toString();
     setChangedValue(formController, currentValue);
   }
 
-  void _decrementValue(BoringFormController formController) {
+  void _decrementValue(BFormController formController) {
     int currentValue = int.tryParse(_textEditingController.text) ?? 1;
     if (currentValue > 1) {
       currentValue--;
@@ -179,7 +179,7 @@ class BoringNumberField extends BFormField<num> {
   Widget fieldBuilder(
     BuildContext context,
     BoringFormStyle formStyle,
-    BoringFormController formController,
+    BFormController formController,
     num? fieldValue,
     FieldValidation fieldValidation,
     void computedValue,
@@ -255,7 +255,7 @@ class BoringNumberField extends BFormField<num> {
   }
 
   @override
-  void onSelfChange(BoringFormController formController, num? fieldValue) {
+  void onSelfChange(BFormController formController, num? fieldValue) {
     if (fieldValue == null) {
       _textEditingController.text = '';
       return;

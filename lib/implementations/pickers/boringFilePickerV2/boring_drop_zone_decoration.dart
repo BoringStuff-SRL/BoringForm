@@ -19,12 +19,10 @@ class BoringFilePickerDecoration {
   final MainAxisAlignment? mainAxisAlignment;
   final Function(BuildContext context, BoringFilePickerErrorType errorType)?
       onError;
-  final Widget Function(
-          BuildContext context, BoringFormController formController)?
+  final Widget Function(BuildContext context, BFormController formController)?
       listTileBuilder;
 
-  final Widget Function(
-          BuildContext context, BoringFormController formController)?
+  final Widget Function(BuildContext context, BFormController formController)?
       dropzoneBuilder;
   final BoringFilePickerBehaviour boringFilePickerBehaviour;
 

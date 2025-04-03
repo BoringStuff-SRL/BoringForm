@@ -3,7 +3,6 @@
 import 'dart:typed_data';
 
 import 'package:boring_form/boring_form.dart';
-import 'package:boring_form/form/boring_form_controller.dart';
 import 'package:boring_form/implementations/pickers/boringFilePickerV2/boring_drop_file_box.dart';
 import 'package:boring_form/implementations/pickers/boringFilePickerV2/boring_file_picker_settings.dart';
 import 'package:file_picker/file_picker.dart';
@@ -24,7 +23,7 @@ class _DropDataHandler {
   final List<_DropData> _data = [];
   final int itemsToDrop;
   final BoringFilePickerSettings settings;
-  final BoringFormController formController;
+  final BFormController formController;
   final List<String> fieldPath;
 
   _DropDataHandler({
@@ -75,7 +74,7 @@ class _DropDataHandler {
 }
 
 class BoringDropZone extends StatelessWidget {
-  final BoringFormController formController;
+  final BFormController formController;
   final List<String> fieldPath;
   late final ValueNotifier<Color> color;
 

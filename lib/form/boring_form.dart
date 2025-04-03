@@ -50,14 +50,13 @@ abstract class BoringResponsiveFormWidget extends BoringFormWidget {
 }
 
 abstract class BoringFormWidget extends StatelessWidget {
-  final BoringFormController formController;
+  final BFormController formController;
   Widget child(BuildContext context);
   final BoringFormStyle Function(BuildContext context)? style;
   BoringFormStyle styleManipulator(BoringFormStyle style) => style;
 
-  BoringFormWidget(
-      {super.key, BoringFormController? formController, this.style})
-      : formController = formController ?? BoringFormController();
+  BoringFormWidget({super.key, BFormController? formController, this.style})
+      : formController = formController ?? BFormController();
 
   @override
   Widget build(BuildContext context) {

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 class BoringFilePickerSettings extends InheritedWidget {
   final bool readOnly;
-  final BoringFormController formController;
+  final BFormController formController;
   final List<String> fieldPath;
   const BoringFilePickerSettings(
       {super.key,

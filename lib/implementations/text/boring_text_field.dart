@@ -34,7 +34,7 @@ class BoringTextField extends BFormField<String> {
   Widget fieldBuilder(
     BuildContext context,
     BoringFormStyle formStyle,
-    BoringFormController formController,
+    BFormController formController,
     String? fieldValue,
     FieldValidation fieldValidation,
     void computedValue,
@@ -59,7 +59,7 @@ class BoringTextField extends BFormField<String> {
   }
 
   @override
-  void onSelfChange(BoringFormController formController, String? fieldValue) {
+  void onSelfChange(BFormController formController, String? fieldValue) {
     var cursorPos = textEditingController.selection.base.offset;
     textEditingController.text = (fieldValue ?? "");
     if (fieldValue != null) {

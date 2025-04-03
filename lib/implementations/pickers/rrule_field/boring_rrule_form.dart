@@ -239,7 +239,7 @@ class BoringRRuleForm extends BoringFormWidget {
                     ["end_type"]
                   ],
                   builder: (BuildContext context,
-                      BoringFormController formController, map) {
+                      BFormController formController, map) {
                     final endType = formController.getValue(["end_type"])
                         as RecurrenceEndType?;
 

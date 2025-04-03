@@ -8,8 +8,9 @@ class BoringPickerField<T> extends BFormField<T> {
   final String Function(T? value) valueToString;
   final bool showEraseValueButton;
 
-  final Future<T?> Function(BuildContext context,
-      BoringFormController formController, T? fieldValue) showPicker;
+  final Future<T?> Function(
+          BuildContext context, BFormController formController, T? fieldValue)
+      showPicker;
 
   BoringPickerField({
     super.key,
@@ -31,7 +32,7 @@ class BoringPickerField<T> extends BFormField<T> {
   Widget fieldBuilder(
     BuildContext context,
     BoringFormStyle formStyle,
-    BoringFormController formController,
+    BFormController formController,
     T? fieldValue,
     FieldValidation fieldValidation,
     void computedValue,
@@ -78,7 +79,7 @@ class BoringPickerField<T> extends BFormField<T> {
   }
 
   @override
-  void onSelfChange(BoringFormController formController, T? fieldValue) {
+  void onSelfChange(BFormController formController, T? fieldValue) {
     _textEditingController.text = valueToString(fieldValue);
   }
 }

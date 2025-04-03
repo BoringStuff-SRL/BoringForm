@@ -46,7 +46,7 @@ class BoringDropdownField<V, T> extends BFormFieldAsync<V, List<T>> {
   Widget fieldBuilder(
     BuildContext context,
     BoringFormStyle formStyle,
-    BoringFormController formController,
+    BFormController formController,
     V? fieldValue,
     FieldValidation fieldValidation,
     List<T>? computedValue,
