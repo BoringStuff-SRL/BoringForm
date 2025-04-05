@@ -44,20 +44,21 @@ class BoringTextRegExpField extends BoringTextField {
   }) : super(
             inputFormatter:
                 mustMatch ? [RegexInputFormatter(regex: regExp)] : null,
-            validationFunction: validationFunction == null && !required
-                ? null
-                : (BFormController formController, String? value) {
-                    final error =
-                        validationFunction?.call(formController, value);
-                    if (error != null) {
-                      return error;
-                    }
-                    if (!regExp.hasMatch(value ?? '')) {
-                      if (!required && (value ?? '').isEmpty) {
-                        return null;
-                      }
-                      return regExpError;
-                    }
-                    return null;
-                  });
+            validationFunction:
+                (BFormController formController, String? value) {
+              final error = validationFunction?.call(formController, value);
+              if (error != null) {
+                return error;
+              }
+              if (value?.isEmpty ?? true) {
+                return null;
+              }
+              if (!regExp.hasMatch(value ?? '')) {
+                if (!required && (value ?? '').isEmpty) {
+                  return null;
+                }
+                return regExpError;
+              }
+              return null;
+            });
 }
