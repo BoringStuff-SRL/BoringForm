@@ -20,7 +20,7 @@ class BoringTextField extends BFormField<String> {
     this.inputFormatter,
     required super.fieldPath,
     super.observedFields,
-    ValidationFunction<String>? validationFunction,
+    super.validationFunction,
     String errorMessage = "Value cannot be empty",
     super.decoration,
     super.onChanged,
