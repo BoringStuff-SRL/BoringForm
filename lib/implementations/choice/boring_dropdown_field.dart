@@ -39,8 +39,8 @@ class BoringDropdownField<V, T> extends BFormFieldAsync<V, List<T>> {
   final Widget loadingIndicator;
 
   @override
-  Future<List<T>?> asyncComputations(Map<FieldPath, dynamic> observedValues) =>
-      getItems("");
+  Future<List<T>?> Function(Map<FieldPath, dynamic> observedValues)?
+      get asyncComputations => (observedValues) => getItems("");
 
   @override
   Widget fieldBuilder(

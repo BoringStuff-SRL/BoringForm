@@ -80,10 +80,8 @@ class BoringDropdownMultiChoiceField<V, T>
   }
 
   @override
-  Future<List<T>?> asyncComputations(Map<FieldPath, dynamic> observedValues) {
-    return getItems("");
-  }
-
+  Future<List<T>?> Function(Map<FieldPath, dynamic> observedValues)?
+      get asyncComputations => (observedValues) => getItems("");
   @override
   Widget onError(BuildContext context) {
     return const Text("ERRORE!");

@@ -32,8 +32,8 @@ abstract class BFormField<T> extends BFormFieldAsync<T, void> {
   });
 
   @override
-  Future<void> asyncComputations(
-      Map<FieldPath, dynamic> observedValues) async {}
+  Future<void> Function(Map<FieldPath, dynamic> observedValues)?
+      get asyncComputations => null;
 
   @override
   Widget onError(BuildContext context) => throw UnimplementedError();
@@ -126,14 +126,15 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
   }
   //[END] DECORATIONS
 
-  Future<TT?> asyncComputations(Map<FieldPath, dynamic> observedValues);
+  abstract final Future<TT?> Function(Map<FieldPath, dynamic> observedValues)?
+      asyncComputations;
 
   Future<TT?> _performAsyncComputations(Map<FieldPath, dynamic> observedValues,
       BFormController formController) async {
     // ignore: invalid_use_of_protected_member
     formController.setLoadingField(fieldPath);
     try {
-      final result = await asyncComputations(observedValues);
+      final result = await asyncComputations?.call(observedValues);
       // ignore: invalid_use_of_protected_member
       formController.setDoneField(fieldPath);
       return result;
@@ -151,42 +152,52 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
 
   void onSelfChange(BFormController formController, T? fieldValue) {}
 
+  Widget _child(
+    TT? computedData,
+    BFormController formController,
+    BoringFormStyle style,
+  ) =>
+      BoringRxWatcher(
+        listenable: formController,
+        selector: (controller) => controller.selectField<T?>(fieldPath,
+            fieldMarkedReadonly: readOnly || style.readOnly,
+            fieldRequired: required),
+        builder: (context, child, value) {
+          onSelfChange(formController, value.value);
+          if (value.isHidden) {
+            return Container();
+          }
+          return BResponsiveChild.size(
+            responsiveSize: responsiveSize ?? style.responsiveSize,
+            child: Padding(
+              padding: style.fieldsPadding,
+              child: fieldBuilder(context, style, formController, value.value,
+                  value.validation, computedData),
+            ),
+          );
+        },
+      );
+
   @override
   Widget builder(BuildContext context, BFormController formController,
       Map<FieldPath, dynamic> observedValues) {
     formController.setValidationFunction(fieldPath, validationFunction);
 
     final style = BoringFormTheme.of(context).style;
-    Widget child(TT? computedData) => BoringRxWatcher(
-          listenable: formController,
-          selector: (controller) => controller.selectField<T?>(fieldPath,
-              fieldMarkedReadonly: readOnly || style.readOnly,
-              fieldRequired: required),
-          builder: (context, child, value) {
-            onSelfChange(formController, value.value);
-            if (value.isHidden) {
-              return Container();
-            }
-            return BResponsiveChild.size(
-              responsiveSize: responsiveSize ?? style.responsiveSize,
-              child: Padding(
-                padding: style.fieldsPadding,
-                child: fieldBuilder(context, style, formController, value.value,
-                    value.validation, computedData),
-              ),
-            );
-          },
-        );
+
+    if (asyncComputations == null) {
+      return _child(null, formController, style);
+    }
 
     return BFutureBuilder<TT?>(
       future: () async =>
           _performAsyncComputations(observedValues, formController),
       onError: (error, stackTrace) => onError(context),
       loader: onLoading(context),
-      onEmptyDataFunction: () => child(null),
+      onEmptyDataFunction: () => _child(null, formController, style),
       builder: (context, snapshot) {
         final computedData = snapshot.data;
-        return child(computedData);
+        return _child(computedData, formController, style);
       },
     );
   }
