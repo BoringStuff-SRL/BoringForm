@@ -137,22 +137,25 @@ class BFormController extends ChangeNotifier {
 
   // /// Returns the current value of the form.
   // ///
-  // /// When [removeHidden] is true (default), fields marked with [BIgnoreField] will be removed.
+  // /// When [removeIgnored] is true (default), fields marked with [BIgnoreField] will be removed.
+
   // ///
   // /// WARNING: If you're implementing the [DynamicExtensionsFunction] parameter of the constructor,
   // /// you MUST set [removeHidden] to false or use the [value] getter instead to avoid infinite loops.
-  Map<String, dynamic> getFormValue({bool removeHidden = true}) {
+  Map<String, dynamic> getFormValue({
+    bool removeIgnored = true,
+  }) {
     final val = Map<String, dynamic>.from(_value);
-    if (!removeHidden) return val;
+    if (!removeIgnored) return val;
+
     for (final ext in _getIgnoreFieldsExtensions) {
-      if (ext.hideField) {
-        val.removeKey(ext.fieldPath);
-      }
+      val.removeKey(ext.fieldPath);
     }
     return val;
   }
 
-  dynamic getValue(List<String> fieldPath) => value.getValue(fieldPath);
+  dynamic getValue(List<String> fieldPath) =>
+      getFormValue().getValue(fieldPath);
 
   List<dynamic> getValues(List<List<String>> fieldPaths) =>
       fieldPaths.map(getValue).toList();
