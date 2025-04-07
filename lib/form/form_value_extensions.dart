@@ -11,6 +11,8 @@ extension BFormPathStartsWith<T> on Iterable<T> {
 }
 
 extension BFormFieldValueExt on Map<String, dynamic> {
+  Map<String, dynamic> clone() => Map<String, dynamic>.from(this);
+
   bool pathExists(FieldPath path) {
     return true;
   }
@@ -81,12 +83,9 @@ extension BFormFieldValueExt on Map<String, dynamic> {
       try {
         (element as Map<String, dynamic>)
             .removeKey(keysList.getRange(1, keysList.length).toList());
-      } on MapKeyListException catch (e) {
-        e.pushFieldLeft(key);
-        rethrow;
-      }
+      } catch (e) {}
     } else {
-      throw MapKeyListException(keysList);
+      return;
     }
   }
 
@@ -94,10 +93,12 @@ extension BFormFieldValueExt on Map<String, dynamic> {
 }
 
 extension EmptyMap<K, V> on Map<K, V> {
-  bool get isEmptyInside => entries.every((entry) =>
-      entry.value == null ||
-      (entry.value is Map && (entry.value as Map).isEmptyInside) ||
-      (entry.value is Iterable && (entry.value as Iterable).isEmptyInside));
+  bool get isEmptyInside =>
+      entries.isEmpty ||
+      entries.every((entry) =>
+          entry.value == null ||
+          (entry.value is Map && (entry.value as Map).isEmptyInside) ||
+          (entry.value is Iterable && (entry.value as Iterable).isEmptyInside));
 }
 
 extension EmptyIterable<T> on Iterable<T> {

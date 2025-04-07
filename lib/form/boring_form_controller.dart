@@ -168,43 +168,61 @@ class BFormController extends ChangeNotifier {
     return isValid ? value : null;
   }
 
-  Iterable<({FieldPath fieldPath, String error})> _getFieldValidationErrors(
-      [List<FieldPath>? paths]) {
+  String? Function(BFormController, dynamic)? _getFieldValidationFunction(
+      FieldPath fieldPath) {
     return _validationFunctions.entries
-        .where((e) => paths?.any((path) => e.key.startsWith(path)) ?? true)
-        .map((e) => (fieldPath: e.key, error: validateField(e.key)))
-        .where((element) => element.error != null)
-        .where((element) => !isFieldRemoved(element.fieldPath))
-        .map(
-            (element) => (fieldPath: element.fieldPath, error: element.error!));
+        .where((e) => fieldPath.startsWith(e.key))
+        .map((e) => e.value)
+        .firstOrNull;
+  }
+
+  Iterable<({FieldPath fieldPath, String error})> _getFieldsValidationErrors(
+      [List<FieldPath>? paths]) {
+    final errorsIterator = switch (paths == null) {
+      true => _validationFunctions.entries
+            .where((entry) => !isFieldRemoved(entry.key))
+            .map((entry) {
+          final path = entry.key;
+          final error = entry.value?.call(this, getValue(path));
+          return (fieldPath: path, error: error);
+        }),
+      false => (paths ?? []).where((path) => !isFieldRemoved(path)).map((path) {
+          final error =
+              _getFieldValidationFunction(path)?.call(this, getValue(path));
+          return (fieldPath: path, error: error);
+        }),
+    };
+    return errorsIterator.where((element) => element.error != null).map(
+          (element) => (fieldPath: element.fieldPath, error: element.error!),
+        );
   }
 
   Iterable<({FieldPath fieldPath, String error})> _getExtensionsErrors(
       [List<FieldPath>? paths]) {
     return _getValidationExtensions
-        .map<Iterable<MapEntry<FieldPath, ValidationFunction<dynamic>?>>>(
-            (ext) {
-          if (ext.attachedPaths.isEmpty) {
-            return [MapEntry([], ext.validationFunction)];
+        .where((ext) {
+          if (paths == null) return true;
+
+          return paths.any((path) => ext.attachedPaths
+              .any((attacchedPath) => path.startsWith(attacchedPath)));
+        })
+        .map((ext) => MapEntry(
+            ext.attachedPaths, ext.validationFunction?.call(this, _value)))
+        .map<Iterable<MapEntry<FieldPath, String?>>>((ext) {
+          if (ext.key.isEmpty) {
+            return [MapEntry([], ext.value)];
           }
-          return ext.attachedPaths
-              .map((path) => MapEntry(path, ext.validationFunction));
+          return ext.key.map((path) => MapEntry(path, ext.value));
         })
         .expand((e) => e)
-        .where((e) {
-          if (paths == null) return true;
-          return paths.any((path) => e.key.startsWith(path));
-        })
-        .map((e) => (fieldPath: e.key, error: validateField(e.key)))
-        .where((element) => element.error != null)
-        .where((element) => !isFieldRemoved(element.fieldPath))
-        .map(
-            (element) => (fieldPath: element.fieldPath, error: element.error!));
+        .where((e) => e.value != null)
+        .map((e) => (fieldPath: e.key, error: e.value!))
+        .where((element) => !isFieldRemoved(element.fieldPath));
   }
 
   Iterable<({FieldPath fieldPath, String error})> errors(
       [List<FieldPath>? paths]) {
-    return _getFieldValidationErrors(paths)
+    return _getFieldsValidationErrors(paths)
         .followedBy(_getExtensionsErrors(paths));
   }
 
@@ -244,10 +262,13 @@ class BFormController extends ChangeNotifier {
     bool notify = true,
   }) {
     dynamic old = _value.getValue(fieldPath);
+
     if (_equality.equals(old, value)) {
       return false;
     }
+
     _value.setValue(fieldPath, value);
+
     // _fieldHasChanged(fieldPath);
     if (notify) {
       notifyListeners();
@@ -300,6 +321,7 @@ class BFormController extends ChangeNotifier {
       required bool fieldRequired}) {
     final value = getValue(fieldPath);
     final hidden = isFieldHidden(fieldPath);
+
     final validation = selectFieldValidation(fieldPath,
         fieldMarkedReadonly: fieldMarkedReadonly, fieldRequired: fieldRequired);
     return (value: value, validation: validation, isHidden: hidden);
@@ -315,7 +337,7 @@ class BFormController extends ChangeNotifier {
     return (_computedExtensions ?? [])
         .whereType<BIgnoreField>()
         .where(
-          (extension) => _ignoreFieldsExtensions.any(
+          (extension) => !_ignoreFieldsExtensions.any(
             (fixedExt) => extension.fieldPath.startsWith(fixedExt.fieldPath),
           ),
         )
@@ -324,12 +346,15 @@ class BFormController extends ChangeNotifier {
   }
 
   List<BComputedField> get _getComputedFieldsExtensions {
-    final dynamicExts =
-        (_computedExtensions ?? []).whereType<BComputedField>().toList();
-    final Set<FieldPath> fixedExts =
-        _computedFieldsExtensions.map((e) => e.fieldPath).toSet();
-    dynamicExts.removeWhere((e) => fixedExts.contains(e.fieldPath));
-    return [..._computedFieldsExtensions, ...dynamicExts];
+    return (_computedExtensions ?? [])
+        .whereType<BComputedField>()
+        .where(
+          (e) => !_computedFieldsExtensions.any(
+            (fixedExt) => e.fieldPath.startsWith(fixedExt.fieldPath),
+          ),
+        )
+        .followedBy(_computedFieldsExtensions)
+        .toList();
   }
 
   List<BValidation> get _getValidationExtensions {
@@ -405,6 +430,7 @@ class BFormController extends ChangeNotifier {
       final value = cf.compute(this);
       setFieldValue(cf.fieldPath, value, notify: false);
     }
+    _computedExtensions = _extensions?.call(this, _value);
     super.notifyListeners();
   }
 
@@ -413,6 +439,17 @@ class BFormController extends ChangeNotifier {
       notifyListeners();
     });
   }
+
+  // void printValidations(FieldPath fieldPath) {
+  //   final f = _getFieldValidationFunction(fieldPath);
+  //   print(
+  //     'Validations for $fieldPath: ${f?.toString() ?? 'null'}',
+  //   );
+  //   final v = getValue(fieldPath);
+  //   print('Value for $fieldPath: ${v?.toString() ?? 'null'}');
+  //   final err = f?.call(this, v);
+  //   print('Error for $fieldPath: ${err?.toString() ?? 'null'}');
+  // }
 }
 
 sealed class BFormExtension {}
@@ -436,6 +473,11 @@ class BIgnoreField extends BFormExtension {
     required this.fieldPath,
     this.hideField = true,
   });
+
+  @override
+  String toString() {
+    return 'BIgnoreField{fieldPath: $fieldPath, hideField: $hideField}';
+  }
 }
 
 class BValidation extends BFormExtension {
