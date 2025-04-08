@@ -15,9 +15,12 @@ extension BFormFieldValueExt on Map<String, dynamic> {
 
   dynamic _deepCopy(dynamic value) {
     if (value is Map) {
-      return value.map((key, val) => MapEntry(_deepCopy(key), _deepCopy(val)));
+      return Map<String, dynamic>.from(
+          value.map((key, val) => MapEntry(_deepCopy(key), _deepCopy(val))));
     } else if (value is List) {
-      return value.map((item) => _deepCopy(item)).toList();
+      /// TODO: copy also the items in the list (code below doesn't work, throws exception)
+      /// return value.map((item) => _deepCopy(item)).toList();
+      return value.toList();
     } else {
       return value; // tipi primitivi o oggetti immutabili
     }
