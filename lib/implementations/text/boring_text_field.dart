@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:math';
+
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -64,7 +66,7 @@ class BoringTextField extends BFormField<String> {
     textEditingController.text = (fieldValue ?? "");
     if (fieldValue != null) {
       textEditingController.selection =
-          TextSelection.collapsed(offset: cursorPos);
+          TextSelection.collapsed(offset: min(cursorPos, fieldValue.length));
     }
   }
 }
