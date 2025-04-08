@@ -52,8 +52,6 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
   //CAN BE REMOVED??
   final DecorationBuilder<T>? _decorationBuilder;
 
-  final BResponsiveSize? responsiveSize;
-
   BFormFieldAsync({
     super.key,
     required this.fieldPath,
@@ -63,7 +61,7 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
     this.required = true,
     this.readOnly = false,
     this.onChanged,
-    this.responsiveSize,
+    super.responsiveSize,
   })  : _decorationBuilder = decoration,
         validationFunction = ((controller, value) {
           if (required) {
@@ -167,13 +165,10 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
           if (value.isHidden) {
             return Container();
           }
-          return BResponsiveChild.size(
-            responsiveSize: responsiveSize ?? style.responsiveSize,
-            child: Padding(
-              padding: style.fieldsPadding,
-              child: fieldBuilder(context, style, formController, value.value,
-                  value.validation, computedData),
-            ),
+          return Padding(
+            padding: style.fieldsPadding,
+            child: fieldBuilder(context, style, formController, value.value,
+                value.validation, computedData),
           );
         },
       );
@@ -223,26 +218,33 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
 abstract class BFormObserver extends StatelessWidget {
   final List<List<String>>? observedFields;
   final bool Function()? isShown;
-  const BFormObserver({
-    super.key,
-    this.observedFields = const [],
-    this.isShown,
-  });
+
+  final BResponsiveSize? responsiveSize;
+
+  const BFormObserver(
+      {super.key,
+      this.observedFields = const [],
+      this.isShown,
+      this.responsiveSize});
 
   @override
   Widget build(BuildContext context) {
     final formController = BFormControllerProvider.controllerOf(context);
-    return BoringRxWatcher(
-      listenable: formController,
-      selector: (controller) => controller.observed(observedFields),
-      builder: (context, child, value) {
-        if (!(isShown?.call() ?? true)) return Container();
-        return switch (value) {
-          AsyncValueLoading() => onObservedLoading(context),
-          AsyncValueError() => onObservedError(context),
-          AsyncValueDone() => builder(context, formController, value.data),
-        };
-      },
+    final style = BoringFormTheme.of(context).style;
+    return BResponsiveChild.size(
+      responsiveSize: responsiveSize ?? style.responsiveSize,
+      child: BoringRxWatcher(
+        listenable: formController,
+        selector: (controller) => controller.observed(observedFields),
+        builder: (context, child, value) {
+          if (!(isShown?.call() ?? true)) return Container();
+          return switch (value) {
+            AsyncValueLoading() => onObservedLoading(context),
+            AsyncValueError() => onObservedError(context),
+            AsyncValueDone() => builder(context, formController, value.data),
+          };
+        },
+      ),
     );
   }
 
