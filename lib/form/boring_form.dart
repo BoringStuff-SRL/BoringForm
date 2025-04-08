@@ -46,7 +46,11 @@ abstract class BoringResponsiveFormWidget extends BoringFormWidget {
   List<Widget> get children;
 
   @override
-  Widget child(context) => BWrap(spacing: 0, children: children);
+  Widget child(context) => BWrap(
+        spacing: 0,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: children,
+      );
 }
 
 abstract class BoringFormWidget extends StatelessWidget {

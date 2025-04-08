@@ -233,20 +233,17 @@ abstract class BFormObserver extends StatelessWidget {
     final style = BoringFormTheme.of(context).style;
     return BResponsiveChild.size(
       responsiveSize: responsiveSize ?? style.responsiveSize,
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: BoringRxWatcher(
-          listenable: formController,
-          selector: (controller) => controller.observed(observedFields),
-          builder: (context, child, value) {
-            if (!(isShown?.call() ?? true)) return Container();
-            return switch (value) {
-              AsyncValueLoading() => onObservedLoading(context),
-              AsyncValueError() => onObservedError(context),
-              AsyncValueDone() => builder(context, formController, value.data),
-            };
-          },
-        ),
+      child: BoringRxWatcher(
+        listenable: formController,
+        selector: (controller) => controller.observed(observedFields),
+        builder: (context, child, value) {
+          if (!(isShown?.call() ?? true)) return Container();
+          return switch (value) {
+            AsyncValueLoading() => onObservedLoading(context),
+            AsyncValueError() => onObservedError(context),
+            AsyncValueDone() => builder(context, formController, value.data),
+          };
+        },
       ),
     );
   }
