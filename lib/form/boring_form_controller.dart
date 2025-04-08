@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:boring_form/form/form_value_extensions.dart';
 import 'package:boring_form/theme/boring_form_theme.dart';
 import 'package:boring_ui/boring_ui.dart';
@@ -35,10 +33,8 @@ class BFormController extends ChangeNotifier {
     this.validationBehaviour = ValidationBehaviour.onSubmit,
     this.fieldRequiredLabelBehaviour = FieldRequiredLabelBehaviour.always,
     DynamicExtensionsFunction? extensions,
-  })  : _value =
-            initialValue != null ? jsonDecode(jsonEncode(initialValue)) : {},
-        _initialValue =
-            initialValue != null ? jsonDecode(jsonEncode(initialValue)) : {},
+  })  : _value = initialValue?.clone() ?? {},
+        _initialValue = initialValue?.clone() ?? {},
         _extensions = extensions {
     _computedExtensions = _extensions?.call(this, _value);
   }
