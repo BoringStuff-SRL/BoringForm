@@ -13,6 +13,18 @@ typedef FieldValidation = ({
 });
 
 class BFormController extends ChangeNotifier {
+  BFormController({
+    Map<String, dynamic>? initialValue,
+    Set<FieldPath>? readOnlyFields,
+    this.validationBehaviour = ValidationBehaviour.onSubmit,
+    this.fieldRequiredLabelBehaviour = FieldRequiredLabelBehaviour.always,
+    DynamicExtensionsFunction? extensions,
+  })  : _value = initialValue?.clone() ?? {},
+        _initialValue = initialValue?.clone() ?? {},
+        _extensions = extensions {
+    _computedExtensions = _extensions?.call(this, _value);
+  }
+
   static const DeepCollectionEquality _equality = DeepCollectionEquality();
   static BFormController of(BuildContext context) =>
       BFormControllerProvider.controllerOf(context);
@@ -26,18 +38,6 @@ class BFormController extends ChangeNotifier {
   final FieldRequiredLabelBehaviour fieldRequiredLabelBehaviour;
 
   final DynamicExtensionsFunction? _extensions;
-
-  BFormController({
-    Map<String, dynamic>? initialValue,
-    Set<FieldPath>? readOnlyFields,
-    this.validationBehaviour = ValidationBehaviour.onSubmit,
-    this.fieldRequiredLabelBehaviour = FieldRequiredLabelBehaviour.always,
-    DynamicExtensionsFunction? extensions,
-  })  : _value = initialValue?.clone() ?? {},
-        _initialValue = initialValue?.clone() ?? {},
-        _extensions = extensions {
-    _computedExtensions = _extensions?.call(this, _value);
-  }
 
   //[START] ASYNC LOGIC
   final Set<FieldPath> _loadingFields = {};
@@ -134,6 +134,10 @@ class BFormController extends ChangeNotifier {
   ///
   /// Returns the current value of the form.
   Map<String, dynamic> get value => getFormValue();
+
+  ///
+  /// Returns the initialValue of the form
+  Map<String, dynamic> get initialValue => _initialValue.clone();
 
   // /// Returns the current value of the form.
   // ///
