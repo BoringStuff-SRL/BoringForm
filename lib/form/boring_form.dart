@@ -38,10 +38,10 @@ abstract class BoringResponsiveFormWidget extends BoringFormWidget {
     super.key,
     super.formController,
     super.style,
-    BResponsiveSize responsiveSize = const BResponsiveSize.defaultSizes(),
+    BResponsiveSize? responsiveSize,
   }) : _responsiveSize = responsiveSize;
 
-  final BResponsiveSize _responsiveSize;
+  final BResponsiveSize? _responsiveSize;
 
   List<Widget> get children;
 
@@ -49,14 +49,7 @@ abstract class BoringResponsiveFormWidget extends BoringFormWidget {
   Widget child(context) => BWrap(
         spacing: 0,
         crossAxisAlignment: WrapCrossAlignment.center,
-        children: children
-            .map(
-              (e) => BResponsiveChild.size(
-                responsiveSize: _responsiveSize,
-                child: e,
-              ),
-            )
-            .toList(),
+        children: children,
       );
 }
 
