@@ -133,11 +133,11 @@ class BFormController extends ChangeNotifier {
 
   ///
   /// Returns the current value of the form.
-  Map<String, dynamic> get value => getFormValue();
+  Map<String, dynamic> get value => getValueFrom(map: _value);
 
   ///
-  /// Returns the initialValue of the form
-  Map<String, dynamic> get initialValue => _initialValue.clone();
+  /// Returns the initial value of the form.
+  Map<String, dynamic> get initialValue => getValueFrom(map: _initialValue);
 
   // /// Returns the current value of the form.
   // ///
@@ -146,10 +146,11 @@ class BFormController extends ChangeNotifier {
   // ///
   // /// WARNING: If you're implementing the [DynamicExtensionsFunction] parameter of the constructor,
   // /// you MUST set [removeHidden] to false or use the [value] getter instead to avoid infinite loops.
-  Map<String, dynamic> getFormValue({
+  Map<String, dynamic> getValueFrom({
+    required Map<String, dynamic> map,
     bool removeIgnored = true,
   }) {
-    final val = Map<String, dynamic>.from(_value);
+    final val = map.clone();
     if (!removeIgnored) return val;
 
     for (final ext in _getIgnoreFieldsExtensions) {
@@ -159,13 +160,12 @@ class BFormController extends ChangeNotifier {
   }
 
   dynamic getValue(List<String> fieldPath) =>
-      getFormValue().getValue(fieldPath);
+      getValueFrom(map: _value).getValue(fieldPath);
 
   List<dynamic> getValues(List<List<String>> fieldPaths) =>
       fieldPaths.map(getValue).toList();
 
-  bool get hasChanged =>
-      !BFormController._equality.equals(value, _initialValue);
+  bool get hasChanged => !BFormController._equality.equals(value, initialValue);
 
   Map<String, dynamic>? submit() {
     if (!_submitted) {
