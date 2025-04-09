@@ -77,6 +77,7 @@ class FormExample0 extends BoringResponsiveFormWidget {
 
   @override
   List<Widget> get children => [
+    BoringDurationField(fieldPath: ['duration']),
         BoringTextField(fieldPath: ["testo", 'sezione']),
         BoringDropdownMultiChoiceField(
           fieldPath: ['testo', "dropdown"],

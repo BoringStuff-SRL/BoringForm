@@ -198,7 +198,7 @@ class BoringNumberField extends BFormField<num> {
         Expanded(
           child: TextField(
             readOnly: fieldValidation.isReadOnly,
-            enabled: fieldValidation.isReadOnly,
+            enabled: !fieldValidation.isReadOnly,
             controller: _textEditingController,
             textAlign: formStyle.textAlign,
             style: formStyle.textStyle,

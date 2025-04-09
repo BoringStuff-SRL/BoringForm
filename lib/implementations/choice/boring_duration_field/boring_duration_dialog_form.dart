@@ -13,7 +13,7 @@ class _BoringDurationDialogForm extends BoringFormWidget {
     super.key,
     required super.formController,
     required this.durationFieldTheme,
-    required List<DurationField>? fieldsToShow,
+    List<DurationField>? fieldsToShow,
   }) : fieldsToShow = fieldsToShow ?? DurationField.values;
 
   final BDurationFieldTheme durationFieldTheme;
@@ -43,17 +43,23 @@ class _BoringDurationDialogForm extends BoringFormWidget {
                   // defaultSize: const BResponsiveSize(xs: 4), //TODO responsive
                   children: [
                     BoringNumberField(
+                      responsiveSize: const BResponsiveSize(xs: 4),
                       fieldPath: const ['years'],
+                      required: false,
                       decoration: (formController) => BoringFieldDecoration(
                           label: durationFieldTheme.yearsString(2)),
                     ),
                     BoringNumberField(
+                      responsiveSize: const BResponsiveSize(xs: 4),
                       fieldPath: const ['months'],
+                      required: false,
                       decoration: (formController) => BoringFieldDecoration(
                           label: durationFieldTheme.monthsString(2)),
                     ),
                     BoringNumberField(
+                      responsiveSize: const BResponsiveSize(xs: 4),
                       fieldPath: const ['days'],
+                      required: false,
                       decoration: (formController) => BoringFieldDecoration(
                           label: durationFieldTheme.daysString(2)),
                     ),
@@ -69,12 +75,16 @@ class _BoringDurationDialogForm extends BoringFormWidget {
                   // defaultSize: const BResponsiveSize(xs: 6), //TODO responsive
                   children: [
                     BoringNumberField(
+                      responsiveSize: const BResponsiveSize(xs: 6),
                       fieldPath: const ['hours'],
+                      required: false,
                       decoration: (formController) => BoringFieldDecoration(
                           label: durationFieldTheme.hoursString(2)),
                     ),
                     BoringNumberField(
+                      responsiveSize: const BResponsiveSize(xs: 6),
                       fieldPath: const ['minutes'],
+                      required: false,
                       decoration: (formController) => BoringFieldDecoration(
                           label: durationFieldTheme.minutesString(2)),
                     ),
