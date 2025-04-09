@@ -38,10 +38,7 @@ abstract class BoringResponsiveFormWidget extends BoringFormWidget {
     super.key,
     super.formController,
     super.style,
-    BResponsiveSize? responsiveSize,
-  }) : _responsiveSize = responsiveSize;
-
-  final BResponsiveSize? _responsiveSize;
+  });
 
   List<Widget> get children;
 

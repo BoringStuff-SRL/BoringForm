@@ -165,11 +165,8 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
           if (value.isHidden) {
             return Container();
           }
-          return Padding(
-            padding: style.fieldsPadding,
-            child: fieldBuilder(context, style, formController, value.value,
-                value.validation, computedData),
-          );
+          return fieldBuilder(context, style, formController, value.value,
+              value.validation, computedData);
         },
       );
 
@@ -221,11 +218,12 @@ abstract class BFormObserver extends StatelessWidget {
 
   final BResponsiveSize? responsiveSize;
 
-  const BFormObserver(
-      {super.key,
-      this.observedFields = const [],
-      this.isShown,
-      this.responsiveSize});
+  const BFormObserver({
+    super.key,
+    this.observedFields = const [],
+    this.isShown,
+    this.responsiveSize,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -233,17 +231,20 @@ abstract class BFormObserver extends StatelessWidget {
     final style = BoringFormTheme.of(context).style;
     return BResponsiveChild.size(
       responsiveSize: responsiveSize ?? style.responsiveSize,
-      child: BoringRxWatcher(
-        listenable: formController,
-        selector: (controller) => controller.observed(observedFields),
-        builder: (context, child, value) {
-          if (!(isShown?.call() ?? true)) return Container();
-          return switch (value) {
-            AsyncValueLoading() => onObservedLoading(context),
-            AsyncValueError() => onObservedError(context),
-            AsyncValueDone() => builder(context, formController, value.data),
-          };
-        },
+      child: Padding(
+        padding: style.fieldsPadding,
+        child: BoringRxWatcher(
+          listenable: formController,
+          selector: (controller) => controller.observed(observedFields),
+          builder: (context, child, value) {
+            if (!(isShown?.call() ?? true)) return Container();
+            return switch (value) {
+              AsyncValueLoading() => onObservedLoading(context),
+              AsyncValueError() => onObservedError(context),
+              AsyncValueDone() => builder(context, formController, value.data),
+            };
+          },
+        ),
       ),
     );
   }
