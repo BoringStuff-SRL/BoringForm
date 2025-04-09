@@ -49,7 +49,14 @@ abstract class BoringResponsiveFormWidget extends BoringFormWidget {
   Widget child(context) => BWrap(
         spacing: 0,
         crossAxisAlignment: WrapCrossAlignment.center,
-        children: children,
+        children: children
+            .map(
+              (e) => BResponsiveChild.size(
+                responsiveSize: _responsiveSize,
+                child: e,
+              ),
+            )
+            .toList(),
       );
 }
 
