@@ -1,9 +1,6 @@
 library boring_form;
 
 export 'field/bform_field.dart';
-// export 'package:file_picker/file_picker.dart';
-// export 'package:provider/provider.dart';
-
 export 'form/boring_form.dart';
 export 'form/boring_form_controller.dart';
 export 'form/boring_form_controller_OLD.dart';
@@ -35,3 +32,7 @@ export 'implementations/text/boring_phone_number_field.dart';
 export 'implementations/text/boring_text_field.dart';
 export 'implementations/text/boring_text_regex.dart';
 export 'theme/boring_field_decoration.dart';
+// export 'package:file_picker/file_picker.dart';
+// export 'package:provider/provider.dart';
+
+export 'utils/deep_clone.dart';
