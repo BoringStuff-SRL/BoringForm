@@ -171,6 +171,9 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
       );
 
   @override
+  bool get hasPadding => true;
+
+  @override
   Widget builder(BuildContext context, BFormController formController,
       Map<FieldPath, dynamic> observedValues) {
     formController.setValidationFunction(fieldPath, validationFunction);
@@ -225,6 +228,8 @@ abstract class BFormObserver extends StatelessWidget {
     this.responsiveSize,
   });
 
+  bool get hasPadding => false;
+
   @override
   Widget build(BuildContext context) {
     final formController = BFormControllerProvider.controllerOf(context);
@@ -232,7 +237,7 @@ abstract class BFormObserver extends StatelessWidget {
     return BResponsiveChild.size(
       responsiveSize: responsiveSize ?? style.responsiveSize,
       child: Padding(
-        padding: style.fieldsPadding,
+        padding: hasPadding ? style.fieldsPadding : EdgeInsets.zero,
         child: BoringRxWatcher(
           listenable: formController,
           selector: (controller) => controller.observed(observedFields),
@@ -267,6 +272,7 @@ class BFormObserverWidget extends BFormObserver {
 
   final Function(BuildContext context)? _onObservedError;
   final Function(BuildContext context)? _onObservedLoading;
+
   const BFormObserverWidget({
     super.key,
     required super.observedFields,
@@ -284,9 +290,9 @@ class BFormObserverWidget extends BFormObserver {
 
   @override
   Widget onObservedError(BuildContext context) =>
-      _onObservedError?.call(context) ?? const Text("ERROR");
+      _onObservedError?.call(context) ?? const Text("ERRORE");
 
   @override
   Widget onObservedLoading(BuildContext context) =>
-      _onObservedLoading?.call(context) ?? const Text("LOADING");
+      _onObservedLoading?.call(context) ?? BSkeleton.text();
 }

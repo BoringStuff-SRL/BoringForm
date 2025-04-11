@@ -67,27 +67,56 @@ class FormExample0 extends BoringResponsiveFormWidget {
       : super(
           formController: BFormController(
             initialValue: {
-              'testo': {
-                'sezione': "BROOO",
-                'dropdown': [1, 2, 3, 4],
+              'address': {
+                'country': ["DE"],
+                'country1': "DE",
+                //  'dropdown': 1,
               },
             },
           ),
         );
 
   @override
+  BoringFormStyle styleManipulator(BoringFormStyle style) {
+    return super
+        .styleManipulator(style)
+        .copyWith(fieldsPadding: const EdgeInsets.all(4));
+  }
+
+  @override
   List<Widget> get children => [
-    BoringDurationField(fieldPath: ['duration']),
-        BoringTextField(fieldPath: ["testo", 'sezione']),
-        BoringDropdownMultiChoiceField(
-          fieldPath: ['testo', "dropdown"],
-          getItems: (search) async {
-            return [1, 2, 3, 4, 5, 6, 7, 8, 9];
-          },
-          toBoringChoiceItem: (element) => BChoiceItem(
-            value: element,
-            display: "$element",
+        BResponsiveChild(
+          xs: 12,
+          child: BoringDropdownField(
+            fieldPath: ['test1'],
+            getItems: (search) async {
+              return [1, 2, 3, 4, 5];
+            },
+            toBoringChoiceItem: (element) =>
+                BChoiceItem(value: element, display: "$element"),
+            decoration: (formController) =>
+                BoringFieldDecoration(label: 'Testo di test'),
           ),
-        )
+        ),
+        BResponsiveChild(
+          xs: 12,
+          child: BFormObserverWidget(
+            observedFields: [
+              ['asd']
+            ],
+            builder: (context, fc, values) {
+              return BoringDropdownField(
+                fieldPath: ['test2'],
+                getItems: (search) async {
+                  return [1, 2, 3, 4, 5];
+                },
+                toBoringChoiceItem: (element) =>
+                    BChoiceItem(value: element, display: "$element"),
+                decoration: (formController) =>
+                    BoringFieldDecoration(label: 'Testo di test 2'),
+              );
+            },
+          ),
+        ),
       ];
 }
