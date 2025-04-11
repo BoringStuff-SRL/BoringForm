@@ -1,5 +1,6 @@
 import 'package:boring_form/form/form_value_extensions.dart';
 import 'package:boring_form/theme/boring_form_theme.dart';
+import 'package:boring_form/utils/deep_clone.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -19,8 +20,8 @@ class BFormController extends ChangeNotifier {
     this.validationBehaviour = ValidationBehaviour.onSubmit,
     this.fieldRequiredLabelBehaviour = FieldRequiredLabelBehaviour.always,
     DynamicExtensionsFunction? extensions,
-  })  : _value = initialValue?.clone() ?? {},
-        _initialValue = initialValue?.clone() ?? {},
+  })  : _value = initialValue?.deepClone() ?? {},
+        _initialValue = initialValue?.deepClone() ?? {},
         _extensions = extensions {
     _computedExtensions = _extensions?.call(this, _value);
   }
@@ -133,7 +134,7 @@ class BFormController extends ChangeNotifier {
 
   ///
   /// Returns the current value of the form.
-  Map<String, dynamic> get value => getFormValue();
+  Map<String, dynamic> get value => getFormValue(overrideConverters: []);
 
   ///
   /// Returns the initial value of the form.
@@ -148,8 +149,10 @@ class BFormController extends ChangeNotifier {
   // /// you MUST set [removeHidden] to false or use the [value] getter instead to avoid infinite loops.
   Map<String, dynamic> getFormValue({
     bool removeIgnored = true,
+    List<ObjectConverter>? overrideConverters,
   }) {
-    final val = _value.clone();
+    final converters = overrideConverters ?? [DefaultConverter()];
+    final val = _value.deepClone(converters: converters);
     if (!removeIgnored) return val;
 
     for (final ext in _getIgnoreFieldsExtensions) {
@@ -158,14 +161,19 @@ class BFormController extends ChangeNotifier {
     return val;
   }
 
-  dynamic getValue(List<String> fieldPath) =>
-      getFormValue().getValue(fieldPath);
+  dynamic getValue(
+    List<String> fieldPath, {
+    List<ObjectConverter>? overrideConverters,
+  }) =>
+      getFormValue(overrideConverters: overrideConverters).getValue(fieldPath);
 
   List<dynamic> getValues(List<List<String>> fieldPaths) =>
       fieldPaths.map(getValue).toList();
 
-  bool get hasChanged => !BFormController._equality
-      .equals(getFormValue(removeIgnored: false), _initialValue);
+  bool get hasChanged => !BFormController._equality.equals(
+        getFormValue(removeIgnored: false, overrideConverters: []),
+        _initialValue,
+      );
 
   Map<String, dynamic>? submit() {
     if (!_submitted) {

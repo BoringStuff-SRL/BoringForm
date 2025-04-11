@@ -11,21 +11,6 @@ extension BFormPathStartsWith<T> on Iterable<T> {
 }
 
 extension BFormFieldValueExt on Map<String, dynamic> {
-  Map<String, dynamic> clone() => Map<String, dynamic>.from(_deepCopy(this));
-
-  dynamic _deepCopy(dynamic value) {
-    if (value is Map) {
-      return Map<String, dynamic>.from(
-          value.map((key, val) => MapEntry(_deepCopy(key), _deepCopy(val))));
-    } else if (value is List) {
-      /// TODO: copy also the items in the list (code below doesn't work, throws exception)
-      /// return value.map((item) => _deepCopy(item)).toList();
-      return value.toList();
-    } else {
-      return value; // tipi primitivi o oggetti immutabili
-    }
-  }
-
   bool pathExists(FieldPath path) {
     return true;
   }
