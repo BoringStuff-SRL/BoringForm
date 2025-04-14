@@ -1,6 +1,5 @@
 import 'package:boring_form/form/form_value_extensions.dart';
 import 'package:boring_form/theme/boring_form_theme.dart';
-import 'package:boring_form/utils/deep_clone.dart';
 import 'package:boring_ui/boring_ui.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -161,11 +160,14 @@ class BFormController extends ChangeNotifier {
     return val;
   }
 
-  dynamic getValue(
+  dynamic getConvertedValue(
     List<String> fieldPath, {
     List<ObjectConverter>? overrideConverters,
   }) =>
       getFormValue(overrideConverters: overrideConverters).getValue(fieldPath);
+
+  dynamic getValue(List<String> fieldPath) =>
+      getFormValue(overrideConverters: []).getValue(fieldPath);
 
   List<dynamic> getValues(List<List<String>> fieldPaths) =>
       fieldPaths.map(getValue).toList();

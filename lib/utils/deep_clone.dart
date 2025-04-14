@@ -2,31 +2,80 @@
 
 import 'package:rrule/rrule.dart';
 
-class ObjectExtensions {
-  static T deepClone<T>(T object,
-      {List<ObjectConverter<T>> converters = const []}) {
+extension MapDeepClone<K, V> on Map<K, V> {
+  Map<K, V> deepClone({List<ObjectConverter<V>> converters = const []}) {
+    return ((this as Object).deepClone(converters: converters) as Map)
+        .cast<K, V>();
+  }
+}
+
+extension ListDeepClone<T> on List<T> {
+  List<T> deepClone({List<ObjectConverter<T>> converters = const []}) {
+    return ((this as Object).deepClone(converters: converters) as List)
+        .cast<T>();
+  }
+}
+
+extension SetDeepClone<T> on Set<T> {
+  Set<T> deepClone({List<ObjectConverter<T>> converters = const []}) {
+    return ((this as Object).deepClone(converters: converters) as Set)
+        .cast<T>();
+  }
+}
+
+extension DeepCloneExtension on dynamic {
+  /// Creates a deep copy of the object.
+  /// Handles Maps, Lists, Sets, and primitive types.
+  /// Applies converters for custom serialization or type handling.
+  dynamic deepClone({List<ObjectConverter<dynamic>> converters = const []}) {
+    final object = this; // Use 'object' locally for clarity, refers to 'this'
+    // Handle null
+    if (object == null) {
+      return null;
+    }
+    // Handle collections
     if (object is Map) {
-      var copy = (object).deepClone(converters: converters);
+      // Clone Map
+      final originalMap = object; // No need to cast 'this'
 
-      if (object is Map<String, dynamic>) {
-        return copy.map((k, v) => MapEntry(k.toString(), v)) as T;
-      }
-
-      return copy as T;
+      final copy = originalMap.map(
+        (k, v) {
+          return MapEntry(
+            (k as Object?).deepClone(converters: converters), // Clone keys
+            (v as Object?).deepClone(converters: converters), // Clone values
+          );
+        },
+      );
+      return copy; // Return type is Map<dynamic, dynamic> inferred
     }
     if (object is List) {
-      return (object as List).deepClone(converters: converters) as T;
+      final newList = object.toList(); // No need to cast 'this'
+      final copy = newList.toList();
+      newList.clear();
+      for (final copied in copy) {
+        newList.add((copied as Object?).deepClone(converters: converters));
+      }
+
+      return newList;
     }
     if (object is Set) {
-      return (object as Set).deepClone(converters: converters) as T;
-    }
+      final newSet = object.toSet();
+      final copy = newSet.toSet();
+      newSet.clear();
+      for (final copied in copy) {
+        newSet.add((copied as Object?).deepClone(converters: converters));
+      }
 
-    // return converter?.call(object) ?? object;
+      return newSet;
+    }
+    // Apply converters for non-collection types or custom objects
+    // The initial value for fold is the object itself.
+    // Converters transform it sequentially.
     return converters.fold(object, (value, converter) => converter(value));
   }
 }
 
-extension MapCloneExtension<K, V> on Map<K, V> {
+/*extension MapCloneExtension<K, V> on Map<K, V> {
   Map<K, V> deepClone({List<ObjectConverter<V>> converters = const []}) {
     return map((k, v) =>
         MapEntry(k, ObjectExtensions.deepClone(v, converters: converters)));
@@ -45,7 +94,7 @@ extension SetCloneExtension<T> on Set<T> {
     return map((e) => ObjectExtensions.deepClone(e, converters: converters))
         .toSet();
   }
-}
+}*/
 
 abstract class ObjectConverter<T> {
   dynamic call(T value);

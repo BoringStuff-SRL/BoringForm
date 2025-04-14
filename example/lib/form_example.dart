@@ -85,38 +85,16 @@ class FormExample0 extends BoringResponsiveFormWidget {
 
   @override
   List<Widget> get children => [
-        BResponsiveChild(
-          xs: 12,
-          child: BoringDropdownField(
-            fieldPath: ['test1'],
-            getItems: (search) async {
-              return [1, 2, 3, 4, 5];
-            },
-            toBoringChoiceItem: (element) =>
-                BChoiceItem(value: element, display: "$element"),
-            decoration: (formController) =>
-                BoringFieldDecoration(label: 'Testo di test'),
-          ),
+        BoringRRuleField(
+          fieldPath: ['rrule'],
+          decoration: (formController) => BoringFieldDecoration(label: 'RRULE'),
         ),
-        BResponsiveChild(
-          xs: 12,
-          child: BFormObserverWidget(
-            observedFields: [
-              ['asd']
-            ],
-            builder: (context, fc, values) {
-              return BoringDropdownField(
-                fieldPath: ['test2'],
-                getItems: (search) async {
-                  return [1, 2, 3, 4, 5];
-                },
-                toBoringChoiceItem: (element) =>
-                    BChoiceItem(value: element, display: "$element"),
-                decoration: (formController) =>
-                    BoringFieldDecoration(label: 'Testo di test 2'),
-              );
-            },
-          ),
+        BoringDateTimeField(
+          fieldPath: ['datetime'],
+          decoration: (formController) =>
+              BoringFieldDecoration(label: 'DATETIME'),
+          firstDate: DateTime.now(),
+          lastDate: DateTime.now().add(const Duration(days: 122)),
         ),
       ];
 }
