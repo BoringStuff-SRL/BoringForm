@@ -29,7 +29,7 @@ extension BFormFieldValueExt on Map<String, dynamic> {
     }
     if (element is Map) {
       try {
-        return (element as Map<String, dynamic>)
+        return (element.cast<String, dynamic>())
             .getValue(fieldPath.skip(1).toList());
       } on MapKeyListException catch (e) {
         e.pushFieldLeft(key);

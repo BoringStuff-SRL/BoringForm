@@ -35,13 +35,13 @@ extension DeepCloneExtension on dynamic {
     if (object == null) {
       return null;
     }
+
     // Handle collections
     if (object is Map) {
       // Clone Map
       final newMap = object.toMap();
       final copy = newMap.toMap();
 
-      newMap.clear();
       for (final copied in copy.entries) {
         final key = (copied.key as Object?).deepClone(converters: converters);
         final value =
@@ -52,7 +52,8 @@ extension DeepCloneExtension on dynamic {
       return newMap;
     }
     if (object is List) {
-      final newList = object.toList(); // No need to cast 'this'
+      final newList = object.toList();
+
       final copy = newList.toList();
       newList.clear();
       for (final copied in copy) {
