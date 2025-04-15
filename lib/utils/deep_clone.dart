@@ -3,6 +3,8 @@
 import 'package:rrule/rrule.dart';
 
 extension MapDeepClone<K, V> on Map<K, V> {
+  Map<K, V> toMap() => Map<K, V>.of(this);
+
   Map<K, V> deepClone({List<ObjectConverter<V>> converters = const []}) {
     return ((this as Object).deepClone(converters: converters) as Map)
         .cast<K, V>();
@@ -36,17 +38,18 @@ extension DeepCloneExtension on dynamic {
     // Handle collections
     if (object is Map) {
       // Clone Map
-      final originalMap = object; // No need to cast 'this'
+      final newMap = object.toMap();
+      final copy = newMap.toMap();
 
-      final copy = originalMap.map(
-        (k, v) {
-          return MapEntry(
-            (k as Object?).deepClone(converters: converters), // Clone keys
-            (v as Object?).deepClone(converters: converters), // Clone values
-          );
-        },
-      );
-      return copy; // Return type is Map<dynamic, dynamic> inferred
+      newMap.clear();
+      for (final copied in copy.entries) {
+        final key = (copied.key as Object?).deepClone(converters: converters);
+        final value =
+            (copied.value as Object?).deepClone(converters: converters);
+        newMap[key] = value;
+      }
+
+      return newMap;
     }
     if (object is List) {
       final newList = object.toList(); // No need to cast 'this'
