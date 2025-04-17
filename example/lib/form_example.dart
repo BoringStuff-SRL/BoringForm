@@ -67,10 +67,12 @@ class FormExample0 extends BoringResponsiveFormWidget {
       : super(
           formController: BFormController(
             initialValue: {
-              'address': {
-                'country': ["DE"],
-                'country1': "DE",
-                //  'dropdown': 1,
+              'user': {
+                'name': '123',
+                'pwd': '23',
+                'bamba': [
+                  {'ss': '23'}
+                ]
               },
             },
           ),
@@ -85,16 +87,15 @@ class FormExample0 extends BoringResponsiveFormWidget {
 
   @override
   List<Widget> get children => [
-        BoringRRuleField(
-          fieldPath: ['rrule'],
-          decoration: (formController) => BoringFieldDecoration(label: 'RRULE'),
-        ),
-        BoringDateTimeField(
-          fieldPath: ['datetime'],
-          decoration: (formController) =>
-              BoringFieldDecoration(label: 'DATETIME'),
-          firstDate: DateTime.now(),
-          lastDate: DateTime.now().add(const Duration(days: 122)),
-        ),
+        BoringTextField(fieldPath: ['user', 'name']),
+        BoringTextField(fieldPath: ['user', 'pwd']),
+        BButton(
+          onPressed: () {
+            print(formController.value);
+            print('----');
+            print(formController.initialValue);
+          },
+          text: 'Print',
+        )
       ];
 }

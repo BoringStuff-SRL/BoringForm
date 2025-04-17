@@ -4,27 +4,38 @@ import 'package:rrule/rrule.dart';
 
 extension MapDeepClone<K, V> on Map<K, V> {
   Map<K, V> toMap() => Map<K, V>.of(this);
+}
 
-  Map<K, V> deepClone({List<ObjectConverter<V>> converters = const []}) {
-    return ((this as Object).deepClone(converters: converters) as Map)
-        .cast<K, V>();
+extension DeepCopySet<T> on Set<T> {
+  Set<T> deepClone({List<ObjectConverter<dynamic>> converters = const []}) {
+    return map((item) => _deepCloneValue(item)).toSet().cast<T>();
   }
 }
 
-extension ListDeepClone<T> on List<T> {
-  List<T> deepClone({List<ObjectConverter<T>> converters = const []}) {
-    return ((this as Object).deepClone(converters: converters) as List)
-        .cast<T>();
+extension DeepCopyMap<K, V> on Map<K, V> {
+  Map<K, V> deepClone({List<ObjectConverter<dynamic>> converters = const []}) {
+    return map((key, value) => MapEntry(
+          _deepCloneValue(key),
+          _deepCloneValue(value),
+        )).cast<K, V>();
   }
 }
 
-extension SetDeepClone<T> on Set<T> {
-  Set<T> deepClone({List<ObjectConverter<T>> converters = const []}) {
-    return ((this as Object).deepClone(converters: converters) as Set)
-        .cast<T>();
+extension DeepCopyList<T> on List<T> {
+  List<T> deepClone({List<ObjectConverter<dynamic>> converters = const []}) {
+    return map((item) => _deepCloneValue(item)).toList().cast<T>();
   }
 }
 
+// Funzione di supporto che gestisce il deep copy dei vari tipi
+dynamic _deepCloneValue(dynamic value,
+    {List<ObjectConverter<dynamic>> converters = const []}) {
+  if (value is Map) return value.deepClone(converters: converters);
+  if (value is List) return value.deepClone(converters: converters);
+  return converters.fold(value, (value, converter) => converter(value));
+}
+
+/*
 extension DeepCloneExtension on dynamic {
   /// Creates a deep copy of the object.
   /// Handles Maps, Lists, Sets, and primitive types.
@@ -44,6 +55,7 @@ extension DeepCloneExtension on dynamic {
 
       for (final copied in copy.entries) {
         final key = (copied.key as Object?).deepClone(converters: converters);
+
         final value =
             (copied.value as Object?).deepClone(converters: converters);
         newMap[key] = value;
@@ -78,6 +90,7 @@ extension DeepCloneExtension on dynamic {
     return converters.fold(object, (value, converter) => converter(value));
   }
 }
+*/
 
 /*extension MapCloneExtension<K, V> on Map<K, V> {
   Map<K, V> deepClone({List<ObjectConverter<V>> converters = const []}) {
