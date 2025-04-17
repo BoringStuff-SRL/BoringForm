@@ -70,7 +70,13 @@ class FormExample0 extends BoringResponsiveFormWidget {
               'user': {
                 'name': '123',
                 'pwd': '23',
-                'a': [1, 2, 3]
+                'a': [1, 2, 3],
+                'b': <Map<String, dynamic>>[
+                  {
+                    'ss': '23',
+                    'sss': 23,
+                  }
+                ]
               },
             },
           ),

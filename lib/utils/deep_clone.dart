@@ -31,12 +31,24 @@ extension DeepCopyList<T> on List<T> {
 }
 
 // Funzione di supporto che gestisce il deep copy dei vari tipi
-dynamic _deepCloneValue(dynamic value,
-    {List<ObjectConverter<dynamic>> converters = const []}) {
+dynamic _deepCloneValue(
+  dynamic value, {
+  List<ObjectConverter<dynamic>> converters = const [],
+}) {
+  if (value is Map<String, dynamic>) {
+    final copy = value.toMap();
+    final clone = value.deepClone(converters: converters);
+    copy.clear();
+    for (final el in clone.entries) {
+      copy[el.key] = el.value;
+    }
+    return copy;
+  }
+
   if (value is Map) {
     final copy = value.toMap();
-    copy.clear();
     final clone = value.deepClone(converters: converters);
+    copy.clear();
     for (final el in clone.entries) {
       copy[el.key] = el.value;
     }
@@ -45,12 +57,15 @@ dynamic _deepCloneValue(dynamic value,
   if (value is List) {
     final copy = value.toList();
     copy.clear();
+
     final clone = value.deepClone(converters: converters);
+
     for (final el in clone) {
       copy.add(el);
     }
     return copy;
   }
+
   return converters.fold(value, (value, converter) => converter(value));
 }
 
