@@ -44,20 +44,20 @@ class BoringTextField extends BoringFormField<String> {
   void onObservedFieldsChange(BoringFormController formController) {}
 
   @override
-  Widget builder(BuildContext context, BoringFormStyle formTheme,
-      BoringFormController formController, String? fieldValue, String? errror) {
+  Widget builder(BuildContext context, BoringFormStyle formStyle,
+      BoringFormController formController, String? fieldValue, String? error) {
     return TextField(
       focusNode: _focusNode,
-      readOnly: isReadOnly(formController, formTheme),
-      enabled: !isReadOnly(formController, formTheme),
+      readOnly: isReadOnly(formController, formStyle),
+      enabled: !isReadOnly(formController, formStyle),
       controller: _textEditingController,
       inputFormatters: inputFormatter,
       minLines: minLines,
       maxLines: maxLines,
-      textAlign: formTheme.textAlign,
-      style: formTheme.textStyle,
+      textAlign: formStyle.textAlign,
+      style: formStyle.textStyle,
       decoration:
-          getInputDecoration(formController, formTheme, errror, fieldValue),
+          getInputDecoration(formController, formStyle, error, fieldValue),
       onChanged: (value) {
         setChangedValue(formController, value);
       },
