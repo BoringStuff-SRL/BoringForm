@@ -8,22 +8,26 @@ extension MapDeepClone<K, V> on Map<K, V> {
 
 extension DeepCopySet<T> on Set<T> {
   Set<T> deepClone({List<ObjectConverter<dynamic>> converters = const []}) {
-    return map((item) => _deepCloneValue(item)).toSet().cast<T>();
+    return map((item) => _deepCloneValue(item, converters: converters))
+        .toSet()
+        .cast<T>();
   }
 }
 
 extension DeepCopyMap<K, V> on Map<K, V> {
   Map<K, V> deepClone({List<ObjectConverter<dynamic>> converters = const []}) {
     return map((key, value) => MapEntry(
-          _deepCloneValue(key),
-          _deepCloneValue(value),
+          _deepCloneValue(key, converters: converters),
+          _deepCloneValue(value, converters: converters),
         )).cast<K, V>();
   }
 }
 
 extension DeepCopyList<T> on List<T> {
   List<T> deepClone({List<ObjectConverter<dynamic>> converters = const []}) {
-    return map((item) => _deepCloneValue(item)).toList().cast<T>();
+    return map((item) => _deepCloneValue(item, converters: converters))
+        .toList()
+        .cast<T>();
   }
 }
 
