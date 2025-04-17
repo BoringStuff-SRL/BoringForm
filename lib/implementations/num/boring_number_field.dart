@@ -173,12 +173,14 @@ class BoringNumberField extends BoringFormField<num> {
 
     final locale = Localizations.localeOf(context);
 
-print(locale);
-
     final finalDecimalSeparator = decimalSeparator ??
-        (locale.countryCode == 'it' ? ',' : defaultDecimalSeparator);
+        (locale.countryCode!.toLowerCase() == 'it'
+            ? ','
+            : defaultDecimalSeparator);
     final finalThousandsSeparator = thousandsSeparator ??
-        (locale.countryCode == 'it' ? '.' : defaultThousandsSeparator);
+        (locale.countryCode!.toLowerCase() == 'it'
+            ? '.'
+            : defaultThousandsSeparator);
 
     _numberFormatter = MyNumberFormatter(
       decimalPlaces: decimalPlaces,
