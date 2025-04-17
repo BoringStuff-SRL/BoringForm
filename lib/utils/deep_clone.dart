@@ -19,23 +19,38 @@ extension DeepCopyMap<K, V> on Map<K, V> {
     return map((key, value) => MapEntry(
           _deepCloneValue(key, converters: converters),
           _deepCloneValue(value, converters: converters),
-        )).cast<K, V>();
+        ));
   }
 }
 
 extension DeepCopyList<T> on List<T> {
   List<T> deepClone({List<ObjectConverter<dynamic>> converters = const []}) {
-    return map((item) => _deepCloneValue(item, converters: converters))
-        .toList()
-        .cast<T>();
+    return map((item) => _deepCloneValue(item, converters: converters)).toList()
+        as List<T>;
   }
 }
 
 // Funzione di supporto che gestisce il deep copy dei vari tipi
 dynamic _deepCloneValue(dynamic value,
     {List<ObjectConverter<dynamic>> converters = const []}) {
-  if (value is Map) return value.deepClone(converters: converters);
-  if (value is List) return value.deepClone(converters: converters);
+  if (value is Map) {
+    final copy = value.toMap();
+    copy.clear();
+    final clone = value.deepClone(converters: converters);
+    for (final el in clone.entries) {
+      copy[el.key] = el.value;
+    }
+    return copy;
+  }
+  if (value is List) {
+    final copy = value.toList();
+    copy.clear();
+    final clone = value.deepClone(converters: converters);
+    for (final el in clone) {
+      copy.add(el);
+    }
+    return copy;
+  }
   return converters.fold(value, (value, converter) => converter(value));
 }
 

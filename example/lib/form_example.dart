@@ -70,9 +70,7 @@ class FormExample0 extends BoringResponsiveFormWidget {
               'user': {
                 'name': '123',
                 'pwd': '23',
-                'bamba': [
-                  {'ss': '23'}
-                ]
+                'a': [1, 2, 3]
               },
             },
           ),
@@ -89,6 +87,23 @@ class FormExample0 extends BoringResponsiveFormWidget {
   List<Widget> get children => [
         BoringTextField(fieldPath: ['user', 'name']),
         BoringTextField(fieldPath: ['user', 'pwd']),
+        BoringDropdownMultiChoiceField(
+          fieldPath: ['user', 'a'],
+          getItems: (String search) async {
+            return [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+            ];
+          },
+          toBoringChoiceItem: (int as) {
+            return BChoiceItem(value: as, display: '$as');
+          },
+        ),
         BButton(
           onPressed: () {
             print(formController.value);
