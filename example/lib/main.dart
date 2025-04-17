@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'Flutter Demo',
+      locale: const Locale('it'),
       theme: theme.copyWith(extensions: [
         BUIThemeData.defaultTheme(defaultThemeData: theme),
       ]),

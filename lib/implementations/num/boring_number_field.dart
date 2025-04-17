@@ -124,36 +124,37 @@ class BoringNumberField extends BoringFormField<num> {
     super.decoration,
     super.readOnly,
     super.forceHideRequiredFieldLabel,
-    this.decimalSeparator = defaultDecimalSeparator,
-    this.thousandsSeparator = defaultThousandsSeparator,
+    this.decimalSeparator,
+    this.thousandsSeparator,
     this.decimalPlaces = 0,
-    bool allowNegative = true,
+    this.allowNegative = true,
     this.showIncrementDecrementButtons = false,
-  })  : _numberFormatter = MyNumberFormatter(
-          decimalPlaces: decimalPlaces,
-          decimalSeparator: decimalSeparator,
-          thousandsSeparator: thousandsSeparator,
-          allowNegative: allowNegative,
-        ),
-        assert(decimalSeparator != thousandsSeparator,
+  })  : assert(
+            decimalSeparator == null ||
+                thousandsSeparator == null ||
+                decimalSeparator != thousandsSeparator,
             'Decimal and thousands separator can\'t be the same'),
         assert(
-            (['.', ','].contains(decimalSeparator)) &&
-                (['.', ','].contains(thousandsSeparator)),
-            'Invalid value entered for decimalSeparator AND thousandsSeparator. Only valid characters are `,` or `.`');
+          (decimalSeparator == null || ['.', ','].contains(decimalSeparator)) &&
+              (thousandsSeparator == null ||
+                  ['.', ','].contains(thousandsSeparator)),
+          'Invalid value entered for decimalSeparator AND thousandsSeparator. Only valid characters are `,` or `.`',
+        );
 
   final TextEditingController _textEditingController = TextEditingController();
 
-  final String decimalSeparator;
-  final String thousandsSeparator;
+  final String? decimalSeparator;
+  final String? thousandsSeparator;
   final int decimalPlaces;
-  final MyNumberFormatter _numberFormatter;
+  final bool allowNegative;
+  MyNumberFormatter? _numberFormatter;
   final bool showIncrementDecrementButtons; // Nuova proprietà aggiunta
 
   bool get _onlyIntegers => decimalPlaces == 0;
 
   static const defaultDecimalSeparator = ".";
   static const defaultThousandsSeparator = ",";
+
   static const nullSeparator = '_null_';
   final signed = false;
 
@@ -170,6 +171,22 @@ class BoringNumberField extends BoringFormField<num> {
 
     const iconSize = 16.0;
 
+    final locale = Localizations.localeOf(context);
+
+print(locale);
+
+    final finalDecimalSeparator = decimalSeparator ??
+        (locale.countryCode == 'it' ? ',' : defaultDecimalSeparator);
+    final finalThousandsSeparator = thousandsSeparator ??
+        (locale.countryCode == 'it' ? '.' : defaultThousandsSeparator);
+
+    _numberFormatter = MyNumberFormatter(
+      decimalPlaces: decimalPlaces,
+      decimalSeparator: finalDecimalSeparator,
+      thousandsSeparator: finalThousandsSeparator,
+      allowNegative: allowNegative,
+    );
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -184,7 +201,7 @@ class BoringNumberField extends BoringFormField<num> {
               decimal: _onlyIntegers,
               signed: signed,
             ),
-            inputFormatters: [_numberFormatter],
+            inputFormatters: [_numberFormatter!],
             decoration: getInputDecoration(
               formController,
               formStyle,
@@ -193,8 +210,8 @@ class BoringNumberField extends BoringFormField<num> {
             ),
             onChanged: (value) {
               String checkString = value
-                  .replaceAll(thousandsSeparator, "")
-                  .replaceAll(decimalSeparator, ".");
+                  .replaceAll(finalDecimalSeparator, "")
+                  .replaceAll(finalThousandsSeparator, ".");
               try {
                 setChangedValue(formController, num.parse(checkString));
               } catch (e) {
@@ -264,14 +281,16 @@ class BoringNumberField extends BoringFormField<num> {
     final formatter =
         NumberFormat('###,###.###', decimalSeparator == '.' ? 'en' : 'it');
 
-    _textEditingController.text = _numberFormatter
-        .formatEditUpdate(
-          TextEditingValue.empty,
-          TextEditingValue(
-            text: formatter.format(fieldValue),
-          ),
-        )
-        .text;
+    if (_numberFormatter != null) {
+      _textEditingController.text = _numberFormatter!
+          .formatEditUpdate(
+            TextEditingValue.empty,
+            TextEditingValue(
+              text: formatter.format(fieldValue),
+            ),
+          )
+          .text;
+    }
 
     _textEditingController.selection = TextSelection.collapsed(
       offset: min(
