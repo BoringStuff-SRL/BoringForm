@@ -124,8 +124,8 @@ class BoringNumberField extends BoringFormField<num> {
     super.decoration,
     super.readOnly,
     super.forceHideRequiredFieldLabel,
-    this.decimalSeparator = '.',
-    this.thousandsSeparator = ',',
+    this.decimalSeparator = ',',
+    this.thousandsSeparator = '.',
     this.decimalPlaces = 0,
     this.allowNegative = true,
     this.showIncrementDecrementButtons = false,
@@ -153,8 +153,8 @@ class BoringNumberField extends BoringFormField<num> {
 
   bool get _onlyIntegers => decimalPlaces == 0;
 
-  static const defaultDecimalSeparator = ".";
-  static const defaultThousandsSeparator = ",";
+  static const defaultDecimalSeparator = ",";
+  static const defaultThousandsSeparator = ".";
 
   static const nullSeparator = '_null_';
   final signed = false;
