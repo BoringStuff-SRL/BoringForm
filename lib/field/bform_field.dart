@@ -81,9 +81,12 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
       Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            fieldDecoration.label!,
-            style: style.inputDecoration.labelStyle,
+          Expanded(
+            child: Text(
+              fieldDecoration.label!,
+              style: style.inputDecoration.labelStyle,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
           if (fieldValidation.showRequiredLabel)
             const Text(' *', style: TextStyle(color: Colors.red))
