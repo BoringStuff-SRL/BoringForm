@@ -81,7 +81,7 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
       Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Expanded(
+          Flexible(
             child: Text(
               fieldDecoration.label!,
               style: style.inputDecoration.labelStyle,

@@ -109,6 +109,9 @@ class FormExample0 extends BoringResponsiveFormWidget {
           toBoringChoiceItem: (int as) {
             return BChoiceItem(value: as, display: '$as');
           },
+          decoration: (formController) => BoringFieldDecoration(
+            label: 'AS',
+          ),
         ),
         BButton(
           onPressed: () {
