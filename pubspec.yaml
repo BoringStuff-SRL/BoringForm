@@ -11,10 +11,10 @@ dependencies:
   flutter:
     sdk: flutter
 
-  provider: ^6.1.2
-  file_picker: ^9.0.2
-  omni_datetime_picker: ^2.1.0
-  calendar_date_picker2: ^1.1.9
+  provider: ^6.1.5
+  file_picker: ^10.1.9
+  omni_datetime_picker: ^2.1.1
+  calendar_date_picker2: ^2.0.0
 
   dropdown_button2:
     git:
