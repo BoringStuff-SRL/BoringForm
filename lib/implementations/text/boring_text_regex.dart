@@ -41,9 +41,8 @@ class BoringTextRegExpField extends BoringTextField {
   }) : super(
             inputFormatter:
                 mustMatch ? [RegexInputFormatter(regex: regExp)] : null,
-            validationFunction: validationFunction == null && allowEmpty
-                ? null
-                : (BoringFormController formController, String? value) {
+            validationFunction: (BoringFormController formController, String? value) {
+              if(allowEmpty && (value == null || value == '')) return null;
                     final error =
                         validationFunction?.call(formController, value);
                     if (error != null) {
