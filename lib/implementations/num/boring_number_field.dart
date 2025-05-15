@@ -17,12 +17,14 @@ class MyNumberFormatter extends TextInputFormatter {
   final String thousandsSeparator;
   final int decimalPlaces;
   final bool allowNegative;
+  final bool showThousandsSeparators;
 
   MyNumberFormatter({
     required this.decimalSeparator,
     required this.thousandsSeparator,
     required this.decimalPlaces,
     this.allowNegative = true,
+    this.showThousandsSeparators = true,
   });
 
   bool get onlyIntegers => decimalPlaces == 0;
@@ -76,11 +78,21 @@ class MyNumberFormatter extends TextInputFormatter {
         ? NumberFormat('###,###', 'en_US')
         : NumberFormat('###,###.$decimalPlacesFormat', 'en_US');
 
-    String result = myFormat
-        .format(valueNum)
-        .replaceAll('.', '¤')
-        .replaceAll(',', thousandsSeparator)
-        .replaceAll('¤', decimalSeparator);
+    final formattedValue = myFormat.format(valueNum);
+
+    String result;
+
+    if (showThousandsSeparators) {
+      result = formattedValue
+          .replaceAll('.', '¤')
+          .replaceAll(',', thousandsSeparator)
+          .replaceAll('¤', decimalSeparator);
+    } else {
+      result = formattedValue
+          .replaceAll('.', '¤')
+          .replaceAll(',', '')
+          .replaceAll('¤', decimalSeparator);
+    }
 
     int getNewOffset() {
       int newOffset = newValue.selection.baseOffset;
@@ -126,6 +138,7 @@ class BoringNumberField extends BFormField<num> {
     this.thousandsSeparator = defaultThousandsSeparator,
     this.decimalPlaces = 0,
     bool allowNegative = true,
+    bool showThousandsSeparators = true,
     this.showIncrementDecrementButtons = false,
     super.required,
     super.responsiveSize,
@@ -134,6 +147,7 @@ class BoringNumberField extends BFormField<num> {
           decimalSeparator: decimalSeparator,
           thousandsSeparator: thousandsSeparator,
           allowNegative: allowNegative,
+          showThousandsSeparators: showThousandsSeparators,
         ),
         assert(decimalSeparator != thousandsSeparator,
             'Decimal and thousands separator can\'t be the same'),
@@ -146,6 +160,7 @@ class BoringNumberField extends BFormField<num> {
 
   final String decimalSeparator;
   final String thousandsSeparator;
+
   final int decimalPlaces;
   final MyNumberFormatter _numberFormatter;
   final bool showIncrementDecrementButtons;

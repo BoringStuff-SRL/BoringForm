@@ -65,21 +65,7 @@ class UsersRepo extends BoringRxRepo<User, User, int, int, int> {
 class FormExample0 extends BoringResponsiveFormWidget {
   FormExample0({super.key})
       : super(
-          formController: BFormController(
-            initialValue: {
-              'user': {
-                'name': '123',
-                'pwd': '23',
-                'a': [1, 2, 3],
-                'b': <Map<String, dynamic>>[
-                  {
-                    'ss': '23',
-                    'sss': 23,
-                  }
-                ]
-              },
-            },
-          ),
+          formController: BFormController(),
         );
 
   @override
@@ -91,27 +77,9 @@ class FormExample0 extends BoringResponsiveFormWidget {
 
   @override
   List<Widget> get children => [
-        BoringTextField(fieldPath: ['user', 'name']),
-        BoringTextField(fieldPath: ['user', 'pwd']),
-        BoringDropdownMultiChoiceField(
-          fieldPath: ['user', 'a'],
-          getItems: (String search) async {
-            return [
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-            ];
-          },
-          toBoringChoiceItem: (int as) {
-            return BChoiceItem(value: as, display: '$as');
-          },
-          decoration: (formController) => BoringFieldDecoration(
-            label: 'AS',
-          ),
+        BoringNumberField(
+          fieldPath: ['num'],
+          showThousandsSeparators: false,
         ),
         BButton(
           onPressed: () {
