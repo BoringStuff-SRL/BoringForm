@@ -250,6 +250,14 @@ class BFormController extends ChangeNotifier {
   //         .map((element) =>
   //             (fieldPath: element.fieldPath, error: element.error!));
 
+ List<FieldPath> get notValidFields {
+    return _getFieldsValidationErrors()
+        .followedBy(_getExtensionsErrors())
+        .map((e) => e.fieldPath)
+        .toSet()
+        .toList();
+  }
+
   bool get isValid {
     // final paths = allPaths(_value);
     if (_loadingFields.isNotEmpty || _errorFields.isNotEmpty) {
