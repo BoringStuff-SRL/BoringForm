@@ -297,5 +297,6 @@ class BFormObserverWidget extends BFormObserver {
 
   @override
   Widget onObservedLoading(BuildContext context) =>
-      _onObservedLoading?.call(context) ?? BSkeleton.text();
+      _onObservedLoading?.call(context) ??
+      const BSkeleton.custom(child: TextField(readOnly: true));
 }
