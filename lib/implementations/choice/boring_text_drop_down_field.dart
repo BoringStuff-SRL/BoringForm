@@ -157,7 +157,7 @@ class BoringTextDropDownField extends BFormField<String> {
           key: _fieldKey,
           controller: _textController,
           readOnly: fieldValidation.isReadOnly,
-          enabled: fieldValidation.isReadOnly,
+          enabled: !fieldValidation.isReadOnly,
           inputFormatters: inputFormatter,
           minLines: minLines,
           maxLines: maxLines,
