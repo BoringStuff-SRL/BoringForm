@@ -258,7 +258,7 @@ abstract class BFormObserver extends StatelessWidget {
         listenable: formController,
         selector: (controller) => controller.observed(observedFields),
         builder: (context, child, value) {
-          if (isShown.call(formController, style)) return Container();
+          if (!isShown.call(formController, style)) return Container();
           return Padding(
             padding: hasPadding ? style.fieldsPadding : EdgeInsets.zero,
             child: switch (value) {
