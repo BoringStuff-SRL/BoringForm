@@ -160,9 +160,11 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
   ) =>
       BoringRxWatcher(
         listenable: formController,
-        selector: (controller) => controller.selectField<T?>(fieldPath,
-            fieldMarkedReadonly: readOnly || style.readOnly,
-            fieldRequired: required),
+        selector: (controller) => controller.selectField<T?>(
+          fieldPath,
+          fieldMarkedReadonly: readOnly || style.readOnly,
+          fieldRequired: required,
+        ),
         builder: (context, child, value) {
           onSelfChange(formController, value.value);
           if (value.isHidden) {
@@ -172,18 +174,6 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
               value.validation, computedData);
         },
       );
-
-  @override
-  bool isShown(
-    BFormController formController,
-    BoringFormStyle style,
-  ) {
-    return !formController
-        .selectField<T?>(fieldPath,
-            fieldMarkedReadonly: readOnly || style.readOnly,
-            fieldRequired: required)
-        .isHidden;
-  }
 
   @override
   bool get hasPadding => true;
@@ -246,6 +236,7 @@ abstract class BFormObserver extends StatelessWidget {
     BoringFormStyle style,
   ) =>
       true;
+
   bool get hasPadding => false;
 
   @override
