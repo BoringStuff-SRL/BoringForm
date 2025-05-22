@@ -174,6 +174,18 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
       );
 
   @override
+  bool isShown(
+    BFormController formController,
+    BoringFormStyle style,
+  ) {
+    return !formController
+        .selectField<T?>(fieldPath,
+            fieldMarkedReadonly: readOnly || style.readOnly,
+            fieldRequired: required)
+        .isHidden;
+  }
+
+  @override
   bool get hasPadding => true;
 
   @override
@@ -220,17 +232,20 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
 
 abstract class BFormObserver extends StatelessWidget {
   final List<List<String>>? observedFields;
-  final bool Function()? isShown;
 
   final BResponsiveSize? responsiveSize;
 
   const BFormObserver({
     super.key,
     this.observedFields = const [],
-    this.isShown,
     this.responsiveSize,
   });
 
+  bool isShown(
+    BFormController formController,
+    BoringFormStyle style,
+  ) =>
+      true;
   bool get hasPadding => false;
 
   @override
@@ -239,20 +254,20 @@ abstract class BFormObserver extends StatelessWidget {
     final style = BoringFormTheme.of(context).style;
     return BResponsiveChild.size(
       responsiveSize: responsiveSize ?? style.responsiveSize,
-      child: Padding(
-        padding: hasPadding ? style.fieldsPadding : EdgeInsets.zero,
-        child: BoringRxWatcher(
-          listenable: formController,
-          selector: (controller) => controller.observed(observedFields),
-          builder: (context, child, value) {
-            if (!(isShown?.call() ?? true)) return Container();
-            return switch (value) {
+      child: BoringRxWatcher(
+        listenable: formController,
+        selector: (controller) => controller.observed(observedFields),
+        builder: (context, child, value) {
+          if (isShown.call(formController, style)) return Container();
+          return Padding(
+            padding: hasPadding ? style.fieldsPadding : EdgeInsets.zero,
+            child: switch (value) {
               AsyncValueLoading() => onObservedLoading(context),
               AsyncValueError() => onObservedError(context),
               AsyncValueDone() => builder(context, formController, value.data),
-            };
-          },
-        ),
+            },
+          );
+        },
       ),
     );
   }
