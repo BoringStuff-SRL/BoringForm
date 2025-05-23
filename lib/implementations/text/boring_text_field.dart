@@ -7,28 +7,30 @@ import 'package:flutter/services.dart';
 
 class BoringTextField extends BFormField<String> {
   final textEditingController = TextEditingController();
-  final focusNode = FocusNode();
+  final FocusNode focusNode;
 
   final int minLines;
   final int maxLines;
   final List<TextInputFormatter>? inputFormatter;
 
-  BoringTextField({
-    super.key,
-    this.minLines = 1,
-    this.maxLines = 1,
-    super.required,
-    super.responsiveSize,
-    this.inputFormatter,
-    required super.fieldPath,
-    super.observedFields,
-    super.validationFunction,
-    String errorMessage = "Value cannot be empty",
-    super.decoration,
-    super.onChanged,
-    super.readOnly,
-    // super.forceHideRequiredFieldLabel,
-  });
+  BoringTextField(
+      {super.key,
+      this.minLines = 1,
+      this.maxLines = 1,
+      super.required,
+      super.responsiveSize,
+      this.inputFormatter,
+      required super.fieldPath,
+      super.observedFields,
+      super.validationFunction,
+      String errorMessage = "Value cannot be empty",
+      super.decoration,
+      super.onChanged,
+      super.readOnly,
+      FocusNode? focusNode
+      // super.forceHideRequiredFieldLabel,
+      })
+      : focusNode = focusNode ?? FocusNode();
 
   bool get obscuredText => false;
 
