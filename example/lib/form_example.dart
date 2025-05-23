@@ -1,71 +1,44 @@
-import 'dart:async';
-
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
-
-class User {
-  const User({
-    required this.id,
-    required this.name,
-  });
-
-  final int id;
-  final String name;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is User &&
-          runtimeType == other.runtimeType &&
-          id == other.id &&
-          name == other.name;
-
-  @override
-  int get hashCode => id.hashCode ^ name.hashCode;
-}
-
-final usersRepo = UsersRepo(
-  identifier: (p0) => p0.id,
-  isValidForParam: (p0, p1) => true,
-  mergeUpdate: (p0, p1) => p0,
-  converter: (p0) => p0,
-);
-
-class UsersRepo extends BoringRxRepo<User, User, int, int, int> {
-  UsersRepo(
-      {required super.identifier,
-      required super.isValidForParam,
-      required super.mergeUpdate,
-      required super.converter});
-
-  final _list = [
-    User(id: 1, name: 'Uno'),
-    User(id: 2, name: 'Due'),
-    User(id: 3, name: 'Tre'),
-    User(id: 4, name: 'Quattro'),
-  ];
-
-  @override
-  Future<List<User>> fetchMulti(int param) async {
-    await Future.delayed(const Duration(seconds: 2));
-    return _list;
-  }
-
-  @override
-  Future<User> fetchSingle(int id, int param) async {
-    await Future.delayed(const Duration(seconds: 2));
-
-    return _list.firstWhere((element) => element.id == id);
-  }
-
-  @override
-  Duration get ttl => const Duration(minutes: 2);
-}
 
 class FormExample0 extends BoringResponsiveFormWidget {
   FormExample0({super.key})
       : super(
-          formController: BFormController(),
+          formController: BFormController(
+            extensions: (controller, value) {
+              final choice = value['choice'] as int?;
+
+              final ext = <BFormExtension>[];
+
+              final excludeOne =
+                  BIgnoreField(fieldPath: ['one'], hideField: true);
+              final excludeTwo =
+                  BIgnoreField(fieldPath: ['two'], hideField: true);
+              final excludeThree =
+                  BIgnoreField(fieldPath: ['three'], hideField: true);
+
+              switch (choice) {
+                case 1:
+                  ext.add(excludeTwo);
+                  ext.add(excludeThree);
+                  break;
+                case 2:
+                  ext.add(excludeOne);
+                  ext.add(excludeThree);
+                  break;
+                case 3:
+                  ext.add(excludeOne);
+                  ext.add(excludeTwo);
+                  break;
+                default:
+                  ext.add(excludeOne);
+                  ext.add(excludeTwo);
+                  ext.add(excludeThree);
+              }
+
+              return ext;
+            },
+          ),
         );
 
   @override
@@ -77,17 +50,31 @@ class FormExample0 extends BoringResponsiveFormWidget {
 
   @override
   List<Widget> get children => [
-        BoringNumberField(
-          fieldPath: ['num'],
-          showThousandsSeparators: false,
-        ),
-        BButton(
-          onPressed: () {
-            print(formController.value);
-            print('----');
-            print(formController.initialValue);
+        BoringDropdownField(
+          fieldPath: ['choice'],
+          getItems: (search) async {
+            await Future.delayed(const Duration(seconds: 2));
+            return [1, 2, 3];
           },
-          text: 'Print',
-        )
+          decoration: (formController) =>
+              BoringFieldDecoration(label: 'Fai la tua scelta'),
+          toBoringChoiceItem: (element) =>
+              BChoiceItem(value: element, display: '$element'),
+        ),
+        BoringTextField(
+          fieldPath: ['one'],
+          decoration: (formController) =>
+              BoringFieldDecoration(label: 'Hai scelto 1!'),
+        ),
+        BoringTextField(
+          fieldPath: ['two'],
+          decoration: (formController) =>
+              BoringFieldDecoration(label: 'Hai scelto 2!'),
+        ),
+        BoringTextField(
+          fieldPath: ['three'],
+          decoration: (formController) =>
+              BoringFieldDecoration(label: 'Hai scelto 3!'),
+        ),
       ];
 }

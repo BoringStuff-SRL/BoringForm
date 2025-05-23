@@ -168,10 +168,20 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
         builder: (context, child, value) {
           onSelfChange(formController, value.value);
           if (value.isHidden) {
-            return Container();
+            return const SizedBox.shrink();
           }
-          return fieldBuilder(context, style, formController, value.value,
-              value.validation, computedData);
+          return _FieldWrapper(
+            responsiveSize: responsiveSize,
+            hasPadding: hasPadding,
+            child: fieldBuilder(
+              context,
+              style,
+              formController,
+              value.value,
+              value.validation,
+              computedData,
+            ),
+          );
         },
       );
 
@@ -188,12 +198,19 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
     if (asyncComputations == null) {
       return _child(null, formController, style);
     }
-
     return BFutureBuilder<TT?>(
       future: () async =>
           _performAsyncComputations(observedValues, formController),
-      onError: (error, stackTrace) => onError(context),
-      loader: onLoading(context),
+      onError: (error, stackTrace) => _FieldWrapper(
+        responsiveSize: responsiveSize,
+        hasPadding: hasPadding,
+        child: onError(context),
+      ),
+      loader: _FieldWrapper(
+        responsiveSize: responsiveSize,
+        hasPadding: hasPadding,
+        child: onLoading(context),
+      ),
       onEmptyDataFunction: () => _child(null, formController, style),
       builder: (context, snapshot) {
         final computedData = snapshot.data;
@@ -207,8 +224,13 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
   @override
   Widget onObservedLoading(BuildContext context) => onLoading(context);
 
-  Widget onError(BuildContext context);
-  Widget onLoading(BuildContext context);
+  Widget onError(BuildContext context) {
+    return const Text("ERRORE!");
+  }
+
+  Widget onLoading(BuildContext context) {
+    return const BSkeleton.custom(child: TextField(readOnly: true));
+  }
 
   Widget fieldBuilder(
     BuildContext context,
@@ -231,35 +253,29 @@ abstract class BFormObserver extends StatelessWidget {
     this.responsiveSize,
   });
 
-  bool isShown(
-    BFormController formController,
-    BoringFormStyle style,
-  ) =>
-      true;
-
   bool get hasPadding => false;
 
   @override
   Widget build(BuildContext context) {
     final formController = BFormControllerProvider.controllerOf(context);
-    final style = BoringFormTheme.of(context).style;
-    return BResponsiveChild.size(
-      responsiveSize: responsiveSize ?? style.responsiveSize,
-      child: BoringRxWatcher(
-        listenable: formController,
-        selector: (controller) => controller.observed(observedFields),
-        builder: (context, child, value) {
-          if (!isShown.call(formController, style)) return Container();
-          return Padding(
-            padding: hasPadding ? style.fieldsPadding : EdgeInsets.zero,
-            child: switch (value) {
-              AsyncValueLoading() => onObservedLoading(context),
-              AsyncValueError() => onObservedError(context),
-              AsyncValueDone() => builder(context, formController, value.data),
-            },
-          );
-        },
-      ),
+    return BoringRxWatcher(
+      listenable: formController,
+      selector: (controller) => controller.observed(observedFields),
+      builder: (context, child, value) {
+        return switch (value) {
+          AsyncValueLoading() => _FieldWrapper(
+              responsiveSize: responsiveSize,
+              hasPadding: hasPadding,
+              child: onObservedLoading(context),
+            ),
+          AsyncValueError() => _FieldWrapper(
+              responsiveSize: responsiveSize,
+              hasPadding: hasPadding,
+              child: onObservedError(context),
+            ),
+          AsyncValueDone() => builder(context, formController, value.data),
+        };
+      },
     );
   }
 
@@ -305,4 +321,30 @@ class BFormObserverWidget extends BFormObserver {
   Widget onObservedLoading(BuildContext context) =>
       _onObservedLoading?.call(context) ??
       const BSkeleton.custom(child: TextField(readOnly: true));
+}
+
+class _FieldWrapper extends StatelessWidget {
+  const _FieldWrapper({
+    required this.child,
+    this.hasPadding = true,
+    this.responsiveSize,
+    super.key,
+  });
+
+  final Widget child;
+  final BResponsiveSize? responsiveSize;
+  final bool hasPadding;
+
+  @override
+  Widget build(BuildContext context) {
+    final style = BoringFormTheme.of(context).style;
+
+    return BResponsiveChild.size(
+      responsiveSize: responsiveSize ?? style.responsiveSize,
+      child: Padding(
+        padding: hasPadding ? style.fieldsPadding : EdgeInsets.zero,
+        child: child,
+      ),
+    );
+  }
 }
