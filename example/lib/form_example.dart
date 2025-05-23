@@ -50,6 +50,18 @@ class FormExample0 extends BoringResponsiveFormWidget {
 
   @override
   List<Widget> get children => [
+        BResponsiveChild(child: BoringTextField(fieldPath: ['field1'])),
+        BoringDropdownField(
+          fieldPath: ['loading'],
+          getItems: (search) async {
+            await Future.delayed(const Duration(seconds: 2));
+            return [1, 2, 3];
+          },
+          decoration: (formController) =>
+              BoringFieldDecoration(label: 'Fai la tua scelta'),
+          toBoringChoiceItem: (element) =>
+              BChoiceItem(value: element, display: '$element'),
+        ),
         BoringDropdownField(
           fieldPath: ['choice'],
           getItems: (search) async {

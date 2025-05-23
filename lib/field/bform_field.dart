@@ -206,6 +206,7 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
         hasPadding: hasPadding,
         child: onError(context),
       ),
+      centeredLoader: false,
       loader: _FieldWrapper(
         responsiveSize: responsiveSize,
         hasPadding: hasPadding,
