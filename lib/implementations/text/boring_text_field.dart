@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class BoringTextField extends BFormField<String> {
-  final textEditingController = TextEditingController();
+  final TextEditingController textEditingController;
   final FocusNode focusNode;
 
   final int minLines;
@@ -27,10 +27,13 @@ class BoringTextField extends BFormField<String> {
       super.decoration,
       super.onChanged,
       super.readOnly,
+      TextEditingController? textEditingController,
       FocusNode? focusNode
       // super.forceHideRequiredFieldLabel,
       })
-      : focusNode = focusNode ?? FocusNode();
+      : focusNode = focusNode ?? FocusNode(),
+        textEditingController =
+            textEditingController ?? TextEditingController();
 
   bool get obscuredText => false;
 
