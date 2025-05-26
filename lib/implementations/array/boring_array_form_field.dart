@@ -1,7 +1,7 @@
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
-class BoringArrayFormField<T extends String> extends BFormField<List<T?>> {
+class BoringArrayFormField<T> extends BFormField<List<T?>> {
   BoringArrayFormField({
     super.key,
     required super.fieldPath,
@@ -134,7 +134,7 @@ class BoringArrayFormField<T extends String> extends BFormField<List<T?>> {
                         fieldValue!..removeAt(index),
                       );
                     },
-                    leadingIcon: BIcon(BIcons.trash),
+                    leadingIcon: const BIcon(BIcons.trash),
                   )
               ],
             );
