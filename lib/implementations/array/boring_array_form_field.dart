@@ -43,12 +43,14 @@ class BoringArrayFormField<T> extends BFormField<List<T?>> {
   }
 
   void syncValues(BFormController formController) {
-    final values = _controllers.map((e) => toValue(e.value)).toList();
+    final values = _controllers.map((e) => toValue(e.getFormValue())).toList();
     formController.setFieldValue(fieldPath, values, notify: true);
   }
 
   void populateControllers(
-      BFormController formController, List<T?>? fieldValue) {
+    BFormController formController,
+    List<T?>? fieldValue,
+  ) {
     final valueLen = fieldValue?.length ?? 0;
 
     for (var i = _controllers.length; i < valueLen; i++) {
