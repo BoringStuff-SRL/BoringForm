@@ -1,6 +1,9 @@
 import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
+typedef ControllerBuilder = BFormController Function(
+    Map<String, dynamic> initialValue);
+
 class BoringArrayFormField<T> extends BFormField<List<T?>> {
   BoringArrayFormField({
     super.key,
@@ -15,7 +18,10 @@ class BoringArrayFormField<T> extends BFormField<List<T?>> {
     super.onChanged,
     super.readOnly,
     super.responsiveSize,
+    ControllerBuilder? controllerBuilder,
   })  : _controllers = [],
+        controllerBuilder =
+            controllerBuilder ?? ((initialValue) => BFormController()),
         super(required: false);
 
   final String addElementText;
@@ -25,6 +31,7 @@ class BoringArrayFormField<T> extends BFormField<List<T?>> {
   final Map<String, dynamic> Function(T? value) fromValue;
   final Widget Function(BuildContext context) elementBuilder;
   final List<BFormController> _controllers;
+  final ControllerBuilder controllerBuilder;
 
   Widget formBuilder(BuildContext context, int i, {required bool readOnly}) {
     return BoringForm(
@@ -45,9 +52,8 @@ class BoringArrayFormField<T> extends BFormField<List<T?>> {
     final valueLen = fieldValue?.length ?? 0;
 
     for (var i = _controllers.length; i < valueLen; i++) {
-      final fc = BFormController(
-        initialValue: fromValue(fieldValue?[i]),
-      );
+      final initialValue = fromValue(fieldValue?[i]);
+      final fc = controllerBuilder.call(initialValue);
       fc.addListener(
         () {
           syncValues(formController);
