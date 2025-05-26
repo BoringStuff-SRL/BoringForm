@@ -64,6 +64,7 @@ class BoringArrayFormField<T> extends BFormField<List<T?>> {
 
       _controllers.add(fc);
     }
+    syncValues(formController);
   }
 
   @override
@@ -117,7 +118,7 @@ class BoringArrayFormField<T> extends BFormField<List<T?>> {
                   // aggiungo null al formController esterno
                   formController.setFieldValue(
                     fieldPath,
-                    [...fieldValue ?? <T?>[], null],
+                    [...(fieldValue ?? <T?>[]), null],
                   );
                 }
               : null,
