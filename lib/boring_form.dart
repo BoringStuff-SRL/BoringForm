@@ -4,6 +4,7 @@ export 'field/bform_field.dart';
 export 'form/boring_form.dart';
 export 'form/boring_form_controller.dart';
 export 'form/boring_form_controller_OLD.dart';
+export 'implementations/array/boring_array_form_field.dart';
 export 'implementations/choice/bmultielement_form_field.dart';
 export 'implementations/choice/boring_checkbox_field.dart';
 export 'implementations/choice/boring_chip_field.dart';
