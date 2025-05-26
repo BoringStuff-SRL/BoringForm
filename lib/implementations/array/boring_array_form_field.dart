@@ -16,28 +16,7 @@ class BoringArrayFormField<T extends String> extends BFormField<List<T?>> {
     super.readOnly,
     super.responsiveSize,
   })  : _controllers = [],
-        super(
-          required: false,
-          validationFunction: (formController, value) {
-            final valueLen = value?.length ?? 0;
-            if (valueLen < atLeast) {
-              return 'Devi inserire almeno $atLeast attributi';
-            }
-            if (valueLen > atMost) {
-              return 'Devi inserire al massimo $atMost attributi';
-            }
-            final convertedValue =
-                formController.getConvertedValue(fieldPath) as List<T?>?;
-
-            final allFieldsAreValid =
-                convertedValue?.every((element) => element != null) ?? true;
-
-            if (!allFieldsAreValid) {
-              return 'Devi compilare tutti i campi';
-            }
-            return null;
-          },
-        );
+        super(required: false);
 
   final String addElementText;
   final int atLeast;
@@ -78,6 +57,26 @@ class BoringArrayFormField<T extends String> extends BFormField<List<T?>> {
       _controllers.add(fc);
     }
   }
+
+  @override
+  ValidationFunction<List<T?>>? get validationFunction =>
+      ((formController, value) {
+        final valueLen = value?.length ?? 0;
+        if (valueLen < atLeast) {
+          return 'Devi inserire almeno $atLeast attributi';
+        }
+        if (valueLen > atMost) {
+          return 'Devi inserire al massimo $atMost attributi';
+        }
+
+        final allFieldsAreValid =
+            _controllers.every((element) => element.isValid);
+
+        if (!allFieldsAreValid) {
+          return 'Tutti i campi devono essere validi';
+        }
+        return super.validationFunction?.call(formController, value);
+      });
 
   @override
   Widget fieldBuilder(
