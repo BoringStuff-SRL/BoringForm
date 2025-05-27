@@ -142,6 +142,8 @@ class BoringNumberField extends BFormField<num> {
     this.showIncrementDecrementButtons = false,
     super.required,
     super.responsiveSize,
+    TextEditingController? textEditingController,
+    FocusNode? focusNode,
   })  : _numberFormatter = MyNumberFormatter(
           decimalPlaces: decimalPlaces,
           decimalSeparator: decimalSeparator,
@@ -149,6 +151,9 @@ class BoringNumberField extends BFormField<num> {
           allowNegative: allowNegative,
           showThousandsSeparators: showThousandsSeparators,
         ),
+        _textEditingController =
+            textEditingController ?? TextEditingController(),
+        _focusNode = focusNode ?? FocusNode(),
         assert(decimalSeparator != thousandsSeparator,
             'Decimal and thousands separator can\'t be the same'),
         assert(
@@ -156,7 +161,8 @@ class BoringNumberField extends BFormField<num> {
                 (['.', ','].contains(thousandsSeparator)),
             'Invalid value entered for decimalSeparator AND thousandsSeparator. Only valid characters are `,` or `.`');
 
-  final TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController _textEditingController;
+  final FocusNode _focusNode;
 
   final String decimalSeparator;
   final String thousandsSeparator;
@@ -212,6 +218,7 @@ class BoringNumberField extends BFormField<num> {
       children: [
         Expanded(
           child: TextField(
+            focusNode: _focusNode,
             readOnly: fieldValidation.isReadOnly,
             enabled: !fieldValidation.isReadOnly,
             controller: _textEditingController,
