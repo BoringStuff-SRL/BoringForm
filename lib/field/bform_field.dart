@@ -157,33 +157,27 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
     TT? computedData,
     BFormController formController,
     BoringFormStyle style,
-  ) =>
-      BoringRxWatcher(
-        listenable: formController,
-        selector: (controller) => controller.selectField<T?>(
-          fieldPath,
-          fieldMarkedReadonly: readOnly || style.readOnly,
-          fieldRequired: required,
-        ),
-        builder: (context, child, value) {
-          onSelfChange(formController, value.value);
-          if (value.isHidden) {
-            return const SizedBox.shrink();
-          }
-          return _FieldWrapper(
-            responsiveSize: responsiveSize,
-            hasPadding: hasPadding,
-            child: fieldBuilder(
-              context,
-              style,
-              formController,
-              value.value,
-              value.validation,
-              computedData,
-            ),
-          );
-        },
-      );
+    ({T? value, FieldValidation validation, bool isHidden}) value,
+  ) {
+    return Builder(
+      builder: (context) {
+        onSelfChange(formController, value.value);
+
+        return _FieldWrapper(
+          responsiveSize: responsiveSize,
+          hasPadding: hasPadding,
+          child: fieldBuilder(
+            context,
+            style,
+            formController,
+            value.value,
+            value.validation,
+            computedData,
+          ),
+        );
+      },
+    );
+  }
 
   @override
   bool get hasPadding => true;
@@ -195,27 +189,41 @@ abstract class BFormFieldAsync<T, TT> extends BFormObserver {
 
     final style = BoringFormTheme.of(context).style;
 
-    if (asyncComputations == null) {
-      return _child(null, formController, style);
-    }
-    return BFutureBuilder<TT?>(
-      future: () async =>
-          _performAsyncComputations(observedValues, formController),
-      onError: (error, stackTrace) => _FieldWrapper(
-        responsiveSize: responsiveSize,
-        hasPadding: hasPadding,
-        child: onError(context),
+    return BoringRxWatcher(
+      listenable: formController,
+      selector: (controller) => controller.selectField<T?>(
+        fieldPath,
+        fieldMarkedReadonly: readOnly || style.readOnly,
+        fieldRequired: required,
       ),
-      centeredLoader: false,
-      loader: _FieldWrapper(
-        responsiveSize: responsiveSize,
-        hasPadding: hasPadding,
-        child: onLoading(context),
-      ),
-      onEmptyDataFunction: () => _child(null, formController, style),
-      builder: (context, snapshot) {
-        final computedData = snapshot.data;
-        return _child(computedData, formController, style);
+      builder: (context, child, value) {
+        if (value.isHidden) {
+          return const SizedBox.shrink();
+        }
+
+        if (asyncComputations == null) {
+          return _child(null, formController, style, value);
+        }
+        return BFutureBuilder<TT?>(
+          future: () async =>
+              _performAsyncComputations(observedValues, formController),
+          onError: (error, stackTrace) => _FieldWrapper(
+            responsiveSize: responsiveSize,
+            hasPadding: hasPadding,
+            child: onError(context),
+          ),
+          centeredLoader: false,
+          loader: _FieldWrapper(
+            responsiveSize: responsiveSize,
+            hasPadding: hasPadding,
+            child: onLoading(context),
+          ),
+          onEmptyDataFunction: () => _child(null, formController, style, value),
+          builder: (context, snapshot) {
+            final computedData = snapshot.data;
+            return _child(computedData, formController, style, value);
+          },
+        );
       },
     );
   }
