@@ -21,7 +21,7 @@ class BoringArrayFormField<T> extends BFormField<List<T?>> {
     ControllerBuilder? controllerBuilder,
   })  : _controllers = [],
         controllerBuilder =
-            controllerBuilder ?? ((initialValue) => BFormController()),
+            controllerBuilder ?? ((initialValue) => BFormController(initialValue: initialValue)),
         super(required: false);
 
   final String addElementText;
