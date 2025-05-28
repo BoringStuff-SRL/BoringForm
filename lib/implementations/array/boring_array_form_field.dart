@@ -64,7 +64,12 @@ class BoringArrayFormField<T> extends BFormField<List<T?>> {
 
       _controllers.add(fc);
     }
-    syncValues(formController);
+
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) {
+        syncValues(formController);
+      },
+    );
   }
 
   @override
