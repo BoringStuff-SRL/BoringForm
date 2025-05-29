@@ -2,7 +2,7 @@ import 'package:boring_ui/boring_ui.dart';
 import 'package:flutter/material.dart';
 
 typedef ControllerBuilder = BFormController Function(
-    Map<String, dynamic> initialValue);
+    Map<String, dynamic> initialValue, int index);
 
 class BoringArrayFormField<T> extends BFormField<List<T?>> {
   BoringArrayFormField({
@@ -20,8 +20,8 @@ class BoringArrayFormField<T> extends BFormField<List<T?>> {
     super.responsiveSize,
     ControllerBuilder? controllerBuilder,
   })  : _controllers = [],
-        controllerBuilder =
-            controllerBuilder ?? ((initialValue) => BFormController(initialValue: initialValue)),
+        controllerBuilder = controllerBuilder ??
+            ((initialValue, i) => BFormController(initialValue: initialValue)),
         super(required: false);
 
   final String addElementText;
@@ -29,7 +29,7 @@ class BoringArrayFormField<T> extends BFormField<List<T?>> {
   final int atMost;
   final T? Function(Map<String, dynamic> data) toValue;
   final Map<String, dynamic> Function(T? value) fromValue;
-  final Widget Function(BuildContext context) elementBuilder;
+  final Widget Function(BuildContext context, int index) elementBuilder;
   final List<BFormController> _controllers;
   final ControllerBuilder controllerBuilder;
 
@@ -38,7 +38,7 @@ class BoringArrayFormField<T> extends BFormField<List<T?>> {
       formController: _controllers[i],
       style: (context) =>
           BoringTheme.of(context).boringFormStyle.copyWith(readOnly: readOnly),
-      child: elementBuilder(context),
+      child: elementBuilder(context, i),
     );
   }
 
@@ -55,7 +55,7 @@ class BoringArrayFormField<T> extends BFormField<List<T?>> {
 
     for (var i = _controllers.length; i < valueLen; i++) {
       final initialValue = fromValue(fieldValue?[i]);
-      final fc = controllerBuilder.call(initialValue);
+      final fc = controllerBuilder.call(initialValue, i);
       fc.addListener(
         () {
           syncValues(formController);
