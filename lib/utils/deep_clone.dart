@@ -54,6 +54,7 @@ dynamic _deepCloneValue(
     }
     return copy;
   }
+
   if (value is List) {
     final copy = value.toList();
     copy.clear();
@@ -61,7 +62,12 @@ dynamic _deepCloneValue(
     final clone = value.deepClone(converters: converters);
 
     for (final el in clone) {
-      copy.add(el);
+      if (el is DateTime) {
+        copy.add(el);
+      } else {
+        final tryParseDate = DateTime.tryParse(el ?? '');
+        copy.add(tryParseDate ?? el);
+      }
     }
     return copy;
   }

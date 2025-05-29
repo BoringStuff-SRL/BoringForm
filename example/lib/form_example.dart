@@ -50,43 +50,65 @@ class FormExample0 extends BoringResponsiveFormWidget {
 
   @override
   List<Widget> get children => [
-        BResponsiveChild(child: BoringTextField(fieldPath: ['field1'])),
-        BoringDropdownField(
-          fieldPath: ['loading'],
-          getItems: (search) async {
-            await Future.delayed(const Duration(seconds: 2));
-            return [1, 2, 3];
-          },
-          decoration: (formController) =>
-              BoringFieldDecoration(label: 'Fai la tua scelta'),
-          toBoringChoiceItem: (element) =>
-              BChoiceItem(value: element, display: '$element'),
+        BResponsiveChild(
+          child: BoringArrayFormField<DateTime>(
+            fieldPath: ['array'],
+            atLeast: 0,
+            atMost: 10,
+            fromValue: (value) => {
+              'value': value,
+            },
+            toValue: (data) {
+              return DateTime.tryParse(data['value'] ?? '');
+            },
+            elementBuilder: (context) {
+              return BoringDateField(
+                fieldPath: ['value'],
+                required: true,
+                firstDate: DateTime(1900),
+                lastDate: DateTime(2030),
+              );
+            },
+          ),
         ),
-        BoringDropdownField(
-          fieldPath: ['choice'],
-          getItems: (search) async {
-            await Future.delayed(const Duration(seconds: 2));
-            return [1, 2, 3];
-          },
-          decoration: (formController) =>
-              BoringFieldDecoration(label: 'Fai la tua scelta'),
-          toBoringChoiceItem: (element) =>
-              BChoiceItem(value: element, display: '$element'),
+        BResponsiveChild(
+          child: ListenableBuilder(
+            listenable: formController,
+            builder: (context, child) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('IS VALID?: ${formController.isValid}'),
+                  ...(formController.value['array'] as List?)?.map(
+                        (e) => Text("${e}"),
+                      ) ??
+                      [],
+                ],
+              );
+            },
+          ),
         ),
-        BoringTextField(
-          fieldPath: ['one'],
-          decoration: (formController) =>
-              BoringFieldDecoration(label: 'Hai scelto 1!'),
+        BoringDateField(
+          fieldPath: ['value'],
+          required: true,
+          firstDate: DateTime(1900),
+          lastDate: DateTime(2030),
         ),
-        BoringTextField(
-          fieldPath: ['two'],
-          decoration: (formController) =>
-              BoringFieldDecoration(label: 'Hai scelto 2!'),
+        BResponsiveChild(
+          child: BButton(
+            text: 'IS VALID?',
+            onPressed: () {
+              print(formController.isValid);
+            },
+          ),
         ),
-        BoringTextField(
-          fieldPath: ['three'],
-          decoration: (formController) =>
-              BoringFieldDecoration(label: 'Hai scelto 3!'),
+        BResponsiveChild(
+          child: BButton(
+            text: 'GET VALUE?',
+            onPressed: () {
+              print(formController.getFormValue());
+            },
+          ),
         ),
       ];
 }
