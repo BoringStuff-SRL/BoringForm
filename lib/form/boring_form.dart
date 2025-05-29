@@ -45,6 +45,7 @@ abstract class BoringResponsiveFormWidget extends BoringFormWidget {
   @override
   Widget child(context) => BWrap(
         spacing: 0,
+        runSpacing: 0,
         crossAxisAlignment: WrapCrossAlignment.center,
         children: children,
       );
