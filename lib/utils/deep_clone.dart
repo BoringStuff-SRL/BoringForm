@@ -65,7 +65,7 @@ dynamic _deepCloneValue(
       if (el is DateTime) {
         copy.add(el);
       } else {
-        final tryParseDate = DateTime.tryParse(el ?? '');
+        final tryParseDate = DateTime.tryParse(el?.toString() ?? '');
         copy.add(tryParseDate ?? el);
       }
     }
