@@ -40,7 +40,11 @@ class BMultiElementFormField<T> extends BFormField<List<T>> {
     WidgetBuilder<T>? builder,
     super.key,
     this.unique = true,
-  }) : _builder = builder;
+    FutureOr<bool> Function()? showAddButton,
+  })  : _builder = builder,
+        showAddButton = showAddButton ?? (() async => true);
+
+  final FutureOr<bool> Function() showAddButton;
 
   /// wether or not the added element is unique in the list
   /// true -> if the users inserts the same element twice, it will not be added
@@ -153,12 +157,21 @@ class BMultiElementFormField<T> extends BFormField<List<T>> {
             actions: [
               ...(additionalActions ?? []),
               if (!readOnly)
-                BButton(
-                  onPressed: () async {
-                    _handleAdd(context, formController, fieldValue ?? []);
+                BFutureBuilder(
+                  future: () async => showAddButton(),
+                  loader: BSkeleton.text(),
+                  builder: (context, snapshot) {
+                    if (snapshot.data ?? false) {
+                      return BButton(
+                        onPressed: () async {
+                          _handleAdd(context, formController, fieldValue ?? []);
+                        },
+                        text: "Aggiungi",
+                        leadingIcon: const BIcon(BIcons.add),
+                      );
+                    }
+                    return Container();
                   },
-                  text: "Aggiungi",
-                  leadingIcon: BIcon(BIcons.add),
                 ),
             ],
           ),
