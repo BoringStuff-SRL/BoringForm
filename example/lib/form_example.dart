@@ -8,35 +8,10 @@ class FormExample0 extends BoringResponsiveFormWidget {
             extensions: (controller, value) {
               final choice = value['choice'] as int?;
 
-              final ext = <BFormExtension>[];
-
-              final excludeOne =
-                  BIgnoreField(fieldPath: ['one'], hideField: true);
-              final excludeTwo =
-                  BIgnoreField(fieldPath: ['two'], hideField: true);
-              final excludeThree =
-                  BIgnoreField(fieldPath: ['three'], hideField: true);
-
-              switch (choice) {
-                case 1:
-                  ext.add(excludeTwo);
-                  ext.add(excludeThree);
-                  break;
-                case 2:
-                  ext.add(excludeOne);
-                  ext.add(excludeThree);
-                  break;
-                case 3:
-                  ext.add(excludeOne);
-                  ext.add(excludeTwo);
-                  break;
-                default:
-                  ext.add(excludeOne);
-                  ext.add(excludeTwo);
-                  ext.add(excludeThree);
-              }
-
-              return ext;
+              return elements
+                  .where((element) => element != choice)
+                  .map((e) => BIgnoreField(fieldPath: ['$e'], hideField: true))
+                  .toList();
             },
           ),
         );
@@ -48,66 +23,40 @@ class FormExample0 extends BoringResponsiveFormWidget {
         .copyWith(fieldsPadding: const EdgeInsets.all(4));
   }
 
+  static List<int> get elements => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
   @override
   List<Widget> get children => [
-        BResponsiveChild(
-          child: BoringArrayFormField<DateTime>(
-            fieldPath: ['array'],
-            atLeast: 0,
-            atMost: 10,
-            fromValue: (value) => {
-              'value': value,
-            },
-            toValue: (data) {
-              return DateTime.tryParse(data['value'] ?? '');
-            },
-            elementBuilder: (context) {
-              return BoringDateField(
-                fieldPath: ['value'],
-                required: true,
-                firstDate: DateTime(1900),
-                lastDate: DateTime(2030),
-              );
-            },
+        BoringTextField(fieldPath: ['asd']),
+        BoringDropdownField(
+          fieldPath: ['choice'],
+          getItems: (String search) async => elements,
+          toBoringChoiceItem: (element) =>
+              BChoiceItem(value: element, display: element.toString()),
+        ),
+        BoringTextField(fieldPath: ['pt']),
+        ...elements.map(
+          (e) => BResponsiveChild(
+            child: BoringArrayFormField<String>(
+              fieldPath: ['$e'],
+              atLeast: 0,
+              atMost: double.maxFinite.toInt(),
+              fromValue: (value) => {'value': value},
+              toValue: (data) => data['value'],
+              elementBuilder: (context, index) =>
+                  BoringTextField(fieldPath: ['value']),
+            ),
           ),
         ),
         BResponsiveChild(
-          child: ListenableBuilder(
-            listenable: formController,
-            builder: (context, child) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text('IS VALID?: ${formController.isValid}'),
-                  ...(formController.value['array'] as List?)?.map(
-                        (e) => Text("${e}"),
-                      ) ??
-                      [],
-                ],
-              );
-            },
-          ),
-        ),
-        BoringDateField(
-          fieldPath: ['value'],
-          required: true,
-          firstDate: DateTime(1900),
-          lastDate: DateTime(2030),
-        ),
-        BResponsiveChild(
-          child: BButton(
-            text: 'IS VALID?',
-            onPressed: () {
-              print(formController.isValid);
-            },
-          ),
-        ),
-        BResponsiveChild(
-          child: BButton(
-            text: 'GET VALUE?',
-            onPressed: () {
-              print(formController.getFormValue());
-            },
+          child: BMultiElementFormField(
+            fieldPath: ["brbr"],
+            onAdd: (context) async {},
+            onEdit: (context, item) async {},
+            itemBuilder: (context, index, item, readOnly, onEdit, onDelete) =>
+                Text(item.toString()),
+            showAddButton: (context) =>
+                Future.delayed(const Duration(seconds: 2), () => true),
           ),
         ),
       ];
