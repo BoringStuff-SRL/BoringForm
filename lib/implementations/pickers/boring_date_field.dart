@@ -7,6 +7,12 @@ import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 class BoringDateTimeField extends BoringPickerField<DateTime> {
   static const outOfBoundError =
       "initial date must be between firstDate and lastDate"; //TODO make this a parameter [or better: add translations]
+
+  static DateTime midnightTime(DateTime date) {
+    return date.copyWith(
+        hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0);
+  }
+
   BoringDateTimeField({
     super.key,
     required super.fieldPath,
@@ -23,10 +29,10 @@ class BoringDateTimeField extends BoringPickerField<DateTime> {
             validationFunction:
                 (BoringFormController formController, DateTime? value) {
               final error = validationFunction?.call(formController, value);
-              final boundsError =
-                  value == null || (value <= lastDate && value >= firstDate)
-                      ? null
-                      : outOfBoundError;
+              final boundsError = value == null ||
+                      (value <= lastDate && value >= midnightTime(firstDate))
+                  ? null
+                  : outOfBoundError;
               return error ?? boundsError;
             },
             showPicker: (context, formController, fieldValue) async =>
@@ -66,6 +72,13 @@ DateTime middle(DateTime dt1, DateTime dt2, DateTime dt3) {
   }
 }
 
+String dateTimeRangeToString(
+        DateTimeRange?
+            dt) => //TODO add internazionalization for this function too
+    dt != null
+        ? "${dateTimeToString(dt.start)} - ${dateTimeToString(dt.end)}"
+        : "";
+
 class BoringDateField extends BoringPickerField<DateTime> {
   static const outOfBoundError = BoringDateTimeField
       .outOfBoundError; //TODO make this a parameter [or better: add translations]
@@ -87,10 +100,11 @@ class BoringDateField extends BoringPickerField<DateTime> {
             validationFunction:
                 (BoringFormController formController, DateTime? value) {
               final error = validationFunction?.call(formController, value);
-              final boundsError =
-                  value == null || (value <= lastDate && value >= firstDate)
-                      ? null
-                      : outOfBoundError;
+              final boundsError = value == null ||
+                      (value <= lastDate &&
+                          value >= BoringDateTimeField.midnightTime(firstDate))
+                  ? null
+                  : outOfBoundError;
               return error ?? boundsError;
             },
             showPicker: (context, formController, fieldValue) async =>
@@ -156,4 +170,68 @@ class BoringTimeField extends BoringPickerField<TimeOfDay> {
             valueToString: (value) => value == null
                 ? ""
                 : "${value.hour.toString().padLeft(2, '0')}:${value.minute.toString().padLeft(2, '0')}");
+}
+
+class BoringDateRangeField extends BoringPickerField<DateTimeRange> {
+  static const outOfBoundError = BoringDateTimeField
+      .outOfBoundError; //TODO make this a parameter [or better: add translations]
+  BoringDateRangeField({
+    super.key,
+    required super.fieldPath,
+    super.observedFields,
+    ValidationFunction<DateTimeRange>? validationFunction,
+    super.decoration,
+    super.readOnly,
+    super.updateValueOnDismiss,
+    super.showEraseValueButton,
+    DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar,
+    required DateTime firstDate,
+    required DateTime lastDate,
+    bool forceHideRequiredFieldLabel = false,
+    super.onChanged,
+  })  : assert(firstDate <= lastDate, "firstDate must be less than lastDate"),
+        super(
+          validationFunction:
+              (BoringFormController formController, DateTimeRange? value) {
+            final error = validationFunction?.call(formController, value);
+
+            final isOutOfBound = value == null
+                ? false
+                : (value.start <= BoringDateTimeField.midnightTime(firstDate) ||
+                    value.end >= lastDate);
+
+            final boundsError =
+                value == null || !isOutOfBound ? null : outOfBoundError;
+            return error ?? boundsError;
+          },
+          showPicker: (context, formController, fieldValue) async =>
+              await showDateRangePicker(
+            context: context,
+            initialEntryMode: initialEntryMode,
+            initialDateRange: fieldValue,
+            firstDate: firstDate,
+            lastDate: lastDate,
+            builder: (BuildContext context, Widget? child) {
+              return MediaQuery(
+                data: MediaQuery.of(context)
+                    .copyWith(alwaysUse24HourFormat: true),
+                child: AlertDialog(
+                  backgroundColor: Colors.transparent,
+                  contentPadding: EdgeInsets.zero,
+                  content: ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      maxWidth: 500,
+                      maxHeight: 500,
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: child!,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+          valueToString: dateTimeRangeToString,
+        );
 }
