@@ -108,6 +108,7 @@ class BoringSwitchField extends BoringFormField<bool> {
     required super.fieldPath,
     super.observedFields,
     super.decoration,
+    super.onChanged,
     super.readOnly,
     this.switchDecoration,
   });

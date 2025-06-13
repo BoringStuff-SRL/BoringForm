@@ -52,8 +52,9 @@ class BoringDropdownMultiChoiceField<T>
       List<T>? fieldValue,
       String? error,
       AsyncSnapshot<List<BoringChoiceItem<T>>> calculations) {
-    return BoringDropdownMultichoice(
-      value: fieldValue?.map((e) => toBoringChoiceItem(e)).toList(),
+
+    return BoringDropdownMultiChoice(
+      value: ValueNotifier((fieldValue ?? []).map((e) => toBoringChoiceItem(e)).toList()),
       searchItems: getItems,
       onChanged: (values) =>
           setChangedValue(formController, values?.map((e) => e.value).toList()),
