@@ -7,7 +7,7 @@ import 'package:boring_form/implementations/pickers/boringFilePickerV2/boring_dr
 import 'package:boring_form/implementations/pickers/boringFilePickerV2/boring_file_picker_settings.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:super_drag_and_drop/super_drag_and_drop.dart';
+
 
 class _DropData {
   final String fileName;
@@ -87,7 +87,7 @@ class BoringDropZone extends StatelessWidget {
   Future<void> handleOnDragDone(
     BuildContext context,
     BoringFilePickerSettings settings,
-    PerformDropEvent details,
+    dynamic details,
   ) async {
     // se sono in readOnly non posso fare niente
     if (settings.readOnly) {
@@ -119,6 +119,7 @@ class BoringDropZone extends StatelessWidget {
       if (dataReader == null) continue;
 
       // vedo se il file e' conforme ad uno degli standards
+  /*
       for (final format in Formats.standardFormats) {
         if (element.canProvide(format)) {
           // se lo e' leggo il file e lo aggiungo al dataHandler
@@ -147,6 +148,7 @@ class BoringDropZone extends StatelessWidget {
           break;
         }
       }
+   */
     }
   }
 
@@ -155,7 +157,8 @@ class BoringDropZone extends StatelessWidget {
     final settings = BoringFilePickerSettings.of(context);
     final decoration = settings.decoration;
     color = ValueNotifier(decoration.inActiveColor);
-    return settings.decoration.dropzoneBuilder?.call(context, formController) ??
+    return settings.decoration.dropzoneBuilder?.call(context, formController) ?? Container();
+    /*
         DropRegion(
           formats: Formats.standardFormats,
           onDropOver: (event) {
@@ -246,5 +249,6 @@ class BoringDropZone extends StatelessWidget {
             },
           ),
         );
+     */
   }
 }

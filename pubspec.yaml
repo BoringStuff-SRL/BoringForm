@@ -21,7 +21,7 @@ dependencies:
   collection: ^1.19.0
   widget_zoom: ^0.0.4
   month_year_picker: ^0.5.0+1
-  super_drag_and_drop: ^0.9.1
+  #super_drag_and_drop: ^0.9.1
 
   boring_ui:
     git:
